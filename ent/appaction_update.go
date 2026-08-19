@@ -24,169 +24,169 @@ type AppActionUpdate struct {
 }
 
 // Where appends a list predicates to the AppActionUpdate builder.
-func (aau *AppActionUpdate) Where(ps ...predicate.AppAction) *AppActionUpdate {
-	aau.mutation.Where(ps...)
-	return aau
+func (_u *AppActionUpdate) Where(ps ...predicate.AppAction) *AppActionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aau *AppActionUpdate) SetUpdatedBy(i int) *AppActionUpdate {
-	aau.mutation.ResetUpdatedBy()
-	aau.mutation.SetUpdatedBy(i)
-	return aau
+func (_u *AppActionUpdate) SetUpdatedBy(v int) *AppActionUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableUpdatedBy(i *int) *AppActionUpdate {
-	if i != nil {
-		aau.SetUpdatedBy(*i)
+func (_u *AppActionUpdate) SetNillableUpdatedBy(v *int) *AppActionUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aau
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aau *AppActionUpdate) AddUpdatedBy(i int) *AppActionUpdate {
-	aau.mutation.AddUpdatedBy(i)
-	return aau
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppActionUpdate) AddUpdatedBy(v int) *AppActionUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aau *AppActionUpdate) ClearUpdatedBy() *AppActionUpdate {
-	aau.mutation.ClearUpdatedBy()
-	return aau
+func (_u *AppActionUpdate) ClearUpdatedBy() *AppActionUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aau *AppActionUpdate) SetUpdatedAt(t time.Time) *AppActionUpdate {
-	aau.mutation.SetUpdatedAt(t)
-	return aau
+func (_u *AppActionUpdate) SetUpdatedAt(v time.Time) *AppActionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableUpdatedAt(t *time.Time) *AppActionUpdate {
-	if t != nil {
-		aau.SetUpdatedAt(*t)
+func (_u *AppActionUpdate) SetNillableUpdatedAt(v *time.Time) *AppActionUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aau
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aau *AppActionUpdate) ClearUpdatedAt() *AppActionUpdate {
-	aau.mutation.ClearUpdatedAt()
-	return aau
+func (_u *AppActionUpdate) ClearUpdatedAt() *AppActionUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aau *AppActionUpdate) SetName(s string) *AppActionUpdate {
-	aau.mutation.SetName(s)
-	return aau
+func (_u *AppActionUpdate) SetName(v string) *AppActionUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableName(s *string) *AppActionUpdate {
-	if s != nil {
-		aau.SetName(*s)
+func (_u *AppActionUpdate) SetNillableName(v *string) *AppActionUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aau
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (aau *AppActionUpdate) SetKind(a appaction.Kind) *AppActionUpdate {
-	aau.mutation.SetKind(a)
-	return aau
+func (_u *AppActionUpdate) SetKind(v appaction.Kind) *AppActionUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableKind(a *appaction.Kind) *AppActionUpdate {
-	if a != nil {
-		aau.SetKind(*a)
+func (_u *AppActionUpdate) SetNillableKind(v *appaction.Kind) *AppActionUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return aau
+	return _u
 }
 
 // SetMethod sets the "method" field.
-func (aau *AppActionUpdate) SetMethod(a appaction.Method) *AppActionUpdate {
-	aau.mutation.SetMethod(a)
-	return aau
+func (_u *AppActionUpdate) SetMethod(v appaction.Method) *AppActionUpdate {
+	_u.mutation.SetMethod(v)
+	return _u
 }
 
 // SetNillableMethod sets the "method" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableMethod(a *appaction.Method) *AppActionUpdate {
-	if a != nil {
-		aau.SetMethod(*a)
+func (_u *AppActionUpdate) SetNillableMethod(v *appaction.Method) *AppActionUpdate {
+	if v != nil {
+		_u.SetMethod(*v)
 	}
-	return aau
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (aau *AppActionUpdate) SetComments(s string) *AppActionUpdate {
-	aau.mutation.SetComments(s)
-	return aau
+func (_u *AppActionUpdate) SetComments(v string) *AppActionUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aau *AppActionUpdate) SetNillableComments(s *string) *AppActionUpdate {
-	if s != nil {
-		aau.SetComments(*s)
+func (_u *AppActionUpdate) SetNillableComments(v *string) *AppActionUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return aau
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (aau *AppActionUpdate) ClearComments() *AppActionUpdate {
-	aau.mutation.ClearComments()
-	return aau
+func (_u *AppActionUpdate) ClearComments() *AppActionUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (aau *AppActionUpdate) AddMenuIDs(ids ...int) *AppActionUpdate {
-	aau.mutation.AddMenuIDs(ids...)
-	return aau
+func (_u *AppActionUpdate) AddMenuIDs(ids ...int) *AppActionUpdate {
+	_u.mutation.AddMenuIDs(ids...)
+	return _u
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (aau *AppActionUpdate) AddMenus(a ...*AppMenu) *AppActionUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppActionUpdate) AddMenus(v ...*AppMenu) *AppActionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aau.AddMenuIDs(ids...)
+	return _u.AddMenuIDs(ids...)
 }
 
 // Mutation returns the AppActionMutation object of the builder.
-func (aau *AppActionUpdate) Mutation() *AppActionMutation {
-	return aau.mutation
+func (_u *AppActionUpdate) Mutation() *AppActionMutation {
+	return _u.mutation
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
-func (aau *AppActionUpdate) ClearMenus() *AppActionUpdate {
-	aau.mutation.ClearMenus()
-	return aau
+func (_u *AppActionUpdate) ClearMenus() *AppActionUpdate {
+	_u.mutation.ClearMenus()
+	return _u
 }
 
 // RemoveMenuIDs removes the "menus" edge to AppMenu entities by IDs.
-func (aau *AppActionUpdate) RemoveMenuIDs(ids ...int) *AppActionUpdate {
-	aau.mutation.RemoveMenuIDs(ids...)
-	return aau
+func (_u *AppActionUpdate) RemoveMenuIDs(ids ...int) *AppActionUpdate {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
 }
 
 // RemoveMenus removes "menus" edges to AppMenu entities.
-func (aau *AppActionUpdate) RemoveMenus(a ...*AppMenu) *AppActionUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppActionUpdate) RemoveMenus(v ...*AppMenu) *AppActionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aau.RemoveMenuIDs(ids...)
+	return _u.RemoveMenuIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (aau *AppActionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, aau.sqlSave, aau.mutation, aau.hooks)
+func (_u *AppActionUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aau *AppActionUpdate) SaveX(ctx context.Context) int {
-	affected, err := aau.Save(ctx)
+func (_u *AppActionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -194,31 +194,31 @@ func (aau *AppActionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (aau *AppActionUpdate) Exec(ctx context.Context) error {
-	_, err := aau.Save(ctx)
+func (_u *AppActionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aau *AppActionUpdate) ExecX(ctx context.Context) {
-	if err := aau.Exec(ctx); err != nil {
+func (_u *AppActionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aau *AppActionUpdate) check() error {
-	if v, ok := aau.mutation.Name(); ok {
+func (_u *AppActionUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appaction.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppAction.name": %w`, err)}
 		}
 	}
-	if v, ok := aau.mutation.Kind(); ok {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := appaction.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppAction.kind": %w`, err)}
 		}
 	}
-	if v, ok := aau.mutation.Method(); ok {
+	if v, ok := _u.mutation.Method(); ok {
 		if err := appaction.MethodValidator(v); err != nil {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
@@ -226,49 +226,49 @@ func (aau *AppActionUpdate) check() error {
 	return nil
 }
 
-func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := aau.check(); err != nil {
-		return n, err
+func (_u *AppActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appaction.Table, appaction.Columns, sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt))
-	if ps := aau.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aau.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appaction.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aau.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appaction.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aau.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appaction.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aau.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appaction.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aau.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appaction.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aau.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appaction.FieldName, field.TypeString, value)
 	}
-	if value, ok := aau.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(appaction.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := aau.mutation.Method(); ok {
+	if value, ok := _u.mutation.Method(); ok {
 		_spec.SetField(appaction.FieldMethod, field.TypeEnum, value)
 	}
-	if value, ok := aau.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appaction.FieldComments, field.TypeString, value)
 	}
-	if aau.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appaction.FieldComments, field.TypeString)
 	}
-	if aau.mutation.MenusCleared() {
+	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -281,7 +281,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aau.mutation.RemovedMenusIDs(); len(nodes) > 0 && !aau.mutation.MenusCleared() {
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -297,7 +297,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aau.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -313,7 +313,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, aau.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appaction.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -321,8 +321,8 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	aau.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppActionUpdateOne is the builder for updating a single AppAction entity.
@@ -334,176 +334,176 @@ type AppActionUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aauo *AppActionUpdateOne) SetUpdatedBy(i int) *AppActionUpdateOne {
-	aauo.mutation.ResetUpdatedBy()
-	aauo.mutation.SetUpdatedBy(i)
-	return aauo
+func (_u *AppActionUpdateOne) SetUpdatedBy(v int) *AppActionUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableUpdatedBy(i *int) *AppActionUpdateOne {
-	if i != nil {
-		aauo.SetUpdatedBy(*i)
+func (_u *AppActionUpdateOne) SetNillableUpdatedBy(v *int) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aauo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aauo *AppActionUpdateOne) AddUpdatedBy(i int) *AppActionUpdateOne {
-	aauo.mutation.AddUpdatedBy(i)
-	return aauo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppActionUpdateOne) AddUpdatedBy(v int) *AppActionUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aauo *AppActionUpdateOne) ClearUpdatedBy() *AppActionUpdateOne {
-	aauo.mutation.ClearUpdatedBy()
-	return aauo
+func (_u *AppActionUpdateOne) ClearUpdatedBy() *AppActionUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aauo *AppActionUpdateOne) SetUpdatedAt(t time.Time) *AppActionUpdateOne {
-	aauo.mutation.SetUpdatedAt(t)
-	return aauo
+func (_u *AppActionUpdateOne) SetUpdatedAt(v time.Time) *AppActionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppActionUpdateOne {
-	if t != nil {
-		aauo.SetUpdatedAt(*t)
+func (_u *AppActionUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aauo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aauo *AppActionUpdateOne) ClearUpdatedAt() *AppActionUpdateOne {
-	aauo.mutation.ClearUpdatedAt()
-	return aauo
+func (_u *AppActionUpdateOne) ClearUpdatedAt() *AppActionUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aauo *AppActionUpdateOne) SetName(s string) *AppActionUpdateOne {
-	aauo.mutation.SetName(s)
-	return aauo
+func (_u *AppActionUpdateOne) SetName(v string) *AppActionUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableName(s *string) *AppActionUpdateOne {
-	if s != nil {
-		aauo.SetName(*s)
+func (_u *AppActionUpdateOne) SetNillableName(v *string) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aauo
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (aauo *AppActionUpdateOne) SetKind(a appaction.Kind) *AppActionUpdateOne {
-	aauo.mutation.SetKind(a)
-	return aauo
+func (_u *AppActionUpdateOne) SetKind(v appaction.Kind) *AppActionUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableKind(a *appaction.Kind) *AppActionUpdateOne {
-	if a != nil {
-		aauo.SetKind(*a)
+func (_u *AppActionUpdateOne) SetNillableKind(v *appaction.Kind) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return aauo
+	return _u
 }
 
 // SetMethod sets the "method" field.
-func (aauo *AppActionUpdateOne) SetMethod(a appaction.Method) *AppActionUpdateOne {
-	aauo.mutation.SetMethod(a)
-	return aauo
+func (_u *AppActionUpdateOne) SetMethod(v appaction.Method) *AppActionUpdateOne {
+	_u.mutation.SetMethod(v)
+	return _u
 }
 
 // SetNillableMethod sets the "method" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableMethod(a *appaction.Method) *AppActionUpdateOne {
-	if a != nil {
-		aauo.SetMethod(*a)
+func (_u *AppActionUpdateOne) SetNillableMethod(v *appaction.Method) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetMethod(*v)
 	}
-	return aauo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (aauo *AppActionUpdateOne) SetComments(s string) *AppActionUpdateOne {
-	aauo.mutation.SetComments(s)
-	return aauo
+func (_u *AppActionUpdateOne) SetComments(v string) *AppActionUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aauo *AppActionUpdateOne) SetNillableComments(s *string) *AppActionUpdateOne {
-	if s != nil {
-		aauo.SetComments(*s)
+func (_u *AppActionUpdateOne) SetNillableComments(v *string) *AppActionUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return aauo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (aauo *AppActionUpdateOne) ClearComments() *AppActionUpdateOne {
-	aauo.mutation.ClearComments()
-	return aauo
+func (_u *AppActionUpdateOne) ClearComments() *AppActionUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (aauo *AppActionUpdateOne) AddMenuIDs(ids ...int) *AppActionUpdateOne {
-	aauo.mutation.AddMenuIDs(ids...)
-	return aauo
+func (_u *AppActionUpdateOne) AddMenuIDs(ids ...int) *AppActionUpdateOne {
+	_u.mutation.AddMenuIDs(ids...)
+	return _u
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (aauo *AppActionUpdateOne) AddMenus(a ...*AppMenu) *AppActionUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppActionUpdateOne) AddMenus(v ...*AppMenu) *AppActionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aauo.AddMenuIDs(ids...)
+	return _u.AddMenuIDs(ids...)
 }
 
 // Mutation returns the AppActionMutation object of the builder.
-func (aauo *AppActionUpdateOne) Mutation() *AppActionMutation {
-	return aauo.mutation
+func (_u *AppActionUpdateOne) Mutation() *AppActionMutation {
+	return _u.mutation
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
-func (aauo *AppActionUpdateOne) ClearMenus() *AppActionUpdateOne {
-	aauo.mutation.ClearMenus()
-	return aauo
+func (_u *AppActionUpdateOne) ClearMenus() *AppActionUpdateOne {
+	_u.mutation.ClearMenus()
+	return _u
 }
 
 // RemoveMenuIDs removes the "menus" edge to AppMenu entities by IDs.
-func (aauo *AppActionUpdateOne) RemoveMenuIDs(ids ...int) *AppActionUpdateOne {
-	aauo.mutation.RemoveMenuIDs(ids...)
-	return aauo
+func (_u *AppActionUpdateOne) RemoveMenuIDs(ids ...int) *AppActionUpdateOne {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
 }
 
 // RemoveMenus removes "menus" edges to AppMenu entities.
-func (aauo *AppActionUpdateOne) RemoveMenus(a ...*AppMenu) *AppActionUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppActionUpdateOne) RemoveMenus(v ...*AppMenu) *AppActionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aauo.RemoveMenuIDs(ids...)
+	return _u.RemoveMenuIDs(ids...)
 }
 
 // Where appends a list predicates to the AppActionUpdate builder.
-func (aauo *AppActionUpdateOne) Where(ps ...predicate.AppAction) *AppActionUpdateOne {
-	aauo.mutation.Where(ps...)
-	return aauo
+func (_u *AppActionUpdateOne) Where(ps ...predicate.AppAction) *AppActionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aauo *AppActionUpdateOne) Select(field string, fields ...string) *AppActionUpdateOne {
-	aauo.fields = append([]string{field}, fields...)
-	return aauo
+func (_u *AppActionUpdateOne) Select(field string, fields ...string) *AppActionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppAction entity.
-func (aauo *AppActionUpdateOne) Save(ctx context.Context) (*AppAction, error) {
-	return withHooks(ctx, aauo.sqlSave, aauo.mutation, aauo.hooks)
+func (_u *AppActionUpdateOne) Save(ctx context.Context) (*AppAction, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aauo *AppActionUpdateOne) SaveX(ctx context.Context) *AppAction {
-	node, err := aauo.Save(ctx)
+func (_u *AppActionUpdateOne) SaveX(ctx context.Context) *AppAction {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -511,31 +511,31 @@ func (aauo *AppActionUpdateOne) SaveX(ctx context.Context) *AppAction {
 }
 
 // Exec executes the query on the entity.
-func (aauo *AppActionUpdateOne) Exec(ctx context.Context) error {
-	_, err := aauo.Save(ctx)
+func (_u *AppActionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aauo *AppActionUpdateOne) ExecX(ctx context.Context) {
-	if err := aauo.Exec(ctx); err != nil {
+func (_u *AppActionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aauo *AppActionUpdateOne) check() error {
-	if v, ok := aauo.mutation.Name(); ok {
+func (_u *AppActionUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appaction.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppAction.name": %w`, err)}
 		}
 	}
-	if v, ok := aauo.mutation.Kind(); ok {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := appaction.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppAction.kind": %w`, err)}
 		}
 	}
-	if v, ok := aauo.mutation.Method(); ok {
+	if v, ok := _u.mutation.Method(); ok {
 		if err := appaction.MethodValidator(v); err != nil {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
@@ -543,17 +543,17 @@ func (aauo *AppActionUpdateOne) check() error {
 	return nil
 }
 
-func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, err error) {
-	if err := aauo.check(); err != nil {
+func (_u *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appaction.Table, appaction.Columns, sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt))
-	id, ok := aauo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppAction.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aauo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appaction.FieldID)
 		for _, f := range fields {
@@ -565,44 +565,44 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			}
 		}
 	}
-	if ps := aauo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aauo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appaction.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aauo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appaction.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aauo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appaction.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aauo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appaction.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aauo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appaction.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aauo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appaction.FieldName, field.TypeString, value)
 	}
-	if value, ok := aauo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(appaction.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := aauo.mutation.Method(); ok {
+	if value, ok := _u.mutation.Method(); ok {
 		_spec.SetField(appaction.FieldMethod, field.TypeEnum, value)
 	}
-	if value, ok := aauo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appaction.FieldComments, field.TypeString, value)
 	}
-	if aauo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appaction.FieldComments, field.TypeString)
 	}
-	if aauo.mutation.MenusCleared() {
+	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -615,7 +615,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aauo.mutation.RemovedMenusIDs(); len(nodes) > 0 && !aauo.mutation.MenusCleared() {
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -631,7 +631,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aauo.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -647,10 +647,10 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppAction{config: aauo.config}
+	_node = &AppAction{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aauo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appaction.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -658,6 +658,6 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 		}
 		return nil, err
 	}
-	aauo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

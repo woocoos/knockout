@@ -34,44 +34,44 @@ type OrgAppQuery struct {
 }
 
 // Where adds a new predicate for the OrgAppQuery builder.
-func (oaq *OrgAppQuery) Where(ps ...predicate.OrgApp) *OrgAppQuery {
-	oaq.predicates = append(oaq.predicates, ps...)
-	return oaq
+func (_q *OrgAppQuery) Where(ps ...predicate.OrgApp) *OrgAppQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (oaq *OrgAppQuery) Limit(limit int) *OrgAppQuery {
-	oaq.ctx.Limit = &limit
-	return oaq
+func (_q *OrgAppQuery) Limit(limit int) *OrgAppQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (oaq *OrgAppQuery) Offset(offset int) *OrgAppQuery {
-	oaq.ctx.Offset = &offset
-	return oaq
+func (_q *OrgAppQuery) Offset(offset int) *OrgAppQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (oaq *OrgAppQuery) Unique(unique bool) *OrgAppQuery {
-	oaq.ctx.Unique = &unique
-	return oaq
+func (_q *OrgAppQuery) Unique(unique bool) *OrgAppQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (oaq *OrgAppQuery) Order(o ...orgapp.OrderOption) *OrgAppQuery {
-	oaq.order = append(oaq.order, o...)
-	return oaq
+func (_q *OrgAppQuery) Order(o ...orgapp.OrderOption) *OrgAppQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (oaq *OrgAppQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: oaq.config}).Query()
+func (_q *OrgAppQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := oaq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := oaq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (oaq *OrgAppQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.AppTable, orgapp.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(oaq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrg chains the current query on the "org" edge.
-func (oaq *OrgAppQuery) QueryOrg() *OrgQuery {
-	query := (&OrgClient{config: oaq.config}).Query()
+func (_q *OrgAppQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := oaq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := oaq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (oaq *OrgAppQuery) QueryOrg() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.OrgTable, orgapp.OrgColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(oaq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (oaq *OrgAppQuery) QueryOrg() *OrgQuery {
 
 // First returns the first OrgApp entity from the query.
 // Returns a *NotFoundError when no OrgApp was found.
-func (oaq *OrgAppQuery) First(ctx context.Context) (*OrgApp, error) {
-	nodes, err := oaq.Limit(1).All(setContextOp(ctx, oaq.ctx, ent.OpQueryFirst))
+func (_q *OrgAppQuery) First(ctx context.Context) (*OrgApp, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (oaq *OrgAppQuery) First(ctx context.Context) (*OrgApp, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (oaq *OrgAppQuery) FirstX(ctx context.Context) *OrgApp {
-	node, err := oaq.First(ctx)
+func (_q *OrgAppQuery) FirstX(ctx context.Context) *OrgApp {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (oaq *OrgAppQuery) FirstX(ctx context.Context) *OrgApp {
 
 // FirstID returns the first OrgApp ID from the query.
 // Returns a *NotFoundError when no OrgApp ID was found.
-func (oaq *OrgAppQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *OrgAppQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oaq.Limit(1).IDs(setContextOp(ctx, oaq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (oaq *OrgAppQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (oaq *OrgAppQuery) FirstIDX(ctx context.Context) int {
-	id, err := oaq.FirstID(ctx)
+func (_q *OrgAppQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (oaq *OrgAppQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single OrgApp entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgApp entity is found.
 // Returns a *NotFoundError when no OrgApp entities are found.
-func (oaq *OrgAppQuery) Only(ctx context.Context) (*OrgApp, error) {
-	nodes, err := oaq.Limit(2).All(setContextOp(ctx, oaq.ctx, ent.OpQueryOnly))
+func (_q *OrgAppQuery) Only(ctx context.Context) (*OrgApp, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (oaq *OrgAppQuery) Only(ctx context.Context) (*OrgApp, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (oaq *OrgAppQuery) OnlyX(ctx context.Context) *OrgApp {
-	node, err := oaq.Only(ctx)
+func (_q *OrgAppQuery) OnlyX(ctx context.Context) *OrgApp {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (oaq *OrgAppQuery) OnlyX(ctx context.Context) *OrgApp {
 // OnlyID is like Only, but returns the only OrgApp ID in the query.
 // Returns a *NotSingularError when more than one OrgApp ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (oaq *OrgAppQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *OrgAppQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oaq.Limit(2).IDs(setContextOp(ctx, oaq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (oaq *OrgAppQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (oaq *OrgAppQuery) OnlyIDX(ctx context.Context) int {
-	id, err := oaq.OnlyID(ctx)
+func (_q *OrgAppQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (oaq *OrgAppQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of OrgApps.
-func (oaq *OrgAppQuery) All(ctx context.Context) ([]*OrgApp, error) {
-	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryAll)
-	if err := oaq.prepareQuery(ctx); err != nil {
+func (_q *OrgAppQuery) All(ctx context.Context) ([]*OrgApp, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*OrgApp, *OrgAppQuery]()
-	return withInterceptors[[]*OrgApp](ctx, oaq, qr, oaq.inters)
+	return withInterceptors[[]*OrgApp](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (oaq *OrgAppQuery) AllX(ctx context.Context) []*OrgApp {
-	nodes, err := oaq.All(ctx)
+func (_q *OrgAppQuery) AllX(ctx context.Context) []*OrgApp {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (oaq *OrgAppQuery) AllX(ctx context.Context) []*OrgApp {
 }
 
 // IDs executes the query and returns a list of OrgApp IDs.
-func (oaq *OrgAppQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if oaq.ctx.Unique == nil && oaq.path != nil {
-		oaq.Unique(true)
+func (_q *OrgAppQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryIDs)
-	if err = oaq.Select(orgapp.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(orgapp.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (oaq *OrgAppQuery) IDsX(ctx context.Context) []int {
-	ids, err := oaq.IDs(ctx)
+func (_q *OrgAppQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (oaq *OrgAppQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (oaq *OrgAppQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryCount)
-	if err := oaq.prepareQuery(ctx); err != nil {
+func (_q *OrgAppQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, oaq, querierCount[*OrgAppQuery](), oaq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*OrgAppQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (oaq *OrgAppQuery) CountX(ctx context.Context) int {
-	count, err := oaq.Count(ctx)
+func (_q *OrgAppQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (oaq *OrgAppQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (oaq *OrgAppQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryExist)
-	switch _, err := oaq.FirstID(ctx); {
+func (_q *OrgAppQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (oaq *OrgAppQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (oaq *OrgAppQuery) ExistX(ctx context.Context) bool {
-	exist, err := oaq.Exist(ctx)
+func (_q *OrgAppQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (oaq *OrgAppQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the OrgAppQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (oaq *OrgAppQuery) Clone() *OrgAppQuery {
-	if oaq == nil {
+func (_q *OrgAppQuery) Clone() *OrgAppQuery {
+	if _q == nil {
 		return nil
 	}
 	return &OrgAppQuery{
-		config:     oaq.config,
-		ctx:        oaq.ctx.Clone(),
-		order:      append([]orgapp.OrderOption{}, oaq.order...),
-		inters:     append([]Interceptor{}, oaq.inters...),
-		predicates: append([]predicate.OrgApp{}, oaq.predicates...),
-		withApp:    oaq.withApp.Clone(),
-		withOrg:    oaq.withOrg.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]orgapp.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.OrgApp{}, _q.predicates...),
+		withApp:    _q.withApp.Clone(),
+		withOrg:    _q.withOrg.Clone(),
 		// clone intermediate query.
-		sql:  oaq.sql.Clone(),
-		path: oaq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (oaq *OrgAppQuery) WithApp(opts ...func(*AppQuery)) *OrgAppQuery {
-	query := (&AppClient{config: oaq.config}).Query()
+func (_q *OrgAppQuery) WithApp(opts ...func(*AppQuery)) *OrgAppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	oaq.withApp = query
-	return oaq
+	_q.withApp = query
+	return _q
 }
 
 // WithOrg tells the query-builder to eager-load the nodes that are connected to
 // the "org" edge. The optional arguments are used to configure the query builder of the edge.
-func (oaq *OrgAppQuery) WithOrg(opts ...func(*OrgQuery)) *OrgAppQuery {
-	query := (&OrgClient{config: oaq.config}).Query()
+func (_q *OrgAppQuery) WithOrg(opts ...func(*OrgQuery)) *OrgAppQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	oaq.withOrg = query
-	return oaq
+	_q.withOrg = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (oaq *OrgAppQuery) WithOrg(opts ...func(*OrgQuery)) *OrgAppQuery {
 //		GroupBy(orgapp.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (oaq *OrgAppQuery) GroupBy(field string, fields ...string) *OrgAppGroupBy {
-	oaq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &OrgAppGroupBy{build: oaq}
-	grbuild.flds = &oaq.ctx.Fields
+func (_q *OrgAppQuery) GroupBy(field string, fields ...string) *OrgAppGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &OrgAppGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = orgapp.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,96 +365,96 @@ func (oaq *OrgAppQuery) GroupBy(field string, fields ...string) *OrgAppGroupBy {
 //	client.OrgApp.Query().
 //		Select(orgapp.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (oaq *OrgAppQuery) Select(fields ...string) *OrgAppSelect {
-	oaq.ctx.Fields = append(oaq.ctx.Fields, fields...)
-	sbuild := &OrgAppSelect{OrgAppQuery: oaq}
+func (_q *OrgAppQuery) Select(fields ...string) *OrgAppSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &OrgAppSelect{OrgAppQuery: _q}
 	sbuild.label = orgapp.Label
-	sbuild.flds, sbuild.scan = &oaq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a OrgAppSelect configured with the given aggregations.
-func (oaq *OrgAppQuery) Aggregate(fns ...AggregateFunc) *OrgAppSelect {
-	return oaq.Select().Aggregate(fns...)
+func (_q *OrgAppQuery) Aggregate(fns ...AggregateFunc) *OrgAppSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (oaq *OrgAppQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range oaq.inters {
+func (_q *OrgAppQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, oaq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range oaq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !orgapp.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if oaq.path != nil {
-		prev, err := oaq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		oaq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (oaq *OrgAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgApp, error) {
+func (_q *OrgAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgApp, error) {
 	var (
 		nodes       = []*OrgApp{}
-		_spec       = oaq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			oaq.withApp != nil,
-			oaq.withOrg != nil,
+			_q.withApp != nil,
+			_q.withOrg != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OrgApp).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &OrgApp{config: oaq.config}
+		node := &OrgApp{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(oaq.modifiers) > 0 {
-		_spec.Modifiers = oaq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, oaq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := oaq.withApp; query != nil {
-		if err := oaq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *OrgApp, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := oaq.withOrg; query != nil {
-		if err := oaq.loadOrg(ctx, query, nodes, nil,
+	if query := _q.withOrg; query != nil {
+		if err := _q.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgApp, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range oaq.loadTotal {
-		if err := oaq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (oaq *OrgAppQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*OrgApp, init func(*OrgApp), assign func(*OrgApp, *App)) error {
+func (_q *OrgAppQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*OrgApp, init func(*OrgApp), assign func(*OrgApp, *App)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgApp)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (oaq *OrgAppQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*O
 	}
 	return nil
 }
-func (oaq *OrgAppQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgApp, init func(*OrgApp), assign func(*OrgApp, *Org)) error {
+func (_q *OrgAppQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgApp, init func(*OrgApp), assign func(*OrgApp, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgApp)
 	for i := range nodes {
@@ -513,27 +513,27 @@ func (oaq *OrgAppQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*O
 	return nil
 }
 
-func (oaq *OrgAppQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := oaq.querySpec()
-	if len(oaq.modifiers) > 0 {
-		_spec.Modifiers = oaq.modifiers
+func (_q *OrgAppQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = oaq.ctx.Fields
-	if len(oaq.ctx.Fields) > 0 {
-		_spec.Unique = oaq.ctx.Unique != nil && *oaq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, oaq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(orgapp.Table, orgapp.Columns, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
-	_spec.From = oaq.sql
-	if unique := oaq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if oaq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := oaq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orgapp.FieldID)
 		for i := range fields {
@@ -541,27 +541,27 @@ func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if oaq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(orgapp.FieldAppID)
 		}
-		if oaq.withOrg != nil {
+		if _q.withOrg != nil {
 			_spec.Node.AddColumnOnce(orgapp.FieldOrgID)
 		}
 	}
-	if ps := oaq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := oaq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := oaq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := oaq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -571,33 +571,33 @@ func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (oaq *OrgAppQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(oaq.driver.Dialect())
+func (_q *OrgAppQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(orgapp.Table)
-	columns := oaq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = orgapp.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if oaq.sql != nil {
-		selector = oaq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if oaq.ctx.Unique != nil && *oaq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range oaq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range oaq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := oaq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := oaq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -610,41 +610,41 @@ type OrgAppGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (oagb *OrgAppGroupBy) Aggregate(fns ...AggregateFunc) *OrgAppGroupBy {
-	oagb.fns = append(oagb.fns, fns...)
-	return oagb
+func (_g *OrgAppGroupBy) Aggregate(fns ...AggregateFunc) *OrgAppGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (oagb *OrgAppGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oagb.build.ctx, ent.OpQueryGroupBy)
-	if err := oagb.build.prepareQuery(ctx); err != nil {
+func (_g *OrgAppGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgAppQuery, *OrgAppGroupBy](ctx, oagb.build, oagb, oagb.build.inters, v)
+	return scanWithInterceptors[*OrgAppQuery, *OrgAppGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (oagb *OrgAppGroupBy) sqlScan(ctx context.Context, root *OrgAppQuery, v any) error {
+func (_g *OrgAppGroupBy) sqlScan(ctx context.Context, root *OrgAppQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(oagb.fns))
-	for _, fn := range oagb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*oagb.flds)+len(oagb.fns))
-		for _, f := range *oagb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*oagb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := oagb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -658,27 +658,27 @@ type OrgAppSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (oas *OrgAppSelect) Aggregate(fns ...AggregateFunc) *OrgAppSelect {
-	oas.fns = append(oas.fns, fns...)
-	return oas
+func (_s *OrgAppSelect) Aggregate(fns ...AggregateFunc) *OrgAppSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (oas *OrgAppSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oas.ctx, ent.OpQuerySelect)
-	if err := oas.prepareQuery(ctx); err != nil {
+func (_s *OrgAppSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgAppQuery, *OrgAppSelect](ctx, oas.OrgAppQuery, oas, oas.inters, v)
+	return scanWithInterceptors[*OrgAppQuery, *OrgAppSelect](ctx, _s.OrgAppQuery, _s, _s.inters, v)
 }
 
-func (oas *OrgAppSelect) sqlScan(ctx context.Context, root *OrgAppQuery, v any) error {
+func (_s *OrgAppSelect) sqlScan(ctx context.Context, root *OrgAppQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(oas.fns))
-	for _, fn := range oas.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*oas.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -686,7 +686,7 @@ func (oas *OrgAppSelect) sqlScan(ctx context.Context, root *OrgAppQuery, v any) 
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := oas.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -24,120 +24,120 @@ type AppResCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (arc *AppResCreate) SetCreatedBy(i int) *AppResCreate {
-	arc.mutation.SetCreatedBy(i)
-	return arc
+func (_c *AppResCreate) SetCreatedBy(v int) *AppResCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (arc *AppResCreate) SetCreatedAt(t time.Time) *AppResCreate {
-	arc.mutation.SetCreatedAt(t)
-	return arc
+func (_c *AppResCreate) SetCreatedAt(v time.Time) *AppResCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (arc *AppResCreate) SetNillableCreatedAt(t *time.Time) *AppResCreate {
-	if t != nil {
-		arc.SetCreatedAt(*t)
+func (_c *AppResCreate) SetNillableCreatedAt(v *time.Time) *AppResCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (arc *AppResCreate) SetUpdatedBy(i int) *AppResCreate {
-	arc.mutation.SetUpdatedBy(i)
-	return arc
+func (_c *AppResCreate) SetUpdatedBy(v int) *AppResCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (arc *AppResCreate) SetNillableUpdatedBy(i *int) *AppResCreate {
-	if i != nil {
-		arc.SetUpdatedBy(*i)
+func (_c *AppResCreate) SetNillableUpdatedBy(v *int) *AppResCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (arc *AppResCreate) SetUpdatedAt(t time.Time) *AppResCreate {
-	arc.mutation.SetUpdatedAt(t)
-	return arc
+func (_c *AppResCreate) SetUpdatedAt(v time.Time) *AppResCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (arc *AppResCreate) SetNillableUpdatedAt(t *time.Time) *AppResCreate {
-	if t != nil {
-		arc.SetUpdatedAt(*t)
+func (_c *AppResCreate) SetNillableUpdatedAt(v *time.Time) *AppResCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (arc *AppResCreate) SetAppID(i int) *AppResCreate {
-	arc.mutation.SetAppID(i)
-	return arc
+func (_c *AppResCreate) SetAppID(v int) *AppResCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (arc *AppResCreate) SetNillableAppID(i *int) *AppResCreate {
-	if i != nil {
-		arc.SetAppID(*i)
+func (_c *AppResCreate) SetNillableAppID(v *int) *AppResCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (arc *AppResCreate) SetName(s string) *AppResCreate {
-	arc.mutation.SetName(s)
-	return arc
+func (_c *AppResCreate) SetName(v string) *AppResCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetTypeName sets the "type_name" field.
-func (arc *AppResCreate) SetTypeName(s string) *AppResCreate {
-	arc.mutation.SetTypeName(s)
-	return arc
+func (_c *AppResCreate) SetTypeName(v string) *AppResCreate {
+	_c.mutation.SetTypeName(v)
+	return _c
 }
 
 // SetArnPattern sets the "arn_pattern" field.
-func (arc *AppResCreate) SetArnPattern(s string) *AppResCreate {
-	arc.mutation.SetArnPattern(s)
-	return arc
+func (_c *AppResCreate) SetArnPattern(v string) *AppResCreate {
+	_c.mutation.SetArnPattern(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (arc *AppResCreate) SetID(i int) *AppResCreate {
-	arc.mutation.SetID(i)
-	return arc
+func (_c *AppResCreate) SetID(v int) *AppResCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (arc *AppResCreate) SetNillableID(i *int) *AppResCreate {
-	if i != nil {
-		arc.SetID(*i)
+func (_c *AppResCreate) SetNillableID(v *int) *AppResCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (arc *AppResCreate) SetApp(a *App) *AppResCreate {
-	return arc.SetAppID(a.ID)
+func (_c *AppResCreate) SetApp(v *App) *AppResCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // Mutation returns the AppResMutation object of the builder.
-func (arc *AppResCreate) Mutation() *AppResMutation {
-	return arc.mutation
+func (_c *AppResCreate) Mutation() *AppResMutation {
+	return _c.mutation
 }
 
 // Save creates the AppRes in the database.
-func (arc *AppResCreate) Save(ctx context.Context) (*AppRes, error) {
-	if err := arc.defaults(); err != nil {
+func (_c *AppResCreate) Save(ctx context.Context) (*AppRes, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, arc.sqlSave, arc.mutation, arc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (arc *AppResCreate) SaveX(ctx context.Context) *AppRes {
-	v, err := arc.Save(ctx)
+func (_c *AppResCreate) SaveX(ctx context.Context) *AppRes {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -145,63 +145,63 @@ func (arc *AppResCreate) SaveX(ctx context.Context) *AppRes {
 }
 
 // Exec executes the query.
-func (arc *AppResCreate) Exec(ctx context.Context) error {
-	_, err := arc.Save(ctx)
+func (_c *AppResCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arc *AppResCreate) ExecX(ctx context.Context) {
-	if err := arc.Exec(ctx); err != nil {
+func (_c *AppResCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (arc *AppResCreate) defaults() error {
-	if _, ok := arc.mutation.CreatedAt(); !ok {
+func (_c *AppResCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if appres.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized appres.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := appres.DefaultCreatedAt()
-		arc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := arc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if appres.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appres.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := appres.DefaultID()
-		arc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (arc *AppResCreate) check() error {
-	if _, ok := arc.mutation.CreatedBy(); !ok {
+func (_c *AppResCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppRes.created_by"`)}
 	}
-	if _, ok := arc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRes.created_at"`)}
 	}
-	if _, ok := arc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppRes.name"`)}
 	}
-	if _, ok := arc.mutation.TypeName(); !ok {
+	if _, ok := _c.mutation.TypeName(); !ok {
 		return &ValidationError{Name: "type_name", err: errors.New(`ent: missing required field "AppRes.type_name"`)}
 	}
-	if _, ok := arc.mutation.ArnPattern(); !ok {
+	if _, ok := _c.mutation.ArnPattern(); !ok {
 		return &ValidationError{Name: "arn_pattern", err: errors.New(`ent: missing required field "AppRes.arn_pattern"`)}
 	}
 	return nil
 }
 
-func (arc *AppResCreate) sqlSave(ctx context.Context) (*AppRes, error) {
-	if err := arc.check(); err != nil {
+func (_c *AppResCreate) sqlSave(ctx context.Context) (*AppRes, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := arc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, arc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -211,50 +211,50 @@ func (arc *AppResCreate) sqlSave(ctx context.Context) (*AppRes, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	arc.mutation.id = &_node.ID
-	arc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (arc *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
+func (_c *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppRes{config: arc.config}
+		_node = &AppRes{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appres.Table, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = arc.conflict
-	if id, ok := arc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := arc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(appres.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := arc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appres.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := arc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(appres.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := arc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appres.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := arc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(appres.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := arc.mutation.TypeName(); ok {
+	if value, ok := _c.mutation.TypeName(); ok {
 		_spec.SetField(appres.FieldTypeName, field.TypeString, value)
 		_node.TypeName = value
 	}
-	if value, ok := arc.mutation.ArnPattern(); ok {
+	if value, ok := _c.mutation.ArnPattern(); ok {
 		_spec.SetField(appres.FieldArnPattern, field.TypeString, value)
 		_node.ArnPattern = value
 	}
-	if nodes := arc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -290,10 +290,10 @@ func (arc *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arc *AppResCreate) OnConflict(opts ...sql.ConflictOption) *AppResUpsertOne {
-	arc.conflict = opts
+func (_c *AppResCreate) OnConflict(opts ...sql.ConflictOption) *AppResUpsertOne {
+	_c.conflict = opts
 	return &AppResUpsertOne{
-		create: arc,
+		create: _c,
 	}
 }
 
@@ -303,10 +303,10 @@ func (arc *AppResCreate) OnConflict(opts ...sql.ConflictOption) *AppResUpsertOne
 //	client.AppRes.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arc *AppResCreate) OnConflictColumns(columns ...string) *AppResUpsertOne {
-	arc.conflict = append(arc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppResCreate) OnConflictColumns(columns ...string) *AppResUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppResUpsertOne{
-		create: arc,
+		create: _c,
 	}
 }
 
@@ -591,16 +591,16 @@ type AppResCreateBulk struct {
 }
 
 // Save creates the AppRes entities in the database.
-func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
-	if arcb.err != nil {
-		return nil, arcb.err
+func (_c *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(arcb.builders))
-	nodes := make([]*AppRes, len(arcb.builders))
-	mutators := make([]Mutator, len(arcb.builders))
-	for i := range arcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppRes, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := arcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppResMutation)
@@ -614,12 +614,12 @@ func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, arcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = arcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, arcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -643,7 +643,7 @@ func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, arcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -651,8 +651,8 @@ func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (arcb *AppResCreateBulk) SaveX(ctx context.Context) []*AppRes {
-	v, err := arcb.Save(ctx)
+func (_c *AppResCreateBulk) SaveX(ctx context.Context) []*AppRes {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -660,14 +660,14 @@ func (arcb *AppResCreateBulk) SaveX(ctx context.Context) []*AppRes {
 }
 
 // Exec executes the query.
-func (arcb *AppResCreateBulk) Exec(ctx context.Context) error {
-	_, err := arcb.Save(ctx)
+func (_c *AppResCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arcb *AppResCreateBulk) ExecX(ctx context.Context) {
-	if err := arcb.Exec(ctx); err != nil {
+func (_c *AppResCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -687,10 +687,10 @@ func (arcb *AppResCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arcb *AppResCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppResUpsertBulk {
-	arcb.conflict = opts
+func (_c *AppResCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppResUpsertBulk {
+	_c.conflict = opts
 	return &AppResUpsertBulk{
-		create: arcb,
+		create: _c,
 	}
 }
 
@@ -700,10 +700,10 @@ func (arcb *AppResCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppResUpse
 //	client.AppRes.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arcb *AppResCreateBulk) OnConflictColumns(columns ...string) *AppResUpsertBulk {
-	arcb.conflict = append(arcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppResCreateBulk) OnConflictColumns(columns ...string) *AppResUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppResUpsertBulk{
-		create: arcb,
+		create: _c,
 	}
 }
 

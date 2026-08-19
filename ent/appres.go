@@ -82,7 +82,7 @@ func (*AppRes) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppRes fields.
-func (ar *AppRes) assignValues(columns []string, values []any) error {
+func (_m *AppRes) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -93,57 +93,57 @@ func (ar *AppRes) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ar.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case appres.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ar.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case appres.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ar.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case appres.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ar.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case appres.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ar.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appres.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				ar.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case appres.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ar.Name = value.String
+				_m.Name = value.String
 			}
 		case appres.FieldTypeName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type_name", values[i])
 			} else if value.Valid {
-				ar.TypeName = value.String
+				_m.TypeName = value.String
 			}
 		case appres.FieldArnPattern:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field arn_pattern", values[i])
 			} else if value.Valid {
-				ar.ArnPattern = value.String
+				_m.ArnPattern = value.String
 			}
 		default:
-			ar.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -151,61 +151,61 @@ func (ar *AppRes) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppRes.
 // This includes values selected through modifiers, order, etc.
-func (ar *AppRes) Value(name string) (ent.Value, error) {
-	return ar.selectValues.Get(name)
+func (_m *AppRes) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppRes entity.
-func (ar *AppRes) QueryApp() *AppQuery {
-	return NewAppResClient(ar.config).QueryApp(ar)
+func (_m *AppRes) QueryApp() *AppQuery {
+	return NewAppResClient(_m.config).QueryApp(_m)
 }
 
 // Update returns a builder for updating this AppRes.
 // Note that you need to call AppRes.Unwrap() before calling this method if this AppRes
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ar *AppRes) Update() *AppResUpdateOne {
-	return NewAppResClient(ar.config).UpdateOne(ar)
+func (_m *AppRes) Update() *AppResUpdateOne {
+	return NewAppResClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppRes entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ar *AppRes) Unwrap() *AppRes {
-	_tx, ok := ar.config.driver.(*txDriver)
+func (_m *AppRes) Unwrap() *AppRes {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppRes is not a transactional entity")
 	}
-	ar.config.driver = _tx.drv
-	return ar
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ar *AppRes) String() string {
+func (_m *AppRes) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppRes(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ar.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ar.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ar.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ar.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ar.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", ar.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(ar.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("type_name=")
-	builder.WriteString(ar.TypeName)
+	builder.WriteString(_m.TypeName)
 	builder.WriteString(", ")
 	builder.WriteString("arn_pattern=")
-	builder.WriteString(ar.ArnPattern)
+	builder.WriteString(_m.ArnPattern)
 	builder.WriteByte(')')
 	return builder.String()
 }

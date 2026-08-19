@@ -24,230 +24,230 @@ type QuotaItemUpdate struct {
 }
 
 // Where appends a list predicates to the QuotaItemUpdate builder.
-func (qiu *QuotaItemUpdate) Where(ps ...predicate.QuotaItem) *QuotaItemUpdate {
-	qiu.mutation.Where(ps...)
-	return qiu
+func (_u *QuotaItemUpdate) Where(ps ...predicate.QuotaItem) *QuotaItemUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (qiu *QuotaItemUpdate) SetUpdatedBy(i int) *QuotaItemUpdate {
-	qiu.mutation.ResetUpdatedBy()
-	qiu.mutation.SetUpdatedBy(i)
-	return qiu
+func (_u *QuotaItemUpdate) SetUpdatedBy(v int) *QuotaItemUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableUpdatedBy(i *int) *QuotaItemUpdate {
-	if i != nil {
-		qiu.SetUpdatedBy(*i)
+func (_u *QuotaItemUpdate) SetNillableUpdatedBy(v *int) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return qiu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (qiu *QuotaItemUpdate) AddUpdatedBy(i int) *QuotaItemUpdate {
-	qiu.mutation.AddUpdatedBy(i)
-	return qiu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *QuotaItemUpdate) AddUpdatedBy(v int) *QuotaItemUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (qiu *QuotaItemUpdate) ClearUpdatedBy() *QuotaItemUpdate {
-	qiu.mutation.ClearUpdatedBy()
-	return qiu
+func (_u *QuotaItemUpdate) ClearUpdatedBy() *QuotaItemUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (qiu *QuotaItemUpdate) SetUpdatedAt(t time.Time) *QuotaItemUpdate {
-	qiu.mutation.SetUpdatedAt(t)
-	return qiu
+func (_u *QuotaItemUpdate) SetUpdatedAt(v time.Time) *QuotaItemUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableUpdatedAt(t *time.Time) *QuotaItemUpdate {
-	if t != nil {
-		qiu.SetUpdatedAt(*t)
+func (_u *QuotaItemUpdate) SetNillableUpdatedAt(v *time.Time) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return qiu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (qiu *QuotaItemUpdate) ClearUpdatedAt() *QuotaItemUpdate {
-	qiu.mutation.ClearUpdatedAt()
-	return qiu
+func (_u *QuotaItemUpdate) ClearUpdatedAt() *QuotaItemUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (qiu *QuotaItemUpdate) SetCode(s string) *QuotaItemUpdate {
-	qiu.mutation.SetCode(s)
-	return qiu
+func (_u *QuotaItemUpdate) SetCode(v string) *QuotaItemUpdate {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableCode(s *string) *QuotaItemUpdate {
-	if s != nil {
-		qiu.SetCode(*s)
+func (_u *QuotaItemUpdate) SetNillableCode(v *string) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return qiu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (qiu *QuotaItemUpdate) SetName(s string) *QuotaItemUpdate {
-	qiu.mutation.SetName(s)
-	return qiu
+func (_u *QuotaItemUpdate) SetName(v string) *QuotaItemUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableName(s *string) *QuotaItemUpdate {
-	if s != nil {
-		qiu.SetName(*s)
+func (_u *QuotaItemUpdate) SetNillableName(v *string) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return qiu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (qiu *QuotaItemUpdate) SetDescription(s string) *QuotaItemUpdate {
-	qiu.mutation.SetDescription(s)
-	return qiu
+func (_u *QuotaItemUpdate) SetDescription(v string) *QuotaItemUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableDescription(s *string) *QuotaItemUpdate {
-	if s != nil {
-		qiu.SetDescription(*s)
+func (_u *QuotaItemUpdate) SetNillableDescription(v *string) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return qiu
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (qiu *QuotaItemUpdate) ClearDescription() *QuotaItemUpdate {
-	qiu.mutation.ClearDescription()
-	return qiu
+func (_u *QuotaItemUpdate) ClearDescription() *QuotaItemUpdate {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetResourceType sets the "resource_type" field.
-func (qiu *QuotaItemUpdate) SetResourceType(qt quotaitem.ResourceType) *QuotaItemUpdate {
-	qiu.mutation.SetResourceType(qt)
-	return qiu
+func (_u *QuotaItemUpdate) SetResourceType(v quotaitem.ResourceType) *QuotaItemUpdate {
+	_u.mutation.SetResourceType(v)
+	return _u
 }
 
 // SetNillableResourceType sets the "resource_type" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableResourceType(qt *quotaitem.ResourceType) *QuotaItemUpdate {
-	if qt != nil {
-		qiu.SetResourceType(*qt)
+func (_u *QuotaItemUpdate) SetNillableResourceType(v *quotaitem.ResourceType) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetResourceType(*v)
 	}
-	return qiu
+	return _u
 }
 
 // SetUnit sets the "unit" field.
-func (qiu *QuotaItemUpdate) SetUnit(s string) *QuotaItemUpdate {
-	qiu.mutation.SetUnit(s)
-	return qiu
+func (_u *QuotaItemUpdate) SetUnit(v string) *QuotaItemUpdate {
+	_u.mutation.SetUnit(v)
+	return _u
 }
 
 // SetNillableUnit sets the "unit" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableUnit(s *string) *QuotaItemUpdate {
-	if s != nil {
-		qiu.SetUnit(*s)
+func (_u *QuotaItemUpdate) SetNillableUnit(v *string) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetUnit(*v)
 	}
-	return qiu
+	return _u
 }
 
 // ClearUnit clears the value of the "unit" field.
-func (qiu *QuotaItemUpdate) ClearUnit() *QuotaItemUpdate {
-	qiu.mutation.ClearUnit()
-	return qiu
+func (_u *QuotaItemUpdate) ClearUnit() *QuotaItemUpdate {
+	_u.mutation.ClearUnit()
+	return _u
 }
 
 // SetActive sets the "active" field.
-func (qiu *QuotaItemUpdate) SetActive(b bool) *QuotaItemUpdate {
-	qiu.mutation.SetActive(b)
-	return qiu
+func (_u *QuotaItemUpdate) SetActive(v bool) *QuotaItemUpdate {
+	_u.mutation.SetActive(v)
+	return _u
 }
 
 // SetNillableActive sets the "active" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableActive(b *bool) *QuotaItemUpdate {
-	if b != nil {
-		qiu.SetActive(*b)
+func (_u *QuotaItemUpdate) SetNillableActive(v *bool) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetActive(*v)
 	}
-	return qiu
+	return _u
 }
 
 // SetDefaultLimit sets the "default_limit" field.
-func (qiu *QuotaItemUpdate) SetDefaultLimit(i int64) *QuotaItemUpdate {
-	qiu.mutation.ResetDefaultLimit()
-	qiu.mutation.SetDefaultLimit(i)
-	return qiu
+func (_u *QuotaItemUpdate) SetDefaultLimit(v int64) *QuotaItemUpdate {
+	_u.mutation.ResetDefaultLimit()
+	_u.mutation.SetDefaultLimit(v)
+	return _u
 }
 
 // SetNillableDefaultLimit sets the "default_limit" field if the given value is not nil.
-func (qiu *QuotaItemUpdate) SetNillableDefaultLimit(i *int64) *QuotaItemUpdate {
-	if i != nil {
-		qiu.SetDefaultLimit(*i)
+func (_u *QuotaItemUpdate) SetNillableDefaultLimit(v *int64) *QuotaItemUpdate {
+	if v != nil {
+		_u.SetDefaultLimit(*v)
 	}
-	return qiu
+	return _u
 }
 
-// AddDefaultLimit adds i to the "default_limit" field.
-func (qiu *QuotaItemUpdate) AddDefaultLimit(i int64) *QuotaItemUpdate {
-	qiu.mutation.AddDefaultLimit(i)
-	return qiu
+// AddDefaultLimit adds value to the "default_limit" field.
+func (_u *QuotaItemUpdate) AddDefaultLimit(v int64) *QuotaItemUpdate {
+	_u.mutation.AddDefaultLimit(v)
+	return _u
 }
 
 // ClearDefaultLimit clears the value of the "default_limit" field.
-func (qiu *QuotaItemUpdate) ClearDefaultLimit() *QuotaItemUpdate {
-	qiu.mutation.ClearDefaultLimit()
-	return qiu
+func (_u *QuotaItemUpdate) ClearDefaultLimit() *QuotaItemUpdate {
+	_u.mutation.ClearDefaultLimit()
+	return _u
 }
 
 // AddQuotumIDs adds the "quota" edge to the Quota entity by IDs.
-func (qiu *QuotaItemUpdate) AddQuotumIDs(ids ...int) *QuotaItemUpdate {
-	qiu.mutation.AddQuotumIDs(ids...)
-	return qiu
+func (_u *QuotaItemUpdate) AddQuotumIDs(ids ...int) *QuotaItemUpdate {
+	_u.mutation.AddQuotumIDs(ids...)
+	return _u
 }
 
 // AddQuota adds the "quota" edges to the Quota entity.
-func (qiu *QuotaItemUpdate) AddQuota(q ...*Quota) *QuotaItemUpdate {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *QuotaItemUpdate) AddQuota(v ...*Quota) *QuotaItemUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return qiu.AddQuotumIDs(ids...)
+	return _u.AddQuotumIDs(ids...)
 }
 
 // Mutation returns the QuotaItemMutation object of the builder.
-func (qiu *QuotaItemUpdate) Mutation() *QuotaItemMutation {
-	return qiu.mutation
+func (_u *QuotaItemUpdate) Mutation() *QuotaItemMutation {
+	return _u.mutation
 }
 
 // ClearQuota clears all "quota" edges to the Quota entity.
-func (qiu *QuotaItemUpdate) ClearQuota() *QuotaItemUpdate {
-	qiu.mutation.ClearQuota()
-	return qiu
+func (_u *QuotaItemUpdate) ClearQuota() *QuotaItemUpdate {
+	_u.mutation.ClearQuota()
+	return _u
 }
 
 // RemoveQuotumIDs removes the "quota" edge to Quota entities by IDs.
-func (qiu *QuotaItemUpdate) RemoveQuotumIDs(ids ...int) *QuotaItemUpdate {
-	qiu.mutation.RemoveQuotumIDs(ids...)
-	return qiu
+func (_u *QuotaItemUpdate) RemoveQuotumIDs(ids ...int) *QuotaItemUpdate {
+	_u.mutation.RemoveQuotumIDs(ids...)
+	return _u
 }
 
 // RemoveQuota removes "quota" edges to Quota entities.
-func (qiu *QuotaItemUpdate) RemoveQuota(q ...*Quota) *QuotaItemUpdate {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *QuotaItemUpdate) RemoveQuota(v ...*Quota) *QuotaItemUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return qiu.RemoveQuotumIDs(ids...)
+	return _u.RemoveQuotumIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (qiu *QuotaItemUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, qiu.sqlSave, qiu.mutation, qiu.hooks)
+func (_u *QuotaItemUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (qiu *QuotaItemUpdate) SaveX(ctx context.Context) int {
-	affected, err := qiu.Save(ctx)
+func (_u *QuotaItemUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -255,21 +255,21 @@ func (qiu *QuotaItemUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (qiu *QuotaItemUpdate) Exec(ctx context.Context) error {
-	_, err := qiu.Save(ctx)
+func (_u *QuotaItemUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qiu *QuotaItemUpdate) ExecX(ctx context.Context) {
-	if err := qiu.Exec(ctx); err != nil {
+func (_u *QuotaItemUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (qiu *QuotaItemUpdate) check() error {
-	if v, ok := qiu.mutation.ResourceType(); ok {
+func (_u *QuotaItemUpdate) check() error {
+	if v, ok := _u.mutation.ResourceType(); ok {
 		if err := quotaitem.ResourceTypeValidator(v); err != nil {
 			return &ValidationError{Name: "resource_type", err: fmt.Errorf(`ent: validator failed for field "QuotaItem.resource_type": %w`, err)}
 		}
@@ -277,67 +277,67 @@ func (qiu *QuotaItemUpdate) check() error {
 	return nil
 }
 
-func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := qiu.check(); err != nil {
-		return n, err
+func (_u *QuotaItemUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(quotaitem.Table, quotaitem.Columns, sqlgraph.NewFieldSpec(quotaitem.FieldID, field.TypeInt))
-	if ps := qiu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := qiu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(quotaitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := qiu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(quotaitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if qiu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(quotaitem.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := qiu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(quotaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if qiu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(quotaitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := qiu.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(quotaitem.FieldCode, field.TypeString, value)
 	}
-	if value, ok := qiu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(quotaitem.FieldName, field.TypeString, value)
 	}
-	if value, ok := qiu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(quotaitem.FieldDescription, field.TypeString, value)
 	}
-	if qiu.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(quotaitem.FieldDescription, field.TypeString)
 	}
-	if value, ok := qiu.mutation.ResourceType(); ok {
+	if value, ok := _u.mutation.ResourceType(); ok {
 		_spec.SetField(quotaitem.FieldResourceType, field.TypeEnum, value)
 	}
-	if value, ok := qiu.mutation.Unit(); ok {
+	if value, ok := _u.mutation.Unit(); ok {
 		_spec.SetField(quotaitem.FieldUnit, field.TypeString, value)
 	}
-	if qiu.mutation.UnitCleared() {
+	if _u.mutation.UnitCleared() {
 		_spec.ClearField(quotaitem.FieldUnit, field.TypeString)
 	}
-	if value, ok := qiu.mutation.Active(); ok {
+	if value, ok := _u.mutation.Active(); ok {
 		_spec.SetField(quotaitem.FieldActive, field.TypeBool, value)
 	}
-	if value, ok := qiu.mutation.DefaultLimit(); ok {
+	if value, ok := _u.mutation.DefaultLimit(); ok {
 		_spec.SetField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
 	}
-	if value, ok := qiu.mutation.AddedDefaultLimit(); ok {
+	if value, ok := _u.mutation.AddedDefaultLimit(); ok {
 		_spec.AddField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
 	}
-	if qiu.mutation.DefaultLimitCleared() {
+	if _u.mutation.DefaultLimitCleared() {
 		_spec.ClearField(quotaitem.FieldDefaultLimit, field.TypeInt64)
 	}
-	if qiu.mutation.QuotaCleared() {
+	if _u.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -350,7 +350,7 @@ func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := qiu.mutation.RemovedQuotaIDs(); len(nodes) > 0 && !qiu.mutation.QuotaCleared() {
+	if nodes := _u.mutation.RemovedQuotaIDs(); len(nodes) > 0 && !_u.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -366,7 +366,7 @@ func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := qiu.mutation.QuotaIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.QuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -382,7 +382,7 @@ func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, qiu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{quotaitem.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -390,8 +390,8 @@ func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	qiu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // QuotaItemUpdateOne is the builder for updating a single QuotaItem entity.
@@ -403,237 +403,237 @@ type QuotaItemUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (qiuo *QuotaItemUpdateOne) SetUpdatedBy(i int) *QuotaItemUpdateOne {
-	qiuo.mutation.ResetUpdatedBy()
-	qiuo.mutation.SetUpdatedBy(i)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetUpdatedBy(v int) *QuotaItemUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableUpdatedBy(i *int) *QuotaItemUpdateOne {
-	if i != nil {
-		qiuo.SetUpdatedBy(*i)
+func (_u *QuotaItemUpdateOne) SetNillableUpdatedBy(v *int) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return qiuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (qiuo *QuotaItemUpdateOne) AddUpdatedBy(i int) *QuotaItemUpdateOne {
-	qiuo.mutation.AddUpdatedBy(i)
-	return qiuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *QuotaItemUpdateOne) AddUpdatedBy(v int) *QuotaItemUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (qiuo *QuotaItemUpdateOne) ClearUpdatedBy() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearUpdatedBy()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearUpdatedBy() *QuotaItemUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (qiuo *QuotaItemUpdateOne) SetUpdatedAt(t time.Time) *QuotaItemUpdateOne {
-	qiuo.mutation.SetUpdatedAt(t)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetUpdatedAt(v time.Time) *QuotaItemUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableUpdatedAt(t *time.Time) *QuotaItemUpdateOne {
-	if t != nil {
-		qiuo.SetUpdatedAt(*t)
+func (_u *QuotaItemUpdateOne) SetNillableUpdatedAt(v *time.Time) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (qiuo *QuotaItemUpdateOne) ClearUpdatedAt() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearUpdatedAt()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearUpdatedAt() *QuotaItemUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (qiuo *QuotaItemUpdateOne) SetCode(s string) *QuotaItemUpdateOne {
-	qiuo.mutation.SetCode(s)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetCode(v string) *QuotaItemUpdateOne {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableCode(s *string) *QuotaItemUpdateOne {
-	if s != nil {
-		qiuo.SetCode(*s)
+func (_u *QuotaItemUpdateOne) SetNillableCode(v *string) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (qiuo *QuotaItemUpdateOne) SetName(s string) *QuotaItemUpdateOne {
-	qiuo.mutation.SetName(s)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetName(v string) *QuotaItemUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableName(s *string) *QuotaItemUpdateOne {
-	if s != nil {
-		qiuo.SetName(*s)
+func (_u *QuotaItemUpdateOne) SetNillableName(v *string) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (qiuo *QuotaItemUpdateOne) SetDescription(s string) *QuotaItemUpdateOne {
-	qiuo.mutation.SetDescription(s)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetDescription(v string) *QuotaItemUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableDescription(s *string) *QuotaItemUpdateOne {
-	if s != nil {
-		qiuo.SetDescription(*s)
+func (_u *QuotaItemUpdateOne) SetNillableDescription(v *string) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (qiuo *QuotaItemUpdateOne) ClearDescription() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearDescription()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearDescription() *QuotaItemUpdateOne {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetResourceType sets the "resource_type" field.
-func (qiuo *QuotaItemUpdateOne) SetResourceType(qt quotaitem.ResourceType) *QuotaItemUpdateOne {
-	qiuo.mutation.SetResourceType(qt)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetResourceType(v quotaitem.ResourceType) *QuotaItemUpdateOne {
+	_u.mutation.SetResourceType(v)
+	return _u
 }
 
 // SetNillableResourceType sets the "resource_type" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableResourceType(qt *quotaitem.ResourceType) *QuotaItemUpdateOne {
-	if qt != nil {
-		qiuo.SetResourceType(*qt)
+func (_u *QuotaItemUpdateOne) SetNillableResourceType(v *quotaitem.ResourceType) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetResourceType(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // SetUnit sets the "unit" field.
-func (qiuo *QuotaItemUpdateOne) SetUnit(s string) *QuotaItemUpdateOne {
-	qiuo.mutation.SetUnit(s)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetUnit(v string) *QuotaItemUpdateOne {
+	_u.mutation.SetUnit(v)
+	return _u
 }
 
 // SetNillableUnit sets the "unit" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableUnit(s *string) *QuotaItemUpdateOne {
-	if s != nil {
-		qiuo.SetUnit(*s)
+func (_u *QuotaItemUpdateOne) SetNillableUnit(v *string) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetUnit(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // ClearUnit clears the value of the "unit" field.
-func (qiuo *QuotaItemUpdateOne) ClearUnit() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearUnit()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearUnit() *QuotaItemUpdateOne {
+	_u.mutation.ClearUnit()
+	return _u
 }
 
 // SetActive sets the "active" field.
-func (qiuo *QuotaItemUpdateOne) SetActive(b bool) *QuotaItemUpdateOne {
-	qiuo.mutation.SetActive(b)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetActive(v bool) *QuotaItemUpdateOne {
+	_u.mutation.SetActive(v)
+	return _u
 }
 
 // SetNillableActive sets the "active" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableActive(b *bool) *QuotaItemUpdateOne {
-	if b != nil {
-		qiuo.SetActive(*b)
+func (_u *QuotaItemUpdateOne) SetNillableActive(v *bool) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetActive(*v)
 	}
-	return qiuo
+	return _u
 }
 
 // SetDefaultLimit sets the "default_limit" field.
-func (qiuo *QuotaItemUpdateOne) SetDefaultLimit(i int64) *QuotaItemUpdateOne {
-	qiuo.mutation.ResetDefaultLimit()
-	qiuo.mutation.SetDefaultLimit(i)
-	return qiuo
+func (_u *QuotaItemUpdateOne) SetDefaultLimit(v int64) *QuotaItemUpdateOne {
+	_u.mutation.ResetDefaultLimit()
+	_u.mutation.SetDefaultLimit(v)
+	return _u
 }
 
 // SetNillableDefaultLimit sets the "default_limit" field if the given value is not nil.
-func (qiuo *QuotaItemUpdateOne) SetNillableDefaultLimit(i *int64) *QuotaItemUpdateOne {
-	if i != nil {
-		qiuo.SetDefaultLimit(*i)
+func (_u *QuotaItemUpdateOne) SetNillableDefaultLimit(v *int64) *QuotaItemUpdateOne {
+	if v != nil {
+		_u.SetDefaultLimit(*v)
 	}
-	return qiuo
+	return _u
 }
 
-// AddDefaultLimit adds i to the "default_limit" field.
-func (qiuo *QuotaItemUpdateOne) AddDefaultLimit(i int64) *QuotaItemUpdateOne {
-	qiuo.mutation.AddDefaultLimit(i)
-	return qiuo
+// AddDefaultLimit adds value to the "default_limit" field.
+func (_u *QuotaItemUpdateOne) AddDefaultLimit(v int64) *QuotaItemUpdateOne {
+	_u.mutation.AddDefaultLimit(v)
+	return _u
 }
 
 // ClearDefaultLimit clears the value of the "default_limit" field.
-func (qiuo *QuotaItemUpdateOne) ClearDefaultLimit() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearDefaultLimit()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearDefaultLimit() *QuotaItemUpdateOne {
+	_u.mutation.ClearDefaultLimit()
+	return _u
 }
 
 // AddQuotumIDs adds the "quota" edge to the Quota entity by IDs.
-func (qiuo *QuotaItemUpdateOne) AddQuotumIDs(ids ...int) *QuotaItemUpdateOne {
-	qiuo.mutation.AddQuotumIDs(ids...)
-	return qiuo
+func (_u *QuotaItemUpdateOne) AddQuotumIDs(ids ...int) *QuotaItemUpdateOne {
+	_u.mutation.AddQuotumIDs(ids...)
+	return _u
 }
 
 // AddQuota adds the "quota" edges to the Quota entity.
-func (qiuo *QuotaItemUpdateOne) AddQuota(q ...*Quota) *QuotaItemUpdateOne {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *QuotaItemUpdateOne) AddQuota(v ...*Quota) *QuotaItemUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return qiuo.AddQuotumIDs(ids...)
+	return _u.AddQuotumIDs(ids...)
 }
 
 // Mutation returns the QuotaItemMutation object of the builder.
-func (qiuo *QuotaItemUpdateOne) Mutation() *QuotaItemMutation {
-	return qiuo.mutation
+func (_u *QuotaItemUpdateOne) Mutation() *QuotaItemMutation {
+	return _u.mutation
 }
 
 // ClearQuota clears all "quota" edges to the Quota entity.
-func (qiuo *QuotaItemUpdateOne) ClearQuota() *QuotaItemUpdateOne {
-	qiuo.mutation.ClearQuota()
-	return qiuo
+func (_u *QuotaItemUpdateOne) ClearQuota() *QuotaItemUpdateOne {
+	_u.mutation.ClearQuota()
+	return _u
 }
 
 // RemoveQuotumIDs removes the "quota" edge to Quota entities by IDs.
-func (qiuo *QuotaItemUpdateOne) RemoveQuotumIDs(ids ...int) *QuotaItemUpdateOne {
-	qiuo.mutation.RemoveQuotumIDs(ids...)
-	return qiuo
+func (_u *QuotaItemUpdateOne) RemoveQuotumIDs(ids ...int) *QuotaItemUpdateOne {
+	_u.mutation.RemoveQuotumIDs(ids...)
+	return _u
 }
 
 // RemoveQuota removes "quota" edges to Quota entities.
-func (qiuo *QuotaItemUpdateOne) RemoveQuota(q ...*Quota) *QuotaItemUpdateOne {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *QuotaItemUpdateOne) RemoveQuota(v ...*Quota) *QuotaItemUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return qiuo.RemoveQuotumIDs(ids...)
+	return _u.RemoveQuotumIDs(ids...)
 }
 
 // Where appends a list predicates to the QuotaItemUpdate builder.
-func (qiuo *QuotaItemUpdateOne) Where(ps ...predicate.QuotaItem) *QuotaItemUpdateOne {
-	qiuo.mutation.Where(ps...)
-	return qiuo
+func (_u *QuotaItemUpdateOne) Where(ps ...predicate.QuotaItem) *QuotaItemUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (qiuo *QuotaItemUpdateOne) Select(field string, fields ...string) *QuotaItemUpdateOne {
-	qiuo.fields = append([]string{field}, fields...)
-	return qiuo
+func (_u *QuotaItemUpdateOne) Select(field string, fields ...string) *QuotaItemUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated QuotaItem entity.
-func (qiuo *QuotaItemUpdateOne) Save(ctx context.Context) (*QuotaItem, error) {
-	return withHooks(ctx, qiuo.sqlSave, qiuo.mutation, qiuo.hooks)
+func (_u *QuotaItemUpdateOne) Save(ctx context.Context) (*QuotaItem, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (qiuo *QuotaItemUpdateOne) SaveX(ctx context.Context) *QuotaItem {
-	node, err := qiuo.Save(ctx)
+func (_u *QuotaItemUpdateOne) SaveX(ctx context.Context) *QuotaItem {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -641,21 +641,21 @@ func (qiuo *QuotaItemUpdateOne) SaveX(ctx context.Context) *QuotaItem {
 }
 
 // Exec executes the query on the entity.
-func (qiuo *QuotaItemUpdateOne) Exec(ctx context.Context) error {
-	_, err := qiuo.Save(ctx)
+func (_u *QuotaItemUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qiuo *QuotaItemUpdateOne) ExecX(ctx context.Context) {
-	if err := qiuo.Exec(ctx); err != nil {
+func (_u *QuotaItemUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (qiuo *QuotaItemUpdateOne) check() error {
-	if v, ok := qiuo.mutation.ResourceType(); ok {
+func (_u *QuotaItemUpdateOne) check() error {
+	if v, ok := _u.mutation.ResourceType(); ok {
 		if err := quotaitem.ResourceTypeValidator(v); err != nil {
 			return &ValidationError{Name: "resource_type", err: fmt.Errorf(`ent: validator failed for field "QuotaItem.resource_type": %w`, err)}
 		}
@@ -663,17 +663,17 @@ func (qiuo *QuotaItemUpdateOne) check() error {
 	return nil
 }
 
-func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, err error) {
-	if err := qiuo.check(); err != nil {
+func (_u *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(quotaitem.Table, quotaitem.Columns, sqlgraph.NewFieldSpec(quotaitem.FieldID, field.TypeInt))
-	id, ok := qiuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "QuotaItem.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := qiuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, quotaitem.FieldID)
 		for _, f := range fields {
@@ -685,62 +685,62 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 			}
 		}
 	}
-	if ps := qiuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := qiuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(quotaitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := qiuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(quotaitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if qiuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(quotaitem.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := qiuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(quotaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if qiuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(quotaitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := qiuo.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(quotaitem.FieldCode, field.TypeString, value)
 	}
-	if value, ok := qiuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(quotaitem.FieldName, field.TypeString, value)
 	}
-	if value, ok := qiuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(quotaitem.FieldDescription, field.TypeString, value)
 	}
-	if qiuo.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(quotaitem.FieldDescription, field.TypeString)
 	}
-	if value, ok := qiuo.mutation.ResourceType(); ok {
+	if value, ok := _u.mutation.ResourceType(); ok {
 		_spec.SetField(quotaitem.FieldResourceType, field.TypeEnum, value)
 	}
-	if value, ok := qiuo.mutation.Unit(); ok {
+	if value, ok := _u.mutation.Unit(); ok {
 		_spec.SetField(quotaitem.FieldUnit, field.TypeString, value)
 	}
-	if qiuo.mutation.UnitCleared() {
+	if _u.mutation.UnitCleared() {
 		_spec.ClearField(quotaitem.FieldUnit, field.TypeString)
 	}
-	if value, ok := qiuo.mutation.Active(); ok {
+	if value, ok := _u.mutation.Active(); ok {
 		_spec.SetField(quotaitem.FieldActive, field.TypeBool, value)
 	}
-	if value, ok := qiuo.mutation.DefaultLimit(); ok {
+	if value, ok := _u.mutation.DefaultLimit(); ok {
 		_spec.SetField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
 	}
-	if value, ok := qiuo.mutation.AddedDefaultLimit(); ok {
+	if value, ok := _u.mutation.AddedDefaultLimit(); ok {
 		_spec.AddField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
 	}
-	if qiuo.mutation.DefaultLimitCleared() {
+	if _u.mutation.DefaultLimitCleared() {
 		_spec.ClearField(quotaitem.FieldDefaultLimit, field.TypeInt64)
 	}
-	if qiuo.mutation.QuotaCleared() {
+	if _u.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -753,7 +753,7 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := qiuo.mutation.RemovedQuotaIDs(); len(nodes) > 0 && !qiuo.mutation.QuotaCleared() {
+	if nodes := _u.mutation.RemovedQuotaIDs(); len(nodes) > 0 && !_u.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -769,7 +769,7 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := qiuo.mutation.QuotaIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.QuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -785,10 +785,10 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &QuotaItem{config: qiuo.config}
+	_node = &QuotaItem{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, qiuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{quotaitem.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -796,6 +796,6 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 		}
 		return nil, err
 	}
-	qiuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

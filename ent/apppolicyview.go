@@ -130,7 +130,7 @@ func (*AppPolicyView) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppPolicyView fields.
-func (apv *AppPolicyView) assignValues(columns []string, values []any) error {
+func (_m *AppPolicyView) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -141,82 +141,82 @@ func (apv *AppPolicyView) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			apv.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case apppolicyview.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				apv.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case apppolicyview.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				apv.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case apppolicyview.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				apv.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case apppolicyview.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				apv.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case apppolicyview.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				apv.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case apppolicyview.FieldParentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
-				apv.ParentID = int(value.Int64)
+				_m.ParentID = int(value.Int64)
 			}
 		case apppolicyview.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				apv.Kind = apppolicyview.Kind(value.String)
+				_m.Kind = apppolicyview.Kind(value.String)
 			}
 		case apppolicyview.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				apv.Name = value.String
+				_m.Name = value.String
 			}
 		case apppolicyview.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				apv.Comments = value.String
+				_m.Comments = value.String
 			}
 		case apppolicyview.FieldPolicyID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field policy_id", values[i])
 			} else if value.Valid {
-				apv.PolicyID = new(int)
-				*apv.PolicyID = int(value.Int64)
+				_m.PolicyID = new(int)
+				*_m.PolicyID = int(value.Int64)
 			}
 		case apppolicyview.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field path", values[i])
 			} else if value.Valid {
-				apv.Path = value.String
+				_m.Path = value.String
 			}
 		case apppolicyview.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
-				apv.DisplaySort = int32(value.Int64)
+				_m.DisplaySort = int32(value.Int64)
 			}
 		default:
-			apv.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -224,115 +224,115 @@ func (apv *AppPolicyView) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppPolicyView.
 // This includes values selected through modifiers, order, etc.
-func (apv *AppPolicyView) Value(name string) (ent.Value, error) {
-	return apv.selectValues.Get(name)
+func (_m *AppPolicyView) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppPolicyView entity.
-func (apv *AppPolicyView) QueryApp() *AppQuery {
-	return NewAppPolicyViewClient(apv.config).QueryApp(apv)
+func (_m *AppPolicyView) QueryApp() *AppQuery {
+	return NewAppPolicyViewClient(_m.config).QueryApp(_m)
 }
 
 // QueryAppPolicy queries the "app_policy" edge of the AppPolicyView entity.
-func (apv *AppPolicyView) QueryAppPolicy() *AppPolicyQuery {
-	return NewAppPolicyViewClient(apv.config).QueryAppPolicy(apv)
+func (_m *AppPolicyView) QueryAppPolicy() *AppPolicyQuery {
+	return NewAppPolicyViewClient(_m.config).QueryAppPolicy(_m)
 }
 
 // QueryParent queries the "parent" edge of the AppPolicyView entity.
-func (apv *AppPolicyView) QueryParent() *AppPolicyViewQuery {
-	return NewAppPolicyViewClient(apv.config).QueryParent(apv)
+func (_m *AppPolicyView) QueryParent() *AppPolicyViewQuery {
+	return NewAppPolicyViewClient(_m.config).QueryParent(_m)
 }
 
 // QueryChildren queries the "children" edge of the AppPolicyView entity.
-func (apv *AppPolicyView) QueryChildren() *AppPolicyViewQuery {
-	return NewAppPolicyViewClient(apv.config).QueryChildren(apv)
+func (_m *AppPolicyView) QueryChildren() *AppPolicyViewQuery {
+	return NewAppPolicyViewClient(_m.config).QueryChildren(_m)
 }
 
 // Update returns a builder for updating this AppPolicyView.
 // Note that you need to call AppPolicyView.Unwrap() before calling this method if this AppPolicyView
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (apv *AppPolicyView) Update() *AppPolicyViewUpdateOne {
-	return NewAppPolicyViewClient(apv.config).UpdateOne(apv)
+func (_m *AppPolicyView) Update() *AppPolicyViewUpdateOne {
+	return NewAppPolicyViewClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppPolicyView entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (apv *AppPolicyView) Unwrap() *AppPolicyView {
-	_tx, ok := apv.config.driver.(*txDriver)
+func (_m *AppPolicyView) Unwrap() *AppPolicyView {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppPolicyView is not a transactional entity")
 	}
-	apv.config.driver = _tx.drv
-	return apv
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (apv *AppPolicyView) String() string {
+func (_m *AppPolicyView) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppPolicyView(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", apv.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", apv.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(apv.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", apv.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(apv.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", apv.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
-	builder.WriteString(fmt.Sprintf("%v", apv.ParentID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", apv.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(apv.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(apv.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
-	if v := apv.PolicyID; v != nil {
+	if v := _m.PolicyID; v != nil {
 		builder.WriteString("policy_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("path=")
-	builder.WriteString(apv.Path)
+	builder.WriteString(_m.Path)
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
-	builder.WriteString(fmt.Sprintf("%v", apv.DisplaySort))
+	builder.WriteString(fmt.Sprintf("%v", _m.DisplaySort))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedChildren returns the Children named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (apv *AppPolicyView) NamedChildren(name string) ([]*AppPolicyView, error) {
-	if apv.Edges.namedChildren == nil {
+func (_m *AppPolicyView) NamedChildren(name string) ([]*AppPolicyView, error) {
+	if _m.Edges.namedChildren == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := apv.Edges.namedChildren[name]
+	nodes, ok := _m.Edges.namedChildren[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (apv *AppPolicyView) appendNamedChildren(name string, edges ...*AppPolicyView) {
-	if apv.Edges.namedChildren == nil {
-		apv.Edges.namedChildren = make(map[string][]*AppPolicyView)
+func (_m *AppPolicyView) appendNamedChildren(name string, edges ...*AppPolicyView) {
+	if _m.Edges.namedChildren == nil {
+		_m.Edges.namedChildren = make(map[string][]*AppPolicyView)
 	}
 	if len(edges) == 0 {
-		apv.Edges.namedChildren[name] = []*AppPolicyView{}
+		_m.Edges.namedChildren[name] = []*AppPolicyView{}
 	} else {
-		apv.Edges.namedChildren[name] = append(apv.Edges.namedChildren[name], edges...)
+		_m.Edges.namedChildren[name] = append(_m.Edges.namedChildren[name], edges...)
 	}
 }
 

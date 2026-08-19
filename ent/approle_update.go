@@ -25,205 +25,205 @@ type AppRoleUpdate struct {
 }
 
 // Where appends a list predicates to the AppRoleUpdate builder.
-func (aru *AppRoleUpdate) Where(ps ...predicate.AppRole) *AppRoleUpdate {
-	aru.mutation.Where(ps...)
-	return aru
+func (_u *AppRoleUpdate) Where(ps ...predicate.AppRole) *AppRoleUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aru *AppRoleUpdate) SetUpdatedBy(i int) *AppRoleUpdate {
-	aru.mutation.ResetUpdatedBy()
-	aru.mutation.SetUpdatedBy(i)
-	return aru
+func (_u *AppRoleUpdate) SetUpdatedBy(v int) *AppRoleUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableUpdatedBy(i *int) *AppRoleUpdate {
-	if i != nil {
-		aru.SetUpdatedBy(*i)
+func (_u *AppRoleUpdate) SetNillableUpdatedBy(v *int) *AppRoleUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aru
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aru *AppRoleUpdate) AddUpdatedBy(i int) *AppRoleUpdate {
-	aru.mutation.AddUpdatedBy(i)
-	return aru
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppRoleUpdate) AddUpdatedBy(v int) *AppRoleUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aru *AppRoleUpdate) ClearUpdatedBy() *AppRoleUpdate {
-	aru.mutation.ClearUpdatedBy()
-	return aru
+func (_u *AppRoleUpdate) ClearUpdatedBy() *AppRoleUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aru *AppRoleUpdate) SetUpdatedAt(t time.Time) *AppRoleUpdate {
-	aru.mutation.SetUpdatedAt(t)
-	return aru
+func (_u *AppRoleUpdate) SetUpdatedAt(v time.Time) *AppRoleUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableUpdatedAt(t *time.Time) *AppRoleUpdate {
-	if t != nil {
-		aru.SetUpdatedAt(*t)
+func (_u *AppRoleUpdate) SetNillableUpdatedAt(v *time.Time) *AppRoleUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aru
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aru *AppRoleUpdate) ClearUpdatedAt() *AppRoleUpdate {
-	aru.mutation.ClearUpdatedAt()
-	return aru
+func (_u *AppRoleUpdate) ClearUpdatedAt() *AppRoleUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aru *AppRoleUpdate) SetName(s string) *AppRoleUpdate {
-	aru.mutation.SetName(s)
-	return aru
+func (_u *AppRoleUpdate) SetName(v string) *AppRoleUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableName(s *string) *AppRoleUpdate {
-	if s != nil {
-		aru.SetName(*s)
+func (_u *AppRoleUpdate) SetNillableName(v *string) *AppRoleUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aru
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (aru *AppRoleUpdate) SetComments(s string) *AppRoleUpdate {
-	aru.mutation.SetComments(s)
-	return aru
+func (_u *AppRoleUpdate) SetComments(v string) *AppRoleUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableComments(s *string) *AppRoleUpdate {
-	if s != nil {
-		aru.SetComments(*s)
+func (_u *AppRoleUpdate) SetNillableComments(v *string) *AppRoleUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return aru
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (aru *AppRoleUpdate) ClearComments() *AppRoleUpdate {
-	aru.mutation.ClearComments()
-	return aru
+func (_u *AppRoleUpdate) ClearComments() *AppRoleUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetAutoGrant sets the "auto_grant" field.
-func (aru *AppRoleUpdate) SetAutoGrant(b bool) *AppRoleUpdate {
-	aru.mutation.SetAutoGrant(b)
-	return aru
+func (_u *AppRoleUpdate) SetAutoGrant(v bool) *AppRoleUpdate {
+	_u.mutation.SetAutoGrant(v)
+	return _u
 }
 
 // SetNillableAutoGrant sets the "auto_grant" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableAutoGrant(b *bool) *AppRoleUpdate {
-	if b != nil {
-		aru.SetAutoGrant(*b)
+func (_u *AppRoleUpdate) SetNillableAutoGrant(v *bool) *AppRoleUpdate {
+	if v != nil {
+		_u.SetAutoGrant(*v)
 	}
-	return aru
+	return _u
 }
 
 // SetEditable sets the "editable" field.
-func (aru *AppRoleUpdate) SetEditable(b bool) *AppRoleUpdate {
-	aru.mutation.SetEditable(b)
-	return aru
+func (_u *AppRoleUpdate) SetEditable(v bool) *AppRoleUpdate {
+	_u.mutation.SetEditable(v)
+	return _u
 }
 
 // SetNillableEditable sets the "editable" field if the given value is not nil.
-func (aru *AppRoleUpdate) SetNillableEditable(b *bool) *AppRoleUpdate {
-	if b != nil {
-		aru.SetEditable(*b)
+func (_u *AppRoleUpdate) SetNillableEditable(v *bool) *AppRoleUpdate {
+	if v != nil {
+		_u.SetEditable(*v)
 	}
-	return aru
+	return _u
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (aru *AppRoleUpdate) AddPolicyIDs(ids ...int) *AppRoleUpdate {
-	aru.mutation.AddPolicyIDs(ids...)
-	return aru
+func (_u *AppRoleUpdate) AddPolicyIDs(ids ...int) *AppRoleUpdate {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (aru *AppRoleUpdate) AddPolicies(a ...*AppPolicy) *AppRoleUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdate) AddPolicies(v ...*AppPolicy) *AppRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aru.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
-func (aru *AppRoleUpdate) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
-	aru.mutation.AddAppRolePolicyIDs(ids...)
-	return aru
+func (_u *AppRoleUpdate) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
+	_u.mutation.AddAppRolePolicyIDs(ids...)
+	return _u
 }
 
 // AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
-func (aru *AppRoleUpdate) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdate) AddAppRolePolicy(v ...*AppRolePolicy) *AppRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aru.AddAppRolePolicyIDs(ids...)
+	return _u.AddAppRolePolicyIDs(ids...)
 }
 
 // Mutation returns the AppRoleMutation object of the builder.
-func (aru *AppRoleUpdate) Mutation() *AppRoleMutation {
-	return aru.mutation
+func (_u *AppRoleUpdate) Mutation() *AppRoleMutation {
+	return _u.mutation
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
-func (aru *AppRoleUpdate) ClearPolicies() *AppRoleUpdate {
-	aru.mutation.ClearPolicies()
-	return aru
+func (_u *AppRoleUpdate) ClearPolicies() *AppRoleUpdate {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to AppPolicy entities by IDs.
-func (aru *AppRoleUpdate) RemovePolicyIDs(ids ...int) *AppRoleUpdate {
-	aru.mutation.RemovePolicyIDs(ids...)
-	return aru
+func (_u *AppRoleUpdate) RemovePolicyIDs(ids ...int) *AppRoleUpdate {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to AppPolicy entities.
-func (aru *AppRoleUpdate) RemovePolicies(a ...*AppPolicy) *AppRoleUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdate) RemovePolicies(v ...*AppPolicy) *AppRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aru.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
-func (aru *AppRoleUpdate) ClearAppRolePolicy() *AppRoleUpdate {
-	aru.mutation.ClearAppRolePolicy()
-	return aru
+func (_u *AppRoleUpdate) ClearAppRolePolicy() *AppRoleUpdate {
+	_u.mutation.ClearAppRolePolicy()
+	return _u
 }
 
 // RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
-func (aru *AppRoleUpdate) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
-	aru.mutation.RemoveAppRolePolicyIDs(ids...)
-	return aru
+func (_u *AppRoleUpdate) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
+	_u.mutation.RemoveAppRolePolicyIDs(ids...)
+	return _u
 }
 
 // RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
-func (aru *AppRoleUpdate) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdate) RemoveAppRolePolicy(v ...*AppRolePolicy) *AppRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aru.RemoveAppRolePolicyIDs(ids...)
+	return _u.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (aru *AppRoleUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, aru.sqlSave, aru.mutation, aru.hooks)
+func (_u *AppRoleUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aru *AppRoleUpdate) SaveX(ctx context.Context) int {
-	affected, err := aru.Save(ctx)
+func (_u *AppRoleUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,58 +231,58 @@ func (aru *AppRoleUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (aru *AppRoleUpdate) Exec(ctx context.Context) error {
-	_, err := aru.Save(ctx)
+func (_u *AppRoleUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aru *AppRoleUpdate) ExecX(ctx context.Context) {
-	if err := aru.Exec(ctx); err != nil {
+func (_u *AppRoleUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *AppRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(approle.Table, approle.Columns, sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt))
-	if ps := aru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aru.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(approle.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aru.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(approle.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aru.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(approle.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aru.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(approle.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aru.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(approle.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aru.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(approle.FieldName, field.TypeString, value)
 	}
-	if value, ok := aru.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(approle.FieldComments, field.TypeString, value)
 	}
-	if aru.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(approle.FieldComments, field.TypeString)
 	}
-	if value, ok := aru.mutation.AutoGrant(); ok {
+	if value, ok := _u.mutation.AutoGrant(); ok {
 		_spec.SetField(approle.FieldAutoGrant, field.TypeBool, value)
 	}
-	if value, ok := aru.mutation.Editable(); ok {
+	if value, ok := _u.mutation.Editable(); ok {
 		_spec.SetField(approle.FieldEditable, field.TypeBool, value)
 	}
-	if aru.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -293,13 +293,13 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
-		createE := &AppRolePolicyCreate{config: aru.config, mutation: newAppRolePolicyMutation(aru.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aru.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !aru.mutation.PoliciesCleared() {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -313,13 +313,13 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: aru.config, mutation: newAppRolePolicyMutation(aru.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aru.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -333,13 +333,13 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: aru.config, mutation: newAppRolePolicyMutation(aru.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if aru.mutation.AppRolePolicyCleared() {
+	if _u.mutation.AppRolePolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -352,7 +352,7 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aru.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !aru.mutation.AppRolePolicyCleared() {
+	if nodes := _u.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !_u.mutation.AppRolePolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -368,7 +368,7 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aru.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -384,7 +384,7 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, aru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{approle.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -392,8 +392,8 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	aru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppRoleUpdateOne is the builder for updating a single AppRole entity.
@@ -405,212 +405,212 @@ type AppRoleUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aruo *AppRoleUpdateOne) SetUpdatedBy(i int) *AppRoleUpdateOne {
-	aruo.mutation.ResetUpdatedBy()
-	aruo.mutation.SetUpdatedBy(i)
-	return aruo
+func (_u *AppRoleUpdateOne) SetUpdatedBy(v int) *AppRoleUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableUpdatedBy(i *int) *AppRoleUpdateOne {
-	if i != nil {
-		aruo.SetUpdatedBy(*i)
+func (_u *AppRoleUpdateOne) SetNillableUpdatedBy(v *int) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aruo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aruo *AppRoleUpdateOne) AddUpdatedBy(i int) *AppRoleUpdateOne {
-	aruo.mutation.AddUpdatedBy(i)
-	return aruo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppRoleUpdateOne) AddUpdatedBy(v int) *AppRoleUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aruo *AppRoleUpdateOne) ClearUpdatedBy() *AppRoleUpdateOne {
-	aruo.mutation.ClearUpdatedBy()
-	return aruo
+func (_u *AppRoleUpdateOne) ClearUpdatedBy() *AppRoleUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aruo *AppRoleUpdateOne) SetUpdatedAt(t time.Time) *AppRoleUpdateOne {
-	aruo.mutation.SetUpdatedAt(t)
-	return aruo
+func (_u *AppRoleUpdateOne) SetUpdatedAt(v time.Time) *AppRoleUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppRoleUpdateOne {
-	if t != nil {
-		aruo.SetUpdatedAt(*t)
+func (_u *AppRoleUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aruo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aruo *AppRoleUpdateOne) ClearUpdatedAt() *AppRoleUpdateOne {
-	aruo.mutation.ClearUpdatedAt()
-	return aruo
+func (_u *AppRoleUpdateOne) ClearUpdatedAt() *AppRoleUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aruo *AppRoleUpdateOne) SetName(s string) *AppRoleUpdateOne {
-	aruo.mutation.SetName(s)
-	return aruo
+func (_u *AppRoleUpdateOne) SetName(v string) *AppRoleUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableName(s *string) *AppRoleUpdateOne {
-	if s != nil {
-		aruo.SetName(*s)
+func (_u *AppRoleUpdateOne) SetNillableName(v *string) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aruo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (aruo *AppRoleUpdateOne) SetComments(s string) *AppRoleUpdateOne {
-	aruo.mutation.SetComments(s)
-	return aruo
+func (_u *AppRoleUpdateOne) SetComments(v string) *AppRoleUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableComments(s *string) *AppRoleUpdateOne {
-	if s != nil {
-		aruo.SetComments(*s)
+func (_u *AppRoleUpdateOne) SetNillableComments(v *string) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return aruo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (aruo *AppRoleUpdateOne) ClearComments() *AppRoleUpdateOne {
-	aruo.mutation.ClearComments()
-	return aruo
+func (_u *AppRoleUpdateOne) ClearComments() *AppRoleUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetAutoGrant sets the "auto_grant" field.
-func (aruo *AppRoleUpdateOne) SetAutoGrant(b bool) *AppRoleUpdateOne {
-	aruo.mutation.SetAutoGrant(b)
-	return aruo
+func (_u *AppRoleUpdateOne) SetAutoGrant(v bool) *AppRoleUpdateOne {
+	_u.mutation.SetAutoGrant(v)
+	return _u
 }
 
 // SetNillableAutoGrant sets the "auto_grant" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableAutoGrant(b *bool) *AppRoleUpdateOne {
-	if b != nil {
-		aruo.SetAutoGrant(*b)
+func (_u *AppRoleUpdateOne) SetNillableAutoGrant(v *bool) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetAutoGrant(*v)
 	}
-	return aruo
+	return _u
 }
 
 // SetEditable sets the "editable" field.
-func (aruo *AppRoleUpdateOne) SetEditable(b bool) *AppRoleUpdateOne {
-	aruo.mutation.SetEditable(b)
-	return aruo
+func (_u *AppRoleUpdateOne) SetEditable(v bool) *AppRoleUpdateOne {
+	_u.mutation.SetEditable(v)
+	return _u
 }
 
 // SetNillableEditable sets the "editable" field if the given value is not nil.
-func (aruo *AppRoleUpdateOne) SetNillableEditable(b *bool) *AppRoleUpdateOne {
-	if b != nil {
-		aruo.SetEditable(*b)
+func (_u *AppRoleUpdateOne) SetNillableEditable(v *bool) *AppRoleUpdateOne {
+	if v != nil {
+		_u.SetEditable(*v)
 	}
-	return aruo
+	return _u
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (aruo *AppRoleUpdateOne) AddPolicyIDs(ids ...int) *AppRoleUpdateOne {
-	aruo.mutation.AddPolicyIDs(ids...)
-	return aruo
+func (_u *AppRoleUpdateOne) AddPolicyIDs(ids ...int) *AppRoleUpdateOne {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (aruo *AppRoleUpdateOne) AddPolicies(a ...*AppPolicy) *AppRoleUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdateOne) AddPolicies(v ...*AppPolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aruo.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
-func (aruo *AppRoleUpdateOne) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
-	aruo.mutation.AddAppRolePolicyIDs(ids...)
-	return aruo
+func (_u *AppRoleUpdateOne) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
+	_u.mutation.AddAppRolePolicyIDs(ids...)
+	return _u
 }
 
 // AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
-func (aruo *AppRoleUpdateOne) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdateOne) AddAppRolePolicy(v ...*AppRolePolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aruo.AddAppRolePolicyIDs(ids...)
+	return _u.AddAppRolePolicyIDs(ids...)
 }
 
 // Mutation returns the AppRoleMutation object of the builder.
-func (aruo *AppRoleUpdateOne) Mutation() *AppRoleMutation {
-	return aruo.mutation
+func (_u *AppRoleUpdateOne) Mutation() *AppRoleMutation {
+	return _u.mutation
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
-func (aruo *AppRoleUpdateOne) ClearPolicies() *AppRoleUpdateOne {
-	aruo.mutation.ClearPolicies()
-	return aruo
+func (_u *AppRoleUpdateOne) ClearPolicies() *AppRoleUpdateOne {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to AppPolicy entities by IDs.
-func (aruo *AppRoleUpdateOne) RemovePolicyIDs(ids ...int) *AppRoleUpdateOne {
-	aruo.mutation.RemovePolicyIDs(ids...)
-	return aruo
+func (_u *AppRoleUpdateOne) RemovePolicyIDs(ids ...int) *AppRoleUpdateOne {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to AppPolicy entities.
-func (aruo *AppRoleUpdateOne) RemovePolicies(a ...*AppPolicy) *AppRoleUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdateOne) RemovePolicies(v ...*AppPolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aruo.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
-func (aruo *AppRoleUpdateOne) ClearAppRolePolicy() *AppRoleUpdateOne {
-	aruo.mutation.ClearAppRolePolicy()
-	return aruo
+func (_u *AppRoleUpdateOne) ClearAppRolePolicy() *AppRoleUpdateOne {
+	_u.mutation.ClearAppRolePolicy()
+	return _u
 }
 
 // RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
-func (aruo *AppRoleUpdateOne) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
-	aruo.mutation.RemoveAppRolePolicyIDs(ids...)
-	return aruo
+func (_u *AppRoleUpdateOne) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
+	_u.mutation.RemoveAppRolePolicyIDs(ids...)
+	return _u
 }
 
 // RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
-func (aruo *AppRoleUpdateOne) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppRoleUpdateOne) RemoveAppRolePolicy(v ...*AppRolePolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aruo.RemoveAppRolePolicyIDs(ids...)
+	return _u.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Where appends a list predicates to the AppRoleUpdate builder.
-func (aruo *AppRoleUpdateOne) Where(ps ...predicate.AppRole) *AppRoleUpdateOne {
-	aruo.mutation.Where(ps...)
-	return aruo
+func (_u *AppRoleUpdateOne) Where(ps ...predicate.AppRole) *AppRoleUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aruo *AppRoleUpdateOne) Select(field string, fields ...string) *AppRoleUpdateOne {
-	aruo.fields = append([]string{field}, fields...)
-	return aruo
+func (_u *AppRoleUpdateOne) Select(field string, fields ...string) *AppRoleUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppRole entity.
-func (aruo *AppRoleUpdateOne) Save(ctx context.Context) (*AppRole, error) {
-	return withHooks(ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
+func (_u *AppRoleUpdateOne) Save(ctx context.Context) (*AppRole, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aruo *AppRoleUpdateOne) SaveX(ctx context.Context) *AppRole {
-	node, err := aruo.Save(ctx)
+func (_u *AppRoleUpdateOne) SaveX(ctx context.Context) *AppRole {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -618,26 +618,26 @@ func (aruo *AppRoleUpdateOne) SaveX(ctx context.Context) *AppRole {
 }
 
 // Exec executes the query on the entity.
-func (aruo *AppRoleUpdateOne) Exec(ctx context.Context) error {
-	_, err := aruo.Save(ctx)
+func (_u *AppRoleUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aruo *AppRoleUpdateOne) ExecX(ctx context.Context) {
-	if err := aruo.Exec(ctx); err != nil {
+func (_u *AppRoleUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err error) {
+func (_u *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err error) {
 	_spec := sqlgraph.NewUpdateSpec(approle.Table, approle.Columns, sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt))
-	id, ok := aruo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppRole.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aruo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, approle.FieldID)
 		for _, f := range fields {
@@ -649,44 +649,44 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 			}
 		}
 	}
-	if ps := aruo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aruo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(approle.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aruo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(approle.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aruo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(approle.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aruo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(approle.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aruo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(approle.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aruo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(approle.FieldName, field.TypeString, value)
 	}
-	if value, ok := aruo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(approle.FieldComments, field.TypeString, value)
 	}
-	if aruo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(approle.FieldComments, field.TypeString)
 	}
-	if value, ok := aruo.mutation.AutoGrant(); ok {
+	if value, ok := _u.mutation.AutoGrant(); ok {
 		_spec.SetField(approle.FieldAutoGrant, field.TypeBool, value)
 	}
-	if value, ok := aruo.mutation.Editable(); ok {
+	if value, ok := _u.mutation.Editable(); ok {
 		_spec.SetField(approle.FieldEditable, field.TypeBool, value)
 	}
-	if aruo.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -697,13 +697,13 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
-		createE := &AppRolePolicyCreate{config: aruo.config, mutation: newAppRolePolicyMutation(aruo.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aruo.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !aruo.mutation.PoliciesCleared() {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -717,13 +717,13 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: aruo.config, mutation: newAppRolePolicyMutation(aruo.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aruo.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -737,13 +737,13 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: aruo.config, mutation: newAppRolePolicyMutation(aruo.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _u.config, mutation: newAppRolePolicyMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if aruo.mutation.AppRolePolicyCleared() {
+	if _u.mutation.AppRolePolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -756,7 +756,7 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aruo.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !aruo.mutation.AppRolePolicyCleared() {
+	if nodes := _u.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !_u.mutation.AppRolePolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -772,7 +772,7 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aruo.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -788,10 +788,10 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppRole{config: aruo.config}
+	_node = &AppRole{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aruo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{approle.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -799,6 +799,6 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		}
 		return nil, err
 	}
-	aruo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

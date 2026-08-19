@@ -48,10 +48,8 @@ func init() {
 	appMixin := schema.App{}.Mixin()
 	appMixinHooks1 := appMixin[1].Hooks()
 	appMixinHooks2 := appMixin[2].Hooks()
-	appHooks := schema.App{}.Hooks()
 	app.Hooks[0] = appMixinHooks1[0]
 	app.Hooks[1] = appMixinHooks2[0]
-	app.Hooks[2] = appHooks[0]
 	appMixinFields0 := appMixin[0].Fields()
 	_ = appMixinFields0
 	appMixinFields1 := appMixin[1].Fields()
@@ -134,10 +132,8 @@ func init() {
 	appdictMixin := schema.AppDict{}.Mixin()
 	appdictMixinHooks1 := appdictMixin[1].Hooks()
 	appdictMixinHooks2 := appdictMixin[2].Hooks()
-	appdictHooks := schema.AppDict{}.Hooks()
 	appdict.Hooks[0] = appdictMixinHooks1[0]
 	appdict.Hooks[1] = appdictMixinHooks2[0]
-	appdict.Hooks[2] = appdictHooks[0]
 	appdictMixinFields1 := appdictMixin[1].Fields()
 	_ = appdictMixinFields1
 	appdictFields := schema.AppDict{}.Fields()
@@ -185,14 +181,8 @@ func init() {
 	appdictitemMixin := schema.AppDictItem{}.Mixin()
 	appdictitemMixinHooks1 := appdictitemMixin[1].Hooks()
 	appdictitemMixinHooks2 := appdictitemMixin[2].Hooks()
-	appdictitemHooks := schema.AppDictItem{}.Hooks()
 	appdictitem.Hooks[0] = appdictitemMixinHooks1[0]
 	appdictitem.Hooks[1] = appdictitemMixinHooks2[0]
-	appdictitem.Hooks[2] = appdictitemHooks[0]
-	appdictitem.Hooks[3] = appdictitemHooks[1]
-	appdictitem.Hooks[4] = appdictitemHooks[2]
-	appdictitem.Hooks[5] = appdictitemHooks[3]
-	appdictitem.Hooks[6] = appdictitemHooks[4]
 	appdictitemMixinFields1 := appdictitemMixin[1].Fields()
 	_ = appdictitemMixinFields1
 	appdictitemFields := schema.AppDictItem{}.Fields()
@@ -226,10 +216,8 @@ func init() {
 	appmenuMixin := schema.AppMenu{}.Mixin()
 	appmenuMixinHooks1 := appmenuMixin[1].Hooks()
 	appmenuMixinHooks2 := appmenuMixin[2].Hooks()
-	appmenuHooks := schema.AppMenu{}.Hooks()
 	appmenu.Hooks[0] = appmenuMixinHooks1[0]
 	appmenu.Hooks[1] = appmenuMixinHooks2[0]
-	appmenu.Hooks[2] = appmenuHooks[0]
 	appmenuMixinFields0 := appmenuMixin[0].Fields()
 	_ = appmenuMixinFields0
 	appmenuMixinFields1 := appmenuMixin[1].Fields()
@@ -247,10 +235,8 @@ func init() {
 	apppolicyMixin := schema.AppPolicy{}.Mixin()
 	apppolicyMixinHooks1 := apppolicyMixin[1].Hooks()
 	apppolicyMixinHooks2 := apppolicyMixin[2].Hooks()
-	apppolicyHooks := schema.AppPolicy{}.Hooks()
 	apppolicy.Hooks[0] = apppolicyMixinHooks1[0]
 	apppolicy.Hooks[1] = apppolicyMixinHooks2[0]
-	apppolicy.Hooks[2] = apppolicyHooks[0]
 	apppolicyMixinFields0 := apppolicyMixin[0].Fields()
 	_ = apppolicyMixinFields0
 	apppolicyMixinFields1 := apppolicyMixin[1].Fields()
@@ -276,11 +262,8 @@ func init() {
 	apppolicyviewMixin := schema.AppPolicyView{}.Mixin()
 	apppolicyviewMixinHooks1 := apppolicyviewMixin[1].Hooks()
 	apppolicyviewMixinHooks2 := apppolicyviewMixin[2].Hooks()
-	apppolicyviewHooks := schema.AppPolicyView{}.Hooks()
 	apppolicyview.Hooks[0] = apppolicyviewMixinHooks1[0]
 	apppolicyview.Hooks[1] = apppolicyviewMixinHooks2[0]
-	apppolicyview.Hooks[2] = apppolicyviewHooks[0]
-	apppolicyview.Hooks[3] = apppolicyviewHooks[1]
 	apppolicyviewMixinFields0 := apppolicyviewMixin[0].Fields()
 	_ = apppolicyviewMixinFields0
 	apppolicyviewMixinFields1 := apppolicyviewMixin[1].Fields()
@@ -501,14 +484,9 @@ func init() {
 	orgMixinHooks1 := orgMixin[1].Hooks()
 	orgMixinHooks2 := orgMixin[2].Hooks()
 	orgMixinHooks3 := orgMixin[3].Hooks()
-	orgHooks := schema.Org{}.Hooks()
 	org.Hooks[0] = orgMixinHooks1[0]
 	org.Hooks[1] = orgMixinHooks2[0]
 	org.Hooks[2] = orgMixinHooks3[0]
-	org.Hooks[3] = orgHooks[0]
-	org.Hooks[4] = orgHooks[1]
-	org.Hooks[5] = orgHooks[2]
-	org.Hooks[6] = orgHooks[3]
 	orgMixinInters2 := orgMixin[2].Interceptors()
 	org.Interceptors[0] = orgMixinInters2[0]
 	orgMixinFields1 := orgMixin[1].Fields()
@@ -563,10 +541,8 @@ func init() {
 	orgpolicyMixin := schema.OrgPolicy{}.Mixin()
 	orgpolicyMixinHooks1 := orgpolicyMixin[1].Hooks()
 	orgpolicyMixinHooks2 := orgpolicyMixin[2].Hooks()
-	orgpolicyHooks := schema.OrgPolicy{}.Hooks()
 	orgpolicy.Hooks[0] = orgpolicyMixinHooks1[0]
 	orgpolicy.Hooks[1] = orgpolicyMixinHooks2[0]
-	orgpolicy.Hooks[2] = orgpolicyHooks[0]
 	orgpolicyMixinFields0 := orgpolicyMixin[0].Fields()
 	_ = orgpolicyMixinFields0
 	orgpolicyMixinFields1 := orgpolicyMixin[1].Fields()
@@ -632,9 +608,7 @@ func init() {
 	orguser.DefaultJoinedAt = orguserDescJoinedAt.Default.(func() time.Time)
 	orguserpreferenceMixin := schema.OrgUserPreference{}.Mixin()
 	orguserpreferenceMixinHooks1 := orguserpreferenceMixin[1].Hooks()
-	orguserpreferenceHooks := schema.OrgUserPreference{}.Hooks()
 	orguserpreference.Hooks[0] = orguserpreferenceMixinHooks1[0]
-	orguserpreference.Hooks[1] = orguserpreferenceHooks[0]
 	orguserpreferenceMixinFields1 := orguserpreferenceMixin[1].Fields()
 	_ = orguserpreferenceMixinFields1
 	orguserpreferenceFields := schema.OrgUserPreference{}.Fields()
@@ -664,9 +638,7 @@ func init() {
 	permission.DefaultID = permissionDescID.Default.(func() int)
 	quotaMixin := schema.Quota{}.Mixin()
 	quotaMixinHooks1 := quotaMixin[1].Hooks()
-	quotaHooks := schema.Quota{}.Hooks()
 	quota.Hooks[0] = quotaMixinHooks1[0]
-	quota.Hooks[1] = quotaHooks[0]
 	quotaMixinFields1 := quotaMixin[1].Fields()
 	_ = quotaMixinFields1
 	quotaFields := schema.Quota{}.Fields()
@@ -700,9 +672,7 @@ func init() {
 	quotaitem.DefaultActive = quotaitemDescActive.Default.(bool)
 	regionMixin := schema.Region{}.Mixin()
 	regionMixinHooks1 := regionMixin[1].Hooks()
-	regionHooks := schema.Region{}.Hooks()
 	region.Hooks[0] = regionMixinHooks1[0]
-	region.Hooks[1] = regionHooks[0]
 	regionMixinFields1 := regionMixin[1].Fields()
 	_ = regionMixinFields1
 	regionFields := schema.Region{}.Fields()
@@ -771,10 +741,8 @@ func init() {
 	useraddrMixin := schema.UserAddr{}.Mixin()
 	useraddrMixinHooks1 := useraddrMixin[1].Hooks()
 	useraddrMixinHooks2 := useraddrMixin[2].Hooks()
-	useraddrHooks := schema.UserAddr{}.Hooks()
 	useraddr.Hooks[0] = useraddrMixinHooks1[0]
 	useraddr.Hooks[1] = useraddrMixinHooks2[0]
-	useraddr.Hooks[2] = useraddrHooks[0]
 	useraddrMixinFields1 := useraddrMixin[1].Fields()
 	_ = useraddrMixinFields1
 	useraddrFields := schema.UserAddr{}.Fields()
@@ -814,10 +782,8 @@ func init() {
 	userdeviceMixin := schema.UserDevice{}.Mixin()
 	userdeviceMixinHooks1 := userdeviceMixin[1].Hooks()
 	userdeviceMixinHooks2 := userdeviceMixin[2].Hooks()
-	userdeviceHooks := schema.UserDevice{}.Hooks()
 	userdevice.Hooks[0] = userdeviceMixinHooks1[0]
 	userdevice.Hooks[1] = userdeviceMixinHooks2[0]
-	userdevice.Hooks[2] = userdeviceHooks[0]
 	userdeviceMixinFields1 := userdeviceMixin[1].Fields()
 	_ = userdeviceMixinFields1
 	userdeviceFields := schema.UserDevice{}.Fields()
@@ -853,10 +819,8 @@ func init() {
 	useridentityMixin := schema.UserIdentity{}.Mixin()
 	useridentityMixinHooks1 := useridentityMixin[1].Hooks()
 	useridentityMixinHooks2 := useridentityMixin[2].Hooks()
-	useridentityHooks := schema.UserIdentity{}.Hooks()
 	useridentity.Hooks[0] = useridentityMixinHooks1[0]
 	useridentity.Hooks[1] = useridentityMixinHooks2[0]
-	useridentity.Hooks[2] = useridentityHooks[0]
 	useridentityMixinFields1 := useridentityMixin[1].Fields()
 	_ = useridentityMixinFields1
 	useridentityFields := schema.UserIdentity{}.Fields()
@@ -955,6 +919,6 @@ func init() {
 }
 
 const (
-	Version = "v0.14.2"                                         // Version of ent codegen.
-	Sum     = "h1:ywld/j2Rx4EmnIKs8eZ29cbFA1zpB+DA9TLL5l3rlq0=" // Sum of ent codegen.
+	Version = "v0.14.5"                                         // Version of ent codegen.
+	Sum     = "h1:Rj2WOYJtCkWyFo6a+5wB3EfBRP0rnx1fMk6gGA0UUe4=" // Sum of ent codegen.
 )

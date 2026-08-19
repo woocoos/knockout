@@ -35,454 +35,454 @@ type OrgCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (oc *OrgCreate) SetCreatedBy(i int) *OrgCreate {
-	oc.mutation.SetCreatedBy(i)
-	return oc
+func (_c *OrgCreate) SetCreatedBy(v int) *OrgCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (oc *OrgCreate) SetCreatedAt(t time.Time) *OrgCreate {
-	oc.mutation.SetCreatedAt(t)
-	return oc
+func (_c *OrgCreate) SetCreatedAt(v time.Time) *OrgCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableCreatedAt(t *time.Time) *OrgCreate {
-	if t != nil {
-		oc.SetCreatedAt(*t)
+func (_c *OrgCreate) SetNillableCreatedAt(v *time.Time) *OrgCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oc *OrgCreate) SetUpdatedBy(i int) *OrgCreate {
-	oc.mutation.SetUpdatedBy(i)
-	return oc
+func (_c *OrgCreate) SetUpdatedBy(v int) *OrgCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableUpdatedBy(i *int) *OrgCreate {
-	if i != nil {
-		oc.SetUpdatedBy(*i)
+func (_c *OrgCreate) SetNillableUpdatedBy(v *int) *OrgCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oc *OrgCreate) SetUpdatedAt(t time.Time) *OrgCreate {
-	oc.mutation.SetUpdatedAt(t)
-	return oc
+func (_c *OrgCreate) SetUpdatedAt(v time.Time) *OrgCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableUpdatedAt(t *time.Time) *OrgCreate {
-	if t != nil {
-		oc.SetUpdatedAt(*t)
+func (_c *OrgCreate) SetNillableUpdatedAt(v *time.Time) *OrgCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (oc *OrgCreate) SetDeletedAt(t time.Time) *OrgCreate {
-	oc.mutation.SetDeletedAt(t)
-	return oc
+func (_c *OrgCreate) SetDeletedAt(v time.Time) *OrgCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableDeletedAt(t *time.Time) *OrgCreate {
-	if t != nil {
-		oc.SetDeletedAt(*t)
+func (_c *OrgCreate) SetNillableDeletedAt(v *time.Time) *OrgCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetOwnerID sets the "owner_id" field.
-func (oc *OrgCreate) SetOwnerID(i int) *OrgCreate {
-	oc.mutation.SetOwnerID(i)
-	return oc
+func (_c *OrgCreate) SetOwnerID(v int) *OrgCreate {
+	_c.mutation.SetOwnerID(v)
+	return _c
 }
 
 // SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableOwnerID(i *int) *OrgCreate {
-	if i != nil {
-		oc.SetOwnerID(*i)
+func (_c *OrgCreate) SetNillableOwnerID(v *int) *OrgCreate {
+	if v != nil {
+		_c.SetOwnerID(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (oc *OrgCreate) SetKind(o org.Kind) *OrgCreate {
-	oc.mutation.SetKind(o)
-	return oc
+func (_c *OrgCreate) SetKind(v org.Kind) *OrgCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableKind(o *org.Kind) *OrgCreate {
-	if o != nil {
-		oc.SetKind(*o)
+func (_c *OrgCreate) SetNillableKind(v *org.Kind) *OrgCreate {
+	if v != nil {
+		_c.SetKind(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetParentID sets the "parent_id" field.
-func (oc *OrgCreate) SetParentID(i int) *OrgCreate {
-	oc.mutation.SetParentID(i)
-	return oc
+func (_c *OrgCreate) SetParentID(v int) *OrgCreate {
+	_c.mutation.SetParentID(v)
+	return _c
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableParentID(i *int) *OrgCreate {
-	if i != nil {
-		oc.SetParentID(*i)
+func (_c *OrgCreate) SetNillableParentID(v *int) *OrgCreate {
+	if v != nil {
+		_c.SetParentID(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetDomain sets the "domain" field.
-func (oc *OrgCreate) SetDomain(s string) *OrgCreate {
-	oc.mutation.SetDomain(s)
-	return oc
+func (_c *OrgCreate) SetDomain(v string) *OrgCreate {
+	_c.mutation.SetDomain(v)
+	return _c
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableDomain(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetDomain(*s)
+func (_c *OrgCreate) SetNillableDomain(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetDomain(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetCustomDomain sets the "custom_domain" field.
-func (oc *OrgCreate) SetCustomDomain(s []string) *OrgCreate {
-	oc.mutation.SetCustomDomain(s)
-	return oc
+func (_c *OrgCreate) SetCustomDomain(v []string) *OrgCreate {
+	_c.mutation.SetCustomDomain(v)
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (oc *OrgCreate) SetCode(s string) *OrgCreate {
-	oc.mutation.SetCode(s)
-	return oc
+func (_c *OrgCreate) SetCode(v string) *OrgCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableCode(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetCode(*s)
+func (_c *OrgCreate) SetNillableCode(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetCode(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (oc *OrgCreate) SetName(s string) *OrgCreate {
-	oc.mutation.SetName(s)
-	return oc
+func (_c *OrgCreate) SetName(v string) *OrgCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetProfile sets the "profile" field.
-func (oc *OrgCreate) SetProfile(s string) *OrgCreate {
-	oc.mutation.SetProfile(s)
-	return oc
+func (_c *OrgCreate) SetProfile(v string) *OrgCreate {
+	_c.mutation.SetProfile(v)
+	return _c
 }
 
 // SetNillableProfile sets the "profile" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableProfile(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetProfile(*s)
+func (_c *OrgCreate) SetNillableProfile(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetProfile(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (oc *OrgCreate) SetStatus(ts typex.SimpleStatus) *OrgCreate {
-	oc.mutation.SetStatus(ts)
-	return oc
+func (_c *OrgCreate) SetStatus(v typex.SimpleStatus) *OrgCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableStatus(ts *typex.SimpleStatus) *OrgCreate {
-	if ts != nil {
-		oc.SetStatus(*ts)
+func (_c *OrgCreate) SetNillableStatus(v *typex.SimpleStatus) *OrgCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetPath sets the "path" field.
-func (oc *OrgCreate) SetPath(s string) *OrgCreate {
-	oc.mutation.SetPath(s)
-	return oc
+func (_c *OrgCreate) SetPath(v string) *OrgCreate {
+	_c.mutation.SetPath(v)
+	return _c
 }
 
 // SetNillablePath sets the "path" field if the given value is not nil.
-func (oc *OrgCreate) SetNillablePath(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetPath(*s)
+func (_c *OrgCreate) SetNillablePath(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetPath(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (oc *OrgCreate) SetDisplaySort(i int32) *OrgCreate {
-	oc.mutation.SetDisplaySort(i)
-	return oc
+func (_c *OrgCreate) SetDisplaySort(v int32) *OrgCreate {
+	_c.mutation.SetDisplaySort(v)
+	return _c
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableDisplaySort(i *int32) *OrgCreate {
-	if i != nil {
-		oc.SetDisplaySort(*i)
+func (_c *OrgCreate) SetNillableDisplaySort(v *int32) *OrgCreate {
+	if v != nil {
+		_c.SetDisplaySort(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetCountryCode sets the "country_code" field.
-func (oc *OrgCreate) SetCountryCode(s string) *OrgCreate {
-	oc.mutation.SetCountryCode(s)
-	return oc
+func (_c *OrgCreate) SetCountryCode(v string) *OrgCreate {
+	_c.mutation.SetCountryCode(v)
+	return _c
 }
 
 // SetNillableCountryCode sets the "country_code" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableCountryCode(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetCountryCode(*s)
+func (_c *OrgCreate) SetNillableCountryCode(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetCountryCode(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetTimezone sets the "timezone" field.
-func (oc *OrgCreate) SetTimezone(s string) *OrgCreate {
-	oc.mutation.SetTimezone(s)
-	return oc
+func (_c *OrgCreate) SetTimezone(v string) *OrgCreate {
+	_c.mutation.SetTimezone(v)
+	return _c
 }
 
 // SetNillableTimezone sets the "timezone" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableTimezone(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetTimezone(*s)
+func (_c *OrgCreate) SetNillableTimezone(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetTimezone(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetLocalCurrency sets the "local_currency" field.
-func (oc *OrgCreate) SetLocalCurrency(s string) *OrgCreate {
-	oc.mutation.SetLocalCurrency(s)
-	return oc
+func (_c *OrgCreate) SetLocalCurrency(v string) *OrgCreate {
+	_c.mutation.SetLocalCurrency(v)
+	return _c
 }
 
 // SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableLocalCurrency(s *string) *OrgCreate {
-	if s != nil {
-		oc.SetLocalCurrency(*s)
+func (_c *OrgCreate) SetNillableLocalCurrency(v *string) *OrgCreate {
+	if v != nil {
+		_c.SetLocalCurrency(*v)
 	}
-	return oc
+	return _c
 }
 
 // SetLogo sets the "logo" field.
-func (oc *OrgCreate) SetLogo(tl *types.OrgLogo) *OrgCreate {
-	oc.mutation.SetLogo(tl)
-	return oc
+func (_c *OrgCreate) SetLogo(v *types.OrgLogo) *OrgCreate {
+	_c.mutation.SetLogo(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (oc *OrgCreate) SetID(i int) *OrgCreate {
-	oc.mutation.SetID(i)
-	return oc
+func (_c *OrgCreate) SetID(v int) *OrgCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetParent sets the "parent" edge to the Org entity.
-func (oc *OrgCreate) SetParent(o *Org) *OrgCreate {
-	return oc.SetParentID(o.ID)
+func (_c *OrgCreate) SetParent(v *Org) *OrgCreate {
+	return _c.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the Org entity by IDs.
-func (oc *OrgCreate) AddChildIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddChildIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddChildIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddChildIDs(ids...)
+	return _c
 }
 
 // AddChildren adds the "children" edges to the Org entity.
-func (oc *OrgCreate) AddChildren(o ...*Org) *OrgCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgCreate) AddChildren(v ...*Org) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddChildIDs(ids...)
+	return _c.AddChildIDs(ids...)
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (oc *OrgCreate) SetOwner(u *User) *OrgCreate {
-	return oc.SetOwnerID(u.ID)
+func (_c *OrgCreate) SetOwner(v *User) *OrgCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // AddUserIDs adds the "users" edge to the User entity by IDs.
-func (oc *OrgCreate) AddUserIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddUserIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddUserIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddUserIDs(ids...)
+	return _c
 }
 
 // AddUsers adds the "users" edges to the User entity.
-func (oc *OrgCreate) AddUsers(u ...*User) *OrgCreate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+func (_c *OrgCreate) AddUsers(v ...*User) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddUserIDs(ids...)
+	return _c.AddUserIDs(ids...)
 }
 
 // AddRolesAndGroupIDs adds the "roles_and_groups" edge to the OrgRole entity by IDs.
-func (oc *OrgCreate) AddRolesAndGroupIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddRolesAndGroupIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddRolesAndGroupIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddRolesAndGroupIDs(ids...)
+	return _c
 }
 
 // AddRolesAndGroups adds the "roles_and_groups" edges to the OrgRole entity.
-func (oc *OrgCreate) AddRolesAndGroups(o ...*OrgRole) *OrgCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgCreate) AddRolesAndGroups(v ...*OrgRole) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddRolesAndGroupIDs(ids...)
+	return _c.AddRolesAndGroupIDs(ids...)
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (oc *OrgCreate) AddPermissionIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddPermissionIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddPermissionIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddPermissionIDs(ids...)
+	return _c
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (oc *OrgCreate) AddPermissions(p ...*Permission) *OrgCreate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_c *OrgCreate) AddPermissions(v ...*Permission) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddPermissionIDs(ids...)
+	return _c.AddPermissionIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the OrgPolicy entity by IDs.
-func (oc *OrgCreate) AddPolicyIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddPolicyIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddPolicyIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddPolicyIDs(ids...)
+	return _c
 }
 
 // AddPolicies adds the "policies" edges to the OrgPolicy entity.
-func (oc *OrgCreate) AddPolicies(o ...*OrgPolicy) *OrgCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgCreate) AddPolicies(v ...*OrgPolicy) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddPolicyIDs(ids...)
+	return _c.AddPolicyIDs(ids...)
 }
 
 // AddAppIDs adds the "apps" edge to the App entity by IDs.
-func (oc *OrgCreate) AddAppIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddAppIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddAppIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddAppIDs(ids...)
+	return _c
 }
 
 // AddApps adds the "apps" edges to the App entity.
-func (oc *OrgCreate) AddApps(a ...*App) *OrgCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *OrgCreate) AddApps(v ...*App) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddAppIDs(ids...)
+	return _c.AddAppIDs(ids...)
 }
 
 // AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
-func (oc *OrgCreate) AddFileIdentityIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddFileIdentityIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddFileIdentityIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddFileIdentityIDs(ids...)
+	return _c
 }
 
 // AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
-func (oc *OrgCreate) AddFileIdentities(f ...*FileIdentity) *OrgCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *OrgCreate) AddFileIdentities(v ...*FileIdentity) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddFileIdentityIDs(ids...)
+	return _c.AddFileIdentityIDs(ids...)
 }
 
 // SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
-func (oc *OrgCreate) SetUserPasswordPolicyID(id int) *OrgCreate {
-	oc.mutation.SetUserPasswordPolicyID(id)
-	return oc
+func (_c *OrgCreate) SetUserPasswordPolicyID(id int) *OrgCreate {
+	_c.mutation.SetUserPasswordPolicyID(id)
+	return _c
 }
 
 // SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
-func (oc *OrgCreate) SetNillableUserPasswordPolicyID(id *int) *OrgCreate {
+func (_c *OrgCreate) SetNillableUserPasswordPolicyID(id *int) *OrgCreate {
 	if id != nil {
-		oc = oc.SetUserPasswordPolicyID(*id)
+		_c = _c.SetUserPasswordPolicyID(*id)
 	}
-	return oc
+	return _c
 }
 
 // SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (oc *OrgCreate) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgCreate {
-	return oc.SetUserPasswordPolicyID(u.ID)
+func (_c *OrgCreate) SetUserPasswordPolicy(v *UserPasswordPolicy) *OrgCreate {
+	return _c.SetUserPasswordPolicyID(v.ID)
 }
 
 // AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
-func (oc *OrgCreate) AddOrgQuotumIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddOrgQuotumIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddOrgQuotumIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddOrgQuotumIDs(ids...)
+	return _c
 }
 
 // AddOrgQuota adds the "org_quota" edges to the Quota entity.
-func (oc *OrgCreate) AddOrgQuota(q ...*Quota) *OrgCreate {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_c *OrgCreate) AddOrgQuota(v ...*Quota) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddOrgQuotumIDs(ids...)
+	return _c.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
-func (oc *OrgCreate) AddOrgUserIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddOrgUserIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddOrgUserIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddOrgUserIDs(ids...)
+	return _c
 }
 
 // AddOrgUser adds the "org_user" edges to the OrgUser entity.
-func (oc *OrgCreate) AddOrgUser(o ...*OrgUser) *OrgCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgCreate) AddOrgUser(v ...*OrgUser) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddOrgUserIDs(ids...)
+	return _c.AddOrgUserIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (oc *OrgCreate) AddOrgAppIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddOrgAppIDs(ids...)
-	return oc
+func (_c *OrgCreate) AddOrgAppIDs(ids ...int) *OrgCreate {
+	_c.mutation.AddOrgAppIDs(ids...)
+	return _c
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (oc *OrgCreate) AddOrgApp(o ...*OrgApp) *OrgCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgCreate) AddOrgApp(v ...*OrgApp) *OrgCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return oc.AddOrgAppIDs(ids...)
+	return _c.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the OrgMutation object of the builder.
-func (oc *OrgCreate) Mutation() *OrgMutation {
-	return oc.mutation
+func (_c *OrgCreate) Mutation() *OrgMutation {
+	return _c.mutation
 }
 
 // Save creates the Org in the database.
-func (oc *OrgCreate) Save(ctx context.Context) (*Org, error) {
-	if err := oc.defaults(); err != nil {
+func (_c *OrgCreate) Save(ctx context.Context) (*Org, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, oc.sqlSave, oc.mutation, oc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (oc *OrgCreate) SaveX(ctx context.Context) *Org {
-	v, err := oc.Save(ctx)
+func (_c *OrgCreate) SaveX(ctx context.Context) *Org {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -490,111 +490,111 @@ func (oc *OrgCreate) SaveX(ctx context.Context) *Org {
 }
 
 // Exec executes the query.
-func (oc *OrgCreate) Exec(ctx context.Context) error {
-	_, err := oc.Save(ctx)
+func (_c *OrgCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oc *OrgCreate) ExecX(ctx context.Context) {
-	if err := oc.Exec(ctx); err != nil {
+func (_c *OrgCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (oc *OrgCreate) defaults() error {
-	if _, ok := oc.mutation.CreatedAt(); !ok {
+func (_c *OrgCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if org.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized org.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := org.DefaultCreatedAt()
-		oc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := oc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		v := org.DefaultKind
-		oc.mutation.SetKind(v)
+		_c.mutation.SetKind(v)
 	}
-	if _, ok := oc.mutation.ParentID(); !ok {
+	if _, ok := _c.mutation.ParentID(); !ok {
 		v := org.DefaultParentID
-		oc.mutation.SetParentID(v)
+		_c.mutation.SetParentID(v)
 	}
-	if _, ok := oc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := org.DefaultStatus
-		oc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oc *OrgCreate) check() error {
-	if _, ok := oc.mutation.CreatedBy(); !ok {
+func (_c *OrgCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Org.created_by"`)}
 	}
-	if _, ok := oc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Org.created_at"`)}
 	}
-	if _, ok := oc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "Org.kind"`)}
 	}
-	if v, ok := oc.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := org.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Org.kind": %w`, err)}
 		}
 	}
-	if _, ok := oc.mutation.ParentID(); !ok {
+	if _, ok := _c.mutation.ParentID(); !ok {
 		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "Org.parent_id"`)}
 	}
-	if v, ok := oc.mutation.Domain(); ok {
+	if v, ok := _c.mutation.Domain(); ok {
 		if err := org.DomainValidator(v); err != nil {
 			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Org.domain": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.Code(); ok {
+	if v, ok := _c.mutation.Code(); ok {
 		if err := org.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Org.code": %w`, err)}
 		}
 	}
-	if _, ok := oc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Org.name"`)}
 	}
-	if v, ok := oc.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := org.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Org.name": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := org.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Org.status": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.CountryCode(); ok {
+	if v, ok := _c.mutation.CountryCode(); ok {
 		if err := org.CountryCodeValidator(v); err != nil {
 			return &ValidationError{Name: "country_code", err: fmt.Errorf(`ent: validator failed for field "Org.country_code": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.Timezone(); ok {
+	if v, ok := _c.mutation.Timezone(); ok {
 		if err := org.TimezoneValidator(v); err != nil {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.LocalCurrency(); ok {
+	if v, ok := _c.mutation.LocalCurrency(); ok {
 		if err := org.LocalCurrencyValidator(v); err != nil {
 			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
-	if len(oc.mutation.ParentIDs()) == 0 {
+	if len(_c.mutation.ParentIDs()) == 0 {
 		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "Org.parent"`)}
 	}
 	return nil
 }
 
-func (oc *OrgCreate) sqlSave(ctx context.Context) (*Org, error) {
-	if err := oc.check(); err != nil {
+func (_c *OrgCreate) sqlSave(ctx context.Context) (*Org, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := oc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, oc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -604,94 +604,94 @@ func (oc *OrgCreate) sqlSave(ctx context.Context) (*Org, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	oc.mutation.id = &_node.ID
-	oc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
+func (_c *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Org{config: oc.config}
+		_node = &Org{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(org.Table, sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = oc.conflict
-	if id, ok := oc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := oc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(org.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := oc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(org.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := oc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(org.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := oc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(org.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := oc.mutation.DeletedAt(); ok {
+	if value, ok := _c.mutation.DeletedAt(); ok {
 		_spec.SetField(org.FieldDeletedAt, field.TypeTime, value)
 		_node.DeletedAt = value
 	}
-	if value, ok := oc.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(org.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := oc.mutation.Domain(); ok {
+	if value, ok := _c.mutation.Domain(); ok {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 		_node.Domain = value
 	}
-	if value, ok := oc.mutation.CustomDomain(); ok {
+	if value, ok := _c.mutation.CustomDomain(); ok {
 		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
 		_node.CustomDomain = value
 	}
-	if value, ok := oc.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := oc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(org.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := oc.mutation.Profile(); ok {
+	if value, ok := _c.mutation.Profile(); ok {
 		_spec.SetField(org.FieldProfile, field.TypeString, value)
 		_node.Profile = value
 	}
-	if value, ok := oc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(org.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := oc.mutation.Path(); ok {
+	if value, ok := _c.mutation.Path(); ok {
 		_spec.SetField(org.FieldPath, field.TypeString, value)
 		_node.Path = value
 	}
-	if value, ok := oc.mutation.DisplaySort(); ok {
+	if value, ok := _c.mutation.DisplaySort(); ok {
 		_spec.SetField(org.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
 	}
-	if value, ok := oc.mutation.CountryCode(); ok {
+	if value, ok := _c.mutation.CountryCode(); ok {
 		_spec.SetField(org.FieldCountryCode, field.TypeString, value)
 		_node.CountryCode = value
 	}
-	if value, ok := oc.mutation.Timezone(); ok {
+	if value, ok := _c.mutation.Timezone(); ok {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 		_node.Timezone = value
 	}
-	if value, ok := oc.mutation.LocalCurrency(); ok {
+	if value, ok := _c.mutation.LocalCurrency(); ok {
 		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
 		_node.LocalCurrency = value
 	}
-	if value, ok := oc.mutation.Logo(); ok {
+	if value, ok := _c.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
 		_node.Logo = value
 	}
-	if nodes := oc.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -708,7 +708,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_node.ParentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -724,7 +724,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -741,7 +741,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_node.OwnerID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.UsersIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -755,13 +755,13 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgUserCreate{config: oc.config, mutation: newOrgUserMutation(oc.config, OpCreate)}
+		createE := &OrgUserCreate{config: _c.config, mutation: newOrgUserMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -777,7 +777,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -793,7 +793,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -809,7 +809,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.AppsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -823,13 +823,13 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: oc.config, mutation: newOrgAppMutation(oc.config, OpCreate)}
+		createE := &OrgAppCreate{config: _c.config, mutation: newOrgAppMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -845,7 +845,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -861,7 +861,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgQuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -877,7 +877,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.OrgUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -893,7 +893,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oc.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -928,10 +928,10 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (oc *OrgCreate) OnConflict(opts ...sql.ConflictOption) *OrgUpsertOne {
-	oc.conflict = opts
+func (_c *OrgCreate) OnConflict(opts ...sql.ConflictOption) *OrgUpsertOne {
+	_c.conflict = opts
 	return &OrgUpsertOne{
-		create: oc,
+		create: _c,
 	}
 }
 
@@ -941,10 +941,10 @@ func (oc *OrgCreate) OnConflict(opts ...sql.ConflictOption) *OrgUpsertOne {
 //	client.Org.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (oc *OrgCreate) OnConflictColumns(columns ...string) *OrgUpsertOne {
-	oc.conflict = append(oc.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgCreate) OnConflictColumns(columns ...string) *OrgUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUpsertOne{
-		create: oc,
+		create: _c,
 	}
 }
 
@@ -1746,16 +1746,16 @@ type OrgCreateBulk struct {
 }
 
 // Save creates the Org entities in the database.
-func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
-	if ocb.err != nil {
-		return nil, ocb.err
+func (_c *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ocb.builders))
-	nodes := make([]*Org, len(ocb.builders))
-	mutators := make([]Mutator, len(ocb.builders))
-	for i := range ocb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Org, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ocb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrgMutation)
@@ -1769,12 +1769,12 @@ func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ocb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ocb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ocb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1798,7 +1798,7 @@ func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ocb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1806,8 +1806,8 @@ func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ocb *OrgCreateBulk) SaveX(ctx context.Context) []*Org {
-	v, err := ocb.Save(ctx)
+func (_c *OrgCreateBulk) SaveX(ctx context.Context) []*Org {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1815,14 +1815,14 @@ func (ocb *OrgCreateBulk) SaveX(ctx context.Context) []*Org {
 }
 
 // Exec executes the query.
-func (ocb *OrgCreateBulk) Exec(ctx context.Context) error {
-	_, err := ocb.Save(ctx)
+func (_c *OrgCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ocb *OrgCreateBulk) ExecX(ctx context.Context) {
-	if err := ocb.Exec(ctx); err != nil {
+func (_c *OrgCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1842,10 +1842,10 @@ func (ocb *OrgCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ocb *OrgCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUpsertBulk {
-	ocb.conflict = opts
+func (_c *OrgCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUpsertBulk {
+	_c.conflict = opts
 	return &OrgUpsertBulk{
-		create: ocb,
+		create: _c,
 	}
 }
 
@@ -1855,10 +1855,10 @@ func (ocb *OrgCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUpsertBulk 
 //	client.Org.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ocb *OrgCreateBulk) OnConflictColumns(columns ...string) *OrgUpsertBulk {
-	ocb.conflict = append(ocb.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgCreateBulk) OnConflictColumns(columns ...string) *OrgUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUpsertBulk{
-		create: ocb,
+		create: _c,
 	}
 }
 

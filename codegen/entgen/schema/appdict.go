@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -9,12 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/appdictitem"
-	"github.com/woocoos/knockout/ent/hook"
 )
 
 // AppDict holds the schema definition for the AppDict entity.
@@ -61,24 +55,5 @@ func (AppDict) Edges() []ent.Edge {
 func (AppDict) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("app_id", "code").Unique(),
-	}
-}
-
-func (AppDict) Hooks() []ent.Hook {
-	return []ent.Hook{
-		// check subs.
-		hook.On(func(next ent.Mutator) ent.Mutator {
-			return hook.AppDictFunc(func(ctx context.Context, m *gen.AppDictMutation) (gen.Value, error) {
-				id, _ := m.ID()
-				has, err := m.Client().AppDictItem.Query().Where(appdictitem.DictID(id)).Exist(ctx)
-				if err != nil {
-					return nil, err
-				}
-				if has {
-					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "has items,please remove items first")
-				}
-				return next.Mutate(ctx, m)
-			})
-		}, ent.OpDeleteOne),
 	}
 }

@@ -24,166 +24,166 @@ type AppDictItemUpdate struct {
 }
 
 // Where appends a list predicates to the AppDictItemUpdate builder.
-func (adiu *AppDictItemUpdate) Where(ps ...predicate.AppDictItem) *AppDictItemUpdate {
-	adiu.mutation.Where(ps...)
-	return adiu
+func (_u *AppDictItemUpdate) Where(ps ...predicate.AppDictItem) *AppDictItemUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (adiu *AppDictItemUpdate) SetUpdatedBy(i int) *AppDictItemUpdate {
-	adiu.mutation.ResetUpdatedBy()
-	adiu.mutation.SetUpdatedBy(i)
-	return adiu
+func (_u *AppDictItemUpdate) SetUpdatedBy(v int) *AppDictItemUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableUpdatedBy(i *int) *AppDictItemUpdate {
-	if i != nil {
-		adiu.SetUpdatedBy(*i)
+func (_u *AppDictItemUpdate) SetNillableUpdatedBy(v *int) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return adiu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (adiu *AppDictItemUpdate) AddUpdatedBy(i int) *AppDictItemUpdate {
-	adiu.mutation.AddUpdatedBy(i)
-	return adiu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppDictItemUpdate) AddUpdatedBy(v int) *AppDictItemUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (adiu *AppDictItemUpdate) ClearUpdatedBy() *AppDictItemUpdate {
-	adiu.mutation.ClearUpdatedBy()
-	return adiu
+func (_u *AppDictItemUpdate) ClearUpdatedBy() *AppDictItemUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (adiu *AppDictItemUpdate) SetUpdatedAt(t time.Time) *AppDictItemUpdate {
-	adiu.mutation.SetUpdatedAt(t)
-	return adiu
+func (_u *AppDictItemUpdate) SetUpdatedAt(v time.Time) *AppDictItemUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableUpdatedAt(t *time.Time) *AppDictItemUpdate {
-	if t != nil {
-		adiu.SetUpdatedAt(*t)
+func (_u *AppDictItemUpdate) SetNillableUpdatedAt(v *time.Time) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return adiu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (adiu *AppDictItemUpdate) ClearUpdatedAt() *AppDictItemUpdate {
-	adiu.mutation.ClearUpdatedAt()
-	return adiu
+func (_u *AppDictItemUpdate) ClearUpdatedAt() *AppDictItemUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetRefCode sets the "ref_code" field.
-func (adiu *AppDictItemUpdate) SetRefCode(s string) *AppDictItemUpdate {
-	adiu.mutation.SetRefCode(s)
-	return adiu
+func (_u *AppDictItemUpdate) SetRefCode(v string) *AppDictItemUpdate {
+	_u.mutation.SetRefCode(v)
+	return _u
 }
 
 // SetNillableRefCode sets the "ref_code" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableRefCode(s *string) *AppDictItemUpdate {
-	if s != nil {
-		adiu.SetRefCode(*s)
+func (_u *AppDictItemUpdate) SetNillableRefCode(v *string) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetRefCode(*v)
 	}
-	return adiu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (adiu *AppDictItemUpdate) SetName(s string) *AppDictItemUpdate {
-	adiu.mutation.SetName(s)
-	return adiu
+func (_u *AppDictItemUpdate) SetName(v string) *AppDictItemUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableName(s *string) *AppDictItemUpdate {
-	if s != nil {
-		adiu.SetName(*s)
+func (_u *AppDictItemUpdate) SetNillableName(v *string) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return adiu
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (adiu *AppDictItemUpdate) SetComments(s string) *AppDictItemUpdate {
-	adiu.mutation.SetComments(s)
-	return adiu
+func (_u *AppDictItemUpdate) SetComments(v string) *AppDictItemUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableComments(s *string) *AppDictItemUpdate {
-	if s != nil {
-		adiu.SetComments(*s)
+func (_u *AppDictItemUpdate) SetNillableComments(v *string) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return adiu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (adiu *AppDictItemUpdate) ClearComments() *AppDictItemUpdate {
-	adiu.mutation.ClearComments()
-	return adiu
+func (_u *AppDictItemUpdate) ClearComments() *AppDictItemUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (adiu *AppDictItemUpdate) SetDisplaySort(i int32) *AppDictItemUpdate {
-	adiu.mutation.ResetDisplaySort()
-	adiu.mutation.SetDisplaySort(i)
-	return adiu
+func (_u *AppDictItemUpdate) SetDisplaySort(v int32) *AppDictItemUpdate {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableDisplaySort(i *int32) *AppDictItemUpdate {
-	if i != nil {
-		adiu.SetDisplaySort(*i)
+func (_u *AppDictItemUpdate) SetNillableDisplaySort(v *int32) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return adiu
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (adiu *AppDictItemUpdate) AddDisplaySort(i int32) *AppDictItemUpdate {
-	adiu.mutation.AddDisplaySort(i)
-	return adiu
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *AppDictItemUpdate) AddDisplaySort(v int32) *AppDictItemUpdate {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (adiu *AppDictItemUpdate) ClearDisplaySort() *AppDictItemUpdate {
-	adiu.mutation.ClearDisplaySort()
-	return adiu
+func (_u *AppDictItemUpdate) ClearDisplaySort() *AppDictItemUpdate {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (adiu *AppDictItemUpdate) SetStatus(ts typex.SimpleStatus) *AppDictItemUpdate {
-	adiu.mutation.SetStatus(ts)
-	return adiu
+func (_u *AppDictItemUpdate) SetStatus(v typex.SimpleStatus) *AppDictItemUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (adiu *AppDictItemUpdate) SetNillableStatus(ts *typex.SimpleStatus) *AppDictItemUpdate {
-	if ts != nil {
-		adiu.SetStatus(*ts)
+func (_u *AppDictItemUpdate) SetNillableStatus(v *typex.SimpleStatus) *AppDictItemUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return adiu
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (adiu *AppDictItemUpdate) ClearStatus() *AppDictItemUpdate {
-	adiu.mutation.ClearStatus()
-	return adiu
+func (_u *AppDictItemUpdate) ClearStatus() *AppDictItemUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // Mutation returns the AppDictItemMutation object of the builder.
-func (adiu *AppDictItemUpdate) Mutation() *AppDictItemMutation {
-	return adiu.mutation
+func (_u *AppDictItemUpdate) Mutation() *AppDictItemMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (adiu *AppDictItemUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, adiu.sqlSave, adiu.mutation, adiu.hooks)
+func (_u *AppDictItemUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adiu *AppDictItemUpdate) SaveX(ctx context.Context) int {
-	affected, err := adiu.Save(ctx)
+func (_u *AppDictItemUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -191,26 +191,26 @@ func (adiu *AppDictItemUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (adiu *AppDictItemUpdate) Exec(ctx context.Context) error {
-	_, err := adiu.Save(ctx)
+func (_u *AppDictItemUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adiu *AppDictItemUpdate) ExecX(ctx context.Context) {
-	if err := adiu.Exec(ctx); err != nil {
+func (_u *AppDictItemUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (adiu *AppDictItemUpdate) check() error {
-	if v, ok := adiu.mutation.Name(); ok {
+func (_u *AppDictItemUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appdictitem.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.name": %w`, err)}
 		}
 	}
-	if v, ok := adiu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := appdictitem.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.status": %w`, err)}
 		}
@@ -218,61 +218,61 @@ func (adiu *AppDictItemUpdate) check() error {
 	return nil
 }
 
-func (adiu *AppDictItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := adiu.check(); err != nil {
-		return n, err
+func (_u *AppDictItemUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appdictitem.Table, appdictitem.Columns, sqlgraph.NewFieldSpec(appdictitem.FieldID, field.TypeInt))
-	if ps := adiu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := adiu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appdictitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := adiu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appdictitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if adiu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := adiu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appdictitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if adiu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := adiu.mutation.RefCode(); ok {
+	if value, ok := _u.mutation.RefCode(); ok {
 		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 	}
-	if value, ok := adiu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appdictitem.FieldName, field.TypeString, value)
 	}
-	if value, ok := adiu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appdictitem.FieldComments, field.TypeString, value)
 	}
-	if adiu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appdictitem.FieldComments, field.TypeString)
 	}
-	if value, ok := adiu.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(appdictitem.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := adiu.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(appdictitem.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if adiu.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(appdictitem.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := adiu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(appdictitem.FieldStatus, field.TypeEnum, value)
 	}
-	if adiu.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(appdictitem.FieldStatus, field.TypeEnum)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, adiu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appdictitem.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -280,8 +280,8 @@ func (adiu *AppDictItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	adiu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppDictItemUpdateOne is the builder for updating a single AppDictItem entity.
@@ -293,173 +293,173 @@ type AppDictItemUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (adiuo *AppDictItemUpdateOne) SetUpdatedBy(i int) *AppDictItemUpdateOne {
-	adiuo.mutation.ResetUpdatedBy()
-	adiuo.mutation.SetUpdatedBy(i)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetUpdatedBy(v int) *AppDictItemUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableUpdatedBy(i *int) *AppDictItemUpdateOne {
-	if i != nil {
-		adiuo.SetUpdatedBy(*i)
+func (_u *AppDictItemUpdateOne) SetNillableUpdatedBy(v *int) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return adiuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (adiuo *AppDictItemUpdateOne) AddUpdatedBy(i int) *AppDictItemUpdateOne {
-	adiuo.mutation.AddUpdatedBy(i)
-	return adiuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppDictItemUpdateOne) AddUpdatedBy(v int) *AppDictItemUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (adiuo *AppDictItemUpdateOne) ClearUpdatedBy() *AppDictItemUpdateOne {
-	adiuo.mutation.ClearUpdatedBy()
-	return adiuo
+func (_u *AppDictItemUpdateOne) ClearUpdatedBy() *AppDictItemUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (adiuo *AppDictItemUpdateOne) SetUpdatedAt(t time.Time) *AppDictItemUpdateOne {
-	adiuo.mutation.SetUpdatedAt(t)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetUpdatedAt(v time.Time) *AppDictItemUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppDictItemUpdateOne {
-	if t != nil {
-		adiuo.SetUpdatedAt(*t)
+func (_u *AppDictItemUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return adiuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (adiuo *AppDictItemUpdateOne) ClearUpdatedAt() *AppDictItemUpdateOne {
-	adiuo.mutation.ClearUpdatedAt()
-	return adiuo
+func (_u *AppDictItemUpdateOne) ClearUpdatedAt() *AppDictItemUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetRefCode sets the "ref_code" field.
-func (adiuo *AppDictItemUpdateOne) SetRefCode(s string) *AppDictItemUpdateOne {
-	adiuo.mutation.SetRefCode(s)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetRefCode(v string) *AppDictItemUpdateOne {
+	_u.mutation.SetRefCode(v)
+	return _u
 }
 
 // SetNillableRefCode sets the "ref_code" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableRefCode(s *string) *AppDictItemUpdateOne {
-	if s != nil {
-		adiuo.SetRefCode(*s)
+func (_u *AppDictItemUpdateOne) SetNillableRefCode(v *string) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetRefCode(*v)
 	}
-	return adiuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (adiuo *AppDictItemUpdateOne) SetName(s string) *AppDictItemUpdateOne {
-	adiuo.mutation.SetName(s)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetName(v string) *AppDictItemUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableName(s *string) *AppDictItemUpdateOne {
-	if s != nil {
-		adiuo.SetName(*s)
+func (_u *AppDictItemUpdateOne) SetNillableName(v *string) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return adiuo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (adiuo *AppDictItemUpdateOne) SetComments(s string) *AppDictItemUpdateOne {
-	adiuo.mutation.SetComments(s)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetComments(v string) *AppDictItemUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableComments(s *string) *AppDictItemUpdateOne {
-	if s != nil {
-		adiuo.SetComments(*s)
+func (_u *AppDictItemUpdateOne) SetNillableComments(v *string) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return adiuo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (adiuo *AppDictItemUpdateOne) ClearComments() *AppDictItemUpdateOne {
-	adiuo.mutation.ClearComments()
-	return adiuo
+func (_u *AppDictItemUpdateOne) ClearComments() *AppDictItemUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (adiuo *AppDictItemUpdateOne) SetDisplaySort(i int32) *AppDictItemUpdateOne {
-	adiuo.mutation.ResetDisplaySort()
-	adiuo.mutation.SetDisplaySort(i)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetDisplaySort(v int32) *AppDictItemUpdateOne {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableDisplaySort(i *int32) *AppDictItemUpdateOne {
-	if i != nil {
-		adiuo.SetDisplaySort(*i)
+func (_u *AppDictItemUpdateOne) SetNillableDisplaySort(v *int32) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return adiuo
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (adiuo *AppDictItemUpdateOne) AddDisplaySort(i int32) *AppDictItemUpdateOne {
-	adiuo.mutation.AddDisplaySort(i)
-	return adiuo
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *AppDictItemUpdateOne) AddDisplaySort(v int32) *AppDictItemUpdateOne {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (adiuo *AppDictItemUpdateOne) ClearDisplaySort() *AppDictItemUpdateOne {
-	adiuo.mutation.ClearDisplaySort()
-	return adiuo
+func (_u *AppDictItemUpdateOne) ClearDisplaySort() *AppDictItemUpdateOne {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (adiuo *AppDictItemUpdateOne) SetStatus(ts typex.SimpleStatus) *AppDictItemUpdateOne {
-	adiuo.mutation.SetStatus(ts)
-	return adiuo
+func (_u *AppDictItemUpdateOne) SetStatus(v typex.SimpleStatus) *AppDictItemUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (adiuo *AppDictItemUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *AppDictItemUpdateOne {
-	if ts != nil {
-		adiuo.SetStatus(*ts)
+func (_u *AppDictItemUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *AppDictItemUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return adiuo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (adiuo *AppDictItemUpdateOne) ClearStatus() *AppDictItemUpdateOne {
-	adiuo.mutation.ClearStatus()
-	return adiuo
+func (_u *AppDictItemUpdateOne) ClearStatus() *AppDictItemUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // Mutation returns the AppDictItemMutation object of the builder.
-func (adiuo *AppDictItemUpdateOne) Mutation() *AppDictItemMutation {
-	return adiuo.mutation
+func (_u *AppDictItemUpdateOne) Mutation() *AppDictItemMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the AppDictItemUpdate builder.
-func (adiuo *AppDictItemUpdateOne) Where(ps ...predicate.AppDictItem) *AppDictItemUpdateOne {
-	adiuo.mutation.Where(ps...)
-	return adiuo
+func (_u *AppDictItemUpdateOne) Where(ps ...predicate.AppDictItem) *AppDictItemUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (adiuo *AppDictItemUpdateOne) Select(field string, fields ...string) *AppDictItemUpdateOne {
-	adiuo.fields = append([]string{field}, fields...)
-	return adiuo
+func (_u *AppDictItemUpdateOne) Select(field string, fields ...string) *AppDictItemUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppDictItem entity.
-func (adiuo *AppDictItemUpdateOne) Save(ctx context.Context) (*AppDictItem, error) {
-	return withHooks(ctx, adiuo.sqlSave, adiuo.mutation, adiuo.hooks)
+func (_u *AppDictItemUpdateOne) Save(ctx context.Context) (*AppDictItem, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adiuo *AppDictItemUpdateOne) SaveX(ctx context.Context) *AppDictItem {
-	node, err := adiuo.Save(ctx)
+func (_u *AppDictItemUpdateOne) SaveX(ctx context.Context) *AppDictItem {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -467,26 +467,26 @@ func (adiuo *AppDictItemUpdateOne) SaveX(ctx context.Context) *AppDictItem {
 }
 
 // Exec executes the query on the entity.
-func (adiuo *AppDictItemUpdateOne) Exec(ctx context.Context) error {
-	_, err := adiuo.Save(ctx)
+func (_u *AppDictItemUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adiuo *AppDictItemUpdateOne) ExecX(ctx context.Context) {
-	if err := adiuo.Exec(ctx); err != nil {
+func (_u *AppDictItemUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (adiuo *AppDictItemUpdateOne) check() error {
-	if v, ok := adiuo.mutation.Name(); ok {
+func (_u *AppDictItemUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appdictitem.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.name": %w`, err)}
 		}
 	}
-	if v, ok := adiuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := appdictitem.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.status": %w`, err)}
 		}
@@ -494,17 +494,17 @@ func (adiuo *AppDictItemUpdateOne) check() error {
 	return nil
 }
 
-func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictItem, err error) {
-	if err := adiuo.check(); err != nil {
+func (_u *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictItem, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appdictitem.Table, appdictitem.Columns, sqlgraph.NewFieldSpec(appdictitem.FieldID, field.TypeInt))
-	id, ok := adiuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppDictItem.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := adiuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appdictitem.FieldID)
 		for _, f := range fields {
@@ -516,59 +516,59 @@ func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictI
 			}
 		}
 	}
-	if ps := adiuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := adiuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appdictitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := adiuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appdictitem.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if adiuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := adiuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appdictitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if adiuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := adiuo.mutation.RefCode(); ok {
+	if value, ok := _u.mutation.RefCode(); ok {
 		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 	}
-	if value, ok := adiuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appdictitem.FieldName, field.TypeString, value)
 	}
-	if value, ok := adiuo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appdictitem.FieldComments, field.TypeString, value)
 	}
-	if adiuo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appdictitem.FieldComments, field.TypeString)
 	}
-	if value, ok := adiuo.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(appdictitem.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := adiuo.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(appdictitem.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if adiuo.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(appdictitem.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := adiuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(appdictitem.FieldStatus, field.TypeEnum, value)
 	}
-	if adiuo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(appdictitem.FieldStatus, field.TypeEnum)
 	}
-	_node = &AppDictItem{config: adiuo.config}
+	_node = &AppDictItem{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, adiuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appdictitem.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -576,6 +576,6 @@ func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictI
 		}
 		return nil, err
 	}
-	adiuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

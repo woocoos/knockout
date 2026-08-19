@@ -25,134 +25,134 @@ type UserPasswordCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (upc *UserPasswordCreate) SetCreatedBy(i int) *UserPasswordCreate {
-	upc.mutation.SetCreatedBy(i)
-	return upc
+func (_c *UserPasswordCreate) SetCreatedBy(v int) *UserPasswordCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (upc *UserPasswordCreate) SetCreatedAt(t time.Time) *UserPasswordCreate {
-	upc.mutation.SetCreatedAt(t)
-	return upc
+func (_c *UserPasswordCreate) SetCreatedAt(v time.Time) *UserPasswordCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableCreatedAt(t *time.Time) *UserPasswordCreate {
-	if t != nil {
-		upc.SetCreatedAt(*t)
+func (_c *UserPasswordCreate) SetNillableCreatedAt(v *time.Time) *UserPasswordCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (upc *UserPasswordCreate) SetUpdatedBy(i int) *UserPasswordCreate {
-	upc.mutation.SetUpdatedBy(i)
-	return upc
+func (_c *UserPasswordCreate) SetUpdatedBy(v int) *UserPasswordCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableUpdatedBy(i *int) *UserPasswordCreate {
-	if i != nil {
-		upc.SetUpdatedBy(*i)
+func (_c *UserPasswordCreate) SetNillableUpdatedBy(v *int) *UserPasswordCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (upc *UserPasswordCreate) SetUpdatedAt(t time.Time) *UserPasswordCreate {
-	upc.mutation.SetUpdatedAt(t)
-	return upc
+func (_c *UserPasswordCreate) SetUpdatedAt(v time.Time) *UserPasswordCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableUpdatedAt(t *time.Time) *UserPasswordCreate {
-	if t != nil {
-		upc.SetUpdatedAt(*t)
+func (_c *UserPasswordCreate) SetNillableUpdatedAt(v *time.Time) *UserPasswordCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (upc *UserPasswordCreate) SetUserID(i int) *UserPasswordCreate {
-	upc.mutation.SetUserID(i)
-	return upc
+func (_c *UserPasswordCreate) SetUserID(v int) *UserPasswordCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableUserID(i *int) *UserPasswordCreate {
-	if i != nil {
-		upc.SetUserID(*i)
+func (_c *UserPasswordCreate) SetNillableUserID(v *int) *UserPasswordCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetScene sets the "scene" field.
-func (upc *UserPasswordCreate) SetScene(u userpassword.Scene) *UserPasswordCreate {
-	upc.mutation.SetScene(u)
-	return upc
+func (_c *UserPasswordCreate) SetScene(v userpassword.Scene) *UserPasswordCreate {
+	_c.mutation.SetScene(v)
+	return _c
 }
 
 // SetPassword sets the "password" field.
-func (upc *UserPasswordCreate) SetPassword(s string) *UserPasswordCreate {
-	upc.mutation.SetPassword(s)
-	return upc
+func (_c *UserPasswordCreate) SetPassword(v string) *UserPasswordCreate {
+	_c.mutation.SetPassword(v)
+	return _c
 }
 
 // SetNillablePassword sets the "password" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillablePassword(s *string) *UserPasswordCreate {
-	if s != nil {
-		upc.SetPassword(*s)
+func (_c *UserPasswordCreate) SetNillablePassword(v *string) *UserPasswordCreate {
+	if v != nil {
+		_c.SetPassword(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetSalt sets the "salt" field.
-func (upc *UserPasswordCreate) SetSalt(s string) *UserPasswordCreate {
-	upc.mutation.SetSalt(s)
-	return upc
+func (_c *UserPasswordCreate) SetSalt(v string) *UserPasswordCreate {
+	_c.mutation.SetSalt(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (upc *UserPasswordCreate) SetStatus(ts typex.SimpleStatus) *UserPasswordCreate {
-	upc.mutation.SetStatus(ts)
-	return upc
+func (_c *UserPasswordCreate) SetStatus(v typex.SimpleStatus) *UserPasswordCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableStatus(ts *typex.SimpleStatus) *UserPasswordCreate {
-	if ts != nil {
-		upc.SetStatus(*ts)
+func (_c *UserPasswordCreate) SetNillableStatus(v *typex.SimpleStatus) *UserPasswordCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return upc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (upc *UserPasswordCreate) SetID(i int) *UserPasswordCreate {
-	upc.mutation.SetID(i)
-	return upc
+func (_c *UserPasswordCreate) SetID(v int) *UserPasswordCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (upc *UserPasswordCreate) SetUser(u *User) *UserPasswordCreate {
-	return upc.SetUserID(u.ID)
+func (_c *UserPasswordCreate) SetUser(v *User) *UserPasswordCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the UserPasswordMutation object of the builder.
-func (upc *UserPasswordCreate) Mutation() *UserPasswordMutation {
-	return upc.mutation
+func (_c *UserPasswordCreate) Mutation() *UserPasswordMutation {
+	return _c.mutation
 }
 
 // Save creates the UserPassword in the database.
-func (upc *UserPasswordCreate) Save(ctx context.Context) (*UserPassword, error) {
-	if err := upc.defaults(); err != nil {
+func (_c *UserPasswordCreate) Save(ctx context.Context) (*UserPassword, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, upc.sqlSave, upc.mutation, upc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (upc *UserPasswordCreate) SaveX(ctx context.Context) *UserPassword {
-	v, err := upc.Save(ctx)
+func (_c *UserPasswordCreate) SaveX(ctx context.Context) *UserPassword {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,59 +160,59 @@ func (upc *UserPasswordCreate) SaveX(ctx context.Context) *UserPassword {
 }
 
 // Exec executes the query.
-func (upc *UserPasswordCreate) Exec(ctx context.Context) error {
-	_, err := upc.Save(ctx)
+func (_c *UserPasswordCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (upc *UserPasswordCreate) ExecX(ctx context.Context) {
-	if err := upc.Exec(ctx); err != nil {
+func (_c *UserPasswordCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (upc *UserPasswordCreate) defaults() error {
-	if _, ok := upc.mutation.CreatedAt(); !ok {
+func (_c *UserPasswordCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if userpassword.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized userpassword.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := userpassword.DefaultCreatedAt()
-		upc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := upc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := userpassword.DefaultStatus
-		upc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (upc *UserPasswordCreate) check() error {
-	if _, ok := upc.mutation.CreatedBy(); !ok {
+func (_c *UserPasswordCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "UserPassword.created_by"`)}
 	}
-	if _, ok := upc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserPassword.created_at"`)}
 	}
-	if _, ok := upc.mutation.Scene(); !ok {
+	if _, ok := _c.mutation.Scene(); !ok {
 		return &ValidationError{Name: "scene", err: errors.New(`ent: missing required field "UserPassword.scene"`)}
 	}
-	if v, ok := upc.mutation.Scene(); ok {
+	if v, ok := _c.mutation.Scene(); ok {
 		if err := userpassword.SceneValidator(v); err != nil {
 			return &ValidationError{Name: "scene", err: fmt.Errorf(`ent: validator failed for field "UserPassword.scene": %w`, err)}
 		}
 	}
-	if _, ok := upc.mutation.Salt(); !ok {
+	if _, ok := _c.mutation.Salt(); !ok {
 		return &ValidationError{Name: "salt", err: errors.New(`ent: missing required field "UserPassword.salt"`)}
 	}
-	if v, ok := upc.mutation.Salt(); ok {
+	if v, ok := _c.mutation.Salt(); ok {
 		if err := userpassword.SaltValidator(v); err != nil {
 			return &ValidationError{Name: "salt", err: fmt.Errorf(`ent: validator failed for field "UserPassword.salt": %w`, err)}
 		}
 	}
-	if v, ok := upc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := userpassword.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserPassword.status": %w`, err)}
 		}
@@ -220,12 +220,12 @@ func (upc *UserPasswordCreate) check() error {
 	return nil
 }
 
-func (upc *UserPasswordCreate) sqlSave(ctx context.Context) (*UserPassword, error) {
-	if err := upc.check(); err != nil {
+func (_c *UserPasswordCreate) sqlSave(ctx context.Context) (*UserPassword, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := upc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, upc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -235,54 +235,54 @@ func (upc *UserPasswordCreate) sqlSave(ctx context.Context) (*UserPassword, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	upc.mutation.id = &_node.ID
-	upc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec) {
+func (_c *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserPassword{config: upc.config}
+		_node = &UserPassword{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(userpassword.Table, sqlgraph.NewFieldSpec(userpassword.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = upc.conflict
-	if id, ok := upc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := upc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(userpassword.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := upc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(userpassword.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := upc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(userpassword.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := upc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(userpassword.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := upc.mutation.Scene(); ok {
+	if value, ok := _c.mutation.Scene(); ok {
 		_spec.SetField(userpassword.FieldScene, field.TypeEnum, value)
 		_node.Scene = value
 	}
-	if value, ok := upc.mutation.Password(); ok {
+	if value, ok := _c.mutation.Password(); ok {
 		_spec.SetField(userpassword.FieldPassword, field.TypeString, value)
 		_node.Password = value
 	}
-	if value, ok := upc.mutation.Salt(); ok {
+	if value, ok := _c.mutation.Salt(); ok {
 		_spec.SetField(userpassword.FieldSalt, field.TypeString, value)
 		_node.Salt = value
 	}
-	if value, ok := upc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(userpassword.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := upc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -318,10 +318,10 @@ func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (upc *UserPasswordCreate) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertOne {
-	upc.conflict = opts
+func (_c *UserPasswordCreate) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertOne {
+	_c.conflict = opts
 	return &UserPasswordUpsertOne{
-		create: upc,
+		create: _c,
 	}
 }
 
@@ -331,10 +331,10 @@ func (upc *UserPasswordCreate) OnConflict(opts ...sql.ConflictOption) *UserPassw
 //	client.UserPassword.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (upc *UserPasswordCreate) OnConflictColumns(columns ...string) *UserPasswordUpsertOne {
-	upc.conflict = append(upc.conflict, sql.ConflictColumns(columns...))
+func (_c *UserPasswordCreate) OnConflictColumns(columns ...string) *UserPasswordUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserPasswordUpsertOne{
-		create: upc,
+		create: _c,
 	}
 }
 
@@ -671,16 +671,16 @@ type UserPasswordCreateBulk struct {
 }
 
 // Save creates the UserPassword entities in the database.
-func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, error) {
-	if upcb.err != nil {
-		return nil, upcb.err
+func (_c *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(upcb.builders))
-	nodes := make([]*UserPassword, len(upcb.builders))
-	mutators := make([]Mutator, len(upcb.builders))
-	for i := range upcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserPassword, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := upcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserPasswordMutation)
@@ -694,12 +694,12 @@ func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, upcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = upcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, upcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -723,7 +723,7 @@ func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, upcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -731,8 +731,8 @@ func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (upcb *UserPasswordCreateBulk) SaveX(ctx context.Context) []*UserPassword {
-	v, err := upcb.Save(ctx)
+func (_c *UserPasswordCreateBulk) SaveX(ctx context.Context) []*UserPassword {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -740,14 +740,14 @@ func (upcb *UserPasswordCreateBulk) SaveX(ctx context.Context) []*UserPassword {
 }
 
 // Exec executes the query.
-func (upcb *UserPasswordCreateBulk) Exec(ctx context.Context) error {
-	_, err := upcb.Save(ctx)
+func (_c *UserPasswordCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (upcb *UserPasswordCreateBulk) ExecX(ctx context.Context) {
-	if err := upcb.Exec(ctx); err != nil {
+func (_c *UserPasswordCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -767,10 +767,10 @@ func (upcb *UserPasswordCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (upcb *UserPasswordCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertBulk {
-	upcb.conflict = opts
+func (_c *UserPasswordCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertBulk {
+	_c.conflict = opts
 	return &UserPasswordUpsertBulk{
-		create: upcb,
+		create: _c,
 	}
 }
 
@@ -780,10 +780,10 @@ func (upcb *UserPasswordCreateBulk) OnConflict(opts ...sql.ConflictOption) *User
 //	client.UserPassword.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (upcb *UserPasswordCreateBulk) OnConflictColumns(columns ...string) *UserPasswordUpsertBulk {
-	upcb.conflict = append(upcb.conflict, sql.ConflictColumns(columns...))
+func (_c *UserPasswordCreateBulk) OnConflictColumns(columns ...string) *UserPasswordUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserPasswordUpsertBulk{
-		create: upcb,
+		create: _c,
 	}
 }
 

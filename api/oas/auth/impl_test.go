@@ -2,10 +2,21 @@ package auth
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
 	"crypto/sha256"
+	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
+	"encoding/pem"
+	goerrors "errors"
 	"fmt"
+	"net/http/httptest"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,6 +24,7 @@ import (
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/security"
@@ -22,7 +34,6 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
-	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quotaitem"
@@ -35,11 +46,6 @@ import (
 	"github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/test/testsuite"
-	"net/http/httptest"
-	"strconv"
-	"strings"
-	"testing"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
@@ -85,15 +91,12 @@ func (t *authSuite) SetupSuite() {
 }
 
 type loginFlowSuite struct {
-	*authSuite
+	authSuite
 }
 
 // loginFlowSuite runs all the tests in the suite.
 func TestLoginFlow(t *testing.T) {
-	service := authSuite{}
-	suite.Run(t, &loginFlowSuite{
-		authSuite: &service,
-	})
+	suite.Run(t, &loginFlowSuite{})
 }
 
 func (ts *loginFlowSuite) SetupSuite() {
@@ -150,6 +153,9 @@ func (ts *loginFlowSuite) SetupSuite() {
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	req := httptest.NewRequest("POST", "/login", nil)
+	req.Header.Set("Referer", "")
+	ctx.Request = req
 	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
 	})
@@ -159,6 +165,9 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	req := httptest.NewRequest("POST", "/login", nil)
+	req.Header.Set("Referer", "")
+	ctx.Request = req
 	ts.AuthService.cache.Set(ctx, loginFailCachePrefix+"admin", 0)
 	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
@@ -169,27 +178,44 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 }
 
 func Test_CreateToken(t *testing.T) {
-	type jwtOpt struct {
-		SigningMethod   string        `json:"signingMethod"`
-		SigningKey      string        `json:"signingKey"`
-		PrivateKey      string        `json:"privateKey"`
-		TokenTTL        time.Duration `json:"tokenTTL"`
-		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
-	}
-	opts := Options{
-		JWT: jwtOpt{
-			SigningMethod:   "RS256",
-			SigningKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_pub.pem",
-			PrivateKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_auth_pkcs8.pem",
-			TokenTTL:        time.Hour * 100000,
-			RefreshTokenTTL: time.Hour * 100000,
-		},
-	}
-	_, token, err := createToken("1", opts, false)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(token)
+	// 测试 RS256 非对称加密算法的 token 创建
+	// 动态生成测试用 RSA 密钥对，避免依赖外部文件
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	require.NoError(t, err)
+
+	// 将私钥编码为 PEM 格式（PKCS1）
+	privateKeyPEM := pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
+	})
+
+	// 将公钥编码为 PEM 格式
+	publicKeyPEM, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
+	require.NoError(t, err)
+	publicKeyBytes := pem.EncodeToMemory(&pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: publicKeyPEM,
+	})
+
+	opts := Options{}
+	opts.JWT.SigningMethod = "RS256"
+	opts.JWT.SigningKey = string(publicKeyBytes)
+	opts.JWT.PrivateKey = string(privateKeyPEM)
+	opts.JWT.TokenTTL = time.Hour
+	opts.JWT.RefreshTokenTTL = time.Hour
+
+	tokenID, tokenStr, err := createToken("1", opts, false)
+	require.NoError(t, err)
+	assert.NotEmpty(t, tokenID)
+	assert.NotEmpty(t, tokenStr)
+
+	// 验证创建的 token 可以用公钥解析
+	parsed, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		return &privateKey.PublicKey, nil
+	})
+	require.NoError(t, err)
+	assert.True(t, parsed.Valid)
+	assert.Equal(t, "1", parsed.Claims.(jwt.MapClaims)["sub"])
 }
 
 func Test_CreateStateToken(t *testing.T) {
@@ -239,12 +265,21 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 		})
 		if i == (retry - ts.AuthService.CaptchaTimes - 1) {
 			// 超过retry限制次数，发送邮件前取user_addr报NotFound
-			ts.Require().True(ent.IsNotFound(err))
+			var ginerr *gin.Error
+			ts.Require().True(goerrors.As(err, &ginerr))
+			ts.EqualValues(errors.ErrUserHasLocked, ginerr.Type)
 		} else {
 			ts.Require().Error(err)
 		}
 		ts.Nil(res)
 	}
+
+	// 恢复用户状态: 清除登录失败缓存, 恢复用户状态为 Active
+	ts.AuthService.cache.Del(context.Background(), loginFailCachePrefix+"admin")
+	// 使用带有用户身份的 context 来更新用户状态
+	ctx2 := testsuite.NewTestCtx(1, 1, ts.AuthService.db)
+	_, err = ts.AuthService.db.User.UpdateOneID(1).SetStatus(types.UserStatusActive).Save(ctx2)
+	ts.Require().NoError(err)
 }
 
 func (ts *loginFlowSuite) Test_VerifyFactor() {
@@ -434,6 +469,7 @@ func TestPwd(t *testing.T) {
 }
 
 func (ts *loginFlowSuite) Test_GetMinioSts() {
+	ts.T().Skip("can not test for Minio")
 	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{}`)
@@ -452,10 +488,11 @@ func (ts *loginFlowSuite) Test_GetMinioSts() {
 }
 
 func (ts *loginFlowSuite) Test_GetAliSts() {
+	ts.T().Skip("can not test for aliyun")
 	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{
-		"bucket": "qldevtest",
+		"bucket": "xxxxx",
 		"endpoint": "https://oss-cn-shenzhen.aliyuncs.com"
 	}`)
 	req := httptest.NewRequest("POST", "/oss/sts", payload)

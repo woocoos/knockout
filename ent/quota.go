@@ -114,7 +114,7 @@ func (*Quota) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Quota fields.
-func (q *Quota) assignValues(columns []string, values []any) error {
+func (_m *Quota) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -125,75 +125,75 @@ func (q *Quota) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			q.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case quota.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				q.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case quota.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				q.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case quota.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				q.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case quota.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				q.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case quota.FieldTenantID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				q.TenantID = int(value.Int64)
+				_m.TenantID = int(value.Int64)
 			}
 		case quota.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				q.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case quota.FieldQuotaItemID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field quota_item_id", values[i])
 			} else if value.Valid {
-				q.QuotaItemID = int(value.Int64)
+				_m.QuotaItemID = int(value.Int64)
 			}
 		case quota.FieldLimit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field limit", values[i])
 			} else if value.Valid {
-				q.Limit = value.Int64
+				_m.Limit = value.Int64
 			}
 		case quota.FieldUsed:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field used", values[i])
 			} else if value.Valid {
-				q.Used = value.Int64
+				_m.Used = value.Int64
 			}
 		case quota.FieldStartAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_at", values[i])
 			} else if value.Valid {
-				q.StartAt = value.Time
+				_m.StartAt = value.Time
 			}
 		case quota.FieldEndAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field end_at", values[i])
 			} else if value.Valid {
-				q.EndAt = value.Time
+				_m.EndAt = value.Time
 			}
 		default:
-			q.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -201,80 +201,80 @@ func (q *Quota) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Quota.
 // This includes values selected through modifiers, order, etc.
-func (q *Quota) Value(name string) (ent.Value, error) {
-	return q.selectValues.Get(name)
+func (_m *Quota) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryQuotaItem queries the "quota_item" edge of the Quota entity.
-func (q *Quota) QueryQuotaItem() *QuotaItemQuery {
-	return NewQuotaClient(q.config).QueryQuotaItem(q)
+func (_m *Quota) QueryQuotaItem() *QuotaItemQuery {
+	return NewQuotaClient(_m.config).QueryQuotaItem(_m)
 }
 
 // QueryQuotaOrg queries the "quota_org" edge of the Quota entity.
-func (q *Quota) QueryQuotaOrg() *OrgQuery {
-	return NewQuotaClient(q.config).QueryQuotaOrg(q)
+func (_m *Quota) QueryQuotaOrg() *OrgQuery {
+	return NewQuotaClient(_m.config).QueryQuotaOrg(_m)
 }
 
 // QueryQuotaUser queries the "quota_user" edge of the Quota entity.
-func (q *Quota) QueryQuotaUser() *UserQuery {
-	return NewQuotaClient(q.config).QueryQuotaUser(q)
+func (_m *Quota) QueryQuotaUser() *UserQuery {
+	return NewQuotaClient(_m.config).QueryQuotaUser(_m)
 }
 
 // Update returns a builder for updating this Quota.
 // Note that you need to call Quota.Unwrap() before calling this method if this Quota
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (q *Quota) Update() *QuotaUpdateOne {
-	return NewQuotaClient(q.config).UpdateOne(q)
+func (_m *Quota) Update() *QuotaUpdateOne {
+	return NewQuotaClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Quota entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (q *Quota) Unwrap() *Quota {
-	_tx, ok := q.config.driver.(*txDriver)
+func (_m *Quota) Unwrap() *Quota {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Quota is not a transactional entity")
 	}
-	q.config.driver = _tx.drv
-	return q
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (q *Quota) String() string {
+func (_m *Quota) String() string {
 	var builder strings.Builder
 	builder.WriteString("Quota(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", q.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", q.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(q.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", q.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(q.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", q.TenantID))
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", q.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("quota_item_id=")
-	builder.WriteString(fmt.Sprintf("%v", q.QuotaItemID))
+	builder.WriteString(fmt.Sprintf("%v", _m.QuotaItemID))
 	builder.WriteString(", ")
 	builder.WriteString("limit=")
-	builder.WriteString(fmt.Sprintf("%v", q.Limit))
+	builder.WriteString(fmt.Sprintf("%v", _m.Limit))
 	builder.WriteString(", ")
 	builder.WriteString("used=")
-	builder.WriteString(fmt.Sprintf("%v", q.Used))
+	builder.WriteString(fmt.Sprintf("%v", _m.Used))
 	builder.WriteString(", ")
 	builder.WriteString("start_at=")
-	builder.WriteString(q.StartAt.Format(time.ANSIC))
+	builder.WriteString(_m.StartAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("end_at=")
-	builder.WriteString(q.EndAt.Format(time.ANSIC))
+	builder.WriteString(_m.EndAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

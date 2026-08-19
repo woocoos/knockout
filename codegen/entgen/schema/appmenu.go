@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout/ent/appmenu"
 )
 
 // AppMenu holds the schema definition for the AppMenu entity.
@@ -60,11 +59,5 @@ func (AppMenu) Edges() []ent.Edge {
 			Comment("需要权限控制时对应的权限"),
 		edge.To("children", AppMenu.Type).
 			From("parent").Unique().Required().Field("parent_id"),
-	}
-}
-
-func (AppMenu) Hooks() []ent.Hook {
-	return []ent.Hook{
-		InitDisplaySortHook(appmenu.Table),
 	}
 }

@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -9,11 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/hook"
 )
 
 // QuotaItem 配额项定义
@@ -120,26 +115,4 @@ func (Quota) Indexes() []ent.Index {
 		index.Fields("tenant_id", "user_id", "quota_item_id").
 			Unique(),
 	}
-}
-
-func (q Quota) Hooks() []ent.Hook {
-	return []ent.Hook{
-		q.tenantOrOrgIDHook(),
-	}
-}
-
-func (Quota) tenantOrOrgIDHook() ent.Hook {
-	return hook.On(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.QuotaFunc(func(ctx context.Context, mutation *gen.QuotaMutation) (gen.Value, error) {
-				_, tidOk := mutation.TenantID()
-				_, uidOk := mutation.UserID()
-				if mutation.Op() == ent.OpCreate {
-					if !tidOk && !uidOk {
-						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "at least one of tenant_id and org_id has a value")
-					}
-				}
-				return next.Mutate(ctx, mutation)
-			})
-		}, ent.OpCreate)
 }

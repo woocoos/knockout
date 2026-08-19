@@ -25,183 +25,183 @@ type FileIdentityCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (fic *FileIdentityCreate) SetCreatedBy(i int) *FileIdentityCreate {
-	fic.mutation.SetCreatedBy(i)
-	return fic
+func (_c *FileIdentityCreate) SetCreatedBy(v int) *FileIdentityCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fic *FileIdentityCreate) SetCreatedAt(t time.Time) *FileIdentityCreate {
-	fic.mutation.SetCreatedAt(t)
-	return fic
+func (_c *FileIdentityCreate) SetCreatedAt(v time.Time) *FileIdentityCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableCreatedAt(t *time.Time) *FileIdentityCreate {
-	if t != nil {
-		fic.SetCreatedAt(*t)
+func (_c *FileIdentityCreate) SetNillableCreatedAt(v *time.Time) *FileIdentityCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (fic *FileIdentityCreate) SetUpdatedBy(i int) *FileIdentityCreate {
-	fic.mutation.SetUpdatedBy(i)
-	return fic
+func (_c *FileIdentityCreate) SetUpdatedBy(v int) *FileIdentityCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableUpdatedBy(i *int) *FileIdentityCreate {
-	if i != nil {
-		fic.SetUpdatedBy(*i)
+func (_c *FileIdentityCreate) SetNillableUpdatedBy(v *int) *FileIdentityCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fic *FileIdentityCreate) SetUpdatedAt(t time.Time) *FileIdentityCreate {
-	fic.mutation.SetUpdatedAt(t)
-	return fic
+func (_c *FileIdentityCreate) SetUpdatedAt(v time.Time) *FileIdentityCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableUpdatedAt(t *time.Time) *FileIdentityCreate {
-	if t != nil {
-		fic.SetUpdatedAt(*t)
+func (_c *FileIdentityCreate) SetNillableUpdatedAt(v *time.Time) *FileIdentityCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (fic *FileIdentityCreate) SetTenantID(i int) *FileIdentityCreate {
-	fic.mutation.SetTenantID(i)
-	return fic
+func (_c *FileIdentityCreate) SetTenantID(v int) *FileIdentityCreate {
+	_c.mutation.SetTenantID(v)
+	return _c
 }
 
 // SetAccessKeyID sets the "access_key_id" field.
-func (fic *FileIdentityCreate) SetAccessKeyID(s string) *FileIdentityCreate {
-	fic.mutation.SetAccessKeyID(s)
-	return fic
+func (_c *FileIdentityCreate) SetAccessKeyID(v string) *FileIdentityCreate {
+	_c.mutation.SetAccessKeyID(v)
+	return _c
 }
 
 // SetAccessKeySecret sets the "access_key_secret" field.
-func (fic *FileIdentityCreate) SetAccessKeySecret(s string) *FileIdentityCreate {
-	fic.mutation.SetAccessKeySecret(s)
-	return fic
+func (_c *FileIdentityCreate) SetAccessKeySecret(v string) *FileIdentityCreate {
+	_c.mutation.SetAccessKeySecret(v)
+	return _c
 }
 
 // SetFileSourceID sets the "file_source_id" field.
-func (fic *FileIdentityCreate) SetFileSourceID(i int) *FileIdentityCreate {
-	fic.mutation.SetFileSourceID(i)
-	return fic
+func (_c *FileIdentityCreate) SetFileSourceID(v int) *FileIdentityCreate {
+	_c.mutation.SetFileSourceID(v)
+	return _c
 }
 
 // SetRoleArn sets the "role_arn" field.
-func (fic *FileIdentityCreate) SetRoleArn(s string) *FileIdentityCreate {
-	fic.mutation.SetRoleArn(s)
-	return fic
+func (_c *FileIdentityCreate) SetRoleArn(v string) *FileIdentityCreate {
+	_c.mutation.SetRoleArn(v)
+	return _c
 }
 
 // SetPolicy sets the "policy" field.
-func (fic *FileIdentityCreate) SetPolicy(s string) *FileIdentityCreate {
-	fic.mutation.SetPolicy(s)
-	return fic
+func (_c *FileIdentityCreate) SetPolicy(v string) *FileIdentityCreate {
+	_c.mutation.SetPolicy(v)
+	return _c
 }
 
 // SetNillablePolicy sets the "policy" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillablePolicy(s *string) *FileIdentityCreate {
-	if s != nil {
-		fic.SetPolicy(*s)
+func (_c *FileIdentityCreate) SetNillablePolicy(v *string) *FileIdentityCreate {
+	if v != nil {
+		_c.SetPolicy(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetDurationSeconds sets the "duration_seconds" field.
-func (fic *FileIdentityCreate) SetDurationSeconds(i int) *FileIdentityCreate {
-	fic.mutation.SetDurationSeconds(i)
-	return fic
+func (_c *FileIdentityCreate) SetDurationSeconds(v int) *FileIdentityCreate {
+	_c.mutation.SetDurationSeconds(v)
+	return _c
 }
 
 // SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableDurationSeconds(i *int) *FileIdentityCreate {
-	if i != nil {
-		fic.SetDurationSeconds(*i)
+func (_c *FileIdentityCreate) SetNillableDurationSeconds(v *int) *FileIdentityCreate {
+	if v != nil {
+		_c.SetDurationSeconds(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetIsDefault sets the "is_default" field.
-func (fic *FileIdentityCreate) SetIsDefault(b bool) *FileIdentityCreate {
-	fic.mutation.SetIsDefault(b)
-	return fic
+func (_c *FileIdentityCreate) SetIsDefault(v bool) *FileIdentityCreate {
+	_c.mutation.SetIsDefault(v)
+	return _c
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableIsDefault(b *bool) *FileIdentityCreate {
-	if b != nil {
-		fic.SetIsDefault(*b)
+func (_c *FileIdentityCreate) SetNillableIsDefault(v *bool) *FileIdentityCreate {
+	if v != nil {
+		_c.SetIsDefault(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (fic *FileIdentityCreate) SetComments(s string) *FileIdentityCreate {
-	fic.mutation.SetComments(s)
-	return fic
+func (_c *FileIdentityCreate) SetComments(v string) *FileIdentityCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (fic *FileIdentityCreate) SetNillableComments(s *string) *FileIdentityCreate {
-	if s != nil {
-		fic.SetComments(*s)
+func (_c *FileIdentityCreate) SetNillableComments(v *string) *FileIdentityCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fic *FileIdentityCreate) SetID(i int) *FileIdentityCreate {
-	fic.mutation.SetID(i)
-	return fic
+func (_c *FileIdentityCreate) SetID(v int) *FileIdentityCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetSourceID sets the "source" edge to the FileSource entity by ID.
-func (fic *FileIdentityCreate) SetSourceID(id int) *FileIdentityCreate {
-	fic.mutation.SetSourceID(id)
-	return fic
+func (_c *FileIdentityCreate) SetSourceID(id int) *FileIdentityCreate {
+	_c.mutation.SetSourceID(id)
+	return _c
 }
 
 // SetSource sets the "source" edge to the FileSource entity.
-func (fic *FileIdentityCreate) SetSource(f *FileSource) *FileIdentityCreate {
-	return fic.SetSourceID(f.ID)
+func (_c *FileIdentityCreate) SetSource(v *FileSource) *FileIdentityCreate {
+	return _c.SetSourceID(v.ID)
 }
 
 // SetOrgID sets the "org" edge to the Org entity by ID.
-func (fic *FileIdentityCreate) SetOrgID(id int) *FileIdentityCreate {
-	fic.mutation.SetOrgID(id)
-	return fic
+func (_c *FileIdentityCreate) SetOrgID(id int) *FileIdentityCreate {
+	_c.mutation.SetOrgID(id)
+	return _c
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (fic *FileIdentityCreate) SetOrg(o *Org) *FileIdentityCreate {
-	return fic.SetOrgID(o.ID)
+func (_c *FileIdentityCreate) SetOrg(v *Org) *FileIdentityCreate {
+	return _c.SetOrgID(v.ID)
 }
 
 // Mutation returns the FileIdentityMutation object of the builder.
-func (fic *FileIdentityCreate) Mutation() *FileIdentityMutation {
-	return fic.mutation
+func (_c *FileIdentityCreate) Mutation() *FileIdentityMutation {
+	return _c.mutation
 }
 
 // Save creates the FileIdentity in the database.
-func (fic *FileIdentityCreate) Save(ctx context.Context) (*FileIdentity, error) {
-	if err := fic.defaults(); err != nil {
+func (_c *FileIdentityCreate) Save(ctx context.Context) (*FileIdentity, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, fic.sqlSave, fic.mutation, fic.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fic *FileIdentityCreate) SaveX(ctx context.Context) *FileIdentity {
-	v, err := fic.Save(ctx)
+func (_c *FileIdentityCreate) SaveX(ctx context.Context) *FileIdentity {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,94 +209,94 @@ func (fic *FileIdentityCreate) SaveX(ctx context.Context) *FileIdentity {
 }
 
 // Exec executes the query.
-func (fic *FileIdentityCreate) Exec(ctx context.Context) error {
-	_, err := fic.Save(ctx)
+func (_c *FileIdentityCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fic *FileIdentityCreate) ExecX(ctx context.Context) {
-	if err := fic.Exec(ctx); err != nil {
+func (_c *FileIdentityCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fic *FileIdentityCreate) defaults() error {
-	if _, ok := fic.mutation.CreatedAt(); !ok {
+func (_c *FileIdentityCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if fileidentity.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized fileidentity.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := fileidentity.DefaultCreatedAt()
-		fic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := fic.mutation.DurationSeconds(); !ok {
+	if _, ok := _c.mutation.DurationSeconds(); !ok {
 		v := fileidentity.DefaultDurationSeconds
-		fic.mutation.SetDurationSeconds(v)
+		_c.mutation.SetDurationSeconds(v)
 	}
-	if _, ok := fic.mutation.IsDefault(); !ok {
+	if _, ok := _c.mutation.IsDefault(); !ok {
 		v := fileidentity.DefaultIsDefault
-		fic.mutation.SetIsDefault(v)
+		_c.mutation.SetIsDefault(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fic *FileIdentityCreate) check() error {
-	if _, ok := fic.mutation.CreatedBy(); !ok {
+func (_c *FileIdentityCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "FileIdentity.created_by"`)}
 	}
-	if _, ok := fic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FileIdentity.created_at"`)}
 	}
-	if _, ok := fic.mutation.TenantID(); !ok {
+	if _, ok := _c.mutation.TenantID(); !ok {
 		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "FileIdentity.tenant_id"`)}
 	}
-	if _, ok := fic.mutation.AccessKeyID(); !ok {
+	if _, ok := _c.mutation.AccessKeyID(); !ok {
 		return &ValidationError{Name: "access_key_id", err: errors.New(`ent: missing required field "FileIdentity.access_key_id"`)}
 	}
-	if v, ok := fic.mutation.AccessKeyID(); ok {
+	if v, ok := _c.mutation.AccessKeyID(); ok {
 		if err := fileidentity.AccessKeyIDValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_id": %w`, err)}
 		}
 	}
-	if _, ok := fic.mutation.AccessKeySecret(); !ok {
+	if _, ok := _c.mutation.AccessKeySecret(); !ok {
 		return &ValidationError{Name: "access_key_secret", err: errors.New(`ent: missing required field "FileIdentity.access_key_secret"`)}
 	}
-	if v, ok := fic.mutation.AccessKeySecret(); ok {
+	if v, ok := _c.mutation.AccessKeySecret(); ok {
 		if err := fileidentity.AccessKeySecretValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_secret": %w`, err)}
 		}
 	}
-	if _, ok := fic.mutation.FileSourceID(); !ok {
+	if _, ok := _c.mutation.FileSourceID(); !ok {
 		return &ValidationError{Name: "file_source_id", err: errors.New(`ent: missing required field "FileIdentity.file_source_id"`)}
 	}
-	if _, ok := fic.mutation.RoleArn(); !ok {
+	if _, ok := _c.mutation.RoleArn(); !ok {
 		return &ValidationError{Name: "role_arn", err: errors.New(`ent: missing required field "FileIdentity.role_arn"`)}
 	}
-	if v, ok := fic.mutation.RoleArn(); ok {
+	if v, ok := _c.mutation.RoleArn(); ok {
 		if err := fileidentity.RoleArnValidator(v); err != nil {
 			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.role_arn": %w`, err)}
 		}
 	}
-	if _, ok := fic.mutation.IsDefault(); !ok {
+	if _, ok := _c.mutation.IsDefault(); !ok {
 		return &ValidationError{Name: "is_default", err: errors.New(`ent: missing required field "FileIdentity.is_default"`)}
 	}
-	if len(fic.mutation.SourceIDs()) == 0 {
+	if len(_c.mutation.SourceIDs()) == 0 {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required edge "FileIdentity.source"`)}
 	}
-	if len(fic.mutation.OrgIDs()) == 0 {
+	if len(_c.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "FileIdentity.org"`)}
 	}
 	return nil
 }
 
-func (fic *FileIdentityCreate) sqlSave(ctx context.Context) (*FileIdentity, error) {
-	if err := fic.check(); err != nil {
+func (_c *FileIdentityCreate) sqlSave(ctx context.Context) (*FileIdentity, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -306,66 +306,66 @@ func (fic *FileIdentityCreate) sqlSave(ctx context.Context) (*FileIdentity, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	fic.mutation.id = &_node.ID
-	fic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fic *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec) {
+func (_c *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FileIdentity{config: fic.config}
+		_node = &FileIdentity{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(fileidentity.Table, sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = fic.conflict
-	if id, ok := fic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fic.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(fileidentity.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := fic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(fileidentity.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := fic.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := fic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fic.mutation.AccessKeyID(); ok {
+	if value, ok := _c.mutation.AccessKeyID(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeyID, field.TypeString, value)
 		_node.AccessKeyID = value
 	}
-	if value, ok := fic.mutation.AccessKeySecret(); ok {
+	if value, ok := _c.mutation.AccessKeySecret(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeySecret, field.TypeString, value)
 		_node.AccessKeySecret = value
 	}
-	if value, ok := fic.mutation.RoleArn(); ok {
+	if value, ok := _c.mutation.RoleArn(); ok {
 		_spec.SetField(fileidentity.FieldRoleArn, field.TypeString, value)
 		_node.RoleArn = value
 	}
-	if value, ok := fic.mutation.Policy(); ok {
+	if value, ok := _c.mutation.Policy(); ok {
 		_spec.SetField(fileidentity.FieldPolicy, field.TypeString, value)
 		_node.Policy = value
 	}
-	if value, ok := fic.mutation.DurationSeconds(); ok {
+	if value, ok := _c.mutation.DurationSeconds(); ok {
 		_spec.SetField(fileidentity.FieldDurationSeconds, field.TypeInt, value)
 		_node.DurationSeconds = value
 	}
-	if value, ok := fic.mutation.IsDefault(); ok {
+	if value, ok := _c.mutation.IsDefault(); ok {
 		_spec.SetField(fileidentity.FieldIsDefault, field.TypeBool, value)
 		_node.IsDefault = value
 	}
-	if value, ok := fic.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(fileidentity.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if nodes := fic.mutation.SourceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -382,7 +382,7 @@ func (fic *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec
 		_node.FileSourceID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fic.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -418,10 +418,10 @@ func (fic *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (fic *FileIdentityCreate) OnConflict(opts ...sql.ConflictOption) *FileIdentityUpsertOne {
-	fic.conflict = opts
+func (_c *FileIdentityCreate) OnConflict(opts ...sql.ConflictOption) *FileIdentityUpsertOne {
+	_c.conflict = opts
 	return &FileIdentityUpsertOne{
-		create: fic,
+		create: _c,
 	}
 }
 
@@ -431,10 +431,10 @@ func (fic *FileIdentityCreate) OnConflict(opts ...sql.ConflictOption) *FileIdent
 //	client.FileIdentity.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fic *FileIdentityCreate) OnConflictColumns(columns ...string) *FileIdentityUpsertOne {
-	fic.conflict = append(fic.conflict, sql.ConflictColumns(columns...))
+func (_c *FileIdentityCreate) OnConflictColumns(columns ...string) *FileIdentityUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FileIdentityUpsertOne{
-		create: fic,
+		create: _c,
 	}
 }
 
@@ -901,16 +901,16 @@ type FileIdentityCreateBulk struct {
 }
 
 // Save creates the FileIdentity entities in the database.
-func (ficb *FileIdentityCreateBulk) Save(ctx context.Context) ([]*FileIdentity, error) {
-	if ficb.err != nil {
-		return nil, ficb.err
+func (_c *FileIdentityCreateBulk) Save(ctx context.Context) ([]*FileIdentity, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ficb.builders))
-	nodes := make([]*FileIdentity, len(ficb.builders))
-	mutators := make([]Mutator, len(ficb.builders))
-	for i := range ficb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*FileIdentity, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ficb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FileIdentityMutation)
@@ -924,12 +924,12 @@ func (ficb *FileIdentityCreateBulk) Save(ctx context.Context) ([]*FileIdentity, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ficb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ficb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ficb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -953,7 +953,7 @@ func (ficb *FileIdentityCreateBulk) Save(ctx context.Context) ([]*FileIdentity, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ficb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -961,8 +961,8 @@ func (ficb *FileIdentityCreateBulk) Save(ctx context.Context) ([]*FileIdentity, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ficb *FileIdentityCreateBulk) SaveX(ctx context.Context) []*FileIdentity {
-	v, err := ficb.Save(ctx)
+func (_c *FileIdentityCreateBulk) SaveX(ctx context.Context) []*FileIdentity {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -970,14 +970,14 @@ func (ficb *FileIdentityCreateBulk) SaveX(ctx context.Context) []*FileIdentity {
 }
 
 // Exec executes the query.
-func (ficb *FileIdentityCreateBulk) Exec(ctx context.Context) error {
-	_, err := ficb.Save(ctx)
+func (_c *FileIdentityCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ficb *FileIdentityCreateBulk) ExecX(ctx context.Context) {
-	if err := ficb.Exec(ctx); err != nil {
+func (_c *FileIdentityCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -997,10 +997,10 @@ func (ficb *FileIdentityCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ficb *FileIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *FileIdentityUpsertBulk {
-	ficb.conflict = opts
+func (_c *FileIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *FileIdentityUpsertBulk {
+	_c.conflict = opts
 	return &FileIdentityUpsertBulk{
-		create: ficb,
+		create: _c,
 	}
 }
 
@@ -1010,10 +1010,10 @@ func (ficb *FileIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *File
 //	client.FileIdentity.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ficb *FileIdentityCreateBulk) OnConflictColumns(columns ...string) *FileIdentityUpsertBulk {
-	ficb.conflict = append(ficb.conflict, sql.ConflictColumns(columns...))
+func (_c *FileIdentityCreateBulk) OnConflictColumns(columns ...string) *FileIdentityUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FileIdentityUpsertBulk{
-		create: ficb,
+		create: _c,
 	}
 }
 

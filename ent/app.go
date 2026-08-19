@@ -200,7 +200,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the App fields.
-func (a *App) assignValues(columns []string, values []any) error {
+func (_m *App) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -211,117 +211,117 @@ func (a *App) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			a.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case app.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				a.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case app.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				a.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case app.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				a.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case app.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				a.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case app.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				a.Name = value.String
+				_m.Name = value.String
 			}
 		case app.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				a.Code = value.String
+				_m.Code = value.String
 			}
 		case app.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				a.Kind = app.Kind(value.String)
+				_m.Kind = app.Kind(value.String)
 			}
 		case app.FieldRedirectURI:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field redirect_uri", values[i])
 			} else if value.Valid {
-				a.RedirectURI = value.String
+				_m.RedirectURI = value.String
 			}
 		case app.FieldAppKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field app_key", values[i])
 			} else if value.Valid {
-				a.AppKey = value.String
+				_m.AppKey = value.String
 			}
 		case app.FieldAppSecret:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field app_secret", values[i])
 			} else if value.Valid {
-				a.AppSecret = value.String
+				_m.AppSecret = value.String
 			}
 		case app.FieldScopes:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field scopes", values[i])
 			} else if value.Valid {
-				a.Scopes = value.String
+				_m.Scopes = value.String
 			}
 		case app.FieldTokenValidity:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field token_validity", values[i])
 			} else if value.Valid {
-				a.TokenValidity = int32(value.Int64)
+				_m.TokenValidity = int32(value.Int64)
 			}
 		case app.FieldRefreshTokenValidity:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field refresh_token_validity", values[i])
 			} else if value.Valid {
-				a.RefreshTokenValidity = int32(value.Int64)
+				_m.RefreshTokenValidity = int32(value.Int64)
 			}
 		case app.FieldLogo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field logo", values[i])
 			} else if value.Valid {
-				a.Logo = value.String
+				_m.Logo = value.String
 			}
 		case app.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				a.Comments = value.String
+				_m.Comments = value.String
 			}
 		case app.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				a.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		case app.FieldOrgPrivate:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field org_private", values[i])
 			} else if value.Valid {
-				a.OrgPrivate = value.Bool
+				_m.OrgPrivate = value.Bool
 			}
 		case app.FieldOwnerOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field owner_org_id", values[i])
 			} else if value.Valid {
-				a.OwnerOrgID = int(value.Int64)
+				_m.OwnerOrgID = int(value.Int64)
 			}
 		default:
-			a.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -329,348 +329,348 @@ func (a *App) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the App.
 // This includes values selected through modifiers, order, etc.
-func (a *App) Value(name string) (ent.Value, error) {
-	return a.selectValues.Get(name)
+func (_m *App) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMenus queries the "menus" edge of the App entity.
-func (a *App) QueryMenus() *AppMenuQuery {
-	return NewAppClient(a.config).QueryMenus(a)
+func (_m *App) QueryMenus() *AppMenuQuery {
+	return NewAppClient(_m.config).QueryMenus(_m)
 }
 
 // QueryActions queries the "actions" edge of the App entity.
-func (a *App) QueryActions() *AppActionQuery {
-	return NewAppClient(a.config).QueryActions(a)
+func (_m *App) QueryActions() *AppActionQuery {
+	return NewAppClient(_m.config).QueryActions(_m)
 }
 
 // QueryResources queries the "resources" edge of the App entity.
-func (a *App) QueryResources() *AppResQuery {
-	return NewAppClient(a.config).QueryResources(a)
+func (_m *App) QueryResources() *AppResQuery {
+	return NewAppClient(_m.config).QueryResources(_m)
 }
 
 // QueryRoles queries the "roles" edge of the App entity.
-func (a *App) QueryRoles() *AppRoleQuery {
-	return NewAppClient(a.config).QueryRoles(a)
+func (_m *App) QueryRoles() *AppRoleQuery {
+	return NewAppClient(_m.config).QueryRoles(_m)
 }
 
 // QueryPolicies queries the "policies" edge of the App entity.
-func (a *App) QueryPolicies() *AppPolicyQuery {
-	return NewAppClient(a.config).QueryPolicies(a)
+func (_m *App) QueryPolicies() *AppPolicyQuery {
+	return NewAppClient(_m.config).QueryPolicies(_m)
 }
 
 // QueryPolicyViews queries the "policy_views" edge of the App entity.
-func (a *App) QueryPolicyViews() *AppPolicyViewQuery {
-	return NewAppClient(a.config).QueryPolicyViews(a)
+func (_m *App) QueryPolicyViews() *AppPolicyViewQuery {
+	return NewAppClient(_m.config).QueryPolicyViews(_m)
 }
 
 // QueryOrgs queries the "orgs" edge of the App entity.
-func (a *App) QueryOrgs() *OrgQuery {
-	return NewAppClient(a.config).QueryOrgs(a)
+func (_m *App) QueryOrgs() *OrgQuery {
+	return NewAppClient(_m.config).QueryOrgs(_m)
 }
 
 // QueryDicts queries the "dicts" edge of the App entity.
-func (a *App) QueryDicts() *AppDictQuery {
-	return NewAppClient(a.config).QueryDicts(a)
+func (_m *App) QueryDicts() *AppDictQuery {
+	return NewAppClient(_m.config).QueryDicts(_m)
 }
 
 // QueryOrgApp queries the "org_app" edge of the App entity.
-func (a *App) QueryOrgApp() *OrgAppQuery {
-	return NewAppClient(a.config).QueryOrgApp(a)
+func (_m *App) QueryOrgApp() *OrgAppQuery {
+	return NewAppClient(_m.config).QueryOrgApp(_m)
 }
 
 // Update returns a builder for updating this App.
 // Note that you need to call App.Unwrap() before calling this method if this App
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *App) Update() *AppUpdateOne {
-	return NewAppClient(a.config).UpdateOne(a)
+func (_m *App) Update() *AppUpdateOne {
+	return NewAppClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the App entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *App) Unwrap() *App {
-	_tx, ok := a.config.driver.(*txDriver)
+func (_m *App) Unwrap() *App {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: App is not a transactional entity")
 	}
-	a.config.driver = _tx.drv
-	return a
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (a *App) String() string {
+func (_m *App) String() string {
 	var builder strings.Builder
 	builder.WriteString("App(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", a.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(a.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", a.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(a.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(a.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", a.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("redirect_uri=")
-	builder.WriteString(a.RedirectURI)
+	builder.WriteString(_m.RedirectURI)
 	builder.WriteString(", ")
 	builder.WriteString("app_key=")
-	builder.WriteString(a.AppKey)
+	builder.WriteString(_m.AppKey)
 	builder.WriteString(", ")
 	builder.WriteString("app_secret=")
-	builder.WriteString(a.AppSecret)
+	builder.WriteString(_m.AppSecret)
 	builder.WriteString(", ")
 	builder.WriteString("scopes=")
-	builder.WriteString(a.Scopes)
+	builder.WriteString(_m.Scopes)
 	builder.WriteString(", ")
 	builder.WriteString("token_validity=")
-	builder.WriteString(fmt.Sprintf("%v", a.TokenValidity))
+	builder.WriteString(fmt.Sprintf("%v", _m.TokenValidity))
 	builder.WriteString(", ")
 	builder.WriteString("refresh_token_validity=")
-	builder.WriteString(fmt.Sprintf("%v", a.RefreshTokenValidity))
+	builder.WriteString(fmt.Sprintf("%v", _m.RefreshTokenValidity))
 	builder.WriteString(", ")
 	builder.WriteString("logo=")
-	builder.WriteString(a.Logo)
+	builder.WriteString(_m.Logo)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(a.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", a.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("org_private=")
-	builder.WriteString(fmt.Sprintf("%v", a.OrgPrivate))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgPrivate))
 	builder.WriteString(", ")
 	builder.WriteString("owner_org_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.OwnerOrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OwnerOrgID))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedMenus returns the Menus named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedMenus(name string) ([]*AppMenu, error) {
-	if a.Edges.namedMenus == nil {
+func (_m *App) NamedMenus(name string) ([]*AppMenu, error) {
+	if _m.Edges.namedMenus == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedMenus[name]
+	nodes, ok := _m.Edges.namedMenus[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedMenus(name string, edges ...*AppMenu) {
-	if a.Edges.namedMenus == nil {
-		a.Edges.namedMenus = make(map[string][]*AppMenu)
+func (_m *App) appendNamedMenus(name string, edges ...*AppMenu) {
+	if _m.Edges.namedMenus == nil {
+		_m.Edges.namedMenus = make(map[string][]*AppMenu)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedMenus[name] = []*AppMenu{}
+		_m.Edges.namedMenus[name] = []*AppMenu{}
 	} else {
-		a.Edges.namedMenus[name] = append(a.Edges.namedMenus[name], edges...)
+		_m.Edges.namedMenus[name] = append(_m.Edges.namedMenus[name], edges...)
 	}
 }
 
 // NamedActions returns the Actions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedActions(name string) ([]*AppAction, error) {
-	if a.Edges.namedActions == nil {
+func (_m *App) NamedActions(name string) ([]*AppAction, error) {
+	if _m.Edges.namedActions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedActions[name]
+	nodes, ok := _m.Edges.namedActions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedActions(name string, edges ...*AppAction) {
-	if a.Edges.namedActions == nil {
-		a.Edges.namedActions = make(map[string][]*AppAction)
+func (_m *App) appendNamedActions(name string, edges ...*AppAction) {
+	if _m.Edges.namedActions == nil {
+		_m.Edges.namedActions = make(map[string][]*AppAction)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedActions[name] = []*AppAction{}
+		_m.Edges.namedActions[name] = []*AppAction{}
 	} else {
-		a.Edges.namedActions[name] = append(a.Edges.namedActions[name], edges...)
+		_m.Edges.namedActions[name] = append(_m.Edges.namedActions[name], edges...)
 	}
 }
 
 // NamedResources returns the Resources named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedResources(name string) ([]*AppRes, error) {
-	if a.Edges.namedResources == nil {
+func (_m *App) NamedResources(name string) ([]*AppRes, error) {
+	if _m.Edges.namedResources == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedResources[name]
+	nodes, ok := _m.Edges.namedResources[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedResources(name string, edges ...*AppRes) {
-	if a.Edges.namedResources == nil {
-		a.Edges.namedResources = make(map[string][]*AppRes)
+func (_m *App) appendNamedResources(name string, edges ...*AppRes) {
+	if _m.Edges.namedResources == nil {
+		_m.Edges.namedResources = make(map[string][]*AppRes)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedResources[name] = []*AppRes{}
+		_m.Edges.namedResources[name] = []*AppRes{}
 	} else {
-		a.Edges.namedResources[name] = append(a.Edges.namedResources[name], edges...)
+		_m.Edges.namedResources[name] = append(_m.Edges.namedResources[name], edges...)
 	}
 }
 
 // NamedRoles returns the Roles named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedRoles(name string) ([]*AppRole, error) {
-	if a.Edges.namedRoles == nil {
+func (_m *App) NamedRoles(name string) ([]*AppRole, error) {
+	if _m.Edges.namedRoles == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedRoles[name]
+	nodes, ok := _m.Edges.namedRoles[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedRoles(name string, edges ...*AppRole) {
-	if a.Edges.namedRoles == nil {
-		a.Edges.namedRoles = make(map[string][]*AppRole)
+func (_m *App) appendNamedRoles(name string, edges ...*AppRole) {
+	if _m.Edges.namedRoles == nil {
+		_m.Edges.namedRoles = make(map[string][]*AppRole)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedRoles[name] = []*AppRole{}
+		_m.Edges.namedRoles[name] = []*AppRole{}
 	} else {
-		a.Edges.namedRoles[name] = append(a.Edges.namedRoles[name], edges...)
+		_m.Edges.namedRoles[name] = append(_m.Edges.namedRoles[name], edges...)
 	}
 }
 
 // NamedPolicies returns the Policies named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedPolicies(name string) ([]*AppPolicy, error) {
-	if a.Edges.namedPolicies == nil {
+func (_m *App) NamedPolicies(name string) ([]*AppPolicy, error) {
+	if _m.Edges.namedPolicies == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedPolicies[name]
+	nodes, ok := _m.Edges.namedPolicies[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedPolicies(name string, edges ...*AppPolicy) {
-	if a.Edges.namedPolicies == nil {
-		a.Edges.namedPolicies = make(map[string][]*AppPolicy)
+func (_m *App) appendNamedPolicies(name string, edges ...*AppPolicy) {
+	if _m.Edges.namedPolicies == nil {
+		_m.Edges.namedPolicies = make(map[string][]*AppPolicy)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedPolicies[name] = []*AppPolicy{}
+		_m.Edges.namedPolicies[name] = []*AppPolicy{}
 	} else {
-		a.Edges.namedPolicies[name] = append(a.Edges.namedPolicies[name], edges...)
+		_m.Edges.namedPolicies[name] = append(_m.Edges.namedPolicies[name], edges...)
 	}
 }
 
 // NamedPolicyViews returns the PolicyViews named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedPolicyViews(name string) ([]*AppPolicyView, error) {
-	if a.Edges.namedPolicyViews == nil {
+func (_m *App) NamedPolicyViews(name string) ([]*AppPolicyView, error) {
+	if _m.Edges.namedPolicyViews == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedPolicyViews[name]
+	nodes, ok := _m.Edges.namedPolicyViews[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedPolicyViews(name string, edges ...*AppPolicyView) {
-	if a.Edges.namedPolicyViews == nil {
-		a.Edges.namedPolicyViews = make(map[string][]*AppPolicyView)
+func (_m *App) appendNamedPolicyViews(name string, edges ...*AppPolicyView) {
+	if _m.Edges.namedPolicyViews == nil {
+		_m.Edges.namedPolicyViews = make(map[string][]*AppPolicyView)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedPolicyViews[name] = []*AppPolicyView{}
+		_m.Edges.namedPolicyViews[name] = []*AppPolicyView{}
 	} else {
-		a.Edges.namedPolicyViews[name] = append(a.Edges.namedPolicyViews[name], edges...)
+		_m.Edges.namedPolicyViews[name] = append(_m.Edges.namedPolicyViews[name], edges...)
 	}
 }
 
 // NamedOrgs returns the Orgs named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedOrgs(name string) ([]*Org, error) {
-	if a.Edges.namedOrgs == nil {
+func (_m *App) NamedOrgs(name string) ([]*Org, error) {
+	if _m.Edges.namedOrgs == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedOrgs[name]
+	nodes, ok := _m.Edges.namedOrgs[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedOrgs(name string, edges ...*Org) {
-	if a.Edges.namedOrgs == nil {
-		a.Edges.namedOrgs = make(map[string][]*Org)
+func (_m *App) appendNamedOrgs(name string, edges ...*Org) {
+	if _m.Edges.namedOrgs == nil {
+		_m.Edges.namedOrgs = make(map[string][]*Org)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedOrgs[name] = []*Org{}
+		_m.Edges.namedOrgs[name] = []*Org{}
 	} else {
-		a.Edges.namedOrgs[name] = append(a.Edges.namedOrgs[name], edges...)
+		_m.Edges.namedOrgs[name] = append(_m.Edges.namedOrgs[name], edges...)
 	}
 }
 
 // NamedDicts returns the Dicts named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedDicts(name string) ([]*AppDict, error) {
-	if a.Edges.namedDicts == nil {
+func (_m *App) NamedDicts(name string) ([]*AppDict, error) {
+	if _m.Edges.namedDicts == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedDicts[name]
+	nodes, ok := _m.Edges.namedDicts[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedDicts(name string, edges ...*AppDict) {
-	if a.Edges.namedDicts == nil {
-		a.Edges.namedDicts = make(map[string][]*AppDict)
+func (_m *App) appendNamedDicts(name string, edges ...*AppDict) {
+	if _m.Edges.namedDicts == nil {
+		_m.Edges.namedDicts = make(map[string][]*AppDict)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedDicts[name] = []*AppDict{}
+		_m.Edges.namedDicts[name] = []*AppDict{}
 	} else {
-		a.Edges.namedDicts[name] = append(a.Edges.namedDicts[name], edges...)
+		_m.Edges.namedDicts[name] = append(_m.Edges.namedDicts[name], edges...)
 	}
 }
 
 // NamedOrgApp returns the OrgApp named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *App) NamedOrgApp(name string) ([]*OrgApp, error) {
-	if a.Edges.namedOrgApp == nil {
+func (_m *App) NamedOrgApp(name string) ([]*OrgApp, error) {
+	if _m.Edges.namedOrgApp == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedOrgApp[name]
+	nodes, ok := _m.Edges.namedOrgApp[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *App) appendNamedOrgApp(name string, edges ...*OrgApp) {
-	if a.Edges.namedOrgApp == nil {
-		a.Edges.namedOrgApp = make(map[string][]*OrgApp)
+func (_m *App) appendNamedOrgApp(name string, edges ...*OrgApp) {
+	if _m.Edges.namedOrgApp == nil {
+		_m.Edges.namedOrgApp = make(map[string][]*OrgApp)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedOrgApp[name] = []*OrgApp{}
+		_m.Edges.namedOrgApp[name] = []*OrgApp{}
 	} else {
-		a.Edges.namedOrgApp[name] = append(a.Edges.namedOrgApp[name], edges...)
+		_m.Edges.namedOrgApp[name] = append(_m.Edges.namedOrgApp[name], edges...)
 	}
 }
 

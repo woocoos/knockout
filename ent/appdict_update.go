@@ -24,141 +24,141 @@ type AppDictUpdate struct {
 }
 
 // Where appends a list predicates to the AppDictUpdate builder.
-func (adu *AppDictUpdate) Where(ps ...predicate.AppDict) *AppDictUpdate {
-	adu.mutation.Where(ps...)
-	return adu
+func (_u *AppDictUpdate) Where(ps ...predicate.AppDict) *AppDictUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (adu *AppDictUpdate) SetUpdatedBy(i int) *AppDictUpdate {
-	adu.mutation.ResetUpdatedBy()
-	adu.mutation.SetUpdatedBy(i)
-	return adu
+func (_u *AppDictUpdate) SetUpdatedBy(v int) *AppDictUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (adu *AppDictUpdate) SetNillableUpdatedBy(i *int) *AppDictUpdate {
-	if i != nil {
-		adu.SetUpdatedBy(*i)
+func (_u *AppDictUpdate) SetNillableUpdatedBy(v *int) *AppDictUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (adu *AppDictUpdate) AddUpdatedBy(i int) *AppDictUpdate {
-	adu.mutation.AddUpdatedBy(i)
-	return adu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppDictUpdate) AddUpdatedBy(v int) *AppDictUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (adu *AppDictUpdate) ClearUpdatedBy() *AppDictUpdate {
-	adu.mutation.ClearUpdatedBy()
-	return adu
+func (_u *AppDictUpdate) ClearUpdatedBy() *AppDictUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (adu *AppDictUpdate) SetUpdatedAt(t time.Time) *AppDictUpdate {
-	adu.mutation.SetUpdatedAt(t)
-	return adu
+func (_u *AppDictUpdate) SetUpdatedAt(v time.Time) *AppDictUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (adu *AppDictUpdate) SetNillableUpdatedAt(t *time.Time) *AppDictUpdate {
-	if t != nil {
-		adu.SetUpdatedAt(*t)
+func (_u *AppDictUpdate) SetNillableUpdatedAt(v *time.Time) *AppDictUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return adu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (adu *AppDictUpdate) ClearUpdatedAt() *AppDictUpdate {
-	adu.mutation.ClearUpdatedAt()
-	return adu
+func (_u *AppDictUpdate) ClearUpdatedAt() *AppDictUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (adu *AppDictUpdate) SetName(s string) *AppDictUpdate {
-	adu.mutation.SetName(s)
-	return adu
+func (_u *AppDictUpdate) SetName(v string) *AppDictUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (adu *AppDictUpdate) SetNillableName(s *string) *AppDictUpdate {
-	if s != nil {
-		adu.SetName(*s)
+func (_u *AppDictUpdate) SetNillableName(v *string) *AppDictUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return adu
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (adu *AppDictUpdate) SetComments(s string) *AppDictUpdate {
-	adu.mutation.SetComments(s)
-	return adu
+func (_u *AppDictUpdate) SetComments(v string) *AppDictUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (adu *AppDictUpdate) SetNillableComments(s *string) *AppDictUpdate {
-	if s != nil {
-		adu.SetComments(*s)
+func (_u *AppDictUpdate) SetNillableComments(v *string) *AppDictUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return adu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (adu *AppDictUpdate) ClearComments() *AppDictUpdate {
-	adu.mutation.ClearComments()
-	return adu
+func (_u *AppDictUpdate) ClearComments() *AppDictUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // AddItemIDs adds the "items" edge to the AppDictItem entity by IDs.
-func (adu *AppDictUpdate) AddItemIDs(ids ...int) *AppDictUpdate {
-	adu.mutation.AddItemIDs(ids...)
-	return adu
+func (_u *AppDictUpdate) AddItemIDs(ids ...int) *AppDictUpdate {
+	_u.mutation.AddItemIDs(ids...)
+	return _u
 }
 
 // AddItems adds the "items" edges to the AppDictItem entity.
-func (adu *AppDictUpdate) AddItems(a ...*AppDictItem) *AppDictUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppDictUpdate) AddItems(v ...*AppDictItem) *AppDictUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return adu.AddItemIDs(ids...)
+	return _u.AddItemIDs(ids...)
 }
 
 // Mutation returns the AppDictMutation object of the builder.
-func (adu *AppDictUpdate) Mutation() *AppDictMutation {
-	return adu.mutation
+func (_u *AppDictUpdate) Mutation() *AppDictMutation {
+	return _u.mutation
 }
 
 // ClearItems clears all "items" edges to the AppDictItem entity.
-func (adu *AppDictUpdate) ClearItems() *AppDictUpdate {
-	adu.mutation.ClearItems()
-	return adu
+func (_u *AppDictUpdate) ClearItems() *AppDictUpdate {
+	_u.mutation.ClearItems()
+	return _u
 }
 
 // RemoveItemIDs removes the "items" edge to AppDictItem entities by IDs.
-func (adu *AppDictUpdate) RemoveItemIDs(ids ...int) *AppDictUpdate {
-	adu.mutation.RemoveItemIDs(ids...)
-	return adu
+func (_u *AppDictUpdate) RemoveItemIDs(ids ...int) *AppDictUpdate {
+	_u.mutation.RemoveItemIDs(ids...)
+	return _u
 }
 
 // RemoveItems removes "items" edges to AppDictItem entities.
-func (adu *AppDictUpdate) RemoveItems(a ...*AppDictItem) *AppDictUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppDictUpdate) RemoveItems(v ...*AppDictItem) *AppDictUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return adu.RemoveItemIDs(ids...)
+	return _u.RemoveItemIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (adu *AppDictUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, adu.sqlSave, adu.mutation, adu.hooks)
+func (_u *AppDictUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adu *AppDictUpdate) SaveX(ctx context.Context) int {
-	affected, err := adu.Save(ctx)
+func (_u *AppDictUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -166,21 +166,21 @@ func (adu *AppDictUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (adu *AppDictUpdate) Exec(ctx context.Context) error {
-	_, err := adu.Save(ctx)
+func (_u *AppDictUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adu *AppDictUpdate) ExecX(ctx context.Context) {
-	if err := adu.Exec(ctx); err != nil {
+func (_u *AppDictUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (adu *AppDictUpdate) check() error {
-	if v, ok := adu.mutation.Name(); ok {
+func (_u *AppDictUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appdict.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDict.name": %w`, err)}
 		}
@@ -188,43 +188,43 @@ func (adu *AppDictUpdate) check() error {
 	return nil
 }
 
-func (adu *AppDictUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := adu.check(); err != nil {
-		return n, err
+func (_u *AppDictUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appdict.Table, appdict.Columns, sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt))
-	if ps := adu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := adu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appdict.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := adu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appdict.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if adu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appdict.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := adu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appdict.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if adu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdict.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := adu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appdict.FieldName, field.TypeString, value)
 	}
-	if value, ok := adu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appdict.FieldComments, field.TypeString, value)
 	}
-	if adu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appdict.FieldComments, field.TypeString)
 	}
-	if adu.mutation.ItemsCleared() {
+	if _u.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -237,7 +237,7 @@ func (adu *AppDictUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := adu.mutation.RemovedItemsIDs(); len(nodes) > 0 && !adu.mutation.ItemsCleared() {
+	if nodes := _u.mutation.RemovedItemsIDs(); len(nodes) > 0 && !_u.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -253,7 +253,7 @@ func (adu *AppDictUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := adu.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ItemsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -269,7 +269,7 @@ func (adu *AppDictUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, adu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appdict.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -277,8 +277,8 @@ func (adu *AppDictUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	adu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppDictUpdateOne is the builder for updating a single AppDict entity.
@@ -290,148 +290,148 @@ type AppDictUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aduo *AppDictUpdateOne) SetUpdatedBy(i int) *AppDictUpdateOne {
-	aduo.mutation.ResetUpdatedBy()
-	aduo.mutation.SetUpdatedBy(i)
-	return aduo
+func (_u *AppDictUpdateOne) SetUpdatedBy(v int) *AppDictUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aduo *AppDictUpdateOne) SetNillableUpdatedBy(i *int) *AppDictUpdateOne {
-	if i != nil {
-		aduo.SetUpdatedBy(*i)
+func (_u *AppDictUpdateOne) SetNillableUpdatedBy(v *int) *AppDictUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aduo *AppDictUpdateOne) AddUpdatedBy(i int) *AppDictUpdateOne {
-	aduo.mutation.AddUpdatedBy(i)
-	return aduo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppDictUpdateOne) AddUpdatedBy(v int) *AppDictUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aduo *AppDictUpdateOne) ClearUpdatedBy() *AppDictUpdateOne {
-	aduo.mutation.ClearUpdatedBy()
-	return aduo
+func (_u *AppDictUpdateOne) ClearUpdatedBy() *AppDictUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aduo *AppDictUpdateOne) SetUpdatedAt(t time.Time) *AppDictUpdateOne {
-	aduo.mutation.SetUpdatedAt(t)
-	return aduo
+func (_u *AppDictUpdateOne) SetUpdatedAt(v time.Time) *AppDictUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aduo *AppDictUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppDictUpdateOne {
-	if t != nil {
-		aduo.SetUpdatedAt(*t)
+func (_u *AppDictUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppDictUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aduo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aduo *AppDictUpdateOne) ClearUpdatedAt() *AppDictUpdateOne {
-	aduo.mutation.ClearUpdatedAt()
-	return aduo
+func (_u *AppDictUpdateOne) ClearUpdatedAt() *AppDictUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aduo *AppDictUpdateOne) SetName(s string) *AppDictUpdateOne {
-	aduo.mutation.SetName(s)
-	return aduo
+func (_u *AppDictUpdateOne) SetName(v string) *AppDictUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aduo *AppDictUpdateOne) SetNillableName(s *string) *AppDictUpdateOne {
-	if s != nil {
-		aduo.SetName(*s)
+func (_u *AppDictUpdateOne) SetNillableName(v *string) *AppDictUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aduo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (aduo *AppDictUpdateOne) SetComments(s string) *AppDictUpdateOne {
-	aduo.mutation.SetComments(s)
-	return aduo
+func (_u *AppDictUpdateOne) SetComments(v string) *AppDictUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aduo *AppDictUpdateOne) SetNillableComments(s *string) *AppDictUpdateOne {
-	if s != nil {
-		aduo.SetComments(*s)
+func (_u *AppDictUpdateOne) SetNillableComments(v *string) *AppDictUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return aduo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (aduo *AppDictUpdateOne) ClearComments() *AppDictUpdateOne {
-	aduo.mutation.ClearComments()
-	return aduo
+func (_u *AppDictUpdateOne) ClearComments() *AppDictUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // AddItemIDs adds the "items" edge to the AppDictItem entity by IDs.
-func (aduo *AppDictUpdateOne) AddItemIDs(ids ...int) *AppDictUpdateOne {
-	aduo.mutation.AddItemIDs(ids...)
-	return aduo
+func (_u *AppDictUpdateOne) AddItemIDs(ids ...int) *AppDictUpdateOne {
+	_u.mutation.AddItemIDs(ids...)
+	return _u
 }
 
 // AddItems adds the "items" edges to the AppDictItem entity.
-func (aduo *AppDictUpdateOne) AddItems(a ...*AppDictItem) *AppDictUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppDictUpdateOne) AddItems(v ...*AppDictItem) *AppDictUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aduo.AddItemIDs(ids...)
+	return _u.AddItemIDs(ids...)
 }
 
 // Mutation returns the AppDictMutation object of the builder.
-func (aduo *AppDictUpdateOne) Mutation() *AppDictMutation {
-	return aduo.mutation
+func (_u *AppDictUpdateOne) Mutation() *AppDictMutation {
+	return _u.mutation
 }
 
 // ClearItems clears all "items" edges to the AppDictItem entity.
-func (aduo *AppDictUpdateOne) ClearItems() *AppDictUpdateOne {
-	aduo.mutation.ClearItems()
-	return aduo
+func (_u *AppDictUpdateOne) ClearItems() *AppDictUpdateOne {
+	_u.mutation.ClearItems()
+	return _u
 }
 
 // RemoveItemIDs removes the "items" edge to AppDictItem entities by IDs.
-func (aduo *AppDictUpdateOne) RemoveItemIDs(ids ...int) *AppDictUpdateOne {
-	aduo.mutation.RemoveItemIDs(ids...)
-	return aduo
+func (_u *AppDictUpdateOne) RemoveItemIDs(ids ...int) *AppDictUpdateOne {
+	_u.mutation.RemoveItemIDs(ids...)
+	return _u
 }
 
 // RemoveItems removes "items" edges to AppDictItem entities.
-func (aduo *AppDictUpdateOne) RemoveItems(a ...*AppDictItem) *AppDictUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppDictUpdateOne) RemoveItems(v ...*AppDictItem) *AppDictUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aduo.RemoveItemIDs(ids...)
+	return _u.RemoveItemIDs(ids...)
 }
 
 // Where appends a list predicates to the AppDictUpdate builder.
-func (aduo *AppDictUpdateOne) Where(ps ...predicate.AppDict) *AppDictUpdateOne {
-	aduo.mutation.Where(ps...)
-	return aduo
+func (_u *AppDictUpdateOne) Where(ps ...predicate.AppDict) *AppDictUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aduo *AppDictUpdateOne) Select(field string, fields ...string) *AppDictUpdateOne {
-	aduo.fields = append([]string{field}, fields...)
-	return aduo
+func (_u *AppDictUpdateOne) Select(field string, fields ...string) *AppDictUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppDict entity.
-func (aduo *AppDictUpdateOne) Save(ctx context.Context) (*AppDict, error) {
-	return withHooks(ctx, aduo.sqlSave, aduo.mutation, aduo.hooks)
+func (_u *AppDictUpdateOne) Save(ctx context.Context) (*AppDict, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aduo *AppDictUpdateOne) SaveX(ctx context.Context) *AppDict {
-	node, err := aduo.Save(ctx)
+func (_u *AppDictUpdateOne) SaveX(ctx context.Context) *AppDict {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -439,21 +439,21 @@ func (aduo *AppDictUpdateOne) SaveX(ctx context.Context) *AppDict {
 }
 
 // Exec executes the query on the entity.
-func (aduo *AppDictUpdateOne) Exec(ctx context.Context) error {
-	_, err := aduo.Save(ctx)
+func (_u *AppDictUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aduo *AppDictUpdateOne) ExecX(ctx context.Context) {
-	if err := aduo.Exec(ctx); err != nil {
+func (_u *AppDictUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aduo *AppDictUpdateOne) check() error {
-	if v, ok := aduo.mutation.Name(); ok {
+func (_u *AppDictUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := appdict.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDict.name": %w`, err)}
 		}
@@ -461,17 +461,17 @@ func (aduo *AppDictUpdateOne) check() error {
 	return nil
 }
 
-func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err error) {
-	if err := aduo.check(); err != nil {
+func (_u *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appdict.Table, appdict.Columns, sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt))
-	id, ok := aduo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppDict.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aduo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appdict.FieldID)
 		for _, f := range fields {
@@ -483,38 +483,38 @@ func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err 
 			}
 		}
 	}
-	if ps := aduo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aduo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appdict.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aduo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appdict.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aduo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appdict.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aduo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appdict.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aduo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdict.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aduo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appdict.FieldName, field.TypeString, value)
 	}
-	if value, ok := aduo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appdict.FieldComments, field.TypeString, value)
 	}
-	if aduo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appdict.FieldComments, field.TypeString)
 	}
-	if aduo.mutation.ItemsCleared() {
+	if _u.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -527,7 +527,7 @@ func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aduo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !aduo.mutation.ItemsCleared() {
+	if nodes := _u.mutation.RemovedItemsIDs(); len(nodes) > 0 && !_u.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -543,7 +543,7 @@ func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aduo.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ItemsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -559,10 +559,10 @@ func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppDict{config: aduo.config}
+	_node = &AppDict{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aduo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appdict.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -570,6 +570,6 @@ func (aduo *AppDictUpdateOne) sqlSave(ctx context.Context) (_node *AppDict, err 
 		}
 		return nil, err
 	}
-	aduo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

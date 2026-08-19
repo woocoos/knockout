@@ -28,215 +28,215 @@ type OrgPolicyUpdate struct {
 }
 
 // Where appends a list predicates to the OrgPolicyUpdate builder.
-func (opu *OrgPolicyUpdate) Where(ps ...predicate.OrgPolicy) *OrgPolicyUpdate {
-	opu.mutation.Where(ps...)
-	return opu
+func (_u *OrgPolicyUpdate) Where(ps ...predicate.OrgPolicy) *OrgPolicyUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (opu *OrgPolicyUpdate) SetUpdatedBy(i int) *OrgPolicyUpdate {
-	opu.mutation.ResetUpdatedBy()
-	opu.mutation.SetUpdatedBy(i)
-	return opu
+func (_u *OrgPolicyUpdate) SetUpdatedBy(v int) *OrgPolicyUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableUpdatedBy(i *int) *OrgPolicyUpdate {
-	if i != nil {
-		opu.SetUpdatedBy(*i)
+func (_u *OrgPolicyUpdate) SetNillableUpdatedBy(v *int) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return opu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (opu *OrgPolicyUpdate) AddUpdatedBy(i int) *OrgPolicyUpdate {
-	opu.mutation.AddUpdatedBy(i)
-	return opu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgPolicyUpdate) AddUpdatedBy(v int) *OrgPolicyUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (opu *OrgPolicyUpdate) ClearUpdatedBy() *OrgPolicyUpdate {
-	opu.mutation.ClearUpdatedBy()
-	return opu
+func (_u *OrgPolicyUpdate) ClearUpdatedBy() *OrgPolicyUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (opu *OrgPolicyUpdate) SetUpdatedAt(t time.Time) *OrgPolicyUpdate {
-	opu.mutation.SetUpdatedAt(t)
-	return opu
+func (_u *OrgPolicyUpdate) SetUpdatedAt(v time.Time) *OrgPolicyUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableUpdatedAt(t *time.Time) *OrgPolicyUpdate {
-	if t != nil {
-		opu.SetUpdatedAt(*t)
+func (_u *OrgPolicyUpdate) SetNillableUpdatedAt(v *time.Time) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return opu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (opu *OrgPolicyUpdate) ClearUpdatedAt() *OrgPolicyUpdate {
-	opu.mutation.ClearUpdatedAt()
-	return opu
+func (_u *OrgPolicyUpdate) ClearUpdatedAt() *OrgPolicyUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (opu *OrgPolicyUpdate) SetAppID(i int) *OrgPolicyUpdate {
-	opu.mutation.SetAppID(i)
-	return opu
+func (_u *OrgPolicyUpdate) SetAppID(v int) *OrgPolicyUpdate {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableAppID(i *int) *OrgPolicyUpdate {
-	if i != nil {
-		opu.SetAppID(*i)
+func (_u *OrgPolicyUpdate) SetNillableAppID(v *int) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return opu
+	return _u
 }
 
 // ClearAppID clears the value of the "app_id" field.
-func (opu *OrgPolicyUpdate) ClearAppID() *OrgPolicyUpdate {
-	opu.mutation.ClearAppID()
-	return opu
+func (_u *OrgPolicyUpdate) ClearAppID() *OrgPolicyUpdate {
+	_u.mutation.ClearAppID()
+	return _u
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (opu *OrgPolicyUpdate) SetAppPolicyID(i int) *OrgPolicyUpdate {
-	opu.mutation.SetAppPolicyID(i)
-	return opu
+func (_u *OrgPolicyUpdate) SetAppPolicyID(v int) *OrgPolicyUpdate {
+	_u.mutation.SetAppPolicyID(v)
+	return _u
 }
 
 // SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableAppPolicyID(i *int) *OrgPolicyUpdate {
-	if i != nil {
-		opu.SetAppPolicyID(*i)
+func (_u *OrgPolicyUpdate) SetNillableAppPolicyID(v *int) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetAppPolicyID(*v)
 	}
-	return opu
+	return _u
 }
 
 // ClearAppPolicyID clears the value of the "app_policy_id" field.
-func (opu *OrgPolicyUpdate) ClearAppPolicyID() *OrgPolicyUpdate {
-	opu.mutation.ClearAppPolicyID()
-	return opu
+func (_u *OrgPolicyUpdate) ClearAppPolicyID() *OrgPolicyUpdate {
+	_u.mutation.ClearAppPolicyID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (opu *OrgPolicyUpdate) SetName(s string) *OrgPolicyUpdate {
-	opu.mutation.SetName(s)
-	return opu
+func (_u *OrgPolicyUpdate) SetName(v string) *OrgPolicyUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableName(s *string) *OrgPolicyUpdate {
-	if s != nil {
-		opu.SetName(*s)
+func (_u *OrgPolicyUpdate) SetNillableName(v *string) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return opu
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (opu *OrgPolicyUpdate) SetComments(s string) *OrgPolicyUpdate {
-	opu.mutation.SetComments(s)
-	return opu
+func (_u *OrgPolicyUpdate) SetComments(v string) *OrgPolicyUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (opu *OrgPolicyUpdate) SetNillableComments(s *string) *OrgPolicyUpdate {
-	if s != nil {
-		opu.SetComments(*s)
+func (_u *OrgPolicyUpdate) SetNillableComments(v *string) *OrgPolicyUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return opu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (opu *OrgPolicyUpdate) ClearComments() *OrgPolicyUpdate {
-	opu.mutation.ClearComments()
-	return opu
+func (_u *OrgPolicyUpdate) ClearComments() *OrgPolicyUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetRules sets the "rules" field.
-func (opu *OrgPolicyUpdate) SetRules(tr []*types.PolicyRule) *OrgPolicyUpdate {
-	opu.mutation.SetRules(tr)
-	return opu
+func (_u *OrgPolicyUpdate) SetRules(v []*types.PolicyRule) *OrgPolicyUpdate {
+	_u.mutation.SetRules(v)
+	return _u
 }
 
-// AppendRules appends tr to the "rules" field.
-func (opu *OrgPolicyUpdate) AppendRules(tr []*types.PolicyRule) *OrgPolicyUpdate {
-	opu.mutation.AppendRules(tr)
-	return opu
+// AppendRules appends value to the "rules" field.
+func (_u *OrgPolicyUpdate) AppendRules(v []*types.PolicyRule) *OrgPolicyUpdate {
+	_u.mutation.AppendRules(v)
+	return _u
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (opu *OrgPolicyUpdate) AddPermissionIDs(ids ...int) *OrgPolicyUpdate {
-	opu.mutation.AddPermissionIDs(ids...)
-	return opu
+func (_u *OrgPolicyUpdate) AddPermissionIDs(ids ...int) *OrgPolicyUpdate {
+	_u.mutation.AddPermissionIDs(ids...)
+	return _u
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (opu *OrgPolicyUpdate) AddPermissions(p ...*Permission) *OrgPolicyUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgPolicyUpdate) AddPermissions(v ...*Permission) *OrgPolicyUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return opu.AddPermissionIDs(ids...)
+	return _u.AddPermissionIDs(ids...)
 }
 
 // SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
-func (opu *OrgPolicyUpdate) SetAppPolicy(a *AppPolicy) *OrgPolicyUpdate {
-	return opu.SetAppPolicyID(a.ID)
+func (_u *OrgPolicyUpdate) SetAppPolicy(v *AppPolicy) *OrgPolicyUpdate {
+	return _u.SetAppPolicyID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (opu *OrgPolicyUpdate) SetApp(a *App) *OrgPolicyUpdate {
-	return opu.SetAppID(a.ID)
+func (_u *OrgPolicyUpdate) SetApp(v *App) *OrgPolicyUpdate {
+	return _u.SetAppID(v.ID)
 }
 
 // Mutation returns the OrgPolicyMutation object of the builder.
-func (opu *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
-	return opu.mutation
+func (_u *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
+	return _u.mutation
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
-func (opu *OrgPolicyUpdate) ClearPermissions() *OrgPolicyUpdate {
-	opu.mutation.ClearPermissions()
-	return opu
+func (_u *OrgPolicyUpdate) ClearPermissions() *OrgPolicyUpdate {
+	_u.mutation.ClearPermissions()
+	return _u
 }
 
 // RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
-func (opu *OrgPolicyUpdate) RemovePermissionIDs(ids ...int) *OrgPolicyUpdate {
-	opu.mutation.RemovePermissionIDs(ids...)
-	return opu
+func (_u *OrgPolicyUpdate) RemovePermissionIDs(ids ...int) *OrgPolicyUpdate {
+	_u.mutation.RemovePermissionIDs(ids...)
+	return _u
 }
 
 // RemovePermissions removes "permissions" edges to Permission entities.
-func (opu *OrgPolicyUpdate) RemovePermissions(p ...*Permission) *OrgPolicyUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgPolicyUpdate) RemovePermissions(v ...*Permission) *OrgPolicyUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return opu.RemovePermissionIDs(ids...)
+	return _u.RemovePermissionIDs(ids...)
 }
 
 // ClearAppPolicy clears the "app_policy" edge to the AppPolicy entity.
-func (opu *OrgPolicyUpdate) ClearAppPolicy() *OrgPolicyUpdate {
-	opu.mutation.ClearAppPolicy()
-	return opu
+func (_u *OrgPolicyUpdate) ClearAppPolicy() *OrgPolicyUpdate {
+	_u.mutation.ClearAppPolicy()
+	return _u
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (opu *OrgPolicyUpdate) ClearApp() *OrgPolicyUpdate {
-	opu.mutation.ClearApp()
-	return opu
+func (_u *OrgPolicyUpdate) ClearApp() *OrgPolicyUpdate {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (opu *OrgPolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, opu.sqlSave, opu.mutation, opu.hooks)
+func (_u *OrgPolicyUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (opu *OrgPolicyUpdate) SaveX(ctx context.Context) int {
-	affected, err := opu.Save(ctx)
+func (_u *OrgPolicyUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,60 +244,60 @@ func (opu *OrgPolicyUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (opu *OrgPolicyUpdate) Exec(ctx context.Context) error {
-	_, err := opu.Save(ctx)
+func (_u *OrgPolicyUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (opu *OrgPolicyUpdate) ExecX(ctx context.Context) {
-	if err := opu.Exec(ctx); err != nil {
+func (_u *OrgPolicyUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *OrgPolicyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(orgpolicy.Table, orgpolicy.Columns, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
-	if ps := opu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := opu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := opu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orgpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if opu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orgpolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := opu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if opu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orgpolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := opu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 	}
-	if value, ok := opu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(orgpolicy.FieldComments, field.TypeString, value)
 	}
-	if opu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(orgpolicy.FieldComments, field.TypeString)
 	}
-	if value, ok := opu.mutation.Rules(); ok {
+	if value, ok := _u.mutation.Rules(); ok {
 		_spec.SetField(orgpolicy.FieldRules, field.TypeJSON, value)
 	}
-	if value, ok := opu.mutation.AppendedRules(); ok {
+	if value, ok := _u.mutation.AppendedRules(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orgpolicy.FieldRules, value)
 		})
 	}
-	if opu.mutation.PermissionsCleared() {
+	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -310,7 +310,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opu.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !opu.mutation.PermissionsCleared() {
+	if nodes := _u.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !_u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -326,7 +326,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opu.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -342,7 +342,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if opu.mutation.AppPolicyCleared() {
+	if _u.mutation.AppPolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -355,7 +355,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opu.mutation.AppPolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -371,7 +371,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if opu.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -384,7 +384,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opu.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -400,7 +400,7 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, opu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orgpolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -408,8 +408,8 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	opu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrgPolicyUpdateOne is the builder for updating a single OrgPolicy entity.
@@ -421,222 +421,222 @@ type OrgPolicyUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (opuo *OrgPolicyUpdateOne) SetUpdatedBy(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.ResetUpdatedBy()
-	opuo.mutation.SetUpdatedBy(i)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetUpdatedBy(v int) *OrgPolicyUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableUpdatedBy(i *int) *OrgPolicyUpdateOne {
-	if i != nil {
-		opuo.SetUpdatedBy(*i)
+func (_u *OrgPolicyUpdateOne) SetNillableUpdatedBy(v *int) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return opuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (opuo *OrgPolicyUpdateOne) AddUpdatedBy(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.AddUpdatedBy(i)
-	return opuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgPolicyUpdateOne) AddUpdatedBy(v int) *OrgPolicyUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (opuo *OrgPolicyUpdateOne) ClearUpdatedBy() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearUpdatedBy()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearUpdatedBy() *OrgPolicyUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (opuo *OrgPolicyUpdateOne) SetUpdatedAt(t time.Time) *OrgPolicyUpdateOne {
-	opuo.mutation.SetUpdatedAt(t)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetUpdatedAt(v time.Time) *OrgPolicyUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableUpdatedAt(t *time.Time) *OrgPolicyUpdateOne {
-	if t != nil {
-		opuo.SetUpdatedAt(*t)
+func (_u *OrgPolicyUpdateOne) SetNillableUpdatedAt(v *time.Time) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return opuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (opuo *OrgPolicyUpdateOne) ClearUpdatedAt() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearUpdatedAt()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearUpdatedAt() *OrgPolicyUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (opuo *OrgPolicyUpdateOne) SetAppID(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.SetAppID(i)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetAppID(v int) *OrgPolicyUpdateOne {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableAppID(i *int) *OrgPolicyUpdateOne {
-	if i != nil {
-		opuo.SetAppID(*i)
+func (_u *OrgPolicyUpdateOne) SetNillableAppID(v *int) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return opuo
+	return _u
 }
 
 // ClearAppID clears the value of the "app_id" field.
-func (opuo *OrgPolicyUpdateOne) ClearAppID() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearAppID()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearAppID() *OrgPolicyUpdateOne {
+	_u.mutation.ClearAppID()
+	return _u
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (opuo *OrgPolicyUpdateOne) SetAppPolicyID(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.SetAppPolicyID(i)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetAppPolicyID(v int) *OrgPolicyUpdateOne {
+	_u.mutation.SetAppPolicyID(v)
+	return _u
 }
 
 // SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableAppPolicyID(i *int) *OrgPolicyUpdateOne {
-	if i != nil {
-		opuo.SetAppPolicyID(*i)
+func (_u *OrgPolicyUpdateOne) SetNillableAppPolicyID(v *int) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetAppPolicyID(*v)
 	}
-	return opuo
+	return _u
 }
 
 // ClearAppPolicyID clears the value of the "app_policy_id" field.
-func (opuo *OrgPolicyUpdateOne) ClearAppPolicyID() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearAppPolicyID()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearAppPolicyID() *OrgPolicyUpdateOne {
+	_u.mutation.ClearAppPolicyID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (opuo *OrgPolicyUpdateOne) SetName(s string) *OrgPolicyUpdateOne {
-	opuo.mutation.SetName(s)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetName(v string) *OrgPolicyUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableName(s *string) *OrgPolicyUpdateOne {
-	if s != nil {
-		opuo.SetName(*s)
+func (_u *OrgPolicyUpdateOne) SetNillableName(v *string) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return opuo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (opuo *OrgPolicyUpdateOne) SetComments(s string) *OrgPolicyUpdateOne {
-	opuo.mutation.SetComments(s)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetComments(v string) *OrgPolicyUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (opuo *OrgPolicyUpdateOne) SetNillableComments(s *string) *OrgPolicyUpdateOne {
-	if s != nil {
-		opuo.SetComments(*s)
+func (_u *OrgPolicyUpdateOne) SetNillableComments(v *string) *OrgPolicyUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return opuo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (opuo *OrgPolicyUpdateOne) ClearComments() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearComments()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearComments() *OrgPolicyUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetRules sets the "rules" field.
-func (opuo *OrgPolicyUpdateOne) SetRules(tr []*types.PolicyRule) *OrgPolicyUpdateOne {
-	opuo.mutation.SetRules(tr)
-	return opuo
+func (_u *OrgPolicyUpdateOne) SetRules(v []*types.PolicyRule) *OrgPolicyUpdateOne {
+	_u.mutation.SetRules(v)
+	return _u
 }
 
-// AppendRules appends tr to the "rules" field.
-func (opuo *OrgPolicyUpdateOne) AppendRules(tr []*types.PolicyRule) *OrgPolicyUpdateOne {
-	opuo.mutation.AppendRules(tr)
-	return opuo
+// AppendRules appends value to the "rules" field.
+func (_u *OrgPolicyUpdateOne) AppendRules(v []*types.PolicyRule) *OrgPolicyUpdateOne {
+	_u.mutation.AppendRules(v)
+	return _u
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (opuo *OrgPolicyUpdateOne) AddPermissionIDs(ids ...int) *OrgPolicyUpdateOne {
-	opuo.mutation.AddPermissionIDs(ids...)
-	return opuo
+func (_u *OrgPolicyUpdateOne) AddPermissionIDs(ids ...int) *OrgPolicyUpdateOne {
+	_u.mutation.AddPermissionIDs(ids...)
+	return _u
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (opuo *OrgPolicyUpdateOne) AddPermissions(p ...*Permission) *OrgPolicyUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgPolicyUpdateOne) AddPermissions(v ...*Permission) *OrgPolicyUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return opuo.AddPermissionIDs(ids...)
+	return _u.AddPermissionIDs(ids...)
 }
 
 // SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
-func (opuo *OrgPolicyUpdateOne) SetAppPolicy(a *AppPolicy) *OrgPolicyUpdateOne {
-	return opuo.SetAppPolicyID(a.ID)
+func (_u *OrgPolicyUpdateOne) SetAppPolicy(v *AppPolicy) *OrgPolicyUpdateOne {
+	return _u.SetAppPolicyID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (opuo *OrgPolicyUpdateOne) SetApp(a *App) *OrgPolicyUpdateOne {
-	return opuo.SetAppID(a.ID)
+func (_u *OrgPolicyUpdateOne) SetApp(v *App) *OrgPolicyUpdateOne {
+	return _u.SetAppID(v.ID)
 }
 
 // Mutation returns the OrgPolicyMutation object of the builder.
-func (opuo *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
-	return opuo.mutation
+func (_u *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
+	return _u.mutation
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
-func (opuo *OrgPolicyUpdateOne) ClearPermissions() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearPermissions()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearPermissions() *OrgPolicyUpdateOne {
+	_u.mutation.ClearPermissions()
+	return _u
 }
 
 // RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
-func (opuo *OrgPolicyUpdateOne) RemovePermissionIDs(ids ...int) *OrgPolicyUpdateOne {
-	opuo.mutation.RemovePermissionIDs(ids...)
-	return opuo
+func (_u *OrgPolicyUpdateOne) RemovePermissionIDs(ids ...int) *OrgPolicyUpdateOne {
+	_u.mutation.RemovePermissionIDs(ids...)
+	return _u
 }
 
 // RemovePermissions removes "permissions" edges to Permission entities.
-func (opuo *OrgPolicyUpdateOne) RemovePermissions(p ...*Permission) *OrgPolicyUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgPolicyUpdateOne) RemovePermissions(v ...*Permission) *OrgPolicyUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return opuo.RemovePermissionIDs(ids...)
+	return _u.RemovePermissionIDs(ids...)
 }
 
 // ClearAppPolicy clears the "app_policy" edge to the AppPolicy entity.
-func (opuo *OrgPolicyUpdateOne) ClearAppPolicy() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearAppPolicy()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearAppPolicy() *OrgPolicyUpdateOne {
+	_u.mutation.ClearAppPolicy()
+	return _u
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (opuo *OrgPolicyUpdateOne) ClearApp() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearApp()
-	return opuo
+func (_u *OrgPolicyUpdateOne) ClearApp() *OrgPolicyUpdateOne {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // Where appends a list predicates to the OrgPolicyUpdate builder.
-func (opuo *OrgPolicyUpdateOne) Where(ps ...predicate.OrgPolicy) *OrgPolicyUpdateOne {
-	opuo.mutation.Where(ps...)
-	return opuo
+func (_u *OrgPolicyUpdateOne) Where(ps ...predicate.OrgPolicy) *OrgPolicyUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (opuo *OrgPolicyUpdateOne) Select(field string, fields ...string) *OrgPolicyUpdateOne {
-	opuo.fields = append([]string{field}, fields...)
-	return opuo
+func (_u *OrgPolicyUpdateOne) Select(field string, fields ...string) *OrgPolicyUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated OrgPolicy entity.
-func (opuo *OrgPolicyUpdateOne) Save(ctx context.Context) (*OrgPolicy, error) {
-	return withHooks(ctx, opuo.sqlSave, opuo.mutation, opuo.hooks)
+func (_u *OrgPolicyUpdateOne) Save(ctx context.Context) (*OrgPolicy, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (opuo *OrgPolicyUpdateOne) SaveX(ctx context.Context) *OrgPolicy {
-	node, err := opuo.Save(ctx)
+func (_u *OrgPolicyUpdateOne) SaveX(ctx context.Context) *OrgPolicy {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -644,26 +644,26 @@ func (opuo *OrgPolicyUpdateOne) SaveX(ctx context.Context) *OrgPolicy {
 }
 
 // Exec executes the query on the entity.
-func (opuo *OrgPolicyUpdateOne) Exec(ctx context.Context) error {
-	_, err := opuo.Save(ctx)
+func (_u *OrgPolicyUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (opuo *OrgPolicyUpdateOne) ExecX(ctx context.Context) {
-	if err := opuo.Exec(ctx); err != nil {
+func (_u *OrgPolicyUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, err error) {
+func (_u *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, err error) {
 	_spec := sqlgraph.NewUpdateSpec(orgpolicy.Table, orgpolicy.Columns, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
-	id, ok := opuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OrgPolicy.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := opuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orgpolicy.FieldID)
 		for _, f := range fields {
@@ -675,46 +675,46 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 			}
 		}
 	}
-	if ps := opuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := opuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := opuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orgpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if opuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orgpolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := opuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if opuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orgpolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := opuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 	}
-	if value, ok := opuo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(orgpolicy.FieldComments, field.TypeString, value)
 	}
-	if opuo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(orgpolicy.FieldComments, field.TypeString)
 	}
-	if value, ok := opuo.mutation.Rules(); ok {
+	if value, ok := _u.mutation.Rules(); ok {
 		_spec.SetField(orgpolicy.FieldRules, field.TypeJSON, value)
 	}
-	if value, ok := opuo.mutation.AppendedRules(); ok {
+	if value, ok := _u.mutation.AppendedRules(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orgpolicy.FieldRules, value)
 		})
 	}
-	if opuo.mutation.PermissionsCleared() {
+	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -727,7 +727,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opuo.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !opuo.mutation.PermissionsCleared() {
+	if nodes := _u.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !_u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -743,7 +743,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opuo.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -759,7 +759,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if opuo.mutation.AppPolicyCleared() {
+	if _u.mutation.AppPolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -772,7 +772,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opuo.mutation.AppPolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -788,7 +788,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if opuo.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -801,7 +801,7 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := opuo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -817,10 +817,10 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &OrgPolicy{config: opuo.config}
+	_node = &OrgPolicy{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, opuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orgpolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -828,6 +828,6 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		}
 		return nil, err
 	}
-	opuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

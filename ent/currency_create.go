@@ -24,115 +24,115 @@ type CurrencyCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (cc *CurrencyCreate) SetCreatedBy(i int) *CurrencyCreate {
-	cc.mutation.SetCreatedBy(i)
-	return cc
+func (_c *CurrencyCreate) SetCreatedBy(v int) *CurrencyCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (cc *CurrencyCreate) SetCreatedAt(t time.Time) *CurrencyCreate {
-	cc.mutation.SetCreatedAt(t)
-	return cc
+func (_c *CurrencyCreate) SetCreatedAt(v time.Time) *CurrencyCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (cc *CurrencyCreate) SetNillableCreatedAt(t *time.Time) *CurrencyCreate {
-	if t != nil {
-		cc.SetCreatedAt(*t)
+func (_c *CurrencyCreate) SetNillableCreatedAt(v *time.Time) *CurrencyCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cc *CurrencyCreate) SetUpdatedBy(i int) *CurrencyCreate {
-	cc.mutation.SetUpdatedBy(i)
-	return cc
+func (_c *CurrencyCreate) SetUpdatedBy(v int) *CurrencyCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cc *CurrencyCreate) SetNillableUpdatedBy(i *int) *CurrencyCreate {
-	if i != nil {
-		cc.SetUpdatedBy(*i)
+func (_c *CurrencyCreate) SetNillableUpdatedBy(v *int) *CurrencyCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cc *CurrencyCreate) SetUpdatedAt(t time.Time) *CurrencyCreate {
-	cc.mutation.SetUpdatedAt(t)
-	return cc
+func (_c *CurrencyCreate) SetUpdatedAt(v time.Time) *CurrencyCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cc *CurrencyCreate) SetNillableUpdatedAt(t *time.Time) *CurrencyCreate {
-	if t != nil {
-		cc.SetUpdatedAt(*t)
+func (_c *CurrencyCreate) SetNillableUpdatedAt(v *time.Time) *CurrencyCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (cc *CurrencyCreate) SetCode(s string) *CurrencyCreate {
-	cc.mutation.SetCode(s)
-	return cc
+func (_c *CurrencyCreate) SetCode(v string) *CurrencyCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (cc *CurrencyCreate) SetName(s string) *CurrencyCreate {
-	cc.mutation.SetName(s)
-	return cc
+func (_c *CurrencyCreate) SetName(v string) *CurrencyCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetSign sets the "sign" field.
-func (cc *CurrencyCreate) SetSign(s string) *CurrencyCreate {
-	cc.mutation.SetSign(s)
-	return cc
+func (_c *CurrencyCreate) SetSign(v string) *CurrencyCreate {
+	_c.mutation.SetSign(v)
+	return _c
 }
 
 // SetNillableSign sets the "sign" field if the given value is not nil.
-func (cc *CurrencyCreate) SetNillableSign(s *string) *CurrencyCreate {
-	if s != nil {
-		cc.SetSign(*s)
+func (_c *CurrencyCreate) SetNillableSign(v *string) *CurrencyCreate {
+	if v != nil {
+		_c.SetSign(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (cc *CurrencyCreate) SetStatus(ts typex.SimpleStatus) *CurrencyCreate {
-	cc.mutation.SetStatus(ts)
-	return cc
+func (_c *CurrencyCreate) SetStatus(v typex.SimpleStatus) *CurrencyCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cc *CurrencyCreate) SetNillableStatus(ts *typex.SimpleStatus) *CurrencyCreate {
-	if ts != nil {
-		cc.SetStatus(*ts)
+func (_c *CurrencyCreate) SetNillableStatus(v *typex.SimpleStatus) *CurrencyCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (cc *CurrencyCreate) SetID(i int) *CurrencyCreate {
-	cc.mutation.SetID(i)
-	return cc
+func (_c *CurrencyCreate) SetID(v int) *CurrencyCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the CurrencyMutation object of the builder.
-func (cc *CurrencyCreate) Mutation() *CurrencyMutation {
-	return cc.mutation
+func (_c *CurrencyCreate) Mutation() *CurrencyMutation {
+	return _c.mutation
 }
 
 // Save creates the Currency in the database.
-func (cc *CurrencyCreate) Save(ctx context.Context) (*Currency, error) {
-	if err := cc.defaults(); err != nil {
+func (_c *CurrencyCreate) Save(ctx context.Context) (*Currency, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (cc *CurrencyCreate) SaveX(ctx context.Context) *Currency {
-	v, err := cc.Save(ctx)
+func (_c *CurrencyCreate) SaveX(ctx context.Context) *Currency {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -140,67 +140,67 @@ func (cc *CurrencyCreate) SaveX(ctx context.Context) *Currency {
 }
 
 // Exec executes the query.
-func (cc *CurrencyCreate) Exec(ctx context.Context) error {
-	_, err := cc.Save(ctx)
+func (_c *CurrencyCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cc *CurrencyCreate) ExecX(ctx context.Context) {
-	if err := cc.Exec(ctx); err != nil {
+func (_c *CurrencyCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cc *CurrencyCreate) defaults() error {
-	if _, ok := cc.mutation.CreatedAt(); !ok {
+func (_c *CurrencyCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if currency.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized currency.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := currency.DefaultCreatedAt()
-		cc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := cc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := currency.DefaultStatus
-		cc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cc *CurrencyCreate) check() error {
-	if _, ok := cc.mutation.CreatedBy(); !ok {
+func (_c *CurrencyCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Currency.created_by"`)}
 	}
-	if _, ok := cc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Currency.created_at"`)}
 	}
-	if _, ok := cc.mutation.Code(); !ok {
+	if _, ok := _c.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "Currency.code"`)}
 	}
-	if v, ok := cc.mutation.Code(); ok {
+	if v, ok := _c.mutation.Code(); ok {
 		if err := currency.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Currency.code": %w`, err)}
 		}
 	}
-	if _, ok := cc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Currency.name"`)}
 	}
-	if v, ok := cc.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := currency.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Currency.name": %w`, err)}
 		}
 	}
-	if v, ok := cc.mutation.Sign(); ok {
+	if v, ok := _c.mutation.Sign(); ok {
 		if err := currency.SignValidator(v); err != nil {
 			return &ValidationError{Name: "sign", err: fmt.Errorf(`ent: validator failed for field "Currency.sign": %w`, err)}
 		}
 	}
-	if _, ok := cc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Currency.status"`)}
 	}
-	if v, ok := cc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := currency.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Currency.status": %w`, err)}
 		}
@@ -208,12 +208,12 @@ func (cc *CurrencyCreate) check() error {
 	return nil
 }
 
-func (cc *CurrencyCreate) sqlSave(ctx context.Context) (*Currency, error) {
-	if err := cc.check(); err != nil {
+func (_c *CurrencyCreate) sqlSave(ctx context.Context) (*Currency, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := cc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, cc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -223,50 +223,50 @@ func (cc *CurrencyCreate) sqlSave(ctx context.Context) (*Currency, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	cc.mutation.id = &_node.ID
-	cc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (cc *CurrencyCreate) createSpec() (*Currency, *sqlgraph.CreateSpec) {
+func (_c *CurrencyCreate) createSpec() (*Currency, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Currency{config: cc.config}
+		_node = &Currency{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(currency.Table, sqlgraph.NewFieldSpec(currency.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = cc.conflict
-	if id, ok := cc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(currency.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := cc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(currency.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := cc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(currency.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := cc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(currency.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := cc.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(currency.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := cc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(currency.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := cc.mutation.Sign(); ok {
+	if value, ok := _c.mutation.Sign(); ok {
 		_spec.SetField(currency.FieldSign, field.TypeString, value)
 		_node.Sign = value
 	}
-	if value, ok := cc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(currency.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
@@ -289,10 +289,10 @@ func (cc *CurrencyCreate) createSpec() (*Currency, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (cc *CurrencyCreate) OnConflict(opts ...sql.ConflictOption) *CurrencyUpsertOne {
-	cc.conflict = opts
+func (_c *CurrencyCreate) OnConflict(opts ...sql.ConflictOption) *CurrencyUpsertOne {
+	_c.conflict = opts
 	return &CurrencyUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -302,10 +302,10 @@ func (cc *CurrencyCreate) OnConflict(opts ...sql.ConflictOption) *CurrencyUpsert
 //	client.Currency.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (cc *CurrencyCreate) OnConflictColumns(columns ...string) *CurrencyUpsertOne {
-	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
+func (_c *CurrencyCreate) OnConflictColumns(columns ...string) *CurrencyUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &CurrencyUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -626,16 +626,16 @@ type CurrencyCreateBulk struct {
 }
 
 // Save creates the Currency entities in the database.
-func (ccb *CurrencyCreateBulk) Save(ctx context.Context) ([]*Currency, error) {
-	if ccb.err != nil {
-		return nil, ccb.err
+func (_c *CurrencyCreateBulk) Save(ctx context.Context) ([]*Currency, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ccb.builders))
-	nodes := make([]*Currency, len(ccb.builders))
-	mutators := make([]Mutator, len(ccb.builders))
-	for i := range ccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Currency, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ccb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CurrencyMutation)
@@ -649,12 +649,12 @@ func (ccb *CurrencyCreateBulk) Save(ctx context.Context) ([]*Currency, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -678,7 +678,7 @@ func (ccb *CurrencyCreateBulk) Save(ctx context.Context) ([]*Currency, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -686,8 +686,8 @@ func (ccb *CurrencyCreateBulk) Save(ctx context.Context) ([]*Currency, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ccb *CurrencyCreateBulk) SaveX(ctx context.Context) []*Currency {
-	v, err := ccb.Save(ctx)
+func (_c *CurrencyCreateBulk) SaveX(ctx context.Context) []*Currency {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -695,14 +695,14 @@ func (ccb *CurrencyCreateBulk) SaveX(ctx context.Context) []*Currency {
 }
 
 // Exec executes the query.
-func (ccb *CurrencyCreateBulk) Exec(ctx context.Context) error {
-	_, err := ccb.Save(ctx)
+func (_c *CurrencyCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ccb *CurrencyCreateBulk) ExecX(ctx context.Context) {
-	if err := ccb.Exec(ctx); err != nil {
+func (_c *CurrencyCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -722,10 +722,10 @@ func (ccb *CurrencyCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ccb *CurrencyCreateBulk) OnConflict(opts ...sql.ConflictOption) *CurrencyUpsertBulk {
-	ccb.conflict = opts
+func (_c *CurrencyCreateBulk) OnConflict(opts ...sql.ConflictOption) *CurrencyUpsertBulk {
+	_c.conflict = opts
 	return &CurrencyUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 
@@ -735,10 +735,10 @@ func (ccb *CurrencyCreateBulk) OnConflict(opts ...sql.ConflictOption) *CurrencyU
 //	client.Currency.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ccb *CurrencyCreateBulk) OnConflictColumns(columns ...string) *CurrencyUpsertBulk {
-	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
+func (_c *CurrencyCreateBulk) OnConflictColumns(columns ...string) *CurrencyUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &CurrencyUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 

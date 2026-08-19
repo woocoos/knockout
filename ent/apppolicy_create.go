@@ -30,244 +30,244 @@ type AppPolicyCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (apc *AppPolicyCreate) SetCreatedBy(i int) *AppPolicyCreate {
-	apc.mutation.SetCreatedBy(i)
-	return apc
+func (_c *AppPolicyCreate) SetCreatedBy(v int) *AppPolicyCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (apc *AppPolicyCreate) SetCreatedAt(t time.Time) *AppPolicyCreate {
-	apc.mutation.SetCreatedAt(t)
-	return apc
+func (_c *AppPolicyCreate) SetCreatedAt(v time.Time) *AppPolicyCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableCreatedAt(t *time.Time) *AppPolicyCreate {
-	if t != nil {
-		apc.SetCreatedAt(*t)
+func (_c *AppPolicyCreate) SetNillableCreatedAt(v *time.Time) *AppPolicyCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (apc *AppPolicyCreate) SetUpdatedBy(i int) *AppPolicyCreate {
-	apc.mutation.SetUpdatedBy(i)
-	return apc
+func (_c *AppPolicyCreate) SetUpdatedBy(v int) *AppPolicyCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableUpdatedBy(i *int) *AppPolicyCreate {
-	if i != nil {
-		apc.SetUpdatedBy(*i)
+func (_c *AppPolicyCreate) SetNillableUpdatedBy(v *int) *AppPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (apc *AppPolicyCreate) SetUpdatedAt(t time.Time) *AppPolicyCreate {
-	apc.mutation.SetUpdatedAt(t)
-	return apc
+func (_c *AppPolicyCreate) SetUpdatedAt(v time.Time) *AppPolicyCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableUpdatedAt(t *time.Time) *AppPolicyCreate {
-	if t != nil {
-		apc.SetUpdatedAt(*t)
+func (_c *AppPolicyCreate) SetNillableUpdatedAt(v *time.Time) *AppPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (apc *AppPolicyCreate) SetAppID(i int) *AppPolicyCreate {
-	apc.mutation.SetAppID(i)
-	return apc
+func (_c *AppPolicyCreate) SetAppID(v int) *AppPolicyCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableAppID(i *int) *AppPolicyCreate {
-	if i != nil {
-		apc.SetAppID(*i)
+func (_c *AppPolicyCreate) SetNillableAppID(v *int) *AppPolicyCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (apc *AppPolicyCreate) SetKind(a apppolicy.Kind) *AppPolicyCreate {
-	apc.mutation.SetKind(a)
-	return apc
+func (_c *AppPolicyCreate) SetKind(v apppolicy.Kind) *AppPolicyCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableKind(a *apppolicy.Kind) *AppPolicyCreate {
-	if a != nil {
-		apc.SetKind(*a)
+func (_c *AppPolicyCreate) SetNillableKind(v *apppolicy.Kind) *AppPolicyCreate {
+	if v != nil {
+		_c.SetKind(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (apc *AppPolicyCreate) SetName(s string) *AppPolicyCreate {
-	apc.mutation.SetName(s)
-	return apc
+func (_c *AppPolicyCreate) SetName(v string) *AppPolicyCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (apc *AppPolicyCreate) SetComments(s string) *AppPolicyCreate {
-	apc.mutation.SetComments(s)
-	return apc
+func (_c *AppPolicyCreate) SetComments(v string) *AppPolicyCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableComments(s *string) *AppPolicyCreate {
-	if s != nil {
-		apc.SetComments(*s)
+func (_c *AppPolicyCreate) SetNillableComments(v *string) *AppPolicyCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetRules sets the "rules" field.
-func (apc *AppPolicyCreate) SetRules(tr []*types.PolicyRule) *AppPolicyCreate {
-	apc.mutation.SetRules(tr)
-	return apc
+func (_c *AppPolicyCreate) SetRules(v []*types.PolicyRule) *AppPolicyCreate {
+	_c.mutation.SetRules(v)
+	return _c
 }
 
 // SetVersion sets the "version" field.
-func (apc *AppPolicyCreate) SetVersion(s string) *AppPolicyCreate {
-	apc.mutation.SetVersion(s)
-	return apc
+func (_c *AppPolicyCreate) SetVersion(v string) *AppPolicyCreate {
+	_c.mutation.SetVersion(v)
+	return _c
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableVersion(s *string) *AppPolicyCreate {
-	if s != nil {
-		apc.SetVersion(*s)
+func (_c *AppPolicyCreate) SetNillableVersion(v *string) *AppPolicyCreate {
+	if v != nil {
+		_c.SetVersion(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetAutoGrant sets the "auto_grant" field.
-func (apc *AppPolicyCreate) SetAutoGrant(b bool) *AppPolicyCreate {
-	apc.mutation.SetAutoGrant(b)
-	return apc
+func (_c *AppPolicyCreate) SetAutoGrant(v bool) *AppPolicyCreate {
+	_c.mutation.SetAutoGrant(v)
+	return _c
 }
 
 // SetNillableAutoGrant sets the "auto_grant" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableAutoGrant(b *bool) *AppPolicyCreate {
-	if b != nil {
-		apc.SetAutoGrant(*b)
+func (_c *AppPolicyCreate) SetNillableAutoGrant(v *bool) *AppPolicyCreate {
+	if v != nil {
+		_c.SetAutoGrant(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (apc *AppPolicyCreate) SetStatus(ts typex.SimpleStatus) *AppPolicyCreate {
-	apc.mutation.SetStatus(ts)
-	return apc
+func (_c *AppPolicyCreate) SetStatus(v typex.SimpleStatus) *AppPolicyCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppPolicyCreate {
-	if ts != nil {
-		apc.SetStatus(*ts)
+func (_c *AppPolicyCreate) SetNillableStatus(v *typex.SimpleStatus) *AppPolicyCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (apc *AppPolicyCreate) SetID(i int) *AppPolicyCreate {
-	apc.mutation.SetID(i)
-	return apc
+func (_c *AppPolicyCreate) SetID(v int) *AppPolicyCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (apc *AppPolicyCreate) SetNillableID(i *int) *AppPolicyCreate {
-	if i != nil {
-		apc.SetID(*i)
+func (_c *AppPolicyCreate) SetNillableID(v *int) *AppPolicyCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return apc
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (apc *AppPolicyCreate) SetApp(a *App) *AppPolicyCreate {
-	return apc.SetAppID(a.ID)
+func (_c *AppPolicyCreate) SetApp(v *App) *AppPolicyCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
-func (apc *AppPolicyCreate) AddRoleIDs(ids ...int) *AppPolicyCreate {
-	apc.mutation.AddRoleIDs(ids...)
-	return apc
+func (_c *AppPolicyCreate) AddRoleIDs(ids ...int) *AppPolicyCreate {
+	_c.mutation.AddRoleIDs(ids...)
+	return _c
 }
 
 // AddRoles adds the "roles" edges to the AppRole entity.
-func (apc *AppPolicyCreate) AddRoles(a ...*AppRole) *AppPolicyCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppPolicyCreate) AddRoles(v ...*AppRole) *AppPolicyCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return apc.AddRoleIDs(ids...)
+	return _c.AddRoleIDs(ids...)
 }
 
 // AddOrgPolicyIDs adds the "org_policies" edge to the OrgPolicy entity by IDs.
-func (apc *AppPolicyCreate) AddOrgPolicyIDs(ids ...int) *AppPolicyCreate {
-	apc.mutation.AddOrgPolicyIDs(ids...)
-	return apc
+func (_c *AppPolicyCreate) AddOrgPolicyIDs(ids ...int) *AppPolicyCreate {
+	_c.mutation.AddOrgPolicyIDs(ids...)
+	return _c
 }
 
 // AddOrgPolicies adds the "org_policies" edges to the OrgPolicy entity.
-func (apc *AppPolicyCreate) AddOrgPolicies(o ...*OrgPolicy) *AppPolicyCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *AppPolicyCreate) AddOrgPolicies(v ...*OrgPolicy) *AppPolicyCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return apc.AddOrgPolicyIDs(ids...)
+	return _c.AddOrgPolicyIDs(ids...)
 }
 
 // AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
-func (apc *AppPolicyCreate) AddPolicyViewIDs(ids ...int) *AppPolicyCreate {
-	apc.mutation.AddPolicyViewIDs(ids...)
-	return apc
+func (_c *AppPolicyCreate) AddPolicyViewIDs(ids ...int) *AppPolicyCreate {
+	_c.mutation.AddPolicyViewIDs(ids...)
+	return _c
 }
 
 // AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
-func (apc *AppPolicyCreate) AddPolicyViews(a ...*AppPolicyView) *AppPolicyCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppPolicyCreate) AddPolicyViews(v ...*AppPolicyView) *AppPolicyCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return apc.AddPolicyViewIDs(ids...)
+	return _c.AddPolicyViewIDs(ids...)
 }
 
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
-func (apc *AppPolicyCreate) AddAppRolePolicyIDs(ids ...int) *AppPolicyCreate {
-	apc.mutation.AddAppRolePolicyIDs(ids...)
-	return apc
+func (_c *AppPolicyCreate) AddAppRolePolicyIDs(ids ...int) *AppPolicyCreate {
+	_c.mutation.AddAppRolePolicyIDs(ids...)
+	return _c
 }
 
 // AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
-func (apc *AppPolicyCreate) AddAppRolePolicy(a ...*AppRolePolicy) *AppPolicyCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppPolicyCreate) AddAppRolePolicy(v ...*AppRolePolicy) *AppPolicyCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return apc.AddAppRolePolicyIDs(ids...)
+	return _c.AddAppRolePolicyIDs(ids...)
 }
 
 // Mutation returns the AppPolicyMutation object of the builder.
-func (apc *AppPolicyCreate) Mutation() *AppPolicyMutation {
-	return apc.mutation
+func (_c *AppPolicyCreate) Mutation() *AppPolicyMutation {
+	return _c.mutation
 }
 
 // Save creates the AppPolicy in the database.
-func (apc *AppPolicyCreate) Save(ctx context.Context) (*AppPolicy, error) {
-	if err := apc.defaults(); err != nil {
+func (_c *AppPolicyCreate) Save(ctx context.Context) (*AppPolicy, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, apc.sqlSave, apc.mutation, apc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (apc *AppPolicyCreate) SaveX(ctx context.Context) *AppPolicy {
-	v, err := apc.Save(ctx)
+func (_c *AppPolicyCreate) SaveX(ctx context.Context) *AppPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -275,82 +275,82 @@ func (apc *AppPolicyCreate) SaveX(ctx context.Context) *AppPolicy {
 }
 
 // Exec executes the query.
-func (apc *AppPolicyCreate) Exec(ctx context.Context) error {
-	_, err := apc.Save(ctx)
+func (_c *AppPolicyCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (apc *AppPolicyCreate) ExecX(ctx context.Context) {
-	if err := apc.Exec(ctx); err != nil {
+func (_c *AppPolicyCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (apc *AppPolicyCreate) defaults() error {
-	if _, ok := apc.mutation.CreatedAt(); !ok {
+func (_c *AppPolicyCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if apppolicy.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized apppolicy.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := apppolicy.DefaultCreatedAt()
-		apc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := apc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		v := apppolicy.DefaultKind
-		apc.mutation.SetKind(v)
+		_c.mutation.SetKind(v)
 	}
-	if _, ok := apc.mutation.Version(); !ok {
+	if _, ok := _c.mutation.Version(); !ok {
 		v := apppolicy.DefaultVersion
-		apc.mutation.SetVersion(v)
+		_c.mutation.SetVersion(v)
 	}
-	if _, ok := apc.mutation.AutoGrant(); !ok {
+	if _, ok := _c.mutation.AutoGrant(); !ok {
 		v := apppolicy.DefaultAutoGrant
-		apc.mutation.SetAutoGrant(v)
+		_c.mutation.SetAutoGrant(v)
 	}
-	if _, ok := apc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := apppolicy.DefaultStatus
-		apc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
-	if _, ok := apc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if apppolicy.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized apppolicy.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := apppolicy.DefaultID()
-		apc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (apc *AppPolicyCreate) check() error {
-	if _, ok := apc.mutation.CreatedBy(); !ok {
+func (_c *AppPolicyCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppPolicy.created_by"`)}
 	}
-	if _, ok := apc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppPolicy.created_at"`)}
 	}
-	if _, ok := apc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "AppPolicy.kind"`)}
 	}
-	if v, ok := apc.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := apppolicy.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.kind": %w`, err)}
 		}
 	}
-	if _, ok := apc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppPolicy.name"`)}
 	}
-	if _, ok := apc.mutation.Rules(); !ok {
+	if _, ok := _c.mutation.Rules(); !ok {
 		return &ValidationError{Name: "rules", err: errors.New(`ent: missing required field "AppPolicy.rules"`)}
 	}
-	if _, ok := apc.mutation.Version(); !ok {
+	if _, ok := _c.mutation.Version(); !ok {
 		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "AppPolicy.version"`)}
 	}
-	if _, ok := apc.mutation.AutoGrant(); !ok {
+	if _, ok := _c.mutation.AutoGrant(); !ok {
 		return &ValidationError{Name: "auto_grant", err: errors.New(`ent: missing required field "AppPolicy.auto_grant"`)}
 	}
-	if v, ok := apc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
 		}
@@ -358,12 +358,12 @@ func (apc *AppPolicyCreate) check() error {
 	return nil
 }
 
-func (apc *AppPolicyCreate) sqlSave(ctx context.Context) (*AppPolicy, error) {
-	if err := apc.check(); err != nil {
+func (_c *AppPolicyCreate) sqlSave(ctx context.Context) (*AppPolicy, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := apc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, apc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -373,66 +373,66 @@ func (apc *AppPolicyCreate) sqlSave(ctx context.Context) (*AppPolicy, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	apc.mutation.id = &_node.ID
-	apc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
+func (_c *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppPolicy{config: apc.config}
+		_node = &AppPolicy{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(apppolicy.Table, sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = apc.conflict
-	if id, ok := apc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := apc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(apppolicy.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := apc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(apppolicy.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := apc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(apppolicy.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := apc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := apc.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(apppolicy.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := apc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(apppolicy.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := apc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(apppolicy.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := apc.mutation.Rules(); ok {
+	if value, ok := _c.mutation.Rules(); ok {
 		_spec.SetField(apppolicy.FieldRules, field.TypeJSON, value)
 		_node.Rules = value
 	}
-	if value, ok := apc.mutation.Version(); ok {
+	if value, ok := _c.mutation.Version(); ok {
 		_spec.SetField(apppolicy.FieldVersion, field.TypeString, value)
 		_node.Version = value
 	}
-	if value, ok := apc.mutation.AutoGrant(); ok {
+	if value, ok := _c.mutation.AutoGrant(); ok {
 		_spec.SetField(apppolicy.FieldAutoGrant, field.TypeBool, value)
 		_node.AutoGrant = value
 	}
-	if value, ok := apc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(apppolicy.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := apc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -449,7 +449,7 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		_node.AppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := apc.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -463,13 +463,13 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: apc.config, mutation: newAppRolePolicyMutation(apc.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _c.config, mutation: newAppRolePolicyMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := apc.mutation.OrgPoliciesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgPoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -485,7 +485,7 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := apc.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PolicyViewsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -501,7 +501,7 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := apc.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -536,10 +536,10 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (apc *AppPolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertOne {
-	apc.conflict = opts
+func (_c *AppPolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertOne {
+	_c.conflict = opts
 	return &AppPolicyUpsertOne{
-		create: apc,
+		create: _c,
 	}
 }
 
@@ -549,10 +549,10 @@ func (apc *AppPolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppPolicyUps
 //	client.AppPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (apc *AppPolicyCreate) OnConflictColumns(columns ...string) *AppPolicyUpsertOne {
-	apc.conflict = append(apc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppPolicyCreate) OnConflictColumns(columns ...string) *AppPolicyUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppPolicyUpsertOne{
-		create: apc,
+		create: _c,
 	}
 }
 
@@ -967,16 +967,16 @@ type AppPolicyCreateBulk struct {
 }
 
 // Save creates the AppPolicy entities in the database.
-func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error) {
-	if apcb.err != nil {
-		return nil, apcb.err
+func (_c *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(apcb.builders))
-	nodes := make([]*AppPolicy, len(apcb.builders))
-	mutators := make([]Mutator, len(apcb.builders))
-	for i := range apcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppPolicy, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := apcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppPolicyMutation)
@@ -990,12 +990,12 @@ func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, apcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = apcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, apcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1019,7 +1019,7 @@ func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, apcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1027,8 +1027,8 @@ func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (apcb *AppPolicyCreateBulk) SaveX(ctx context.Context) []*AppPolicy {
-	v, err := apcb.Save(ctx)
+func (_c *AppPolicyCreateBulk) SaveX(ctx context.Context) []*AppPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1036,14 +1036,14 @@ func (apcb *AppPolicyCreateBulk) SaveX(ctx context.Context) []*AppPolicy {
 }
 
 // Exec executes the query.
-func (apcb *AppPolicyCreateBulk) Exec(ctx context.Context) error {
-	_, err := apcb.Save(ctx)
+func (_c *AppPolicyCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (apcb *AppPolicyCreateBulk) ExecX(ctx context.Context) {
-	if err := apcb.Exec(ctx); err != nil {
+func (_c *AppPolicyCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1063,10 +1063,10 @@ func (apcb *AppPolicyCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (apcb *AppPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertBulk {
-	apcb.conflict = opts
+func (_c *AppPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertBulk {
+	_c.conflict = opts
 	return &AppPolicyUpsertBulk{
-		create: apcb,
+		create: _c,
 	}
 }
 
@@ -1076,10 +1076,10 @@ func (apcb *AppPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPoli
 //	client.AppPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (apcb *AppPolicyCreateBulk) OnConflictColumns(columns ...string) *AppPolicyUpsertBulk {
-	apcb.conflict = append(apcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppPolicyCreateBulk) OnConflictColumns(columns ...string) *AppPolicyUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppPolicyUpsertBulk{
-		create: apcb,
+		create: _c,
 	}
 }
 

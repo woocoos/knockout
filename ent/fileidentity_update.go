@@ -24,225 +24,225 @@ type FileIdentityUpdate struct {
 }
 
 // Where appends a list predicates to the FileIdentityUpdate builder.
-func (fiu *FileIdentityUpdate) Where(ps ...predicate.FileIdentity) *FileIdentityUpdate {
-	fiu.mutation.Where(ps...)
-	return fiu
+func (_u *FileIdentityUpdate) Where(ps ...predicate.FileIdentity) *FileIdentityUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (fiu *FileIdentityUpdate) SetUpdatedBy(i int) *FileIdentityUpdate {
-	fiu.mutation.ResetUpdatedBy()
-	fiu.mutation.SetUpdatedBy(i)
-	return fiu
+func (_u *FileIdentityUpdate) SetUpdatedBy(v int) *FileIdentityUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableUpdatedBy(i *int) *FileIdentityUpdate {
-	if i != nil {
-		fiu.SetUpdatedBy(*i)
+func (_u *FileIdentityUpdate) SetNillableUpdatedBy(v *int) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return fiu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (fiu *FileIdentityUpdate) AddUpdatedBy(i int) *FileIdentityUpdate {
-	fiu.mutation.AddUpdatedBy(i)
-	return fiu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *FileIdentityUpdate) AddUpdatedBy(v int) *FileIdentityUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (fiu *FileIdentityUpdate) ClearUpdatedBy() *FileIdentityUpdate {
-	fiu.mutation.ClearUpdatedBy()
-	return fiu
+func (_u *FileIdentityUpdate) ClearUpdatedBy() *FileIdentityUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fiu *FileIdentityUpdate) SetUpdatedAt(t time.Time) *FileIdentityUpdate {
-	fiu.mutation.SetUpdatedAt(t)
-	return fiu
+func (_u *FileIdentityUpdate) SetUpdatedAt(v time.Time) *FileIdentityUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableUpdatedAt(t *time.Time) *FileIdentityUpdate {
-	if t != nil {
-		fiu.SetUpdatedAt(*t)
+func (_u *FileIdentityUpdate) SetNillableUpdatedAt(v *time.Time) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return fiu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (fiu *FileIdentityUpdate) ClearUpdatedAt() *FileIdentityUpdate {
-	fiu.mutation.ClearUpdatedAt()
-	return fiu
+func (_u *FileIdentityUpdate) ClearUpdatedAt() *FileIdentityUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAccessKeyID sets the "access_key_id" field.
-func (fiu *FileIdentityUpdate) SetAccessKeyID(s string) *FileIdentityUpdate {
-	fiu.mutation.SetAccessKeyID(s)
-	return fiu
+func (_u *FileIdentityUpdate) SetAccessKeyID(v string) *FileIdentityUpdate {
+	_u.mutation.SetAccessKeyID(v)
+	return _u
 }
 
 // SetNillableAccessKeyID sets the "access_key_id" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableAccessKeyID(s *string) *FileIdentityUpdate {
-	if s != nil {
-		fiu.SetAccessKeyID(*s)
+func (_u *FileIdentityUpdate) SetNillableAccessKeyID(v *string) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetAccessKeyID(*v)
 	}
-	return fiu
+	return _u
 }
 
 // SetAccessKeySecret sets the "access_key_secret" field.
-func (fiu *FileIdentityUpdate) SetAccessKeySecret(s string) *FileIdentityUpdate {
-	fiu.mutation.SetAccessKeySecret(s)
-	return fiu
+func (_u *FileIdentityUpdate) SetAccessKeySecret(v string) *FileIdentityUpdate {
+	_u.mutation.SetAccessKeySecret(v)
+	return _u
 }
 
 // SetNillableAccessKeySecret sets the "access_key_secret" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableAccessKeySecret(s *string) *FileIdentityUpdate {
-	if s != nil {
-		fiu.SetAccessKeySecret(*s)
+func (_u *FileIdentityUpdate) SetNillableAccessKeySecret(v *string) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetAccessKeySecret(*v)
 	}
-	return fiu
+	return _u
 }
 
 // SetFileSourceID sets the "file_source_id" field.
-func (fiu *FileIdentityUpdate) SetFileSourceID(i int) *FileIdentityUpdate {
-	fiu.mutation.SetFileSourceID(i)
-	return fiu
+func (_u *FileIdentityUpdate) SetFileSourceID(v int) *FileIdentityUpdate {
+	_u.mutation.SetFileSourceID(v)
+	return _u
 }
 
 // SetNillableFileSourceID sets the "file_source_id" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableFileSourceID(i *int) *FileIdentityUpdate {
-	if i != nil {
-		fiu.SetFileSourceID(*i)
+func (_u *FileIdentityUpdate) SetNillableFileSourceID(v *int) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetFileSourceID(*v)
 	}
-	return fiu
+	return _u
 }
 
 // SetRoleArn sets the "role_arn" field.
-func (fiu *FileIdentityUpdate) SetRoleArn(s string) *FileIdentityUpdate {
-	fiu.mutation.SetRoleArn(s)
-	return fiu
+func (_u *FileIdentityUpdate) SetRoleArn(v string) *FileIdentityUpdate {
+	_u.mutation.SetRoleArn(v)
+	return _u
 }
 
 // SetNillableRoleArn sets the "role_arn" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableRoleArn(s *string) *FileIdentityUpdate {
-	if s != nil {
-		fiu.SetRoleArn(*s)
+func (_u *FileIdentityUpdate) SetNillableRoleArn(v *string) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetRoleArn(*v)
 	}
-	return fiu
+	return _u
 }
 
 // SetPolicy sets the "policy" field.
-func (fiu *FileIdentityUpdate) SetPolicy(s string) *FileIdentityUpdate {
-	fiu.mutation.SetPolicy(s)
-	return fiu
+func (_u *FileIdentityUpdate) SetPolicy(v string) *FileIdentityUpdate {
+	_u.mutation.SetPolicy(v)
+	return _u
 }
 
 // SetNillablePolicy sets the "policy" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillablePolicy(s *string) *FileIdentityUpdate {
-	if s != nil {
-		fiu.SetPolicy(*s)
+func (_u *FileIdentityUpdate) SetNillablePolicy(v *string) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetPolicy(*v)
 	}
-	return fiu
+	return _u
 }
 
 // ClearPolicy clears the value of the "policy" field.
-func (fiu *FileIdentityUpdate) ClearPolicy() *FileIdentityUpdate {
-	fiu.mutation.ClearPolicy()
-	return fiu
+func (_u *FileIdentityUpdate) ClearPolicy() *FileIdentityUpdate {
+	_u.mutation.ClearPolicy()
+	return _u
 }
 
 // SetDurationSeconds sets the "duration_seconds" field.
-func (fiu *FileIdentityUpdate) SetDurationSeconds(i int) *FileIdentityUpdate {
-	fiu.mutation.ResetDurationSeconds()
-	fiu.mutation.SetDurationSeconds(i)
-	return fiu
+func (_u *FileIdentityUpdate) SetDurationSeconds(v int) *FileIdentityUpdate {
+	_u.mutation.ResetDurationSeconds()
+	_u.mutation.SetDurationSeconds(v)
+	return _u
 }
 
 // SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableDurationSeconds(i *int) *FileIdentityUpdate {
-	if i != nil {
-		fiu.SetDurationSeconds(*i)
+func (_u *FileIdentityUpdate) SetNillableDurationSeconds(v *int) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetDurationSeconds(*v)
 	}
-	return fiu
+	return _u
 }
 
-// AddDurationSeconds adds i to the "duration_seconds" field.
-func (fiu *FileIdentityUpdate) AddDurationSeconds(i int) *FileIdentityUpdate {
-	fiu.mutation.AddDurationSeconds(i)
-	return fiu
+// AddDurationSeconds adds value to the "duration_seconds" field.
+func (_u *FileIdentityUpdate) AddDurationSeconds(v int) *FileIdentityUpdate {
+	_u.mutation.AddDurationSeconds(v)
+	return _u
 }
 
 // ClearDurationSeconds clears the value of the "duration_seconds" field.
-func (fiu *FileIdentityUpdate) ClearDurationSeconds() *FileIdentityUpdate {
-	fiu.mutation.ClearDurationSeconds()
-	return fiu
+func (_u *FileIdentityUpdate) ClearDurationSeconds() *FileIdentityUpdate {
+	_u.mutation.ClearDurationSeconds()
+	return _u
 }
 
 // SetIsDefault sets the "is_default" field.
-func (fiu *FileIdentityUpdate) SetIsDefault(b bool) *FileIdentityUpdate {
-	fiu.mutation.SetIsDefault(b)
-	return fiu
+func (_u *FileIdentityUpdate) SetIsDefault(v bool) *FileIdentityUpdate {
+	_u.mutation.SetIsDefault(v)
+	return _u
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableIsDefault(b *bool) *FileIdentityUpdate {
-	if b != nil {
-		fiu.SetIsDefault(*b)
+func (_u *FileIdentityUpdate) SetNillableIsDefault(v *bool) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetIsDefault(*v)
 	}
-	return fiu
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (fiu *FileIdentityUpdate) SetComments(s string) *FileIdentityUpdate {
-	fiu.mutation.SetComments(s)
-	return fiu
+func (_u *FileIdentityUpdate) SetComments(v string) *FileIdentityUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableComments(s *string) *FileIdentityUpdate {
-	if s != nil {
-		fiu.SetComments(*s)
+func (_u *FileIdentityUpdate) SetNillableComments(v *string) *FileIdentityUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return fiu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (fiu *FileIdentityUpdate) ClearComments() *FileIdentityUpdate {
-	fiu.mutation.ClearComments()
-	return fiu
+func (_u *FileIdentityUpdate) ClearComments() *FileIdentityUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetSourceID sets the "source" edge to the FileSource entity by ID.
-func (fiu *FileIdentityUpdate) SetSourceID(id int) *FileIdentityUpdate {
-	fiu.mutation.SetSourceID(id)
-	return fiu
+func (_u *FileIdentityUpdate) SetSourceID(id int) *FileIdentityUpdate {
+	_u.mutation.SetSourceID(id)
+	return _u
 }
 
 // SetSource sets the "source" edge to the FileSource entity.
-func (fiu *FileIdentityUpdate) SetSource(f *FileSource) *FileIdentityUpdate {
-	return fiu.SetSourceID(f.ID)
+func (_u *FileIdentityUpdate) SetSource(v *FileSource) *FileIdentityUpdate {
+	return _u.SetSourceID(v.ID)
 }
 
 // Mutation returns the FileIdentityMutation object of the builder.
-func (fiu *FileIdentityUpdate) Mutation() *FileIdentityMutation {
-	return fiu.mutation
+func (_u *FileIdentityUpdate) Mutation() *FileIdentityMutation {
+	return _u.mutation
 }
 
 // ClearSource clears the "source" edge to the FileSource entity.
-func (fiu *FileIdentityUpdate) ClearSource() *FileIdentityUpdate {
-	fiu.mutation.ClearSource()
-	return fiu
+func (_u *FileIdentityUpdate) ClearSource() *FileIdentityUpdate {
+	_u.mutation.ClearSource()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fiu *FileIdentityUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, fiu.sqlSave, fiu.mutation, fiu.hooks)
+func (_u *FileIdentityUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fiu *FileIdentityUpdate) SaveX(ctx context.Context) int {
-	affected, err := fiu.Save(ctx)
+func (_u *FileIdentityUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -250,105 +250,105 @@ func (fiu *FileIdentityUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fiu *FileIdentityUpdate) Exec(ctx context.Context) error {
-	_, err := fiu.Save(ctx)
+func (_u *FileIdentityUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fiu *FileIdentityUpdate) ExecX(ctx context.Context) {
-	if err := fiu.Exec(ctx); err != nil {
+func (_u *FileIdentityUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fiu *FileIdentityUpdate) check() error {
-	if v, ok := fiu.mutation.AccessKeyID(); ok {
+func (_u *FileIdentityUpdate) check() error {
+	if v, ok := _u.mutation.AccessKeyID(); ok {
 		if err := fileidentity.AccessKeyIDValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_id": %w`, err)}
 		}
 	}
-	if v, ok := fiu.mutation.AccessKeySecret(); ok {
+	if v, ok := _u.mutation.AccessKeySecret(); ok {
 		if err := fileidentity.AccessKeySecretValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_secret": %w`, err)}
 		}
 	}
-	if v, ok := fiu.mutation.RoleArn(); ok {
+	if v, ok := _u.mutation.RoleArn(); ok {
 		if err := fileidentity.RoleArnValidator(v); err != nil {
 			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.role_arn": %w`, err)}
 		}
 	}
-	if fiu.mutation.SourceCleared() && len(fiu.mutation.SourceIDs()) > 0 {
+	if _u.mutation.SourceCleared() && len(_u.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.source"`)
 	}
-	if fiu.mutation.OrgCleared() && len(fiu.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.org"`)
 	}
 	return nil
 }
 
-func (fiu *FileIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fiu.check(); err != nil {
-		return n, err
+func (_u *FileIdentityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(fileidentity.Table, fileidentity.Columns, sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt))
-	if ps := fiu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fiu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := fiu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(fileidentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if fiu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(fileidentity.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := fiu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fiu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(fileidentity.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := fiu.mutation.AccessKeyID(); ok {
+	if value, ok := _u.mutation.AccessKeyID(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeyID, field.TypeString, value)
 	}
-	if value, ok := fiu.mutation.AccessKeySecret(); ok {
+	if value, ok := _u.mutation.AccessKeySecret(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeySecret, field.TypeString, value)
 	}
-	if value, ok := fiu.mutation.RoleArn(); ok {
+	if value, ok := _u.mutation.RoleArn(); ok {
 		_spec.SetField(fileidentity.FieldRoleArn, field.TypeString, value)
 	}
-	if value, ok := fiu.mutation.Policy(); ok {
+	if value, ok := _u.mutation.Policy(); ok {
 		_spec.SetField(fileidentity.FieldPolicy, field.TypeString, value)
 	}
-	if fiu.mutation.PolicyCleared() {
+	if _u.mutation.PolicyCleared() {
 		_spec.ClearField(fileidentity.FieldPolicy, field.TypeString)
 	}
-	if value, ok := fiu.mutation.DurationSeconds(); ok {
+	if value, ok := _u.mutation.DurationSeconds(); ok {
 		_spec.SetField(fileidentity.FieldDurationSeconds, field.TypeInt, value)
 	}
-	if value, ok := fiu.mutation.AddedDurationSeconds(); ok {
+	if value, ok := _u.mutation.AddedDurationSeconds(); ok {
 		_spec.AddField(fileidentity.FieldDurationSeconds, field.TypeInt, value)
 	}
-	if fiu.mutation.DurationSecondsCleared() {
+	if _u.mutation.DurationSecondsCleared() {
 		_spec.ClearField(fileidentity.FieldDurationSeconds, field.TypeInt)
 	}
-	if value, ok := fiu.mutation.IsDefault(); ok {
+	if value, ok := _u.mutation.IsDefault(); ok {
 		_spec.SetField(fileidentity.FieldIsDefault, field.TypeBool, value)
 	}
-	if value, ok := fiu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(fileidentity.FieldComments, field.TypeString, value)
 	}
-	if fiu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(fileidentity.FieldComments, field.TypeString)
 	}
-	if fiu.mutation.SourceCleared() {
+	if _u.mutation.SourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -361,7 +361,7 @@ func (fiu *FileIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fiu.mutation.SourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -377,7 +377,7 @@ func (fiu *FileIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fiu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{fileidentity.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -385,8 +385,8 @@ func (fiu *FileIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	fiu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FileIdentityUpdateOne is the builder for updating a single FileIdentity entity.
@@ -398,232 +398,232 @@ type FileIdentityUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (fiuo *FileIdentityUpdateOne) SetUpdatedBy(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.ResetUpdatedBy()
-	fiuo.mutation.SetUpdatedBy(i)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetUpdatedBy(v int) *FileIdentityUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableUpdatedBy(i *int) *FileIdentityUpdateOne {
-	if i != nil {
-		fiuo.SetUpdatedBy(*i)
+func (_u *FileIdentityUpdateOne) SetNillableUpdatedBy(v *int) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return fiuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (fiuo *FileIdentityUpdateOne) AddUpdatedBy(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.AddUpdatedBy(i)
-	return fiuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *FileIdentityUpdateOne) AddUpdatedBy(v int) *FileIdentityUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (fiuo *FileIdentityUpdateOne) ClearUpdatedBy() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearUpdatedBy()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearUpdatedBy() *FileIdentityUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fiuo *FileIdentityUpdateOne) SetUpdatedAt(t time.Time) *FileIdentityUpdateOne {
-	fiuo.mutation.SetUpdatedAt(t)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetUpdatedAt(v time.Time) *FileIdentityUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableUpdatedAt(t *time.Time) *FileIdentityUpdateOne {
-	if t != nil {
-		fiuo.SetUpdatedAt(*t)
+func (_u *FileIdentityUpdateOne) SetNillableUpdatedAt(v *time.Time) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (fiuo *FileIdentityUpdateOne) ClearUpdatedAt() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearUpdatedAt()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearUpdatedAt() *FileIdentityUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAccessKeyID sets the "access_key_id" field.
-func (fiuo *FileIdentityUpdateOne) SetAccessKeyID(s string) *FileIdentityUpdateOne {
-	fiuo.mutation.SetAccessKeyID(s)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetAccessKeyID(v string) *FileIdentityUpdateOne {
+	_u.mutation.SetAccessKeyID(v)
+	return _u
 }
 
 // SetNillableAccessKeyID sets the "access_key_id" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableAccessKeyID(s *string) *FileIdentityUpdateOne {
-	if s != nil {
-		fiuo.SetAccessKeyID(*s)
+func (_u *FileIdentityUpdateOne) SetNillableAccessKeyID(v *string) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetAccessKeyID(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // SetAccessKeySecret sets the "access_key_secret" field.
-func (fiuo *FileIdentityUpdateOne) SetAccessKeySecret(s string) *FileIdentityUpdateOne {
-	fiuo.mutation.SetAccessKeySecret(s)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetAccessKeySecret(v string) *FileIdentityUpdateOne {
+	_u.mutation.SetAccessKeySecret(v)
+	return _u
 }
 
 // SetNillableAccessKeySecret sets the "access_key_secret" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableAccessKeySecret(s *string) *FileIdentityUpdateOne {
-	if s != nil {
-		fiuo.SetAccessKeySecret(*s)
+func (_u *FileIdentityUpdateOne) SetNillableAccessKeySecret(v *string) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetAccessKeySecret(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // SetFileSourceID sets the "file_source_id" field.
-func (fiuo *FileIdentityUpdateOne) SetFileSourceID(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.SetFileSourceID(i)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetFileSourceID(v int) *FileIdentityUpdateOne {
+	_u.mutation.SetFileSourceID(v)
+	return _u
 }
 
 // SetNillableFileSourceID sets the "file_source_id" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableFileSourceID(i *int) *FileIdentityUpdateOne {
-	if i != nil {
-		fiuo.SetFileSourceID(*i)
+func (_u *FileIdentityUpdateOne) SetNillableFileSourceID(v *int) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetFileSourceID(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // SetRoleArn sets the "role_arn" field.
-func (fiuo *FileIdentityUpdateOne) SetRoleArn(s string) *FileIdentityUpdateOne {
-	fiuo.mutation.SetRoleArn(s)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetRoleArn(v string) *FileIdentityUpdateOne {
+	_u.mutation.SetRoleArn(v)
+	return _u
 }
 
 // SetNillableRoleArn sets the "role_arn" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableRoleArn(s *string) *FileIdentityUpdateOne {
-	if s != nil {
-		fiuo.SetRoleArn(*s)
+func (_u *FileIdentityUpdateOne) SetNillableRoleArn(v *string) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetRoleArn(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // SetPolicy sets the "policy" field.
-func (fiuo *FileIdentityUpdateOne) SetPolicy(s string) *FileIdentityUpdateOne {
-	fiuo.mutation.SetPolicy(s)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetPolicy(v string) *FileIdentityUpdateOne {
+	_u.mutation.SetPolicy(v)
+	return _u
 }
 
 // SetNillablePolicy sets the "policy" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillablePolicy(s *string) *FileIdentityUpdateOne {
-	if s != nil {
-		fiuo.SetPolicy(*s)
+func (_u *FileIdentityUpdateOne) SetNillablePolicy(v *string) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetPolicy(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // ClearPolicy clears the value of the "policy" field.
-func (fiuo *FileIdentityUpdateOne) ClearPolicy() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearPolicy()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearPolicy() *FileIdentityUpdateOne {
+	_u.mutation.ClearPolicy()
+	return _u
 }
 
 // SetDurationSeconds sets the "duration_seconds" field.
-func (fiuo *FileIdentityUpdateOne) SetDurationSeconds(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.ResetDurationSeconds()
-	fiuo.mutation.SetDurationSeconds(i)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetDurationSeconds(v int) *FileIdentityUpdateOne {
+	_u.mutation.ResetDurationSeconds()
+	_u.mutation.SetDurationSeconds(v)
+	return _u
 }
 
 // SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableDurationSeconds(i *int) *FileIdentityUpdateOne {
-	if i != nil {
-		fiuo.SetDurationSeconds(*i)
+func (_u *FileIdentityUpdateOne) SetNillableDurationSeconds(v *int) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetDurationSeconds(*v)
 	}
-	return fiuo
+	return _u
 }
 
-// AddDurationSeconds adds i to the "duration_seconds" field.
-func (fiuo *FileIdentityUpdateOne) AddDurationSeconds(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.AddDurationSeconds(i)
-	return fiuo
+// AddDurationSeconds adds value to the "duration_seconds" field.
+func (_u *FileIdentityUpdateOne) AddDurationSeconds(v int) *FileIdentityUpdateOne {
+	_u.mutation.AddDurationSeconds(v)
+	return _u
 }
 
 // ClearDurationSeconds clears the value of the "duration_seconds" field.
-func (fiuo *FileIdentityUpdateOne) ClearDurationSeconds() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearDurationSeconds()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearDurationSeconds() *FileIdentityUpdateOne {
+	_u.mutation.ClearDurationSeconds()
+	return _u
 }
 
 // SetIsDefault sets the "is_default" field.
-func (fiuo *FileIdentityUpdateOne) SetIsDefault(b bool) *FileIdentityUpdateOne {
-	fiuo.mutation.SetIsDefault(b)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetIsDefault(v bool) *FileIdentityUpdateOne {
+	_u.mutation.SetIsDefault(v)
+	return _u
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableIsDefault(b *bool) *FileIdentityUpdateOne {
-	if b != nil {
-		fiuo.SetIsDefault(*b)
+func (_u *FileIdentityUpdateOne) SetNillableIsDefault(v *bool) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetIsDefault(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (fiuo *FileIdentityUpdateOne) SetComments(s string) *FileIdentityUpdateOne {
-	fiuo.mutation.SetComments(s)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetComments(v string) *FileIdentityUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableComments(s *string) *FileIdentityUpdateOne {
-	if s != nil {
-		fiuo.SetComments(*s)
+func (_u *FileIdentityUpdateOne) SetNillableComments(v *string) *FileIdentityUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return fiuo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (fiuo *FileIdentityUpdateOne) ClearComments() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearComments()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearComments() *FileIdentityUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetSourceID sets the "source" edge to the FileSource entity by ID.
-func (fiuo *FileIdentityUpdateOne) SetSourceID(id int) *FileIdentityUpdateOne {
-	fiuo.mutation.SetSourceID(id)
-	return fiuo
+func (_u *FileIdentityUpdateOne) SetSourceID(id int) *FileIdentityUpdateOne {
+	_u.mutation.SetSourceID(id)
+	return _u
 }
 
 // SetSource sets the "source" edge to the FileSource entity.
-func (fiuo *FileIdentityUpdateOne) SetSource(f *FileSource) *FileIdentityUpdateOne {
-	return fiuo.SetSourceID(f.ID)
+func (_u *FileIdentityUpdateOne) SetSource(v *FileSource) *FileIdentityUpdateOne {
+	return _u.SetSourceID(v.ID)
 }
 
 // Mutation returns the FileIdentityMutation object of the builder.
-func (fiuo *FileIdentityUpdateOne) Mutation() *FileIdentityMutation {
-	return fiuo.mutation
+func (_u *FileIdentityUpdateOne) Mutation() *FileIdentityMutation {
+	return _u.mutation
 }
 
 // ClearSource clears the "source" edge to the FileSource entity.
-func (fiuo *FileIdentityUpdateOne) ClearSource() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearSource()
-	return fiuo
+func (_u *FileIdentityUpdateOne) ClearSource() *FileIdentityUpdateOne {
+	_u.mutation.ClearSource()
+	return _u
 }
 
 // Where appends a list predicates to the FileIdentityUpdate builder.
-func (fiuo *FileIdentityUpdateOne) Where(ps ...predicate.FileIdentity) *FileIdentityUpdateOne {
-	fiuo.mutation.Where(ps...)
-	return fiuo
+func (_u *FileIdentityUpdateOne) Where(ps ...predicate.FileIdentity) *FileIdentityUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fiuo *FileIdentityUpdateOne) Select(field string, fields ...string) *FileIdentityUpdateOne {
-	fiuo.fields = append([]string{field}, fields...)
-	return fiuo
+func (_u *FileIdentityUpdateOne) Select(field string, fields ...string) *FileIdentityUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated FileIdentity entity.
-func (fiuo *FileIdentityUpdateOne) Save(ctx context.Context) (*FileIdentity, error) {
-	return withHooks(ctx, fiuo.sqlSave, fiuo.mutation, fiuo.hooks)
+func (_u *FileIdentityUpdateOne) Save(ctx context.Context) (*FileIdentity, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fiuo *FileIdentityUpdateOne) SaveX(ctx context.Context) *FileIdentity {
-	node, err := fiuo.Save(ctx)
+func (_u *FileIdentityUpdateOne) SaveX(ctx context.Context) *FileIdentity {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -631,55 +631,55 @@ func (fiuo *FileIdentityUpdateOne) SaveX(ctx context.Context) *FileIdentity {
 }
 
 // Exec executes the query on the entity.
-func (fiuo *FileIdentityUpdateOne) Exec(ctx context.Context) error {
-	_, err := fiuo.Save(ctx)
+func (_u *FileIdentityUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fiuo *FileIdentityUpdateOne) ExecX(ctx context.Context) {
-	if err := fiuo.Exec(ctx); err != nil {
+func (_u *FileIdentityUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fiuo *FileIdentityUpdateOne) check() error {
-	if v, ok := fiuo.mutation.AccessKeyID(); ok {
+func (_u *FileIdentityUpdateOne) check() error {
+	if v, ok := _u.mutation.AccessKeyID(); ok {
 		if err := fileidentity.AccessKeyIDValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_id": %w`, err)}
 		}
 	}
-	if v, ok := fiuo.mutation.AccessKeySecret(); ok {
+	if v, ok := _u.mutation.AccessKeySecret(); ok {
 		if err := fileidentity.AccessKeySecretValidator(v); err != nil {
 			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.access_key_secret": %w`, err)}
 		}
 	}
-	if v, ok := fiuo.mutation.RoleArn(); ok {
+	if v, ok := _u.mutation.RoleArn(); ok {
 		if err := fileidentity.RoleArnValidator(v); err != nil {
 			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.role_arn": %w`, err)}
 		}
 	}
-	if fiuo.mutation.SourceCleared() && len(fiuo.mutation.SourceIDs()) > 0 {
+	if _u.mutation.SourceCleared() && len(_u.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.source"`)
 	}
-	if fiuo.mutation.OrgCleared() && len(fiuo.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.org"`)
 	}
 	return nil
 }
 
-func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIdentity, err error) {
-	if err := fiuo.check(); err != nil {
+func (_u *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIdentity, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(fileidentity.Table, fileidentity.Columns, sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt))
-	id, ok := fiuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FileIdentity.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := fiuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, fileidentity.FieldID)
 		for _, f := range fields {
@@ -691,62 +691,62 @@ func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIden
 			}
 		}
 	}
-	if ps := fiuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fiuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := fiuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(fileidentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if fiuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(fileidentity.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := fiuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(fileidentity.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fiuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(fileidentity.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := fiuo.mutation.AccessKeyID(); ok {
+	if value, ok := _u.mutation.AccessKeyID(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeyID, field.TypeString, value)
 	}
-	if value, ok := fiuo.mutation.AccessKeySecret(); ok {
+	if value, ok := _u.mutation.AccessKeySecret(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeySecret, field.TypeString, value)
 	}
-	if value, ok := fiuo.mutation.RoleArn(); ok {
+	if value, ok := _u.mutation.RoleArn(); ok {
 		_spec.SetField(fileidentity.FieldRoleArn, field.TypeString, value)
 	}
-	if value, ok := fiuo.mutation.Policy(); ok {
+	if value, ok := _u.mutation.Policy(); ok {
 		_spec.SetField(fileidentity.FieldPolicy, field.TypeString, value)
 	}
-	if fiuo.mutation.PolicyCleared() {
+	if _u.mutation.PolicyCleared() {
 		_spec.ClearField(fileidentity.FieldPolicy, field.TypeString)
 	}
-	if value, ok := fiuo.mutation.DurationSeconds(); ok {
+	if value, ok := _u.mutation.DurationSeconds(); ok {
 		_spec.SetField(fileidentity.FieldDurationSeconds, field.TypeInt, value)
 	}
-	if value, ok := fiuo.mutation.AddedDurationSeconds(); ok {
+	if value, ok := _u.mutation.AddedDurationSeconds(); ok {
 		_spec.AddField(fileidentity.FieldDurationSeconds, field.TypeInt, value)
 	}
-	if fiuo.mutation.DurationSecondsCleared() {
+	if _u.mutation.DurationSecondsCleared() {
 		_spec.ClearField(fileidentity.FieldDurationSeconds, field.TypeInt)
 	}
-	if value, ok := fiuo.mutation.IsDefault(); ok {
+	if value, ok := _u.mutation.IsDefault(); ok {
 		_spec.SetField(fileidentity.FieldIsDefault, field.TypeBool, value)
 	}
-	if value, ok := fiuo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(fileidentity.FieldComments, field.TypeString, value)
 	}
-	if fiuo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(fileidentity.FieldComments, field.TypeString)
 	}
-	if fiuo.mutation.SourceCleared() {
+	if _u.mutation.SourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -759,7 +759,7 @@ func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIden
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fiuo.mutation.SourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -775,10 +775,10 @@ func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIden
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &FileIdentity{config: fiuo.config}
+	_node = &FileIdentity{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fiuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{fileidentity.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -786,6 +786,6 @@ func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIden
 		}
 		return nil, err
 	}
-	fiuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

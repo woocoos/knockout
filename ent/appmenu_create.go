@@ -26,229 +26,229 @@ type AppMenuCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (amc *AppMenuCreate) SetCreatedBy(i int) *AppMenuCreate {
-	amc.mutation.SetCreatedBy(i)
-	return amc
+func (_c *AppMenuCreate) SetCreatedBy(v int) *AppMenuCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (amc *AppMenuCreate) SetCreatedAt(t time.Time) *AppMenuCreate {
-	amc.mutation.SetCreatedAt(t)
-	return amc
+func (_c *AppMenuCreate) SetCreatedAt(v time.Time) *AppMenuCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableCreatedAt(t *time.Time) *AppMenuCreate {
-	if t != nil {
-		amc.SetCreatedAt(*t)
+func (_c *AppMenuCreate) SetNillableCreatedAt(v *time.Time) *AppMenuCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (amc *AppMenuCreate) SetUpdatedBy(i int) *AppMenuCreate {
-	amc.mutation.SetUpdatedBy(i)
-	return amc
+func (_c *AppMenuCreate) SetUpdatedBy(v int) *AppMenuCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableUpdatedBy(i *int) *AppMenuCreate {
-	if i != nil {
-		amc.SetUpdatedBy(*i)
+func (_c *AppMenuCreate) SetNillableUpdatedBy(v *int) *AppMenuCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (amc *AppMenuCreate) SetUpdatedAt(t time.Time) *AppMenuCreate {
-	amc.mutation.SetUpdatedAt(t)
-	return amc
+func (_c *AppMenuCreate) SetUpdatedAt(v time.Time) *AppMenuCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableUpdatedAt(t *time.Time) *AppMenuCreate {
-	if t != nil {
-		amc.SetUpdatedAt(*t)
+func (_c *AppMenuCreate) SetNillableUpdatedAt(v *time.Time) *AppMenuCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (amc *AppMenuCreate) SetAppID(i int) *AppMenuCreate {
-	amc.mutation.SetAppID(i)
-	return amc
+func (_c *AppMenuCreate) SetAppID(v int) *AppMenuCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableAppID(i *int) *AppMenuCreate {
-	if i != nil {
-		amc.SetAppID(*i)
+func (_c *AppMenuCreate) SetNillableAppID(v *int) *AppMenuCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetParentID sets the "parent_id" field.
-func (amc *AppMenuCreate) SetParentID(i int) *AppMenuCreate {
-	amc.mutation.SetParentID(i)
-	return amc
+func (_c *AppMenuCreate) SetParentID(v int) *AppMenuCreate {
+	_c.mutation.SetParentID(v)
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (amc *AppMenuCreate) SetKind(a appmenu.Kind) *AppMenuCreate {
-	amc.mutation.SetKind(a)
-	return amc
+func (_c *AppMenuCreate) SetKind(v appmenu.Kind) *AppMenuCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (amc *AppMenuCreate) SetName(s string) *AppMenuCreate {
-	amc.mutation.SetName(s)
-	return amc
+func (_c *AppMenuCreate) SetName(v string) *AppMenuCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetIcon sets the "icon" field.
-func (amc *AppMenuCreate) SetIcon(s string) *AppMenuCreate {
-	amc.mutation.SetIcon(s)
-	return amc
+func (_c *AppMenuCreate) SetIcon(v string) *AppMenuCreate {
+	_c.mutation.SetIcon(v)
+	return _c
 }
 
 // SetNillableIcon sets the "icon" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableIcon(s *string) *AppMenuCreate {
-	if s != nil {
-		amc.SetIcon(*s)
+func (_c *AppMenuCreate) SetNillableIcon(v *string) *AppMenuCreate {
+	if v != nil {
+		_c.SetIcon(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetRoute sets the "route" field.
-func (amc *AppMenuCreate) SetRoute(s string) *AppMenuCreate {
-	amc.mutation.SetRoute(s)
-	return amc
+func (_c *AppMenuCreate) SetRoute(v string) *AppMenuCreate {
+	_c.mutation.SetRoute(v)
+	return _c
 }
 
 // SetNillableRoute sets the "route" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableRoute(s *string) *AppMenuCreate {
-	if s != nil {
-		amc.SetRoute(*s)
+func (_c *AppMenuCreate) SetNillableRoute(v *string) *AppMenuCreate {
+	if v != nil {
+		_c.SetRoute(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetActionID sets the "action_id" field.
-func (amc *AppMenuCreate) SetActionID(i int) *AppMenuCreate {
-	amc.mutation.SetActionID(i)
-	return amc
+func (_c *AppMenuCreate) SetActionID(v int) *AppMenuCreate {
+	_c.mutation.SetActionID(v)
+	return _c
 }
 
 // SetNillableActionID sets the "action_id" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableActionID(i *int) *AppMenuCreate {
-	if i != nil {
-		amc.SetActionID(*i)
+func (_c *AppMenuCreate) SetNillableActionID(v *int) *AppMenuCreate {
+	if v != nil {
+		_c.SetActionID(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (amc *AppMenuCreate) SetComments(s string) *AppMenuCreate {
-	amc.mutation.SetComments(s)
-	return amc
+func (_c *AppMenuCreate) SetComments(v string) *AppMenuCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableComments(s *string) *AppMenuCreate {
-	if s != nil {
-		amc.SetComments(*s)
+func (_c *AppMenuCreate) SetNillableComments(v *string) *AppMenuCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (amc *AppMenuCreate) SetDisplaySort(i int32) *AppMenuCreate {
-	amc.mutation.SetDisplaySort(i)
-	return amc
+func (_c *AppMenuCreate) SetDisplaySort(v int32) *AppMenuCreate {
+	_c.mutation.SetDisplaySort(v)
+	return _c
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableDisplaySort(i *int32) *AppMenuCreate {
-	if i != nil {
-		amc.SetDisplaySort(*i)
+func (_c *AppMenuCreate) SetNillableDisplaySort(v *int32) *AppMenuCreate {
+	if v != nil {
+		_c.SetDisplaySort(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (amc *AppMenuCreate) SetStatus(ts typex.SimpleStatus) *AppMenuCreate {
-	amc.mutation.SetStatus(ts)
-	return amc
+func (_c *AppMenuCreate) SetStatus(v typex.SimpleStatus) *AppMenuCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuCreate {
-	if ts != nil {
-		amc.SetStatus(*ts)
+func (_c *AppMenuCreate) SetNillableStatus(v *typex.SimpleStatus) *AppMenuCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (amc *AppMenuCreate) SetID(i int) *AppMenuCreate {
-	amc.mutation.SetID(i)
-	return amc
+func (_c *AppMenuCreate) SetID(v int) *AppMenuCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableID(i *int) *AppMenuCreate {
-	if i != nil {
-		amc.SetID(*i)
+func (_c *AppMenuCreate) SetNillableID(v *int) *AppMenuCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (amc *AppMenuCreate) SetApp(a *App) *AppMenuCreate {
-	return amc.SetAppID(a.ID)
+func (_c *AppMenuCreate) SetApp(v *App) *AppMenuCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // SetAction sets the "action" edge to the AppAction entity.
-func (amc *AppMenuCreate) SetAction(a *AppAction) *AppMenuCreate {
-	return amc.SetActionID(a.ID)
+func (_c *AppMenuCreate) SetAction(v *AppAction) *AppMenuCreate {
+	return _c.SetActionID(v.ID)
 }
 
 // SetParent sets the "parent" edge to the AppMenu entity.
-func (amc *AppMenuCreate) SetParent(a *AppMenu) *AppMenuCreate {
-	return amc.SetParentID(a.ID)
+func (_c *AppMenuCreate) SetParent(v *AppMenu) *AppMenuCreate {
+	return _c.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
-func (amc *AppMenuCreate) AddChildIDs(ids ...int) *AppMenuCreate {
-	amc.mutation.AddChildIDs(ids...)
-	return amc
+func (_c *AppMenuCreate) AddChildIDs(ids ...int) *AppMenuCreate {
+	_c.mutation.AddChildIDs(ids...)
+	return _c
 }
 
 // AddChildren adds the "children" edges to the AppMenu entity.
-func (amc *AppMenuCreate) AddChildren(a ...*AppMenu) *AppMenuCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppMenuCreate) AddChildren(v ...*AppMenu) *AppMenuCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return amc.AddChildIDs(ids...)
+	return _c.AddChildIDs(ids...)
 }
 
 // Mutation returns the AppMenuMutation object of the builder.
-func (amc *AppMenuCreate) Mutation() *AppMenuMutation {
-	return amc.mutation
+func (_c *AppMenuCreate) Mutation() *AppMenuMutation {
+	return _c.mutation
 }
 
 // Save creates the AppMenu in the database.
-func (amc *AppMenuCreate) Save(ctx context.Context) (*AppMenu, error) {
-	if err := amc.defaults(); err != nil {
+func (_c *AppMenuCreate) Save(ctx context.Context) (*AppMenu, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, amc.sqlSave, amc.mutation, amc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (amc *AppMenuCreate) SaveX(ctx context.Context) *AppMenu {
-	v, err := amc.Save(ctx)
+func (_c *AppMenuCreate) SaveX(ctx context.Context) *AppMenu {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -256,80 +256,80 @@ func (amc *AppMenuCreate) SaveX(ctx context.Context) *AppMenu {
 }
 
 // Exec executes the query.
-func (amc *AppMenuCreate) Exec(ctx context.Context) error {
-	_, err := amc.Save(ctx)
+func (_c *AppMenuCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amc *AppMenuCreate) ExecX(ctx context.Context) {
-	if err := amc.Exec(ctx); err != nil {
+func (_c *AppMenuCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (amc *AppMenuCreate) defaults() error {
-	if _, ok := amc.mutation.CreatedAt(); !ok {
+func (_c *AppMenuCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if appmenu.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized appmenu.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := appmenu.DefaultCreatedAt()
-		amc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := amc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := appmenu.DefaultStatus
-		amc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
-	if _, ok := amc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if appmenu.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appmenu.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := appmenu.DefaultID()
-		amc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (amc *AppMenuCreate) check() error {
-	if _, ok := amc.mutation.CreatedBy(); !ok {
+func (_c *AppMenuCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppMenu.created_by"`)}
 	}
-	if _, ok := amc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppMenu.created_at"`)}
 	}
-	if _, ok := amc.mutation.ParentID(); !ok {
+	if _, ok := _c.mutation.ParentID(); !ok {
 		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "AppMenu.parent_id"`)}
 	}
-	if _, ok := amc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "AppMenu.kind"`)}
 	}
-	if v, ok := amc.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
 	}
-	if _, ok := amc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppMenu.name"`)}
 	}
-	if v, ok := amc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := appmenu.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
-	if len(amc.mutation.ParentIDs()) == 0 {
+	if len(_c.mutation.ParentIDs()) == 0 {
 		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "AppMenu.parent"`)}
 	}
 	return nil
 }
 
-func (amc *AppMenuCreate) sqlSave(ctx context.Context) (*AppMenu, error) {
-	if err := amc.check(); err != nil {
+func (_c *AppMenuCreate) sqlSave(ctx context.Context) (*AppMenu, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := amc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, amc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -339,66 +339,66 @@ func (amc *AppMenuCreate) sqlSave(ctx context.Context) (*AppMenu, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	amc.mutation.id = &_node.ID
-	amc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
+func (_c *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppMenu{config: amc.config}
+		_node = &AppMenu{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appmenu.Table, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = amc.conflict
-	if id, ok := amc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := amc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(appmenu.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := amc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appmenu.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := amc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(appmenu.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := amc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appmenu.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := amc.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := amc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := amc.mutation.Icon(); ok {
+	if value, ok := _c.mutation.Icon(); ok {
 		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
 		_node.Icon = value
 	}
-	if value, ok := amc.mutation.Route(); ok {
+	if value, ok := _c.mutation.Route(); ok {
 		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
 		_node.Route = value
 	}
-	if value, ok := amc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := amc.mutation.DisplaySort(); ok {
+	if value, ok := _c.mutation.DisplaySort(); ok {
 		_spec.SetField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
 	}
-	if value, ok := amc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := amc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -415,7 +415,7 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_node.AppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := amc.mutation.ActionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -432,7 +432,7 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_node.ActionID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := amc.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -449,7 +449,7 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_node.ParentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := amc.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -484,10 +484,10 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (amc *AppMenuCreate) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertOne {
-	amc.conflict = opts
+func (_c *AppMenuCreate) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertOne {
+	_c.conflict = opts
 	return &AppMenuUpsertOne{
-		create: amc,
+		create: _c,
 	}
 }
 
@@ -497,10 +497,10 @@ func (amc *AppMenuCreate) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertO
 //	client.AppMenu.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (amc *AppMenuCreate) OnConflictColumns(columns ...string) *AppMenuUpsertOne {
-	amc.conflict = append(amc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppMenuCreate) OnConflictColumns(columns ...string) *AppMenuUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppMenuUpsertOne{
-		create: amc,
+		create: _c,
 	}
 }
 
@@ -1032,16 +1032,16 @@ type AppMenuCreateBulk struct {
 }
 
 // Save creates the AppMenu entities in the database.
-func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
-	if amcb.err != nil {
-		return nil, amcb.err
+func (_c *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(amcb.builders))
-	nodes := make([]*AppMenu, len(amcb.builders))
-	mutators := make([]Mutator, len(amcb.builders))
-	for i := range amcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppMenu, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := amcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppMenuMutation)
@@ -1055,12 +1055,12 @@ func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, amcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = amcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, amcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1084,7 +1084,7 @@ func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, amcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1092,8 +1092,8 @@ func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amcb *AppMenuCreateBulk) SaveX(ctx context.Context) []*AppMenu {
-	v, err := amcb.Save(ctx)
+func (_c *AppMenuCreateBulk) SaveX(ctx context.Context) []*AppMenu {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1101,14 +1101,14 @@ func (amcb *AppMenuCreateBulk) SaveX(ctx context.Context) []*AppMenu {
 }
 
 // Exec executes the query.
-func (amcb *AppMenuCreateBulk) Exec(ctx context.Context) error {
-	_, err := amcb.Save(ctx)
+func (_c *AppMenuCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amcb *AppMenuCreateBulk) ExecX(ctx context.Context) {
-	if err := amcb.Exec(ctx); err != nil {
+func (_c *AppMenuCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1128,10 +1128,10 @@ func (amcb *AppMenuCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (amcb *AppMenuCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertBulk {
-	amcb.conflict = opts
+func (_c *AppMenuCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertBulk {
+	_c.conflict = opts
 	return &AppMenuUpsertBulk{
-		create: amcb,
+		create: _c,
 	}
 }
 
@@ -1141,10 +1141,10 @@ func (amcb *AppMenuCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppMenuUp
 //	client.AppMenu.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (amcb *AppMenuCreateBulk) OnConflictColumns(columns ...string) *AppMenuUpsertBulk {
-	amcb.conflict = append(amcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppMenuCreateBulk) OnConflictColumns(columns ...string) *AppMenuUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppMenuUpsertBulk{
-		create: amcb,
+		create: _c,
 	}
 }
 

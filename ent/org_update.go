@@ -36,777 +36,777 @@ type OrgUpdate struct {
 }
 
 // Where appends a list predicates to the OrgUpdate builder.
-func (ou *OrgUpdate) Where(ps ...predicate.Org) *OrgUpdate {
-	ou.mutation.Where(ps...)
-	return ou
+func (_u *OrgUpdate) Where(ps ...predicate.Org) *OrgUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ou *OrgUpdate) SetUpdatedBy(i int) *OrgUpdate {
-	ou.mutation.ResetUpdatedBy()
-	ou.mutation.SetUpdatedBy(i)
-	return ou
+func (_u *OrgUpdate) SetUpdatedBy(v int) *OrgUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableUpdatedBy(i *int) *OrgUpdate {
-	if i != nil {
-		ou.SetUpdatedBy(*i)
+func (_u *OrgUpdate) SetNillableUpdatedBy(v *int) *OrgUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ou
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ou *OrgUpdate) AddUpdatedBy(i int) *OrgUpdate {
-	ou.mutation.AddUpdatedBy(i)
-	return ou
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUpdate) AddUpdatedBy(v int) *OrgUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ou *OrgUpdate) ClearUpdatedBy() *OrgUpdate {
-	ou.mutation.ClearUpdatedBy()
-	return ou
+func (_u *OrgUpdate) ClearUpdatedBy() *OrgUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ou *OrgUpdate) SetUpdatedAt(t time.Time) *OrgUpdate {
-	ou.mutation.SetUpdatedAt(t)
-	return ou
+func (_u *OrgUpdate) SetUpdatedAt(v time.Time) *OrgUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableUpdatedAt(t *time.Time) *OrgUpdate {
-	if t != nil {
-		ou.SetUpdatedAt(*t)
+func (_u *OrgUpdate) SetNillableUpdatedAt(v *time.Time) *OrgUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ou *OrgUpdate) ClearUpdatedAt() *OrgUpdate {
-	ou.mutation.ClearUpdatedAt()
-	return ou
+func (_u *OrgUpdate) ClearUpdatedAt() *OrgUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (ou *OrgUpdate) SetDeletedAt(t time.Time) *OrgUpdate {
-	ou.mutation.SetDeletedAt(t)
-	return ou
+func (_u *OrgUpdate) SetDeletedAt(v time.Time) *OrgUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableDeletedAt(t *time.Time) *OrgUpdate {
-	if t != nil {
-		ou.SetDeletedAt(*t)
+func (_u *OrgUpdate) SetNillableDeletedAt(v *time.Time) *OrgUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (ou *OrgUpdate) ClearDeletedAt() *OrgUpdate {
-	ou.mutation.ClearDeletedAt()
-	return ou
+func (_u *OrgUpdate) ClearDeletedAt() *OrgUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
 }
 
 // SetOwnerID sets the "owner_id" field.
-func (ou *OrgUpdate) SetOwnerID(i int) *OrgUpdate {
-	ou.mutation.SetOwnerID(i)
-	return ou
+func (_u *OrgUpdate) SetOwnerID(v int) *OrgUpdate {
+	_u.mutation.SetOwnerID(v)
+	return _u
 }
 
 // SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableOwnerID(i *int) *OrgUpdate {
-	if i != nil {
-		ou.SetOwnerID(*i)
+func (_u *OrgUpdate) SetNillableOwnerID(v *int) *OrgUpdate {
+	if v != nil {
+		_u.SetOwnerID(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearOwnerID clears the value of the "owner_id" field.
-func (ou *OrgUpdate) ClearOwnerID() *OrgUpdate {
-	ou.mutation.ClearOwnerID()
-	return ou
+func (_u *OrgUpdate) ClearOwnerID() *OrgUpdate {
+	_u.mutation.ClearOwnerID()
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (ou *OrgUpdate) SetKind(o org.Kind) *OrgUpdate {
-	ou.mutation.SetKind(o)
-	return ou
+func (_u *OrgUpdate) SetKind(v org.Kind) *OrgUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableKind(o *org.Kind) *OrgUpdate {
-	if o != nil {
-		ou.SetKind(*o)
+func (_u *OrgUpdate) SetNillableKind(v *org.Kind) *OrgUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return ou
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (ou *OrgUpdate) SetParentID(i int) *OrgUpdate {
-	ou.mutation.SetParentID(i)
-	return ou
+func (_u *OrgUpdate) SetParentID(v int) *OrgUpdate {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableParentID(i *int) *OrgUpdate {
-	if i != nil {
-		ou.SetParentID(*i)
+func (_u *OrgUpdate) SetNillableParentID(v *int) *OrgUpdate {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return ou
+	return _u
 }
 
 // SetDomain sets the "domain" field.
-func (ou *OrgUpdate) SetDomain(s string) *OrgUpdate {
-	ou.mutation.SetDomain(s)
-	return ou
+func (_u *OrgUpdate) SetDomain(v string) *OrgUpdate {
+	_u.mutation.SetDomain(v)
+	return _u
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableDomain(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetDomain(*s)
+func (_u *OrgUpdate) SetNillableDomain(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetDomain(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearDomain clears the value of the "domain" field.
-func (ou *OrgUpdate) ClearDomain() *OrgUpdate {
-	ou.mutation.ClearDomain()
-	return ou
+func (_u *OrgUpdate) ClearDomain() *OrgUpdate {
+	_u.mutation.ClearDomain()
+	return _u
 }
 
 // SetCustomDomain sets the "custom_domain" field.
-func (ou *OrgUpdate) SetCustomDomain(s []string) *OrgUpdate {
-	ou.mutation.SetCustomDomain(s)
-	return ou
+func (_u *OrgUpdate) SetCustomDomain(v []string) *OrgUpdate {
+	_u.mutation.SetCustomDomain(v)
+	return _u
 }
 
-// AppendCustomDomain appends s to the "custom_domain" field.
-func (ou *OrgUpdate) AppendCustomDomain(s []string) *OrgUpdate {
-	ou.mutation.AppendCustomDomain(s)
-	return ou
+// AppendCustomDomain appends value to the "custom_domain" field.
+func (_u *OrgUpdate) AppendCustomDomain(v []string) *OrgUpdate {
+	_u.mutation.AppendCustomDomain(v)
+	return _u
 }
 
 // ClearCustomDomain clears the value of the "custom_domain" field.
-func (ou *OrgUpdate) ClearCustomDomain() *OrgUpdate {
-	ou.mutation.ClearCustomDomain()
-	return ou
+func (_u *OrgUpdate) ClearCustomDomain() *OrgUpdate {
+	_u.mutation.ClearCustomDomain()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (ou *OrgUpdate) SetCode(s string) *OrgUpdate {
-	ou.mutation.SetCode(s)
-	return ou
+func (_u *OrgUpdate) SetCode(v string) *OrgUpdate {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableCode(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetCode(*s)
+func (_u *OrgUpdate) SetNillableCode(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearCode clears the value of the "code" field.
-func (ou *OrgUpdate) ClearCode() *OrgUpdate {
-	ou.mutation.ClearCode()
-	return ou
+func (_u *OrgUpdate) ClearCode() *OrgUpdate {
+	_u.mutation.ClearCode()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ou *OrgUpdate) SetName(s string) *OrgUpdate {
-	ou.mutation.SetName(s)
-	return ou
+func (_u *OrgUpdate) SetName(v string) *OrgUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableName(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetName(*s)
+func (_u *OrgUpdate) SetNillableName(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ou
+	return _u
 }
 
 // SetProfile sets the "profile" field.
-func (ou *OrgUpdate) SetProfile(s string) *OrgUpdate {
-	ou.mutation.SetProfile(s)
-	return ou
+func (_u *OrgUpdate) SetProfile(v string) *OrgUpdate {
+	_u.mutation.SetProfile(v)
+	return _u
 }
 
 // SetNillableProfile sets the "profile" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableProfile(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetProfile(*s)
+func (_u *OrgUpdate) SetNillableProfile(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetProfile(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearProfile clears the value of the "profile" field.
-func (ou *OrgUpdate) ClearProfile() *OrgUpdate {
-	ou.mutation.ClearProfile()
-	return ou
+func (_u *OrgUpdate) ClearProfile() *OrgUpdate {
+	_u.mutation.ClearProfile()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ou *OrgUpdate) SetStatus(ts typex.SimpleStatus) *OrgUpdate {
-	ou.mutation.SetStatus(ts)
-	return ou
+func (_u *OrgUpdate) SetStatus(v typex.SimpleStatus) *OrgUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableStatus(ts *typex.SimpleStatus) *OrgUpdate {
-	if ts != nil {
-		ou.SetStatus(*ts)
+func (_u *OrgUpdate) SetNillableStatus(v *typex.SimpleStatus) *OrgUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (ou *OrgUpdate) ClearStatus() *OrgUpdate {
-	ou.mutation.ClearStatus()
-	return ou
+func (_u *OrgUpdate) ClearStatus() *OrgUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetPath sets the "path" field.
-func (ou *OrgUpdate) SetPath(s string) *OrgUpdate {
-	ou.mutation.SetPath(s)
-	return ou
+func (_u *OrgUpdate) SetPath(v string) *OrgUpdate {
+	_u.mutation.SetPath(v)
+	return _u
 }
 
 // SetNillablePath sets the "path" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillablePath(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetPath(*s)
+func (_u *OrgUpdate) SetNillablePath(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetPath(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearPath clears the value of the "path" field.
-func (ou *OrgUpdate) ClearPath() *OrgUpdate {
-	ou.mutation.ClearPath()
-	return ou
+func (_u *OrgUpdate) ClearPath() *OrgUpdate {
+	_u.mutation.ClearPath()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (ou *OrgUpdate) SetDisplaySort(i int32) *OrgUpdate {
-	ou.mutation.ResetDisplaySort()
-	ou.mutation.SetDisplaySort(i)
-	return ou
+func (_u *OrgUpdate) SetDisplaySort(v int32) *OrgUpdate {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableDisplaySort(i *int32) *OrgUpdate {
-	if i != nil {
-		ou.SetDisplaySort(*i)
+func (_u *OrgUpdate) SetNillableDisplaySort(v *int32) *OrgUpdate {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return ou
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (ou *OrgUpdate) AddDisplaySort(i int32) *OrgUpdate {
-	ou.mutation.AddDisplaySort(i)
-	return ou
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *OrgUpdate) AddDisplaySort(v int32) *OrgUpdate {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (ou *OrgUpdate) ClearDisplaySort() *OrgUpdate {
-	ou.mutation.ClearDisplaySort()
-	return ou
+func (_u *OrgUpdate) ClearDisplaySort() *OrgUpdate {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetCountryCode sets the "country_code" field.
-func (ou *OrgUpdate) SetCountryCode(s string) *OrgUpdate {
-	ou.mutation.SetCountryCode(s)
-	return ou
+func (_u *OrgUpdate) SetCountryCode(v string) *OrgUpdate {
+	_u.mutation.SetCountryCode(v)
+	return _u
 }
 
 // SetNillableCountryCode sets the "country_code" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableCountryCode(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetCountryCode(*s)
+func (_u *OrgUpdate) SetNillableCountryCode(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetCountryCode(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearCountryCode clears the value of the "country_code" field.
-func (ou *OrgUpdate) ClearCountryCode() *OrgUpdate {
-	ou.mutation.ClearCountryCode()
-	return ou
+func (_u *OrgUpdate) ClearCountryCode() *OrgUpdate {
+	_u.mutation.ClearCountryCode()
+	return _u
 }
 
 // SetTimezone sets the "timezone" field.
-func (ou *OrgUpdate) SetTimezone(s string) *OrgUpdate {
-	ou.mutation.SetTimezone(s)
-	return ou
+func (_u *OrgUpdate) SetTimezone(v string) *OrgUpdate {
+	_u.mutation.SetTimezone(v)
+	return _u
 }
 
 // SetNillableTimezone sets the "timezone" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableTimezone(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetTimezone(*s)
+func (_u *OrgUpdate) SetNillableTimezone(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetTimezone(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearTimezone clears the value of the "timezone" field.
-func (ou *OrgUpdate) ClearTimezone() *OrgUpdate {
-	ou.mutation.ClearTimezone()
-	return ou
+func (_u *OrgUpdate) ClearTimezone() *OrgUpdate {
+	_u.mutation.ClearTimezone()
+	return _u
 }
 
 // SetLocalCurrency sets the "local_currency" field.
-func (ou *OrgUpdate) SetLocalCurrency(s string) *OrgUpdate {
-	ou.mutation.SetLocalCurrency(s)
-	return ou
+func (_u *OrgUpdate) SetLocalCurrency(v string) *OrgUpdate {
+	_u.mutation.SetLocalCurrency(v)
+	return _u
 }
 
 // SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableLocalCurrency(s *string) *OrgUpdate {
-	if s != nil {
-		ou.SetLocalCurrency(*s)
+func (_u *OrgUpdate) SetNillableLocalCurrency(v *string) *OrgUpdate {
+	if v != nil {
+		_u.SetLocalCurrency(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearLocalCurrency clears the value of the "local_currency" field.
-func (ou *OrgUpdate) ClearLocalCurrency() *OrgUpdate {
-	ou.mutation.ClearLocalCurrency()
-	return ou
+func (_u *OrgUpdate) ClearLocalCurrency() *OrgUpdate {
+	_u.mutation.ClearLocalCurrency()
+	return _u
 }
 
 // SetLogo sets the "logo" field.
-func (ou *OrgUpdate) SetLogo(tl *types.OrgLogo) *OrgUpdate {
-	ou.mutation.SetLogo(tl)
-	return ou
+func (_u *OrgUpdate) SetLogo(v *types.OrgLogo) *OrgUpdate {
+	_u.mutation.SetLogo(v)
+	return _u
 }
 
 // ClearLogo clears the value of the "logo" field.
-func (ou *OrgUpdate) ClearLogo() *OrgUpdate {
-	ou.mutation.ClearLogo()
-	return ou
+func (_u *OrgUpdate) ClearLogo() *OrgUpdate {
+	_u.mutation.ClearLogo()
+	return _u
 }
 
 // SetParent sets the "parent" edge to the Org entity.
-func (ou *OrgUpdate) SetParent(o *Org) *OrgUpdate {
-	return ou.SetParentID(o.ID)
+func (_u *OrgUpdate) SetParent(v *Org) *OrgUpdate {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the Org entity by IDs.
-func (ou *OrgUpdate) AddChildIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddChildIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddChildIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the Org entity.
-func (ou *OrgUpdate) AddChildren(o ...*Org) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) AddChildren(v ...*Org) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ou *OrgUpdate) SetOwner(u *User) *OrgUpdate {
-	return ou.SetOwnerID(u.ID)
+func (_u *OrgUpdate) SetOwner(v *User) *OrgUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddUserIDs adds the "users" edge to the User entity by IDs.
-func (ou *OrgUpdate) AddUserIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddUserIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddUserIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddUserIDs(ids...)
+	return _u
 }
 
 // AddUsers adds the "users" edges to the User entity.
-func (ou *OrgUpdate) AddUsers(u ...*User) *OrgUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+func (_u *OrgUpdate) AddUsers(v ...*User) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddUserIDs(ids...)
+	return _u.AddUserIDs(ids...)
 }
 
 // AddRolesAndGroupIDs adds the "roles_and_groups" edge to the OrgRole entity by IDs.
-func (ou *OrgUpdate) AddRolesAndGroupIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddRolesAndGroupIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddRolesAndGroupIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddRolesAndGroupIDs(ids...)
+	return _u
 }
 
 // AddRolesAndGroups adds the "roles_and_groups" edges to the OrgRole entity.
-func (ou *OrgUpdate) AddRolesAndGroups(o ...*OrgRole) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) AddRolesAndGroups(v ...*OrgRole) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddRolesAndGroupIDs(ids...)
+	return _u.AddRolesAndGroupIDs(ids...)
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (ou *OrgUpdate) AddPermissionIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddPermissionIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddPermissionIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddPermissionIDs(ids...)
+	return _u
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (ou *OrgUpdate) AddPermissions(p ...*Permission) *OrgUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgUpdate) AddPermissions(v ...*Permission) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddPermissionIDs(ids...)
+	return _u.AddPermissionIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the OrgPolicy entity by IDs.
-func (ou *OrgUpdate) AddPolicyIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddPolicyIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddPolicyIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the OrgPolicy entity.
-func (ou *OrgUpdate) AddPolicies(o ...*OrgPolicy) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) AddPolicies(v ...*OrgPolicy) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddAppIDs adds the "apps" edge to the App entity by IDs.
-func (ou *OrgUpdate) AddAppIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddAppIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddAppIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApps adds the "apps" edges to the App entity.
-func (ou *OrgUpdate) AddApps(a ...*App) *OrgUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *OrgUpdate) AddApps(v ...*App) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
-func (ou *OrgUpdate) AddFileIdentityIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddFileIdentityIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddFileIdentityIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddFileIdentityIDs(ids...)
+	return _u
 }
 
 // AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
-func (ou *OrgUpdate) AddFileIdentities(f ...*FileIdentity) *OrgUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *OrgUpdate) AddFileIdentities(v ...*FileIdentity) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddFileIdentityIDs(ids...)
+	return _u.AddFileIdentityIDs(ids...)
 }
 
 // SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
-func (ou *OrgUpdate) SetUserPasswordPolicyID(id int) *OrgUpdate {
-	ou.mutation.SetUserPasswordPolicyID(id)
-	return ou
+func (_u *OrgUpdate) SetUserPasswordPolicyID(id int) *OrgUpdate {
+	_u.mutation.SetUserPasswordPolicyID(id)
+	return _u
 }
 
 // SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
-func (ou *OrgUpdate) SetNillableUserPasswordPolicyID(id *int) *OrgUpdate {
+func (_u *OrgUpdate) SetNillableUserPasswordPolicyID(id *int) *OrgUpdate {
 	if id != nil {
-		ou = ou.SetUserPasswordPolicyID(*id)
+		_u = _u.SetUserPasswordPolicyID(*id)
 	}
-	return ou
+	return _u
 }
 
 // SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (ou *OrgUpdate) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgUpdate {
-	return ou.SetUserPasswordPolicyID(u.ID)
+func (_u *OrgUpdate) SetUserPasswordPolicy(v *UserPasswordPolicy) *OrgUpdate {
+	return _u.SetUserPasswordPolicyID(v.ID)
 }
 
 // AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
-func (ou *OrgUpdate) AddOrgQuotumIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddOrgQuotumIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddOrgQuotumIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddOrgQuotumIDs(ids...)
+	return _u
 }
 
 // AddOrgQuota adds the "org_quota" edges to the Quota entity.
-func (ou *OrgUpdate) AddOrgQuota(q ...*Quota) *OrgUpdate {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *OrgUpdate) AddOrgQuota(v ...*Quota) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddOrgQuotumIDs(ids...)
+	return _u.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
-func (ou *OrgUpdate) AddOrgUserIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddOrgUserIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddOrgUserIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddOrgUserIDs(ids...)
+	return _u
 }
 
 // AddOrgUser adds the "org_user" edges to the OrgUser entity.
-func (ou *OrgUpdate) AddOrgUser(o ...*OrgUser) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) AddOrgUser(v ...*OrgUser) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddOrgUserIDs(ids...)
+	return _u.AddOrgUserIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (ou *OrgUpdate) AddOrgAppIDs(ids ...int) *OrgUpdate {
-	ou.mutation.AddOrgAppIDs(ids...)
-	return ou
+func (_u *OrgUpdate) AddOrgAppIDs(ids ...int) *OrgUpdate {
+	_u.mutation.AddOrgAppIDs(ids...)
+	return _u
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (ou *OrgUpdate) AddOrgApp(o ...*OrgApp) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) AddOrgApp(v ...*OrgApp) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddOrgAppIDs(ids...)
+	return _u.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the OrgMutation object of the builder.
-func (ou *OrgUpdate) Mutation() *OrgMutation {
-	return ou.mutation
+func (_u *OrgUpdate) Mutation() *OrgMutation {
+	return _u.mutation
 }
 
 // ClearParent clears the "parent" edge to the Org entity.
-func (ou *OrgUpdate) ClearParent() *OrgUpdate {
-	ou.mutation.ClearParent()
-	return ou
+func (_u *OrgUpdate) ClearParent() *OrgUpdate {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the Org entity.
-func (ou *OrgUpdate) ClearChildren() *OrgUpdate {
-	ou.mutation.ClearChildren()
-	return ou
+func (_u *OrgUpdate) ClearChildren() *OrgUpdate {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to Org entities by IDs.
-func (ou *OrgUpdate) RemoveChildIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveChildIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveChildIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to Org entities.
-func (ou *OrgUpdate) RemoveChildren(o ...*Org) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) RemoveChildren(v ...*Org) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ou *OrgUpdate) ClearOwner() *OrgUpdate {
-	ou.mutation.ClearOwner()
-	return ou
+func (_u *OrgUpdate) ClearOwner() *OrgUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearUsers clears all "users" edges to the User entity.
-func (ou *OrgUpdate) ClearUsers() *OrgUpdate {
-	ou.mutation.ClearUsers()
-	return ou
+func (_u *OrgUpdate) ClearUsers() *OrgUpdate {
+	_u.mutation.ClearUsers()
+	return _u
 }
 
 // RemoveUserIDs removes the "users" edge to User entities by IDs.
-func (ou *OrgUpdate) RemoveUserIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveUserIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveUserIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
 }
 
 // RemoveUsers removes "users" edges to User entities.
-func (ou *OrgUpdate) RemoveUsers(u ...*User) *OrgUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+func (_u *OrgUpdate) RemoveUsers(v ...*User) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveUserIDs(ids...)
+	return _u.RemoveUserIDs(ids...)
 }
 
 // ClearRolesAndGroups clears all "roles_and_groups" edges to the OrgRole entity.
-func (ou *OrgUpdate) ClearRolesAndGroups() *OrgUpdate {
-	ou.mutation.ClearRolesAndGroups()
-	return ou
+func (_u *OrgUpdate) ClearRolesAndGroups() *OrgUpdate {
+	_u.mutation.ClearRolesAndGroups()
+	return _u
 }
 
 // RemoveRolesAndGroupIDs removes the "roles_and_groups" edge to OrgRole entities by IDs.
-func (ou *OrgUpdate) RemoveRolesAndGroupIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveRolesAndGroupIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveRolesAndGroupIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveRolesAndGroupIDs(ids...)
+	return _u
 }
 
 // RemoveRolesAndGroups removes "roles_and_groups" edges to OrgRole entities.
-func (ou *OrgUpdate) RemoveRolesAndGroups(o ...*OrgRole) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) RemoveRolesAndGroups(v ...*OrgRole) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveRolesAndGroupIDs(ids...)
+	return _u.RemoveRolesAndGroupIDs(ids...)
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
-func (ou *OrgUpdate) ClearPermissions() *OrgUpdate {
-	ou.mutation.ClearPermissions()
-	return ou
+func (_u *OrgUpdate) ClearPermissions() *OrgUpdate {
+	_u.mutation.ClearPermissions()
+	return _u
 }
 
 // RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
-func (ou *OrgUpdate) RemovePermissionIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemovePermissionIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemovePermissionIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemovePermissionIDs(ids...)
+	return _u
 }
 
 // RemovePermissions removes "permissions" edges to Permission entities.
-func (ou *OrgUpdate) RemovePermissions(p ...*Permission) *OrgUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgUpdate) RemovePermissions(v ...*Permission) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemovePermissionIDs(ids...)
+	return _u.RemovePermissionIDs(ids...)
 }
 
 // ClearPolicies clears all "policies" edges to the OrgPolicy entity.
-func (ou *OrgUpdate) ClearPolicies() *OrgUpdate {
-	ou.mutation.ClearPolicies()
-	return ou
+func (_u *OrgUpdate) ClearPolicies() *OrgUpdate {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to OrgPolicy entities by IDs.
-func (ou *OrgUpdate) RemovePolicyIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemovePolicyIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemovePolicyIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to OrgPolicy entities.
-func (ou *OrgUpdate) RemovePolicies(o ...*OrgPolicy) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) RemovePolicies(v ...*OrgPolicy) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearApps clears all "apps" edges to the App entity.
-func (ou *OrgUpdate) ClearApps() *OrgUpdate {
-	ou.mutation.ClearApps()
-	return ou
+func (_u *OrgUpdate) ClearApps() *OrgUpdate {
+	_u.mutation.ClearApps()
+	return _u
 }
 
 // RemoveAppIDs removes the "apps" edge to App entities by IDs.
-func (ou *OrgUpdate) RemoveAppIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveAppIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveAppIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApps removes "apps" edges to App entities.
-func (ou *OrgUpdate) RemoveApps(a ...*App) *OrgUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *OrgUpdate) RemoveApps(v ...*App) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // ClearFileIdentities clears all "file_identities" edges to the FileIdentity entity.
-func (ou *OrgUpdate) ClearFileIdentities() *OrgUpdate {
-	ou.mutation.ClearFileIdentities()
-	return ou
+func (_u *OrgUpdate) ClearFileIdentities() *OrgUpdate {
+	_u.mutation.ClearFileIdentities()
+	return _u
 }
 
 // RemoveFileIdentityIDs removes the "file_identities" edge to FileIdentity entities by IDs.
-func (ou *OrgUpdate) RemoveFileIdentityIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveFileIdentityIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveFileIdentityIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveFileIdentityIDs(ids...)
+	return _u
 }
 
 // RemoveFileIdentities removes "file_identities" edges to FileIdentity entities.
-func (ou *OrgUpdate) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *OrgUpdate) RemoveFileIdentities(v ...*FileIdentity) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveFileIdentityIDs(ids...)
+	return _u.RemoveFileIdentityIDs(ids...)
 }
 
 // ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (ou *OrgUpdate) ClearUserPasswordPolicy() *OrgUpdate {
-	ou.mutation.ClearUserPasswordPolicy()
-	return ou
+func (_u *OrgUpdate) ClearUserPasswordPolicy() *OrgUpdate {
+	_u.mutation.ClearUserPasswordPolicy()
+	return _u
 }
 
 // ClearOrgQuota clears all "org_quota" edges to the Quota entity.
-func (ou *OrgUpdate) ClearOrgQuota() *OrgUpdate {
-	ou.mutation.ClearOrgQuota()
-	return ou
+func (_u *OrgUpdate) ClearOrgQuota() *OrgUpdate {
+	_u.mutation.ClearOrgQuota()
+	return _u
 }
 
 // RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
-func (ou *OrgUpdate) RemoveOrgQuotumIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveOrgQuotumIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveOrgQuotumIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveOrgQuotumIDs(ids...)
+	return _u
 }
 
 // RemoveOrgQuota removes "org_quota" edges to Quota entities.
-func (ou *OrgUpdate) RemoveOrgQuota(q ...*Quota) *OrgUpdate {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *OrgUpdate) RemoveOrgQuota(v ...*Quota) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveOrgQuotumIDs(ids...)
+	return _u.RemoveOrgQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
-func (ou *OrgUpdate) ClearOrgUser() *OrgUpdate {
-	ou.mutation.ClearOrgUser()
-	return ou
+func (_u *OrgUpdate) ClearOrgUser() *OrgUpdate {
+	_u.mutation.ClearOrgUser()
+	return _u
 }
 
 // RemoveOrgUserIDs removes the "org_user" edge to OrgUser entities by IDs.
-func (ou *OrgUpdate) RemoveOrgUserIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveOrgUserIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveOrgUserIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveOrgUserIDs(ids...)
+	return _u
 }
 
 // RemoveOrgUser removes "org_user" edges to OrgUser entities.
-func (ou *OrgUpdate) RemoveOrgUser(o ...*OrgUser) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) RemoveOrgUser(v ...*OrgUser) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveOrgUserIDs(ids...)
+	return _u.RemoveOrgUserIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
-func (ou *OrgUpdate) ClearOrgApp() *OrgUpdate {
-	ou.mutation.ClearOrgApp()
-	return ou
+func (_u *OrgUpdate) ClearOrgApp() *OrgUpdate {
+	_u.mutation.ClearOrgApp()
+	return _u
 }
 
 // RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
-func (ou *OrgUpdate) RemoveOrgAppIDs(ids ...int) *OrgUpdate {
-	ou.mutation.RemoveOrgAppIDs(ids...)
-	return ou
+func (_u *OrgUpdate) RemoveOrgAppIDs(ids ...int) *OrgUpdate {
+	_u.mutation.RemoveOrgAppIDs(ids...)
+	return _u
 }
 
 // RemoveOrgApp removes "org_app" edges to OrgApp entities.
-func (ou *OrgUpdate) RemoveOrgApp(o ...*OrgApp) *OrgUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdate) RemoveOrgApp(v ...*OrgApp) *OrgUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveOrgAppIDs(ids...)
+	return _u.RemoveOrgAppIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ou *OrgUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ou.sqlSave, ou.mutation, ou.hooks)
+func (_u *OrgUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ou *OrgUpdate) SaveX(ctx context.Context) int {
-	affected, err := ou.Save(ctx)
+func (_u *OrgUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -814,180 +814,180 @@ func (ou *OrgUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ou *OrgUpdate) Exec(ctx context.Context) error {
-	_, err := ou.Save(ctx)
+func (_u *OrgUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ou *OrgUpdate) ExecX(ctx context.Context) {
-	if err := ou.Exec(ctx); err != nil {
+func (_u *OrgUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ou *OrgUpdate) check() error {
-	if v, ok := ou.mutation.Kind(); ok {
+func (_u *OrgUpdate) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := org.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Org.kind": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.Domain(); ok {
+	if v, ok := _u.mutation.Domain(); ok {
 		if err := org.DomainValidator(v); err != nil {
 			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Org.domain": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.Code(); ok {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := org.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Org.code": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := org.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Org.name": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := org.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Org.status": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.CountryCode(); ok {
+	if v, ok := _u.mutation.CountryCode(); ok {
 		if err := org.CountryCodeValidator(v); err != nil {
 			return &ValidationError{Name: "country_code", err: fmt.Errorf(`ent: validator failed for field "Org.country_code": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.Timezone(); ok {
+	if v, ok := _u.mutation.Timezone(); ok {
 		if err := org.TimezoneValidator(v); err != nil {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.LocalCurrency(); ok {
+	if v, ok := _u.mutation.LocalCurrency(); ok {
 		if err := org.LocalCurrencyValidator(v); err != nil {
 			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
-	if ou.mutation.ParentCleared() && len(ou.mutation.ParentIDs()) > 0 {
+	if _u.mutation.ParentCleared() && len(_u.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
 	return nil
 }
 
-func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ou.check(); err != nil {
-		return n, err
+func (_u *OrgUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(org.Table, org.Columns, sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt))
-	if ps := ou.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ou.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(org.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ou.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(org.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ou.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(org.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ou.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(org.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ou.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(org.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ou.mutation.DeletedAt(); ok {
+	if value, ok := _u.mutation.DeletedAt(); ok {
 		_spec.SetField(org.FieldDeletedAt, field.TypeTime, value)
 	}
-	if ou.mutation.DeletedAtCleared() {
+	if _u.mutation.DeletedAtCleared() {
 		_spec.ClearField(org.FieldDeletedAt, field.TypeTime)
 	}
-	if value, ok := ou.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(org.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := ou.mutation.Domain(); ok {
+	if value, ok := _u.mutation.Domain(); ok {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 	}
-	if ou.mutation.DomainCleared() {
+	if _u.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
 	}
-	if value, ok := ou.mutation.CustomDomain(); ok {
+	if value, ok := _u.mutation.CustomDomain(); ok {
 		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
 	}
-	if value, ok := ou.mutation.AppendedCustomDomain(); ok {
+	if value, ok := _u.mutation.AppendedCustomDomain(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, org.FieldCustomDomain, value)
 		})
 	}
-	if ou.mutation.CustomDomainCleared() {
+	if _u.mutation.CustomDomainCleared() {
 		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
 	}
-	if value, ok := ou.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 	}
-	if ou.mutation.CodeCleared() {
+	if _u.mutation.CodeCleared() {
 		_spec.ClearField(org.FieldCode, field.TypeString)
 	}
-	if value, ok := ou.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(org.FieldName, field.TypeString, value)
 	}
-	if value, ok := ou.mutation.Profile(); ok {
+	if value, ok := _u.mutation.Profile(); ok {
 		_spec.SetField(org.FieldProfile, field.TypeString, value)
 	}
-	if ou.mutation.ProfileCleared() {
+	if _u.mutation.ProfileCleared() {
 		_spec.ClearField(org.FieldProfile, field.TypeString)
 	}
-	if value, ok := ou.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(org.FieldStatus, field.TypeEnum, value)
 	}
-	if ou.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(org.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := ou.mutation.Path(); ok {
+	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(org.FieldPath, field.TypeString, value)
 	}
-	if ou.mutation.PathCleared() {
+	if _u.mutation.PathCleared() {
 		_spec.ClearField(org.FieldPath, field.TypeString)
 	}
-	if value, ok := ou.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(org.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := ou.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(org.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if ou.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(org.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := ou.mutation.CountryCode(); ok {
+	if value, ok := _u.mutation.CountryCode(); ok {
 		_spec.SetField(org.FieldCountryCode, field.TypeString, value)
 	}
-	if ou.mutation.CountryCodeCleared() {
+	if _u.mutation.CountryCodeCleared() {
 		_spec.ClearField(org.FieldCountryCode, field.TypeString)
 	}
-	if value, ok := ou.mutation.Timezone(); ok {
+	if value, ok := _u.mutation.Timezone(); ok {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 	}
-	if ou.mutation.TimezoneCleared() {
+	if _u.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
 	}
-	if value, ok := ou.mutation.LocalCurrency(); ok {
+	if value, ok := _u.mutation.LocalCurrency(); ok {
 		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
 	}
-	if ou.mutation.LocalCurrencyCleared() {
+	if _u.mutation.LocalCurrencyCleared() {
 		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
 	}
-	if value, ok := ou.mutation.Logo(); ok {
+	if value, ok := _u.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
 	}
-	if ou.mutation.LogoCleared() {
+	if _u.mutation.LogoCleared() {
 		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
-	if ou.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1000,7 +1000,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1016,7 +1016,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1029,7 +1029,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !ou.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1045,7 +1045,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1061,7 +1061,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -1074,7 +1074,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -1090,7 +1090,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.UsersCleared() {
+	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1101,33 +1101,13 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgUserCreate{config: ou.config, mutation: newOrgUserMutation(ou.config, OpCreate)}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedUsersIDs(); len(nodes) > 0 && !ou.mutation.UsersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   org.UsersTable,
-			Columns: org.UsersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &OrgUserCreate{config: ou.config, mutation: newOrgUserMutation(ou.config, OpCreate)}
-		_ = createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ou.mutation.UsersIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1141,13 +1121,33 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgUserCreate{config: ou.config, mutation: newOrgUserMutation(ou.config, OpCreate)}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   org.UsersTable,
+			Columns: org.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.RolesAndGroupsCleared() {
+	if _u.mutation.RolesAndGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1160,7 +1160,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedRolesAndGroupsIDs(); len(nodes) > 0 && !ou.mutation.RolesAndGroupsCleared() {
+	if nodes := _u.mutation.RemovedRolesAndGroupsIDs(); len(nodes) > 0 && !_u.mutation.RolesAndGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1176,7 +1176,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1192,7 +1192,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.PermissionsCleared() {
+	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1205,23 +1205,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !ou.mutation.PermissionsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   org.PermissionsTable,
-			Columns: []string{org.PermissionsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ou.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !_u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1235,9 +1219,25 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PermissionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.PermissionsTable,
+			Columns: []string{org.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1250,7 +1250,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !ou.mutation.PoliciesCleared() {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1266,7 +1266,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1282,7 +1282,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.AppsCleared() {
+	if _u.mutation.AppsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1293,13 +1293,13 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgAppCreate{config: ou.config, mutation: newOrgAppMutation(ou.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedAppsIDs(); len(nodes) > 0 && !ou.mutation.AppsCleared() {
+	if nodes := _u.mutation.RemovedAppsIDs(); len(nodes) > 0 && !_u.mutation.AppsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1313,13 +1313,13 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: ou.config, mutation: newOrgAppMutation(ou.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.AppsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1333,13 +1333,13 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: ou.config, mutation: newOrgAppMutation(ou.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.FileIdentitiesCleared() {
+	if _u.mutation.FileIdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1352,7 +1352,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !ou.mutation.FileIdentitiesCleared() {
+	if nodes := _u.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !_u.mutation.FileIdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1368,7 +1368,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1384,7 +1384,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.UserPasswordPolicyCleared() {
+	if _u.mutation.UserPasswordPolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -1397,7 +1397,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -1413,7 +1413,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.OrgQuotaCleared() {
+	if _u.mutation.OrgQuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1426,7 +1426,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ou.mutation.OrgQuotaCleared() {
+	if nodes := _u.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !_u.mutation.OrgQuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1442,7 +1442,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgQuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1458,7 +1458,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.OrgUserCleared() {
+	if _u.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1471,7 +1471,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedOrgUserIDs(); len(nodes) > 0 && !ou.mutation.OrgUserCleared() {
+	if nodes := _u.mutation.RemovedOrgUserIDs(); len(nodes) > 0 && !_u.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1487,7 +1487,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.OrgUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1503,7 +1503,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ou.mutation.OrgAppCleared() {
+	if _u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1516,7 +1516,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !ou.mutation.OrgAppCleared() {
+	if nodes := _u.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !_u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1532,7 +1532,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1548,7 +1548,7 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ou.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{org.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1556,8 +1556,8 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ou.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrgUpdateOne is the builder for updating a single Org entity.
@@ -1569,784 +1569,784 @@ type OrgUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ouo *OrgUpdateOne) SetUpdatedBy(i int) *OrgUpdateOne {
-	ouo.mutation.ResetUpdatedBy()
-	ouo.mutation.SetUpdatedBy(i)
-	return ouo
+func (_u *OrgUpdateOne) SetUpdatedBy(v int) *OrgUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableUpdatedBy(i *int) *OrgUpdateOne {
-	if i != nil {
-		ouo.SetUpdatedBy(*i)
+func (_u *OrgUpdateOne) SetNillableUpdatedBy(v *int) *OrgUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ouo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ouo *OrgUpdateOne) AddUpdatedBy(i int) *OrgUpdateOne {
-	ouo.mutation.AddUpdatedBy(i)
-	return ouo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUpdateOne) AddUpdatedBy(v int) *OrgUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ouo *OrgUpdateOne) ClearUpdatedBy() *OrgUpdateOne {
-	ouo.mutation.ClearUpdatedBy()
-	return ouo
+func (_u *OrgUpdateOne) ClearUpdatedBy() *OrgUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ouo *OrgUpdateOne) SetUpdatedAt(t time.Time) *OrgUpdateOne {
-	ouo.mutation.SetUpdatedAt(t)
-	return ouo
+func (_u *OrgUpdateOne) SetUpdatedAt(v time.Time) *OrgUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableUpdatedAt(t *time.Time) *OrgUpdateOne {
-	if t != nil {
-		ouo.SetUpdatedAt(*t)
+func (_u *OrgUpdateOne) SetNillableUpdatedAt(v *time.Time) *OrgUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ouo *OrgUpdateOne) ClearUpdatedAt() *OrgUpdateOne {
-	ouo.mutation.ClearUpdatedAt()
-	return ouo
+func (_u *OrgUpdateOne) ClearUpdatedAt() *OrgUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (ouo *OrgUpdateOne) SetDeletedAt(t time.Time) *OrgUpdateOne {
-	ouo.mutation.SetDeletedAt(t)
-	return ouo
+func (_u *OrgUpdateOne) SetDeletedAt(v time.Time) *OrgUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableDeletedAt(t *time.Time) *OrgUpdateOne {
-	if t != nil {
-		ouo.SetDeletedAt(*t)
+func (_u *OrgUpdateOne) SetNillableDeletedAt(v *time.Time) *OrgUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (ouo *OrgUpdateOne) ClearDeletedAt() *OrgUpdateOne {
-	ouo.mutation.ClearDeletedAt()
-	return ouo
+func (_u *OrgUpdateOne) ClearDeletedAt() *OrgUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
 }
 
 // SetOwnerID sets the "owner_id" field.
-func (ouo *OrgUpdateOne) SetOwnerID(i int) *OrgUpdateOne {
-	ouo.mutation.SetOwnerID(i)
-	return ouo
+func (_u *OrgUpdateOne) SetOwnerID(v int) *OrgUpdateOne {
+	_u.mutation.SetOwnerID(v)
+	return _u
 }
 
 // SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableOwnerID(i *int) *OrgUpdateOne {
-	if i != nil {
-		ouo.SetOwnerID(*i)
+func (_u *OrgUpdateOne) SetNillableOwnerID(v *int) *OrgUpdateOne {
+	if v != nil {
+		_u.SetOwnerID(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearOwnerID clears the value of the "owner_id" field.
-func (ouo *OrgUpdateOne) ClearOwnerID() *OrgUpdateOne {
-	ouo.mutation.ClearOwnerID()
-	return ouo
+func (_u *OrgUpdateOne) ClearOwnerID() *OrgUpdateOne {
+	_u.mutation.ClearOwnerID()
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (ouo *OrgUpdateOne) SetKind(o org.Kind) *OrgUpdateOne {
-	ouo.mutation.SetKind(o)
-	return ouo
+func (_u *OrgUpdateOne) SetKind(v org.Kind) *OrgUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableKind(o *org.Kind) *OrgUpdateOne {
-	if o != nil {
-		ouo.SetKind(*o)
+func (_u *OrgUpdateOne) SetNillableKind(v *org.Kind) *OrgUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return ouo
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (ouo *OrgUpdateOne) SetParentID(i int) *OrgUpdateOne {
-	ouo.mutation.SetParentID(i)
-	return ouo
+func (_u *OrgUpdateOne) SetParentID(v int) *OrgUpdateOne {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableParentID(i *int) *OrgUpdateOne {
-	if i != nil {
-		ouo.SetParentID(*i)
+func (_u *OrgUpdateOne) SetNillableParentID(v *int) *OrgUpdateOne {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return ouo
+	return _u
 }
 
 // SetDomain sets the "domain" field.
-func (ouo *OrgUpdateOne) SetDomain(s string) *OrgUpdateOne {
-	ouo.mutation.SetDomain(s)
-	return ouo
+func (_u *OrgUpdateOne) SetDomain(v string) *OrgUpdateOne {
+	_u.mutation.SetDomain(v)
+	return _u
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableDomain(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetDomain(*s)
+func (_u *OrgUpdateOne) SetNillableDomain(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetDomain(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearDomain clears the value of the "domain" field.
-func (ouo *OrgUpdateOne) ClearDomain() *OrgUpdateOne {
-	ouo.mutation.ClearDomain()
-	return ouo
+func (_u *OrgUpdateOne) ClearDomain() *OrgUpdateOne {
+	_u.mutation.ClearDomain()
+	return _u
 }
 
 // SetCustomDomain sets the "custom_domain" field.
-func (ouo *OrgUpdateOne) SetCustomDomain(s []string) *OrgUpdateOne {
-	ouo.mutation.SetCustomDomain(s)
-	return ouo
+func (_u *OrgUpdateOne) SetCustomDomain(v []string) *OrgUpdateOne {
+	_u.mutation.SetCustomDomain(v)
+	return _u
 }
 
-// AppendCustomDomain appends s to the "custom_domain" field.
-func (ouo *OrgUpdateOne) AppendCustomDomain(s []string) *OrgUpdateOne {
-	ouo.mutation.AppendCustomDomain(s)
-	return ouo
+// AppendCustomDomain appends value to the "custom_domain" field.
+func (_u *OrgUpdateOne) AppendCustomDomain(v []string) *OrgUpdateOne {
+	_u.mutation.AppendCustomDomain(v)
+	return _u
 }
 
 // ClearCustomDomain clears the value of the "custom_domain" field.
-func (ouo *OrgUpdateOne) ClearCustomDomain() *OrgUpdateOne {
-	ouo.mutation.ClearCustomDomain()
-	return ouo
+func (_u *OrgUpdateOne) ClearCustomDomain() *OrgUpdateOne {
+	_u.mutation.ClearCustomDomain()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (ouo *OrgUpdateOne) SetCode(s string) *OrgUpdateOne {
-	ouo.mutation.SetCode(s)
-	return ouo
+func (_u *OrgUpdateOne) SetCode(v string) *OrgUpdateOne {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableCode(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetCode(*s)
+func (_u *OrgUpdateOne) SetNillableCode(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearCode clears the value of the "code" field.
-func (ouo *OrgUpdateOne) ClearCode() *OrgUpdateOne {
-	ouo.mutation.ClearCode()
-	return ouo
+func (_u *OrgUpdateOne) ClearCode() *OrgUpdateOne {
+	_u.mutation.ClearCode()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ouo *OrgUpdateOne) SetName(s string) *OrgUpdateOne {
-	ouo.mutation.SetName(s)
-	return ouo
+func (_u *OrgUpdateOne) SetName(v string) *OrgUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableName(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetName(*s)
+func (_u *OrgUpdateOne) SetNillableName(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ouo
+	return _u
 }
 
 // SetProfile sets the "profile" field.
-func (ouo *OrgUpdateOne) SetProfile(s string) *OrgUpdateOne {
-	ouo.mutation.SetProfile(s)
-	return ouo
+func (_u *OrgUpdateOne) SetProfile(v string) *OrgUpdateOne {
+	_u.mutation.SetProfile(v)
+	return _u
 }
 
 // SetNillableProfile sets the "profile" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableProfile(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetProfile(*s)
+func (_u *OrgUpdateOne) SetNillableProfile(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetProfile(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearProfile clears the value of the "profile" field.
-func (ouo *OrgUpdateOne) ClearProfile() *OrgUpdateOne {
-	ouo.mutation.ClearProfile()
-	return ouo
+func (_u *OrgUpdateOne) ClearProfile() *OrgUpdateOne {
+	_u.mutation.ClearProfile()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ouo *OrgUpdateOne) SetStatus(ts typex.SimpleStatus) *OrgUpdateOne {
-	ouo.mutation.SetStatus(ts)
-	return ouo
+func (_u *OrgUpdateOne) SetStatus(v typex.SimpleStatus) *OrgUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *OrgUpdateOne {
-	if ts != nil {
-		ouo.SetStatus(*ts)
+func (_u *OrgUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *OrgUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (ouo *OrgUpdateOne) ClearStatus() *OrgUpdateOne {
-	ouo.mutation.ClearStatus()
-	return ouo
+func (_u *OrgUpdateOne) ClearStatus() *OrgUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetPath sets the "path" field.
-func (ouo *OrgUpdateOne) SetPath(s string) *OrgUpdateOne {
-	ouo.mutation.SetPath(s)
-	return ouo
+func (_u *OrgUpdateOne) SetPath(v string) *OrgUpdateOne {
+	_u.mutation.SetPath(v)
+	return _u
 }
 
 // SetNillablePath sets the "path" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillablePath(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetPath(*s)
+func (_u *OrgUpdateOne) SetNillablePath(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetPath(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearPath clears the value of the "path" field.
-func (ouo *OrgUpdateOne) ClearPath() *OrgUpdateOne {
-	ouo.mutation.ClearPath()
-	return ouo
+func (_u *OrgUpdateOne) ClearPath() *OrgUpdateOne {
+	_u.mutation.ClearPath()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (ouo *OrgUpdateOne) SetDisplaySort(i int32) *OrgUpdateOne {
-	ouo.mutation.ResetDisplaySort()
-	ouo.mutation.SetDisplaySort(i)
-	return ouo
+func (_u *OrgUpdateOne) SetDisplaySort(v int32) *OrgUpdateOne {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableDisplaySort(i *int32) *OrgUpdateOne {
-	if i != nil {
-		ouo.SetDisplaySort(*i)
+func (_u *OrgUpdateOne) SetNillableDisplaySort(v *int32) *OrgUpdateOne {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return ouo
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (ouo *OrgUpdateOne) AddDisplaySort(i int32) *OrgUpdateOne {
-	ouo.mutation.AddDisplaySort(i)
-	return ouo
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *OrgUpdateOne) AddDisplaySort(v int32) *OrgUpdateOne {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (ouo *OrgUpdateOne) ClearDisplaySort() *OrgUpdateOne {
-	ouo.mutation.ClearDisplaySort()
-	return ouo
+func (_u *OrgUpdateOne) ClearDisplaySort() *OrgUpdateOne {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetCountryCode sets the "country_code" field.
-func (ouo *OrgUpdateOne) SetCountryCode(s string) *OrgUpdateOne {
-	ouo.mutation.SetCountryCode(s)
-	return ouo
+func (_u *OrgUpdateOne) SetCountryCode(v string) *OrgUpdateOne {
+	_u.mutation.SetCountryCode(v)
+	return _u
 }
 
 // SetNillableCountryCode sets the "country_code" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableCountryCode(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetCountryCode(*s)
+func (_u *OrgUpdateOne) SetNillableCountryCode(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetCountryCode(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearCountryCode clears the value of the "country_code" field.
-func (ouo *OrgUpdateOne) ClearCountryCode() *OrgUpdateOne {
-	ouo.mutation.ClearCountryCode()
-	return ouo
+func (_u *OrgUpdateOne) ClearCountryCode() *OrgUpdateOne {
+	_u.mutation.ClearCountryCode()
+	return _u
 }
 
 // SetTimezone sets the "timezone" field.
-func (ouo *OrgUpdateOne) SetTimezone(s string) *OrgUpdateOne {
-	ouo.mutation.SetTimezone(s)
-	return ouo
+func (_u *OrgUpdateOne) SetTimezone(v string) *OrgUpdateOne {
+	_u.mutation.SetTimezone(v)
+	return _u
 }
 
 // SetNillableTimezone sets the "timezone" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableTimezone(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetTimezone(*s)
+func (_u *OrgUpdateOne) SetNillableTimezone(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetTimezone(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearTimezone clears the value of the "timezone" field.
-func (ouo *OrgUpdateOne) ClearTimezone() *OrgUpdateOne {
-	ouo.mutation.ClearTimezone()
-	return ouo
+func (_u *OrgUpdateOne) ClearTimezone() *OrgUpdateOne {
+	_u.mutation.ClearTimezone()
+	return _u
 }
 
 // SetLocalCurrency sets the "local_currency" field.
-func (ouo *OrgUpdateOne) SetLocalCurrency(s string) *OrgUpdateOne {
-	ouo.mutation.SetLocalCurrency(s)
-	return ouo
+func (_u *OrgUpdateOne) SetLocalCurrency(v string) *OrgUpdateOne {
+	_u.mutation.SetLocalCurrency(v)
+	return _u
 }
 
 // SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableLocalCurrency(s *string) *OrgUpdateOne {
-	if s != nil {
-		ouo.SetLocalCurrency(*s)
+func (_u *OrgUpdateOne) SetNillableLocalCurrency(v *string) *OrgUpdateOne {
+	if v != nil {
+		_u.SetLocalCurrency(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearLocalCurrency clears the value of the "local_currency" field.
-func (ouo *OrgUpdateOne) ClearLocalCurrency() *OrgUpdateOne {
-	ouo.mutation.ClearLocalCurrency()
-	return ouo
+func (_u *OrgUpdateOne) ClearLocalCurrency() *OrgUpdateOne {
+	_u.mutation.ClearLocalCurrency()
+	return _u
 }
 
 // SetLogo sets the "logo" field.
-func (ouo *OrgUpdateOne) SetLogo(tl *types.OrgLogo) *OrgUpdateOne {
-	ouo.mutation.SetLogo(tl)
-	return ouo
+func (_u *OrgUpdateOne) SetLogo(v *types.OrgLogo) *OrgUpdateOne {
+	_u.mutation.SetLogo(v)
+	return _u
 }
 
 // ClearLogo clears the value of the "logo" field.
-func (ouo *OrgUpdateOne) ClearLogo() *OrgUpdateOne {
-	ouo.mutation.ClearLogo()
-	return ouo
+func (_u *OrgUpdateOne) ClearLogo() *OrgUpdateOne {
+	_u.mutation.ClearLogo()
+	return _u
 }
 
 // SetParent sets the "parent" edge to the Org entity.
-func (ouo *OrgUpdateOne) SetParent(o *Org) *OrgUpdateOne {
-	return ouo.SetParentID(o.ID)
+func (_u *OrgUpdateOne) SetParent(v *Org) *OrgUpdateOne {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the Org entity by IDs.
-func (ouo *OrgUpdateOne) AddChildIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddChildIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddChildIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the Org entity.
-func (ouo *OrgUpdateOne) AddChildren(o ...*Org) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) AddChildren(v ...*Org) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ouo *OrgUpdateOne) SetOwner(u *User) *OrgUpdateOne {
-	return ouo.SetOwnerID(u.ID)
+func (_u *OrgUpdateOne) SetOwner(v *User) *OrgUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddUserIDs adds the "users" edge to the User entity by IDs.
-func (ouo *OrgUpdateOne) AddUserIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddUserIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddUserIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddUserIDs(ids...)
+	return _u
 }
 
 // AddUsers adds the "users" edges to the User entity.
-func (ouo *OrgUpdateOne) AddUsers(u ...*User) *OrgUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+func (_u *OrgUpdateOne) AddUsers(v ...*User) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddUserIDs(ids...)
+	return _u.AddUserIDs(ids...)
 }
 
 // AddRolesAndGroupIDs adds the "roles_and_groups" edge to the OrgRole entity by IDs.
-func (ouo *OrgUpdateOne) AddRolesAndGroupIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddRolesAndGroupIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddRolesAndGroupIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddRolesAndGroupIDs(ids...)
+	return _u
 }
 
 // AddRolesAndGroups adds the "roles_and_groups" edges to the OrgRole entity.
-func (ouo *OrgUpdateOne) AddRolesAndGroups(o ...*OrgRole) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) AddRolesAndGroups(v ...*OrgRole) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddRolesAndGroupIDs(ids...)
+	return _u.AddRolesAndGroupIDs(ids...)
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (ouo *OrgUpdateOne) AddPermissionIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddPermissionIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddPermissionIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddPermissionIDs(ids...)
+	return _u
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (ouo *OrgUpdateOne) AddPermissions(p ...*Permission) *OrgUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgUpdateOne) AddPermissions(v ...*Permission) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddPermissionIDs(ids...)
+	return _u.AddPermissionIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the OrgPolicy entity by IDs.
-func (ouo *OrgUpdateOne) AddPolicyIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddPolicyIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddPolicyIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the OrgPolicy entity.
-func (ouo *OrgUpdateOne) AddPolicies(o ...*OrgPolicy) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) AddPolicies(v ...*OrgPolicy) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddAppIDs adds the "apps" edge to the App entity by IDs.
-func (ouo *OrgUpdateOne) AddAppIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddAppIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddAppIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApps adds the "apps" edges to the App entity.
-func (ouo *OrgUpdateOne) AddApps(a ...*App) *OrgUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *OrgUpdateOne) AddApps(v ...*App) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
-func (ouo *OrgUpdateOne) AddFileIdentityIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddFileIdentityIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddFileIdentityIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddFileIdentityIDs(ids...)
+	return _u
 }
 
 // AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
-func (ouo *OrgUpdateOne) AddFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *OrgUpdateOne) AddFileIdentities(v ...*FileIdentity) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddFileIdentityIDs(ids...)
+	return _u.AddFileIdentityIDs(ids...)
 }
 
 // SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
-func (ouo *OrgUpdateOne) SetUserPasswordPolicyID(id int) *OrgUpdateOne {
-	ouo.mutation.SetUserPasswordPolicyID(id)
-	return ouo
+func (_u *OrgUpdateOne) SetUserPasswordPolicyID(id int) *OrgUpdateOne {
+	_u.mutation.SetUserPasswordPolicyID(id)
+	return _u
 }
 
 // SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableUserPasswordPolicyID(id *int) *OrgUpdateOne {
+func (_u *OrgUpdateOne) SetNillableUserPasswordPolicyID(id *int) *OrgUpdateOne {
 	if id != nil {
-		ouo = ouo.SetUserPasswordPolicyID(*id)
+		_u = _u.SetUserPasswordPolicyID(*id)
 	}
-	return ouo
+	return _u
 }
 
 // SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (ouo *OrgUpdateOne) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgUpdateOne {
-	return ouo.SetUserPasswordPolicyID(u.ID)
+func (_u *OrgUpdateOne) SetUserPasswordPolicy(v *UserPasswordPolicy) *OrgUpdateOne {
+	return _u.SetUserPasswordPolicyID(v.ID)
 }
 
 // AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
-func (ouo *OrgUpdateOne) AddOrgQuotumIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddOrgQuotumIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddOrgQuotumIDs(ids...)
+	return _u
 }
 
 // AddOrgQuota adds the "org_quota" edges to the Quota entity.
-func (ouo *OrgUpdateOne) AddOrgQuota(q ...*Quota) *OrgUpdateOne {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *OrgUpdateOne) AddOrgQuota(v ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddOrgQuotumIDs(ids...)
+	return _u.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
-func (ouo *OrgUpdateOne) AddOrgUserIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddOrgUserIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddOrgUserIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddOrgUserIDs(ids...)
+	return _u
 }
 
 // AddOrgUser adds the "org_user" edges to the OrgUser entity.
-func (ouo *OrgUpdateOne) AddOrgUser(o ...*OrgUser) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) AddOrgUser(v ...*OrgUser) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddOrgUserIDs(ids...)
+	return _u.AddOrgUserIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (ouo *OrgUpdateOne) AddOrgAppIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.AddOrgAppIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) AddOrgAppIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.AddOrgAppIDs(ids...)
+	return _u
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (ouo *OrgUpdateOne) AddOrgApp(o ...*OrgApp) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) AddOrgApp(v ...*OrgApp) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddOrgAppIDs(ids...)
+	return _u.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the OrgMutation object of the builder.
-func (ouo *OrgUpdateOne) Mutation() *OrgMutation {
-	return ouo.mutation
+func (_u *OrgUpdateOne) Mutation() *OrgMutation {
+	return _u.mutation
 }
 
 // ClearParent clears the "parent" edge to the Org entity.
-func (ouo *OrgUpdateOne) ClearParent() *OrgUpdateOne {
-	ouo.mutation.ClearParent()
-	return ouo
+func (_u *OrgUpdateOne) ClearParent() *OrgUpdateOne {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the Org entity.
-func (ouo *OrgUpdateOne) ClearChildren() *OrgUpdateOne {
-	ouo.mutation.ClearChildren()
-	return ouo
+func (_u *OrgUpdateOne) ClearChildren() *OrgUpdateOne {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to Org entities by IDs.
-func (ouo *OrgUpdateOne) RemoveChildIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveChildIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveChildIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to Org entities.
-func (ouo *OrgUpdateOne) RemoveChildren(o ...*Org) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) RemoveChildren(v ...*Org) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ouo *OrgUpdateOne) ClearOwner() *OrgUpdateOne {
-	ouo.mutation.ClearOwner()
-	return ouo
+func (_u *OrgUpdateOne) ClearOwner() *OrgUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearUsers clears all "users" edges to the User entity.
-func (ouo *OrgUpdateOne) ClearUsers() *OrgUpdateOne {
-	ouo.mutation.ClearUsers()
-	return ouo
+func (_u *OrgUpdateOne) ClearUsers() *OrgUpdateOne {
+	_u.mutation.ClearUsers()
+	return _u
 }
 
 // RemoveUserIDs removes the "users" edge to User entities by IDs.
-func (ouo *OrgUpdateOne) RemoveUserIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveUserIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveUserIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
 }
 
 // RemoveUsers removes "users" edges to User entities.
-func (ouo *OrgUpdateOne) RemoveUsers(u ...*User) *OrgUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+func (_u *OrgUpdateOne) RemoveUsers(v ...*User) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveUserIDs(ids...)
+	return _u.RemoveUserIDs(ids...)
 }
 
 // ClearRolesAndGroups clears all "roles_and_groups" edges to the OrgRole entity.
-func (ouo *OrgUpdateOne) ClearRolesAndGroups() *OrgUpdateOne {
-	ouo.mutation.ClearRolesAndGroups()
-	return ouo
+func (_u *OrgUpdateOne) ClearRolesAndGroups() *OrgUpdateOne {
+	_u.mutation.ClearRolesAndGroups()
+	return _u
 }
 
 // RemoveRolesAndGroupIDs removes the "roles_and_groups" edge to OrgRole entities by IDs.
-func (ouo *OrgUpdateOne) RemoveRolesAndGroupIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveRolesAndGroupIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveRolesAndGroupIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveRolesAndGroupIDs(ids...)
+	return _u
 }
 
 // RemoveRolesAndGroups removes "roles_and_groups" edges to OrgRole entities.
-func (ouo *OrgUpdateOne) RemoveRolesAndGroups(o ...*OrgRole) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) RemoveRolesAndGroups(v ...*OrgRole) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveRolesAndGroupIDs(ids...)
+	return _u.RemoveRolesAndGroupIDs(ids...)
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
-func (ouo *OrgUpdateOne) ClearPermissions() *OrgUpdateOne {
-	ouo.mutation.ClearPermissions()
-	return ouo
+func (_u *OrgUpdateOne) ClearPermissions() *OrgUpdateOne {
+	_u.mutation.ClearPermissions()
+	return _u
 }
 
 // RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
-func (ouo *OrgUpdateOne) RemovePermissionIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemovePermissionIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemovePermissionIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemovePermissionIDs(ids...)
+	return _u
 }
 
 // RemovePermissions removes "permissions" edges to Permission entities.
-func (ouo *OrgUpdateOne) RemovePermissions(p ...*Permission) *OrgUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *OrgUpdateOne) RemovePermissions(v ...*Permission) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemovePermissionIDs(ids...)
+	return _u.RemovePermissionIDs(ids...)
 }
 
 // ClearPolicies clears all "policies" edges to the OrgPolicy entity.
-func (ouo *OrgUpdateOne) ClearPolicies() *OrgUpdateOne {
-	ouo.mutation.ClearPolicies()
-	return ouo
+func (_u *OrgUpdateOne) ClearPolicies() *OrgUpdateOne {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to OrgPolicy entities by IDs.
-func (ouo *OrgUpdateOne) RemovePolicyIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemovePolicyIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemovePolicyIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to OrgPolicy entities.
-func (ouo *OrgUpdateOne) RemovePolicies(o ...*OrgPolicy) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) RemovePolicies(v ...*OrgPolicy) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearApps clears all "apps" edges to the App entity.
-func (ouo *OrgUpdateOne) ClearApps() *OrgUpdateOne {
-	ouo.mutation.ClearApps()
-	return ouo
+func (_u *OrgUpdateOne) ClearApps() *OrgUpdateOne {
+	_u.mutation.ClearApps()
+	return _u
 }
 
 // RemoveAppIDs removes the "apps" edge to App entities by IDs.
-func (ouo *OrgUpdateOne) RemoveAppIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveAppIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveAppIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApps removes "apps" edges to App entities.
-func (ouo *OrgUpdateOne) RemoveApps(a ...*App) *OrgUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *OrgUpdateOne) RemoveApps(v ...*App) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // ClearFileIdentities clears all "file_identities" edges to the FileIdentity entity.
-func (ouo *OrgUpdateOne) ClearFileIdentities() *OrgUpdateOne {
-	ouo.mutation.ClearFileIdentities()
-	return ouo
+func (_u *OrgUpdateOne) ClearFileIdentities() *OrgUpdateOne {
+	_u.mutation.ClearFileIdentities()
+	return _u
 }
 
 // RemoveFileIdentityIDs removes the "file_identities" edge to FileIdentity entities by IDs.
-func (ouo *OrgUpdateOne) RemoveFileIdentityIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveFileIdentityIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveFileIdentityIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveFileIdentityIDs(ids...)
+	return _u
 }
 
 // RemoveFileIdentities removes "file_identities" edges to FileIdentity entities.
-func (ouo *OrgUpdateOne) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *OrgUpdateOne) RemoveFileIdentities(v ...*FileIdentity) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveFileIdentityIDs(ids...)
+	return _u.RemoveFileIdentityIDs(ids...)
 }
 
 // ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (ouo *OrgUpdateOne) ClearUserPasswordPolicy() *OrgUpdateOne {
-	ouo.mutation.ClearUserPasswordPolicy()
-	return ouo
+func (_u *OrgUpdateOne) ClearUserPasswordPolicy() *OrgUpdateOne {
+	_u.mutation.ClearUserPasswordPolicy()
+	return _u
 }
 
 // ClearOrgQuota clears all "org_quota" edges to the Quota entity.
-func (ouo *OrgUpdateOne) ClearOrgQuota() *OrgUpdateOne {
-	ouo.mutation.ClearOrgQuota()
-	return ouo
+func (_u *OrgUpdateOne) ClearOrgQuota() *OrgUpdateOne {
+	_u.mutation.ClearOrgQuota()
+	return _u
 }
 
 // RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
-func (ouo *OrgUpdateOne) RemoveOrgQuotumIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveOrgQuotumIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveOrgQuotumIDs(ids...)
+	return _u
 }
 
 // RemoveOrgQuota removes "org_quota" edges to Quota entities.
-func (ouo *OrgUpdateOne) RemoveOrgQuota(q ...*Quota) *OrgUpdateOne {
-	ids := make([]int, len(q))
-	for i := range q {
-		ids[i] = q[i].ID
+func (_u *OrgUpdateOne) RemoveOrgQuota(v ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveOrgQuotumIDs(ids...)
+	return _u.RemoveOrgQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
-func (ouo *OrgUpdateOne) ClearOrgUser() *OrgUpdateOne {
-	ouo.mutation.ClearOrgUser()
-	return ouo
+func (_u *OrgUpdateOne) ClearOrgUser() *OrgUpdateOne {
+	_u.mutation.ClearOrgUser()
+	return _u
 }
 
 // RemoveOrgUserIDs removes the "org_user" edge to OrgUser entities by IDs.
-func (ouo *OrgUpdateOne) RemoveOrgUserIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveOrgUserIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveOrgUserIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveOrgUserIDs(ids...)
+	return _u
 }
 
 // RemoveOrgUser removes "org_user" edges to OrgUser entities.
-func (ouo *OrgUpdateOne) RemoveOrgUser(o ...*OrgUser) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) RemoveOrgUser(v ...*OrgUser) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveOrgUserIDs(ids...)
+	return _u.RemoveOrgUserIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
-func (ouo *OrgUpdateOne) ClearOrgApp() *OrgUpdateOne {
-	ouo.mutation.ClearOrgApp()
-	return ouo
+func (_u *OrgUpdateOne) ClearOrgApp() *OrgUpdateOne {
+	_u.mutation.ClearOrgApp()
+	return _u
 }
 
 // RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
-func (ouo *OrgUpdateOne) RemoveOrgAppIDs(ids ...int) *OrgUpdateOne {
-	ouo.mutation.RemoveOrgAppIDs(ids...)
-	return ouo
+func (_u *OrgUpdateOne) RemoveOrgAppIDs(ids ...int) *OrgUpdateOne {
+	_u.mutation.RemoveOrgAppIDs(ids...)
+	return _u
 }
 
 // RemoveOrgApp removes "org_app" edges to OrgApp entities.
-func (ouo *OrgUpdateOne) RemoveOrgApp(o ...*OrgApp) *OrgUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUpdateOne) RemoveOrgApp(v ...*OrgApp) *OrgUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveOrgAppIDs(ids...)
+	return _u.RemoveOrgAppIDs(ids...)
 }
 
 // Where appends a list predicates to the OrgUpdate builder.
-func (ouo *OrgUpdateOne) Where(ps ...predicate.Org) *OrgUpdateOne {
-	ouo.mutation.Where(ps...)
-	return ouo
+func (_u *OrgUpdateOne) Where(ps ...predicate.Org) *OrgUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ouo *OrgUpdateOne) Select(field string, fields ...string) *OrgUpdateOne {
-	ouo.fields = append([]string{field}, fields...)
-	return ouo
+func (_u *OrgUpdateOne) Select(field string, fields ...string) *OrgUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Org entity.
-func (ouo *OrgUpdateOne) Save(ctx context.Context) (*Org, error) {
-	return withHooks(ctx, ouo.sqlSave, ouo.mutation, ouo.hooks)
+func (_u *OrgUpdateOne) Save(ctx context.Context) (*Org, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ouo *OrgUpdateOne) SaveX(ctx context.Context) *Org {
-	node, err := ouo.Save(ctx)
+func (_u *OrgUpdateOne) SaveX(ctx context.Context) *Org {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -2354,77 +2354,77 @@ func (ouo *OrgUpdateOne) SaveX(ctx context.Context) *Org {
 }
 
 // Exec executes the query on the entity.
-func (ouo *OrgUpdateOne) Exec(ctx context.Context) error {
-	_, err := ouo.Save(ctx)
+func (_u *OrgUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ouo *OrgUpdateOne) ExecX(ctx context.Context) {
-	if err := ouo.Exec(ctx); err != nil {
+func (_u *OrgUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ouo *OrgUpdateOne) check() error {
-	if v, ok := ouo.mutation.Kind(); ok {
+func (_u *OrgUpdateOne) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := org.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Org.kind": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.Domain(); ok {
+	if v, ok := _u.mutation.Domain(); ok {
 		if err := org.DomainValidator(v); err != nil {
 			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Org.domain": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.Code(); ok {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := org.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Org.code": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := org.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Org.name": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := org.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Org.status": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.CountryCode(); ok {
+	if v, ok := _u.mutation.CountryCode(); ok {
 		if err := org.CountryCodeValidator(v); err != nil {
 			return &ValidationError{Name: "country_code", err: fmt.Errorf(`ent: validator failed for field "Org.country_code": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.Timezone(); ok {
+	if v, ok := _u.mutation.Timezone(); ok {
 		if err := org.TimezoneValidator(v); err != nil {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.LocalCurrency(); ok {
+	if v, ok := _u.mutation.LocalCurrency(); ok {
 		if err := org.LocalCurrencyValidator(v); err != nil {
 			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
-	if ouo.mutation.ParentCleared() && len(ouo.mutation.ParentIDs()) > 0 {
+	if _u.mutation.ParentCleared() && len(_u.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
 	return nil
 }
 
-func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
-	if err := ouo.check(); err != nil {
+func (_u *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(org.Table, org.Columns, sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt))
-	id, ok := ouo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Org.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ouo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, org.FieldID)
 		for _, f := range fields {
@@ -2436,115 +2436,115 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 			}
 		}
 	}
-	if ps := ouo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ouo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(org.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ouo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(org.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ouo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(org.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ouo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(org.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ouo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(org.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ouo.mutation.DeletedAt(); ok {
+	if value, ok := _u.mutation.DeletedAt(); ok {
 		_spec.SetField(org.FieldDeletedAt, field.TypeTime, value)
 	}
-	if ouo.mutation.DeletedAtCleared() {
+	if _u.mutation.DeletedAtCleared() {
 		_spec.ClearField(org.FieldDeletedAt, field.TypeTime)
 	}
-	if value, ok := ouo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(org.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := ouo.mutation.Domain(); ok {
+	if value, ok := _u.mutation.Domain(); ok {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 	}
-	if ouo.mutation.DomainCleared() {
+	if _u.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
 	}
-	if value, ok := ouo.mutation.CustomDomain(); ok {
+	if value, ok := _u.mutation.CustomDomain(); ok {
 		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
 	}
-	if value, ok := ouo.mutation.AppendedCustomDomain(); ok {
+	if value, ok := _u.mutation.AppendedCustomDomain(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, org.FieldCustomDomain, value)
 		})
 	}
-	if ouo.mutation.CustomDomainCleared() {
+	if _u.mutation.CustomDomainCleared() {
 		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
 	}
-	if value, ok := ouo.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 	}
-	if ouo.mutation.CodeCleared() {
+	if _u.mutation.CodeCleared() {
 		_spec.ClearField(org.FieldCode, field.TypeString)
 	}
-	if value, ok := ouo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(org.FieldName, field.TypeString, value)
 	}
-	if value, ok := ouo.mutation.Profile(); ok {
+	if value, ok := _u.mutation.Profile(); ok {
 		_spec.SetField(org.FieldProfile, field.TypeString, value)
 	}
-	if ouo.mutation.ProfileCleared() {
+	if _u.mutation.ProfileCleared() {
 		_spec.ClearField(org.FieldProfile, field.TypeString)
 	}
-	if value, ok := ouo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(org.FieldStatus, field.TypeEnum, value)
 	}
-	if ouo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(org.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := ouo.mutation.Path(); ok {
+	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(org.FieldPath, field.TypeString, value)
 	}
-	if ouo.mutation.PathCleared() {
+	if _u.mutation.PathCleared() {
 		_spec.ClearField(org.FieldPath, field.TypeString)
 	}
-	if value, ok := ouo.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(org.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := ouo.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(org.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if ouo.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(org.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := ouo.mutation.CountryCode(); ok {
+	if value, ok := _u.mutation.CountryCode(); ok {
 		_spec.SetField(org.FieldCountryCode, field.TypeString, value)
 	}
-	if ouo.mutation.CountryCodeCleared() {
+	if _u.mutation.CountryCodeCleared() {
 		_spec.ClearField(org.FieldCountryCode, field.TypeString)
 	}
-	if value, ok := ouo.mutation.Timezone(); ok {
+	if value, ok := _u.mutation.Timezone(); ok {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 	}
-	if ouo.mutation.TimezoneCleared() {
+	if _u.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
 	}
-	if value, ok := ouo.mutation.LocalCurrency(); ok {
+	if value, ok := _u.mutation.LocalCurrency(); ok {
 		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
 	}
-	if ouo.mutation.LocalCurrencyCleared() {
+	if _u.mutation.LocalCurrencyCleared() {
 		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
 	}
-	if value, ok := ouo.mutation.Logo(); ok {
+	if value, ok := _u.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
 	}
-	if ouo.mutation.LogoCleared() {
+	if _u.mutation.LogoCleared() {
 		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
-	if ouo.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -2557,7 +2557,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -2573,7 +2573,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2586,7 +2586,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !ouo.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2602,7 +2602,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2618,7 +2618,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -2631,7 +2631,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -2647,7 +2647,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.UsersCleared() {
+	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -2658,33 +2658,13 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgUserCreate{config: ouo.config, mutation: newOrgUserMutation(ouo.config, OpCreate)}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedUsersIDs(); len(nodes) > 0 && !ouo.mutation.UsersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   org.UsersTable,
-			Columns: org.UsersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &OrgUserCreate{config: ouo.config, mutation: newOrgUserMutation(ouo.config, OpCreate)}
-		_ = createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ouo.mutation.UsersIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -2698,13 +2678,33 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgUserCreate{config: ouo.config, mutation: newOrgUserMutation(ouo.config, OpCreate)}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   org.UsersTable,
+			Columns: org.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgUserCreate{config: _u.config, mutation: newOrgUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.RolesAndGroupsCleared() {
+	if _u.mutation.RolesAndGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2717,7 +2717,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedRolesAndGroupsIDs(); len(nodes) > 0 && !ouo.mutation.RolesAndGroupsCleared() {
+	if nodes := _u.mutation.RemovedRolesAndGroupsIDs(); len(nodes) > 0 && !_u.mutation.RolesAndGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2733,7 +2733,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RolesAndGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2749,7 +2749,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.PermissionsCleared() {
+	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2762,23 +2762,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !ouo.mutation.PermissionsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   org.PermissionsTable,
-			Columns: []string{org.PermissionsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ouo.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !_u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2792,9 +2776,25 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PermissionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.PermissionsTable,
+			Columns: []string{org.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2807,7 +2807,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !ouo.mutation.PoliciesCleared() {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2823,7 +2823,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2839,7 +2839,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.AppsCleared() {
+	if _u.mutation.AppsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -2850,13 +2850,13 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgAppCreate{config: ouo.config, mutation: newOrgAppMutation(ouo.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedAppsIDs(); len(nodes) > 0 && !ouo.mutation.AppsCleared() {
+	if nodes := _u.mutation.RemovedAppsIDs(); len(nodes) > 0 && !_u.mutation.AppsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -2870,13 +2870,13 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: ouo.config, mutation: newOrgAppMutation(ouo.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.AppsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -2890,13 +2890,13 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: ouo.config, mutation: newOrgAppMutation(ouo.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.FileIdentitiesCleared() {
+	if _u.mutation.FileIdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2909,7 +2909,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !ouo.mutation.FileIdentitiesCleared() {
+	if nodes := _u.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !_u.mutation.FileIdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2925,7 +2925,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2941,7 +2941,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.UserPasswordPolicyCleared() {
+	if _u.mutation.UserPasswordPolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -2954,7 +2954,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -2970,7 +2970,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.OrgQuotaCleared() {
+	if _u.mutation.OrgQuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2983,7 +2983,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ouo.mutation.OrgQuotaCleared() {
+	if nodes := _u.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !_u.mutation.OrgQuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2999,7 +2999,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgQuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -3015,7 +3015,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.OrgUserCleared() {
+	if _u.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3028,7 +3028,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedOrgUserIDs(); len(nodes) > 0 && !ouo.mutation.OrgUserCleared() {
+	if nodes := _u.mutation.RemovedOrgUserIDs(); len(nodes) > 0 && !_u.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3044,7 +3044,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.OrgUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3060,7 +3060,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouo.mutation.OrgAppCleared() {
+	if _u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3073,7 +3073,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !ouo.mutation.OrgAppCleared() {
+	if nodes := _u.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !_u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3089,7 +3089,7 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -3105,10 +3105,10 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Org{config: ouo.config}
+	_node = &Org{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ouo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{org.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -3116,6 +3116,6 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		}
 		return nil, err
 	}
-	ouo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

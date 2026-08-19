@@ -25,158 +25,158 @@ type OauthClientUpdate struct {
 }
 
 // Where appends a list predicates to the OauthClientUpdate builder.
-func (ocu *OauthClientUpdate) Where(ps ...predicate.OauthClient) *OauthClientUpdate {
-	ocu.mutation.Where(ps...)
-	return ocu
+func (_u *OauthClientUpdate) Where(ps ...predicate.OauthClient) *OauthClientUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ocu *OauthClientUpdate) SetUpdatedBy(i int) *OauthClientUpdate {
-	ocu.mutation.ResetUpdatedBy()
-	ocu.mutation.SetUpdatedBy(i)
-	return ocu
+func (_u *OauthClientUpdate) SetUpdatedBy(v int) *OauthClientUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableUpdatedBy(i *int) *OauthClientUpdate {
-	if i != nil {
-		ocu.SetUpdatedBy(*i)
+func (_u *OauthClientUpdate) SetNillableUpdatedBy(v *int) *OauthClientUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ocu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ocu *OauthClientUpdate) AddUpdatedBy(i int) *OauthClientUpdate {
-	ocu.mutation.AddUpdatedBy(i)
-	return ocu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OauthClientUpdate) AddUpdatedBy(v int) *OauthClientUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ocu *OauthClientUpdate) ClearUpdatedBy() *OauthClientUpdate {
-	ocu.mutation.ClearUpdatedBy()
-	return ocu
+func (_u *OauthClientUpdate) ClearUpdatedBy() *OauthClientUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ocu *OauthClientUpdate) SetUpdatedAt(t time.Time) *OauthClientUpdate {
-	ocu.mutation.SetUpdatedAt(t)
-	return ocu
+func (_u *OauthClientUpdate) SetUpdatedAt(v time.Time) *OauthClientUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableUpdatedAt(t *time.Time) *OauthClientUpdate {
-	if t != nil {
-		ocu.SetUpdatedAt(*t)
+func (_u *OauthClientUpdate) SetNillableUpdatedAt(v *time.Time) *OauthClientUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ocu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ocu *OauthClientUpdate) ClearUpdatedAt() *OauthClientUpdate {
-	ocu.mutation.ClearUpdatedAt()
-	return ocu
+func (_u *OauthClientUpdate) ClearUpdatedAt() *OauthClientUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ocu *OauthClientUpdate) SetName(s string) *OauthClientUpdate {
-	ocu.mutation.SetName(s)
-	return ocu
+func (_u *OauthClientUpdate) SetName(v string) *OauthClientUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableName(s *string) *OauthClientUpdate {
-	if s != nil {
-		ocu.SetName(*s)
+func (_u *OauthClientUpdate) SetNillableName(v *string) *OauthClientUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ocu
+	return _u
 }
 
 // SetGrantTypes sets the "grant_types" field.
-func (ocu *OauthClientUpdate) SetGrantTypes(ot oauthclient.GrantTypes) *OauthClientUpdate {
-	ocu.mutation.SetGrantTypes(ot)
-	return ocu
+func (_u *OauthClientUpdate) SetGrantTypes(v oauthclient.GrantTypes) *OauthClientUpdate {
+	_u.mutation.SetGrantTypes(v)
+	return _u
 }
 
 // SetNillableGrantTypes sets the "grant_types" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableGrantTypes(ot *oauthclient.GrantTypes) *OauthClientUpdate {
-	if ot != nil {
-		ocu.SetGrantTypes(*ot)
+func (_u *OauthClientUpdate) SetNillableGrantTypes(v *oauthclient.GrantTypes) *OauthClientUpdate {
+	if v != nil {
+		_u.SetGrantTypes(*v)
 	}
-	return ocu
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (ocu *OauthClientUpdate) SetUserID(i int) *OauthClientUpdate {
-	ocu.mutation.SetUserID(i)
-	return ocu
+func (_u *OauthClientUpdate) SetUserID(v int) *OauthClientUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableUserID(i *int) *OauthClientUpdate {
-	if i != nil {
-		ocu.SetUserID(*i)
+func (_u *OauthClientUpdate) SetNillableUserID(v *int) *OauthClientUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return ocu
+	return _u
 }
 
 // SetLastAuthAt sets the "last_auth_at" field.
-func (ocu *OauthClientUpdate) SetLastAuthAt(t time.Time) *OauthClientUpdate {
-	ocu.mutation.SetLastAuthAt(t)
-	return ocu
+func (_u *OauthClientUpdate) SetLastAuthAt(v time.Time) *OauthClientUpdate {
+	_u.mutation.SetLastAuthAt(v)
+	return _u
 }
 
 // SetNillableLastAuthAt sets the "last_auth_at" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableLastAuthAt(t *time.Time) *OauthClientUpdate {
-	if t != nil {
-		ocu.SetLastAuthAt(*t)
+func (_u *OauthClientUpdate) SetNillableLastAuthAt(v *time.Time) *OauthClientUpdate {
+	if v != nil {
+		_u.SetLastAuthAt(*v)
 	}
-	return ocu
+	return _u
 }
 
 // ClearLastAuthAt clears the value of the "last_auth_at" field.
-func (ocu *OauthClientUpdate) ClearLastAuthAt() *OauthClientUpdate {
-	ocu.mutation.ClearLastAuthAt()
-	return ocu
+func (_u *OauthClientUpdate) ClearLastAuthAt() *OauthClientUpdate {
+	_u.mutation.ClearLastAuthAt()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ocu *OauthClientUpdate) SetStatus(ts typex.SimpleStatus) *OauthClientUpdate {
-	ocu.mutation.SetStatus(ts)
-	return ocu
+func (_u *OauthClientUpdate) SetStatus(v typex.SimpleStatus) *OauthClientUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ocu *OauthClientUpdate) SetNillableStatus(ts *typex.SimpleStatus) *OauthClientUpdate {
-	if ts != nil {
-		ocu.SetStatus(*ts)
+func (_u *OauthClientUpdate) SetNillableStatus(v *typex.SimpleStatus) *OauthClientUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ocu
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ocu *OauthClientUpdate) SetUser(u *User) *OauthClientUpdate {
-	return ocu.SetUserID(u.ID)
+func (_u *OauthClientUpdate) SetUser(v *User) *OauthClientUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the OauthClientMutation object of the builder.
-func (ocu *OauthClientUpdate) Mutation() *OauthClientMutation {
-	return ocu.mutation
+func (_u *OauthClientUpdate) Mutation() *OauthClientMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (ocu *OauthClientUpdate) ClearUser() *OauthClientUpdate {
-	ocu.mutation.ClearUser()
-	return ocu
+func (_u *OauthClientUpdate) ClearUser() *OauthClientUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ocu *OauthClientUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ocu.sqlSave, ocu.mutation, ocu.hooks)
+func (_u *OauthClientUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ocu *OauthClientUpdate) SaveX(ctx context.Context) int {
-	affected, err := ocu.Save(ctx)
+func (_u *OauthClientUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -184,84 +184,84 @@ func (ocu *OauthClientUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ocu *OauthClientUpdate) Exec(ctx context.Context) error {
-	_, err := ocu.Save(ctx)
+func (_u *OauthClientUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ocu *OauthClientUpdate) ExecX(ctx context.Context) {
-	if err := ocu.Exec(ctx); err != nil {
+func (_u *OauthClientUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ocu *OauthClientUpdate) check() error {
-	if v, ok := ocu.mutation.Name(); ok {
+func (_u *OauthClientUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := oauthclient.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "OauthClient.name": %w`, err)}
 		}
 	}
-	if v, ok := ocu.mutation.GrantTypes(); ok {
+	if v, ok := _u.mutation.GrantTypes(); ok {
 		if err := oauthclient.GrantTypesValidator(v); err != nil {
 			return &ValidationError{Name: "grant_types", err: fmt.Errorf(`ent: validator failed for field "OauthClient.grant_types": %w`, err)}
 		}
 	}
-	if v, ok := ocu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := oauthclient.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if ocu.mutation.UserCleared() && len(ocu.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil
 }
 
-func (ocu *OauthClientUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ocu.check(); err != nil {
-		return n, err
+func (_u *OauthClientUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(oauthclient.Table, oauthclient.Columns, sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt))
-	if ps := ocu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ocu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ocu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(oauthclient.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ocu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(oauthclient.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ocu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ocu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(oauthclient.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ocu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(oauthclient.FieldName, field.TypeString, value)
 	}
-	if value, ok := ocu.mutation.GrantTypes(); ok {
+	if value, ok := _u.mutation.GrantTypes(); ok {
 		_spec.SetField(oauthclient.FieldGrantTypes, field.TypeEnum, value)
 	}
-	if value, ok := ocu.mutation.LastAuthAt(); ok {
+	if value, ok := _u.mutation.LastAuthAt(); ok {
 		_spec.SetField(oauthclient.FieldLastAuthAt, field.TypeTime, value)
 	}
-	if ocu.mutation.LastAuthAtCleared() {
+	if _u.mutation.LastAuthAtCleared() {
 		_spec.ClearField(oauthclient.FieldLastAuthAt, field.TypeTime)
 	}
-	if value, ok := ocu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(oauthclient.FieldStatus, field.TypeEnum, value)
 	}
-	if ocu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -274,7 +274,7 @@ func (ocu *OauthClientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ocu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -290,7 +290,7 @@ func (ocu *OauthClientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ocu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{oauthclient.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -298,8 +298,8 @@ func (ocu *OauthClientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ocu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OauthClientUpdateOne is the builder for updating a single OauthClient entity.
@@ -311,165 +311,165 @@ type OauthClientUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ocuo *OauthClientUpdateOne) SetUpdatedBy(i int) *OauthClientUpdateOne {
-	ocuo.mutation.ResetUpdatedBy()
-	ocuo.mutation.SetUpdatedBy(i)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetUpdatedBy(v int) *OauthClientUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableUpdatedBy(i *int) *OauthClientUpdateOne {
-	if i != nil {
-		ocuo.SetUpdatedBy(*i)
+func (_u *OauthClientUpdateOne) SetNillableUpdatedBy(v *int) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ocuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ocuo *OauthClientUpdateOne) AddUpdatedBy(i int) *OauthClientUpdateOne {
-	ocuo.mutation.AddUpdatedBy(i)
-	return ocuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OauthClientUpdateOne) AddUpdatedBy(v int) *OauthClientUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ocuo *OauthClientUpdateOne) ClearUpdatedBy() *OauthClientUpdateOne {
-	ocuo.mutation.ClearUpdatedBy()
-	return ocuo
+func (_u *OauthClientUpdateOne) ClearUpdatedBy() *OauthClientUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ocuo *OauthClientUpdateOne) SetUpdatedAt(t time.Time) *OauthClientUpdateOne {
-	ocuo.mutation.SetUpdatedAt(t)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetUpdatedAt(v time.Time) *OauthClientUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableUpdatedAt(t *time.Time) *OauthClientUpdateOne {
-	if t != nil {
-		ocuo.SetUpdatedAt(*t)
+func (_u *OauthClientUpdateOne) SetNillableUpdatedAt(v *time.Time) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ocuo *OauthClientUpdateOne) ClearUpdatedAt() *OauthClientUpdateOne {
-	ocuo.mutation.ClearUpdatedAt()
-	return ocuo
+func (_u *OauthClientUpdateOne) ClearUpdatedAt() *OauthClientUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ocuo *OauthClientUpdateOne) SetName(s string) *OauthClientUpdateOne {
-	ocuo.mutation.SetName(s)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetName(v string) *OauthClientUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableName(s *string) *OauthClientUpdateOne {
-	if s != nil {
-		ocuo.SetName(*s)
+func (_u *OauthClientUpdateOne) SetNillableName(v *string) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // SetGrantTypes sets the "grant_types" field.
-func (ocuo *OauthClientUpdateOne) SetGrantTypes(ot oauthclient.GrantTypes) *OauthClientUpdateOne {
-	ocuo.mutation.SetGrantTypes(ot)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetGrantTypes(v oauthclient.GrantTypes) *OauthClientUpdateOne {
+	_u.mutation.SetGrantTypes(v)
+	return _u
 }
 
 // SetNillableGrantTypes sets the "grant_types" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableGrantTypes(ot *oauthclient.GrantTypes) *OauthClientUpdateOne {
-	if ot != nil {
-		ocuo.SetGrantTypes(*ot)
+func (_u *OauthClientUpdateOne) SetNillableGrantTypes(v *oauthclient.GrantTypes) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetGrantTypes(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (ocuo *OauthClientUpdateOne) SetUserID(i int) *OauthClientUpdateOne {
-	ocuo.mutation.SetUserID(i)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetUserID(v int) *OauthClientUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableUserID(i *int) *OauthClientUpdateOne {
-	if i != nil {
-		ocuo.SetUserID(*i)
+func (_u *OauthClientUpdateOne) SetNillableUserID(v *int) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // SetLastAuthAt sets the "last_auth_at" field.
-func (ocuo *OauthClientUpdateOne) SetLastAuthAt(t time.Time) *OauthClientUpdateOne {
-	ocuo.mutation.SetLastAuthAt(t)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetLastAuthAt(v time.Time) *OauthClientUpdateOne {
+	_u.mutation.SetLastAuthAt(v)
+	return _u
 }
 
 // SetNillableLastAuthAt sets the "last_auth_at" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableLastAuthAt(t *time.Time) *OauthClientUpdateOne {
-	if t != nil {
-		ocuo.SetLastAuthAt(*t)
+func (_u *OauthClientUpdateOne) SetNillableLastAuthAt(v *time.Time) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetLastAuthAt(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // ClearLastAuthAt clears the value of the "last_auth_at" field.
-func (ocuo *OauthClientUpdateOne) ClearLastAuthAt() *OauthClientUpdateOne {
-	ocuo.mutation.ClearLastAuthAt()
-	return ocuo
+func (_u *OauthClientUpdateOne) ClearLastAuthAt() *OauthClientUpdateOne {
+	_u.mutation.ClearLastAuthAt()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ocuo *OauthClientUpdateOne) SetStatus(ts typex.SimpleStatus) *OauthClientUpdateOne {
-	ocuo.mutation.SetStatus(ts)
-	return ocuo
+func (_u *OauthClientUpdateOne) SetStatus(v typex.SimpleStatus) *OauthClientUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ocuo *OauthClientUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *OauthClientUpdateOne {
-	if ts != nil {
-		ocuo.SetStatus(*ts)
+func (_u *OauthClientUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *OauthClientUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ocuo
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ocuo *OauthClientUpdateOne) SetUser(u *User) *OauthClientUpdateOne {
-	return ocuo.SetUserID(u.ID)
+func (_u *OauthClientUpdateOne) SetUser(v *User) *OauthClientUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the OauthClientMutation object of the builder.
-func (ocuo *OauthClientUpdateOne) Mutation() *OauthClientMutation {
-	return ocuo.mutation
+func (_u *OauthClientUpdateOne) Mutation() *OauthClientMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (ocuo *OauthClientUpdateOne) ClearUser() *OauthClientUpdateOne {
-	ocuo.mutation.ClearUser()
-	return ocuo
+func (_u *OauthClientUpdateOne) ClearUser() *OauthClientUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Where appends a list predicates to the OauthClientUpdate builder.
-func (ocuo *OauthClientUpdateOne) Where(ps ...predicate.OauthClient) *OauthClientUpdateOne {
-	ocuo.mutation.Where(ps...)
-	return ocuo
+func (_u *OauthClientUpdateOne) Where(ps ...predicate.OauthClient) *OauthClientUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ocuo *OauthClientUpdateOne) Select(field string, fields ...string) *OauthClientUpdateOne {
-	ocuo.fields = append([]string{field}, fields...)
-	return ocuo
+func (_u *OauthClientUpdateOne) Select(field string, fields ...string) *OauthClientUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated OauthClient entity.
-func (ocuo *OauthClientUpdateOne) Save(ctx context.Context) (*OauthClient, error) {
-	return withHooks(ctx, ocuo.sqlSave, ocuo.mutation, ocuo.hooks)
+func (_u *OauthClientUpdateOne) Save(ctx context.Context) (*OauthClient, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ocuo *OauthClientUpdateOne) SaveX(ctx context.Context) *OauthClient {
-	node, err := ocuo.Save(ctx)
+func (_u *OauthClientUpdateOne) SaveX(ctx context.Context) *OauthClient {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -477,52 +477,52 @@ func (ocuo *OauthClientUpdateOne) SaveX(ctx context.Context) *OauthClient {
 }
 
 // Exec executes the query on the entity.
-func (ocuo *OauthClientUpdateOne) Exec(ctx context.Context) error {
-	_, err := ocuo.Save(ctx)
+func (_u *OauthClientUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ocuo *OauthClientUpdateOne) ExecX(ctx context.Context) {
-	if err := ocuo.Exec(ctx); err != nil {
+func (_u *OauthClientUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ocuo *OauthClientUpdateOne) check() error {
-	if v, ok := ocuo.mutation.Name(); ok {
+func (_u *OauthClientUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := oauthclient.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "OauthClient.name": %w`, err)}
 		}
 	}
-	if v, ok := ocuo.mutation.GrantTypes(); ok {
+	if v, ok := _u.mutation.GrantTypes(); ok {
 		if err := oauthclient.GrantTypesValidator(v); err != nil {
 			return &ValidationError{Name: "grant_types", err: fmt.Errorf(`ent: validator failed for field "OauthClient.grant_types": %w`, err)}
 		}
 	}
-	if v, ok := ocuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := oauthclient.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if ocuo.mutation.UserCleared() && len(ocuo.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil
 }
 
-func (ocuo *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClient, err error) {
-	if err := ocuo.check(); err != nil {
+func (_u *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClient, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(oauthclient.Table, oauthclient.Columns, sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt))
-	id, ok := ocuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OauthClient.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ocuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, oauthclient.FieldID)
 		for _, f := range fields {
@@ -534,44 +534,44 @@ func (ocuo *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClie
 			}
 		}
 	}
-	if ps := ocuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ocuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ocuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(oauthclient.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ocuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(oauthclient.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ocuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ocuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(oauthclient.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ocuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(oauthclient.FieldName, field.TypeString, value)
 	}
-	if value, ok := ocuo.mutation.GrantTypes(); ok {
+	if value, ok := _u.mutation.GrantTypes(); ok {
 		_spec.SetField(oauthclient.FieldGrantTypes, field.TypeEnum, value)
 	}
-	if value, ok := ocuo.mutation.LastAuthAt(); ok {
+	if value, ok := _u.mutation.LastAuthAt(); ok {
 		_spec.SetField(oauthclient.FieldLastAuthAt, field.TypeTime, value)
 	}
-	if ocuo.mutation.LastAuthAtCleared() {
+	if _u.mutation.LastAuthAtCleared() {
 		_spec.ClearField(oauthclient.FieldLastAuthAt, field.TypeTime)
 	}
-	if value, ok := ocuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(oauthclient.FieldStatus, field.TypeEnum, value)
 	}
-	if ocuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -584,7 +584,7 @@ func (ocuo *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClie
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ocuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -600,10 +600,10 @@ func (ocuo *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClie
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &OauthClient{config: ocuo.config}
+	_node = &OauthClient{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ocuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{oauthclient.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -611,6 +611,6 @@ func (ocuo *OauthClientUpdateOne) sqlSave(ctx context.Context) (_node *OauthClie
 		}
 		return nil, err
 	}
-	ocuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

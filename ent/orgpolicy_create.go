@@ -28,181 +28,181 @@ type OrgPolicyCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (opc *OrgPolicyCreate) SetCreatedBy(i int) *OrgPolicyCreate {
-	opc.mutation.SetCreatedBy(i)
-	return opc
+func (_c *OrgPolicyCreate) SetCreatedBy(v int) *OrgPolicyCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (opc *OrgPolicyCreate) SetCreatedAt(t time.Time) *OrgPolicyCreate {
-	opc.mutation.SetCreatedAt(t)
-	return opc
+func (_c *OrgPolicyCreate) SetCreatedAt(v time.Time) *OrgPolicyCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableCreatedAt(t *time.Time) *OrgPolicyCreate {
-	if t != nil {
-		opc.SetCreatedAt(*t)
+func (_c *OrgPolicyCreate) SetNillableCreatedAt(v *time.Time) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (opc *OrgPolicyCreate) SetUpdatedBy(i int) *OrgPolicyCreate {
-	opc.mutation.SetUpdatedBy(i)
-	return opc
+func (_c *OrgPolicyCreate) SetUpdatedBy(v int) *OrgPolicyCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableUpdatedBy(i *int) *OrgPolicyCreate {
-	if i != nil {
-		opc.SetUpdatedBy(*i)
+func (_c *OrgPolicyCreate) SetNillableUpdatedBy(v *int) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (opc *OrgPolicyCreate) SetUpdatedAt(t time.Time) *OrgPolicyCreate {
-	opc.mutation.SetUpdatedAt(t)
-	return opc
+func (_c *OrgPolicyCreate) SetUpdatedAt(v time.Time) *OrgPolicyCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableUpdatedAt(t *time.Time) *OrgPolicyCreate {
-	if t != nil {
-		opc.SetUpdatedAt(*t)
+func (_c *OrgPolicyCreate) SetNillableUpdatedAt(v *time.Time) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetOrgID sets the "org_id" field.
-func (opc *OrgPolicyCreate) SetOrgID(i int) *OrgPolicyCreate {
-	opc.mutation.SetOrgID(i)
-	return opc
+func (_c *OrgPolicyCreate) SetOrgID(v int) *OrgPolicyCreate {
+	_c.mutation.SetOrgID(v)
+	return _c
 }
 
 // SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableOrgID(i *int) *OrgPolicyCreate {
-	if i != nil {
-		opc.SetOrgID(*i)
+func (_c *OrgPolicyCreate) SetNillableOrgID(v *int) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetOrgID(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (opc *OrgPolicyCreate) SetAppID(i int) *OrgPolicyCreate {
-	opc.mutation.SetAppID(i)
-	return opc
+func (_c *OrgPolicyCreate) SetAppID(v int) *OrgPolicyCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableAppID(i *int) *OrgPolicyCreate {
-	if i != nil {
-		opc.SetAppID(*i)
+func (_c *OrgPolicyCreate) SetNillableAppID(v *int) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (opc *OrgPolicyCreate) SetAppPolicyID(i int) *OrgPolicyCreate {
-	opc.mutation.SetAppPolicyID(i)
-	return opc
+func (_c *OrgPolicyCreate) SetAppPolicyID(v int) *OrgPolicyCreate {
+	_c.mutation.SetAppPolicyID(v)
+	return _c
 }
 
 // SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableAppPolicyID(i *int) *OrgPolicyCreate {
-	if i != nil {
-		opc.SetAppPolicyID(*i)
+func (_c *OrgPolicyCreate) SetNillableAppPolicyID(v *int) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetAppPolicyID(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (opc *OrgPolicyCreate) SetName(s string) *OrgPolicyCreate {
-	opc.mutation.SetName(s)
-	return opc
+func (_c *OrgPolicyCreate) SetName(v string) *OrgPolicyCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (opc *OrgPolicyCreate) SetComments(s string) *OrgPolicyCreate {
-	opc.mutation.SetComments(s)
-	return opc
+func (_c *OrgPolicyCreate) SetComments(v string) *OrgPolicyCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableComments(s *string) *OrgPolicyCreate {
-	if s != nil {
-		opc.SetComments(*s)
+func (_c *OrgPolicyCreate) SetNillableComments(v *string) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetRules sets the "rules" field.
-func (opc *OrgPolicyCreate) SetRules(tr []*types.PolicyRule) *OrgPolicyCreate {
-	opc.mutation.SetRules(tr)
-	return opc
+func (_c *OrgPolicyCreate) SetRules(v []*types.PolicyRule) *OrgPolicyCreate {
+	_c.mutation.SetRules(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (opc *OrgPolicyCreate) SetID(i int) *OrgPolicyCreate {
-	opc.mutation.SetID(i)
-	return opc
+func (_c *OrgPolicyCreate) SetID(v int) *OrgPolicyCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (opc *OrgPolicyCreate) SetNillableID(i *int) *OrgPolicyCreate {
-	if i != nil {
-		opc.SetID(*i)
+func (_c *OrgPolicyCreate) SetNillableID(v *int) *OrgPolicyCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return opc
+	return _c
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (opc *OrgPolicyCreate) SetOrg(o *Org) *OrgPolicyCreate {
-	return opc.SetOrgID(o.ID)
+func (_c *OrgPolicyCreate) SetOrg(v *Org) *OrgPolicyCreate {
+	return _c.SetOrgID(v.ID)
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
-func (opc *OrgPolicyCreate) AddPermissionIDs(ids ...int) *OrgPolicyCreate {
-	opc.mutation.AddPermissionIDs(ids...)
-	return opc
+func (_c *OrgPolicyCreate) AddPermissionIDs(ids ...int) *OrgPolicyCreate {
+	_c.mutation.AddPermissionIDs(ids...)
+	return _c
 }
 
 // AddPermissions adds the "permissions" edges to the Permission entity.
-func (opc *OrgPolicyCreate) AddPermissions(p ...*Permission) *OrgPolicyCreate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_c *OrgPolicyCreate) AddPermissions(v ...*Permission) *OrgPolicyCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return opc.AddPermissionIDs(ids...)
+	return _c.AddPermissionIDs(ids...)
 }
 
 // SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
-func (opc *OrgPolicyCreate) SetAppPolicy(a *AppPolicy) *OrgPolicyCreate {
-	return opc.SetAppPolicyID(a.ID)
+func (_c *OrgPolicyCreate) SetAppPolicy(v *AppPolicy) *OrgPolicyCreate {
+	return _c.SetAppPolicyID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (opc *OrgPolicyCreate) SetApp(a *App) *OrgPolicyCreate {
-	return opc.SetAppID(a.ID)
+func (_c *OrgPolicyCreate) SetApp(v *App) *OrgPolicyCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // Mutation returns the OrgPolicyMutation object of the builder.
-func (opc *OrgPolicyCreate) Mutation() *OrgPolicyMutation {
-	return opc.mutation
+func (_c *OrgPolicyCreate) Mutation() *OrgPolicyMutation {
+	return _c.mutation
 }
 
 // Save creates the OrgPolicy in the database.
-func (opc *OrgPolicyCreate) Save(ctx context.Context) (*OrgPolicy, error) {
-	if err := opc.defaults(); err != nil {
+func (_c *OrgPolicyCreate) Save(ctx context.Context) (*OrgPolicy, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, opc.sqlSave, opc.mutation, opc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (opc *OrgPolicyCreate) SaveX(ctx context.Context) *OrgPolicy {
-	v, err := opc.Save(ctx)
+func (_c *OrgPolicyCreate) SaveX(ctx context.Context) *OrgPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -210,60 +210,60 @@ func (opc *OrgPolicyCreate) SaveX(ctx context.Context) *OrgPolicy {
 }
 
 // Exec executes the query.
-func (opc *OrgPolicyCreate) Exec(ctx context.Context) error {
-	_, err := opc.Save(ctx)
+func (_c *OrgPolicyCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (opc *OrgPolicyCreate) ExecX(ctx context.Context) {
-	if err := opc.Exec(ctx); err != nil {
+func (_c *OrgPolicyCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (opc *OrgPolicyCreate) defaults() error {
-	if _, ok := opc.mutation.CreatedAt(); !ok {
+func (_c *OrgPolicyCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if orgpolicy.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized orgpolicy.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := orgpolicy.DefaultCreatedAt()
-		opc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := opc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if orgpolicy.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized orgpolicy.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := orgpolicy.DefaultID()
-		opc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (opc *OrgPolicyCreate) check() error {
-	if _, ok := opc.mutation.CreatedBy(); !ok {
+func (_c *OrgPolicyCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "OrgPolicy.created_by"`)}
 	}
-	if _, ok := opc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrgPolicy.created_at"`)}
 	}
-	if _, ok := opc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrgPolicy.name"`)}
 	}
-	if _, ok := opc.mutation.Rules(); !ok {
+	if _, ok := _c.mutation.Rules(); !ok {
 		return &ValidationError{Name: "rules", err: errors.New(`ent: missing required field "OrgPolicy.rules"`)}
 	}
 	return nil
 }
 
-func (opc *OrgPolicyCreate) sqlSave(ctx context.Context) (*OrgPolicy, error) {
-	if err := opc.check(); err != nil {
+func (_c *OrgPolicyCreate) sqlSave(ctx context.Context) (*OrgPolicy, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := opc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, opc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -273,50 +273,50 @@ func (opc *OrgPolicyCreate) sqlSave(ctx context.Context) (*OrgPolicy, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	opc.mutation.id = &_node.ID
-	opc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
+func (_c *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 	var (
-		_node = &OrgPolicy{config: opc.config}
+		_node = &OrgPolicy{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(orgpolicy.Table, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = opc.conflict
-	if id, ok := opc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := opc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(orgpolicy.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := opc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(orgpolicy.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := opc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := opc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(orgpolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := opc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := opc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(orgpolicy.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := opc.mutation.Rules(); ok {
+	if value, ok := _c.mutation.Rules(); ok {
 		_spec.SetField(orgpolicy.FieldRules, field.TypeJSON, value)
 		_node.Rules = value
 	}
-	if nodes := opc.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -333,7 +333,7 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		_node.OrgID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := opc.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -349,7 +349,7 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := opc.mutation.AppPolicyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -366,7 +366,7 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		_node.AppPolicyID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := opc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -402,10 +402,10 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (opc *OrgPolicyCreate) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertOne {
-	opc.conflict = opts
+func (_c *OrgPolicyCreate) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertOne {
+	_c.conflict = opts
 	return &OrgPolicyUpsertOne{
-		create: opc,
+		create: _c,
 	}
 }
 
@@ -415,10 +415,10 @@ func (opc *OrgPolicyCreate) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUps
 //	client.OrgPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (opc *OrgPolicyCreate) OnConflictColumns(columns ...string) *OrgPolicyUpsertOne {
-	opc.conflict = append(opc.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgPolicyCreate) OnConflictColumns(columns ...string) *OrgPolicyUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgPolicyUpsertOne{
-		create: opc,
+		create: _c,
 	}
 }
 
@@ -794,16 +794,16 @@ type OrgPolicyCreateBulk struct {
 }
 
 // Save creates the OrgPolicy entities in the database.
-func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error) {
-	if opcb.err != nil {
-		return nil, opcb.err
+func (_c *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(opcb.builders))
-	nodes := make([]*OrgPolicy, len(opcb.builders))
-	mutators := make([]Mutator, len(opcb.builders))
-	for i := range opcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*OrgPolicy, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := opcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrgPolicyMutation)
@@ -817,12 +817,12 @@ func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, opcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = opcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, opcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -846,7 +846,7 @@ func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, opcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -854,8 +854,8 @@ func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (opcb *OrgPolicyCreateBulk) SaveX(ctx context.Context) []*OrgPolicy {
-	v, err := opcb.Save(ctx)
+func (_c *OrgPolicyCreateBulk) SaveX(ctx context.Context) []*OrgPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -863,14 +863,14 @@ func (opcb *OrgPolicyCreateBulk) SaveX(ctx context.Context) []*OrgPolicy {
 }
 
 // Exec executes the query.
-func (opcb *OrgPolicyCreateBulk) Exec(ctx context.Context) error {
-	_, err := opcb.Save(ctx)
+func (_c *OrgPolicyCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (opcb *OrgPolicyCreateBulk) ExecX(ctx context.Context) {
-	if err := opcb.Exec(ctx); err != nil {
+func (_c *OrgPolicyCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -890,10 +890,10 @@ func (opcb *OrgPolicyCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (opcb *OrgPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertBulk {
-	opcb.conflict = opts
+func (_c *OrgPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertBulk {
+	_c.conflict = opts
 	return &OrgPolicyUpsertBulk{
-		create: opcb,
+		create: _c,
 	}
 }
 
@@ -903,10 +903,10 @@ func (opcb *OrgPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgPoli
 //	client.OrgPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (opcb *OrgPolicyCreateBulk) OnConflictColumns(columns ...string) *OrgPolicyUpsertBulk {
-	opcb.conflict = append(opcb.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgPolicyCreateBulk) OnConflictColumns(columns ...string) *OrgPolicyUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgPolicyUpsertBulk{
-		create: opcb,
+		create: _c,
 	}
 }
 

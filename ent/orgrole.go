@@ -107,7 +107,7 @@ func (*OrgRole) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the OrgRole fields.
-func (or *OrgRole) assignValues(columns []string, values []any) error {
+func (_m *OrgRole) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -118,63 +118,63 @@ func (or *OrgRole) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			or.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case orgrole.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				or.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case orgrole.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				or.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case orgrole.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				or.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case orgrole.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				or.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case orgrole.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
 			} else if value.Valid {
-				or.OrgID = int(value.Int64)
+				_m.OrgID = int(value.Int64)
 			}
 		case orgrole.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				or.Kind = orgrole.Kind(value.String)
+				_m.Kind = orgrole.Kind(value.String)
 			}
 		case orgrole.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				or.Name = value.String
+				_m.Name = value.String
 			}
 		case orgrole.FieldAppRoleID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_role_id", values[i])
 			} else if value.Valid {
-				or.AppRoleID = int(value.Int64)
+				_m.AppRoleID = int(value.Int64)
 			}
 		case orgrole.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				or.Comments = value.String
+				_m.Comments = value.String
 			}
 		default:
-			or.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -182,123 +182,123 @@ func (or *OrgRole) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the OrgRole.
 // This includes values selected through modifiers, order, etc.
-func (or *OrgRole) Value(name string) (ent.Value, error) {
-	return or.selectValues.Get(name)
+func (_m *OrgRole) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the OrgRole entity.
-func (or *OrgRole) QueryOrg() *OrgQuery {
-	return NewOrgRoleClient(or.config).QueryOrg(or)
+func (_m *OrgRole) QueryOrg() *OrgQuery {
+	return NewOrgRoleClient(_m.config).QueryOrg(_m)
 }
 
 // QueryOrgUsers queries the "org_users" edge of the OrgRole entity.
-func (or *OrgRole) QueryOrgUsers() *OrgUserQuery {
-	return NewOrgRoleClient(or.config).QueryOrgUsers(or)
+func (_m *OrgRole) QueryOrgUsers() *OrgUserQuery {
+	return NewOrgRoleClient(_m.config).QueryOrgUsers(_m)
 }
 
 // QueryOrgRoleUser queries the "org_role_user" edge of the OrgRole entity.
-func (or *OrgRole) QueryOrgRoleUser() *OrgRoleUserQuery {
-	return NewOrgRoleClient(or.config).QueryOrgRoleUser(or)
+func (_m *OrgRole) QueryOrgRoleUser() *OrgRoleUserQuery {
+	return NewOrgRoleClient(_m.config).QueryOrgRoleUser(_m)
 }
 
 // Update returns a builder for updating this OrgRole.
 // Note that you need to call OrgRole.Unwrap() before calling this method if this OrgRole
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (or *OrgRole) Update() *OrgRoleUpdateOne {
-	return NewOrgRoleClient(or.config).UpdateOne(or)
+func (_m *OrgRole) Update() *OrgRoleUpdateOne {
+	return NewOrgRoleClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the OrgRole entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (or *OrgRole) Unwrap() *OrgRole {
-	_tx, ok := or.config.driver.(*txDriver)
+func (_m *OrgRole) Unwrap() *OrgRole {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: OrgRole is not a transactional entity")
 	}
-	or.config.driver = _tx.drv
-	return or
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (or *OrgRole) String() string {
+func (_m *OrgRole) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgRole(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", or.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", or.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(or.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", or.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(or.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", or.OrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", or.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(or.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("app_role_id=")
-	builder.WriteString(fmt.Sprintf("%v", or.AppRoleID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppRoleID))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(or.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedOrgUsers returns the OrgUsers named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (or *OrgRole) NamedOrgUsers(name string) ([]*OrgUser, error) {
-	if or.Edges.namedOrgUsers == nil {
+func (_m *OrgRole) NamedOrgUsers(name string) ([]*OrgUser, error) {
+	if _m.Edges.namedOrgUsers == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := or.Edges.namedOrgUsers[name]
+	nodes, ok := _m.Edges.namedOrgUsers[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (or *OrgRole) appendNamedOrgUsers(name string, edges ...*OrgUser) {
-	if or.Edges.namedOrgUsers == nil {
-		or.Edges.namedOrgUsers = make(map[string][]*OrgUser)
+func (_m *OrgRole) appendNamedOrgUsers(name string, edges ...*OrgUser) {
+	if _m.Edges.namedOrgUsers == nil {
+		_m.Edges.namedOrgUsers = make(map[string][]*OrgUser)
 	}
 	if len(edges) == 0 {
-		or.Edges.namedOrgUsers[name] = []*OrgUser{}
+		_m.Edges.namedOrgUsers[name] = []*OrgUser{}
 	} else {
-		or.Edges.namedOrgUsers[name] = append(or.Edges.namedOrgUsers[name], edges...)
+		_m.Edges.namedOrgUsers[name] = append(_m.Edges.namedOrgUsers[name], edges...)
 	}
 }
 
 // NamedOrgRoleUser returns the OrgRoleUser named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (or *OrgRole) NamedOrgRoleUser(name string) ([]*OrgRoleUser, error) {
-	if or.Edges.namedOrgRoleUser == nil {
+func (_m *OrgRole) NamedOrgRoleUser(name string) ([]*OrgRoleUser, error) {
+	if _m.Edges.namedOrgRoleUser == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := or.Edges.namedOrgRoleUser[name]
+	nodes, ok := _m.Edges.namedOrgRoleUser[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (or *OrgRole) appendNamedOrgRoleUser(name string, edges ...*OrgRoleUser) {
-	if or.Edges.namedOrgRoleUser == nil {
-		or.Edges.namedOrgRoleUser = make(map[string][]*OrgRoleUser)
+func (_m *OrgRole) appendNamedOrgRoleUser(name string, edges ...*OrgRoleUser) {
+	if _m.Edges.namedOrgRoleUser == nil {
+		_m.Edges.namedOrgRoleUser = make(map[string][]*OrgRoleUser)
 	}
 	if len(edges) == 0 {
-		or.Edges.namedOrgRoleUser[name] = []*OrgRoleUser{}
+		_m.Edges.namedOrgRoleUser[name] = []*OrgRoleUser{}
 	} else {
-		or.Edges.namedOrgRoleUser[name] = append(or.Edges.namedOrgRoleUser[name], edges...)
+		_m.Edges.namedOrgRoleUser[name] = append(_m.Edges.namedOrgRoleUser[name], edges...)
 	}
 }
 

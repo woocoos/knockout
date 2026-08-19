@@ -34,44 +34,44 @@ type OrgUserPreferenceQuery struct {
 }
 
 // Where adds a new predicate for the OrgUserPreferenceQuery builder.
-func (oupq *OrgUserPreferenceQuery) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceQuery {
-	oupq.predicates = append(oupq.predicates, ps...)
-	return oupq
+func (_q *OrgUserPreferenceQuery) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (oupq *OrgUserPreferenceQuery) Limit(limit int) *OrgUserPreferenceQuery {
-	oupq.ctx.Limit = &limit
-	return oupq
+func (_q *OrgUserPreferenceQuery) Limit(limit int) *OrgUserPreferenceQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (oupq *OrgUserPreferenceQuery) Offset(offset int) *OrgUserPreferenceQuery {
-	oupq.ctx.Offset = &offset
-	return oupq
+func (_q *OrgUserPreferenceQuery) Offset(offset int) *OrgUserPreferenceQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (oupq *OrgUserPreferenceQuery) Unique(unique bool) *OrgUserPreferenceQuery {
-	oupq.ctx.Unique = &unique
-	return oupq
+func (_q *OrgUserPreferenceQuery) Unique(unique bool) *OrgUserPreferenceQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (oupq *OrgUserPreferenceQuery) Order(o ...orguserpreference.OrderOption) *OrgUserPreferenceQuery {
-	oupq.order = append(oupq.order, o...)
-	return oupq
+func (_q *OrgUserPreferenceQuery) Order(o ...orguserpreference.OrderOption) *OrgUserPreferenceQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryUser chains the current query on the "user" edge.
-func (oupq *OrgUserPreferenceQuery) QueryUser() *UserQuery {
-	query := (&UserClient{config: oupq.config}).Query()
+func (_q *OrgUserPreferenceQuery) QueryUser() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := oupq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := oupq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (oupq *OrgUserPreferenceQuery) QueryUser() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.UserTable, orguserpreference.UserColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(oupq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrg chains the current query on the "org" edge.
-func (oupq *OrgUserPreferenceQuery) QueryOrg() *OrgQuery {
-	query := (&OrgClient{config: oupq.config}).Query()
+func (_q *OrgUserPreferenceQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := oupq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := oupq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (oupq *OrgUserPreferenceQuery) QueryOrg() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.OrgTable, orguserpreference.OrgColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(oupq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (oupq *OrgUserPreferenceQuery) QueryOrg() *OrgQuery {
 
 // First returns the first OrgUserPreference entity from the query.
 // Returns a *NotFoundError when no OrgUserPreference was found.
-func (oupq *OrgUserPreferenceQuery) First(ctx context.Context) (*OrgUserPreference, error) {
-	nodes, err := oupq.Limit(1).All(setContextOp(ctx, oupq.ctx, ent.OpQueryFirst))
+func (_q *OrgUserPreferenceQuery) First(ctx context.Context) (*OrgUserPreference, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (oupq *OrgUserPreferenceQuery) First(ctx context.Context) (*OrgUserPreferen
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) FirstX(ctx context.Context) *OrgUserPreference {
-	node, err := oupq.First(ctx)
+func (_q *OrgUserPreferenceQuery) FirstX(ctx context.Context) *OrgUserPreference {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (oupq *OrgUserPreferenceQuery) FirstX(ctx context.Context) *OrgUserPreferen
 
 // FirstID returns the first OrgUserPreference ID from the query.
 // Returns a *NotFoundError when no OrgUserPreference ID was found.
-func (oupq *OrgUserPreferenceQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *OrgUserPreferenceQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oupq.Limit(1).IDs(setContextOp(ctx, oupq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (oupq *OrgUserPreferenceQuery) FirstID(ctx context.Context) (id int, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) FirstIDX(ctx context.Context) int {
-	id, err := oupq.FirstID(ctx)
+func (_q *OrgUserPreferenceQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (oupq *OrgUserPreferenceQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single OrgUserPreference entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgUserPreference entity is found.
 // Returns a *NotFoundError when no OrgUserPreference entities are found.
-func (oupq *OrgUserPreferenceQuery) Only(ctx context.Context) (*OrgUserPreference, error) {
-	nodes, err := oupq.Limit(2).All(setContextOp(ctx, oupq.ctx, ent.OpQueryOnly))
+func (_q *OrgUserPreferenceQuery) Only(ctx context.Context) (*OrgUserPreference, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (oupq *OrgUserPreferenceQuery) Only(ctx context.Context) (*OrgUserPreferenc
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) OnlyX(ctx context.Context) *OrgUserPreference {
-	node, err := oupq.Only(ctx)
+func (_q *OrgUserPreferenceQuery) OnlyX(ctx context.Context) *OrgUserPreference {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (oupq *OrgUserPreferenceQuery) OnlyX(ctx context.Context) *OrgUserPreferenc
 // OnlyID is like Only, but returns the only OrgUserPreference ID in the query.
 // Returns a *NotSingularError when more than one OrgUserPreference ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (oupq *OrgUserPreferenceQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *OrgUserPreferenceQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oupq.Limit(2).IDs(setContextOp(ctx, oupq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (oupq *OrgUserPreferenceQuery) OnlyID(ctx context.Context) (id int, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) OnlyIDX(ctx context.Context) int {
-	id, err := oupq.OnlyID(ctx)
+func (_q *OrgUserPreferenceQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (oupq *OrgUserPreferenceQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of OrgUserPreferences.
-func (oupq *OrgUserPreferenceQuery) All(ctx context.Context) ([]*OrgUserPreference, error) {
-	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryAll)
-	if err := oupq.prepareQuery(ctx); err != nil {
+func (_q *OrgUserPreferenceQuery) All(ctx context.Context) ([]*OrgUserPreference, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*OrgUserPreference, *OrgUserPreferenceQuery]()
-	return withInterceptors[[]*OrgUserPreference](ctx, oupq, qr, oupq.inters)
+	return withInterceptors[[]*OrgUserPreference](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) AllX(ctx context.Context) []*OrgUserPreference {
-	nodes, err := oupq.All(ctx)
+func (_q *OrgUserPreferenceQuery) AllX(ctx context.Context) []*OrgUserPreference {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (oupq *OrgUserPreferenceQuery) AllX(ctx context.Context) []*OrgUserPreferen
 }
 
 // IDs executes the query and returns a list of OrgUserPreference IDs.
-func (oupq *OrgUserPreferenceQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if oupq.ctx.Unique == nil && oupq.path != nil {
-		oupq.Unique(true)
+func (_q *OrgUserPreferenceQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryIDs)
-	if err = oupq.Select(orguserpreference.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(orguserpreference.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) IDsX(ctx context.Context) []int {
-	ids, err := oupq.IDs(ctx)
+func (_q *OrgUserPreferenceQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (oupq *OrgUserPreferenceQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (oupq *OrgUserPreferenceQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryCount)
-	if err := oupq.prepareQuery(ctx); err != nil {
+func (_q *OrgUserPreferenceQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, oupq, querierCount[*OrgUserPreferenceQuery](), oupq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*OrgUserPreferenceQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) CountX(ctx context.Context) int {
-	count, err := oupq.Count(ctx)
+func (_q *OrgUserPreferenceQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (oupq *OrgUserPreferenceQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (oupq *OrgUserPreferenceQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryExist)
-	switch _, err := oupq.FirstID(ctx); {
+func (_q *OrgUserPreferenceQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (oupq *OrgUserPreferenceQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (oupq *OrgUserPreferenceQuery) ExistX(ctx context.Context) bool {
-	exist, err := oupq.Exist(ctx)
+func (_q *OrgUserPreferenceQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (oupq *OrgUserPreferenceQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the OrgUserPreferenceQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (oupq *OrgUserPreferenceQuery) Clone() *OrgUserPreferenceQuery {
-	if oupq == nil {
+func (_q *OrgUserPreferenceQuery) Clone() *OrgUserPreferenceQuery {
+	if _q == nil {
 		return nil
 	}
 	return &OrgUserPreferenceQuery{
-		config:     oupq.config,
-		ctx:        oupq.ctx.Clone(),
-		order:      append([]orguserpreference.OrderOption{}, oupq.order...),
-		inters:     append([]Interceptor{}, oupq.inters...),
-		predicates: append([]predicate.OrgUserPreference{}, oupq.predicates...),
-		withUser:   oupq.withUser.Clone(),
-		withOrg:    oupq.withOrg.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]orguserpreference.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.OrgUserPreference{}, _q.predicates...),
+		withUser:   _q.withUser.Clone(),
+		withOrg:    _q.withOrg.Clone(),
 		// clone intermediate query.
-		sql:  oupq.sql.Clone(),
-		path: oupq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithUser tells the query-builder to eager-load the nodes that are connected to
 // the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (oupq *OrgUserPreferenceQuery) WithUser(opts ...func(*UserQuery)) *OrgUserPreferenceQuery {
-	query := (&UserClient{config: oupq.config}).Query()
+func (_q *OrgUserPreferenceQuery) WithUser(opts ...func(*UserQuery)) *OrgUserPreferenceQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	oupq.withUser = query
-	return oupq
+	_q.withUser = query
+	return _q
 }
 
 // WithOrg tells the query-builder to eager-load the nodes that are connected to
 // the "org" edge. The optional arguments are used to configure the query builder of the edge.
-func (oupq *OrgUserPreferenceQuery) WithOrg(opts ...func(*OrgQuery)) *OrgUserPreferenceQuery {
-	query := (&OrgClient{config: oupq.config}).Query()
+func (_q *OrgUserPreferenceQuery) WithOrg(opts ...func(*OrgQuery)) *OrgUserPreferenceQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	oupq.withOrg = query
-	return oupq
+	_q.withOrg = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (oupq *OrgUserPreferenceQuery) WithOrg(opts ...func(*OrgQuery)) *OrgUserPre
 //		GroupBy(orguserpreference.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (oupq *OrgUserPreferenceQuery) GroupBy(field string, fields ...string) *OrgUserPreferenceGroupBy {
-	oupq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &OrgUserPreferenceGroupBy{build: oupq}
-	grbuild.flds = &oupq.ctx.Fields
+func (_q *OrgUserPreferenceQuery) GroupBy(field string, fields ...string) *OrgUserPreferenceGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &OrgUserPreferenceGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = orguserpreference.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,96 +365,96 @@ func (oupq *OrgUserPreferenceQuery) GroupBy(field string, fields ...string) *Org
 //	client.OrgUserPreference.Query().
 //		Select(orguserpreference.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (oupq *OrgUserPreferenceQuery) Select(fields ...string) *OrgUserPreferenceSelect {
-	oupq.ctx.Fields = append(oupq.ctx.Fields, fields...)
-	sbuild := &OrgUserPreferenceSelect{OrgUserPreferenceQuery: oupq}
+func (_q *OrgUserPreferenceQuery) Select(fields ...string) *OrgUserPreferenceSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &OrgUserPreferenceSelect{OrgUserPreferenceQuery: _q}
 	sbuild.label = orguserpreference.Label
-	sbuild.flds, sbuild.scan = &oupq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a OrgUserPreferenceSelect configured with the given aggregations.
-func (oupq *OrgUserPreferenceQuery) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceSelect {
-	return oupq.Select().Aggregate(fns...)
+func (_q *OrgUserPreferenceQuery) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (oupq *OrgUserPreferenceQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range oupq.inters {
+func (_q *OrgUserPreferenceQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, oupq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range oupq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !orguserpreference.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if oupq.path != nil {
-		prev, err := oupq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		oupq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (oupq *OrgUserPreferenceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgUserPreference, error) {
+func (_q *OrgUserPreferenceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgUserPreference, error) {
 	var (
 		nodes       = []*OrgUserPreference{}
-		_spec       = oupq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			oupq.withUser != nil,
-			oupq.withOrg != nil,
+			_q.withUser != nil,
+			_q.withOrg != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OrgUserPreference).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &OrgUserPreference{config: oupq.config}
+		node := &OrgUserPreference{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(oupq.modifiers) > 0 {
-		_spec.Modifiers = oupq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, oupq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := oupq.withUser; query != nil {
-		if err := oupq.loadUser(ctx, query, nodes, nil,
+	if query := _q.withUser; query != nil {
+		if err := _q.loadUser(ctx, query, nodes, nil,
 			func(n *OrgUserPreference, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := oupq.withOrg; query != nil {
-		if err := oupq.loadOrg(ctx, query, nodes, nil,
+	if query := _q.withOrg; query != nil {
+		if err := _q.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgUserPreference, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range oupq.loadTotal {
-		if err := oupq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (oupq *OrgUserPreferenceQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*OrgUserPreference, init func(*OrgUserPreference), assign func(*OrgUserPreference, *User)) error {
+func (_q *OrgUserPreferenceQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*OrgUserPreference, init func(*OrgUserPreference), assign func(*OrgUserPreference, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgUserPreference)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (oupq *OrgUserPreferenceQuery) loadUser(ctx context.Context, query *UserQue
 	}
 	return nil
 }
-func (oupq *OrgUserPreferenceQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgUserPreference, init func(*OrgUserPreference), assign func(*OrgUserPreference, *Org)) error {
+func (_q *OrgUserPreferenceQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgUserPreference, init func(*OrgUserPreference), assign func(*OrgUserPreference, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgUserPreference)
 	for i := range nodes {
@@ -513,27 +513,27 @@ func (oupq *OrgUserPreferenceQuery) loadOrg(ctx context.Context, query *OrgQuery
 	return nil
 }
 
-func (oupq *OrgUserPreferenceQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := oupq.querySpec()
-	if len(oupq.modifiers) > 0 {
-		_spec.Modifiers = oupq.modifiers
+func (_q *OrgUserPreferenceQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = oupq.ctx.Fields
-	if len(oupq.ctx.Fields) > 0 {
-		_spec.Unique = oupq.ctx.Unique != nil && *oupq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, oupq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (oupq *OrgUserPreferenceQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *OrgUserPreferenceQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(orguserpreference.Table, orguserpreference.Columns, sqlgraph.NewFieldSpec(orguserpreference.FieldID, field.TypeInt))
-	_spec.From = oupq.sql
-	if unique := oupq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if oupq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := oupq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orguserpreference.FieldID)
 		for i := range fields {
@@ -541,27 +541,27 @@ func (oupq *OrgUserPreferenceQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if oupq.withUser != nil {
+		if _q.withUser != nil {
 			_spec.Node.AddColumnOnce(orguserpreference.FieldUserID)
 		}
-		if oupq.withOrg != nil {
+		if _q.withOrg != nil {
 			_spec.Node.AddColumnOnce(orguserpreference.FieldOrgID)
 		}
 	}
-	if ps := oupq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := oupq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := oupq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := oupq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -571,33 +571,33 @@ func (oupq *OrgUserPreferenceQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (oupq *OrgUserPreferenceQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(oupq.driver.Dialect())
+func (_q *OrgUserPreferenceQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(orguserpreference.Table)
-	columns := oupq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = orguserpreference.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if oupq.sql != nil {
-		selector = oupq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if oupq.ctx.Unique != nil && *oupq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range oupq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range oupq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := oupq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := oupq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -610,41 +610,41 @@ type OrgUserPreferenceGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (oupgb *OrgUserPreferenceGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceGroupBy {
-	oupgb.fns = append(oupgb.fns, fns...)
-	return oupgb
+func (_g *OrgUserPreferenceGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (oupgb *OrgUserPreferenceGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oupgb.build.ctx, ent.OpQueryGroupBy)
-	if err := oupgb.build.prepareQuery(ctx); err != nil {
+func (_g *OrgUserPreferenceGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgUserPreferenceQuery, *OrgUserPreferenceGroupBy](ctx, oupgb.build, oupgb, oupgb.build.inters, v)
+	return scanWithInterceptors[*OrgUserPreferenceQuery, *OrgUserPreferenceGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (oupgb *OrgUserPreferenceGroupBy) sqlScan(ctx context.Context, root *OrgUserPreferenceQuery, v any) error {
+func (_g *OrgUserPreferenceGroupBy) sqlScan(ctx context.Context, root *OrgUserPreferenceQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(oupgb.fns))
-	for _, fn := range oupgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*oupgb.flds)+len(oupgb.fns))
-		for _, f := range *oupgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*oupgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := oupgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -658,27 +658,27 @@ type OrgUserPreferenceSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (oups *OrgUserPreferenceSelect) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceSelect {
-	oups.fns = append(oups.fns, fns...)
-	return oups
+func (_s *OrgUserPreferenceSelect) Aggregate(fns ...AggregateFunc) *OrgUserPreferenceSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (oups *OrgUserPreferenceSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oups.ctx, ent.OpQuerySelect)
-	if err := oups.prepareQuery(ctx); err != nil {
+func (_s *OrgUserPreferenceSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgUserPreferenceQuery, *OrgUserPreferenceSelect](ctx, oups.OrgUserPreferenceQuery, oups, oups.inters, v)
+	return scanWithInterceptors[*OrgUserPreferenceQuery, *OrgUserPreferenceSelect](ctx, _s.OrgUserPreferenceQuery, _s, _s.inters, v)
 }
 
-func (oups *OrgUserPreferenceSelect) sqlScan(ctx context.Context, root *OrgUserPreferenceQuery, v any) error {
+func (_s *OrgUserPreferenceSelect) sqlScan(ctx context.Context, root *OrgUserPreferenceQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(oups.fns))
-	for _, fn := range oups.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*oups.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -686,7 +686,7 @@ func (oups *OrgUserPreferenceSelect) sqlScan(ctx context.Context, root *OrgUserP
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := oups.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

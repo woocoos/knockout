@@ -25,152 +25,152 @@ type CountryCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (cc *CountryCreate) SetCreatedBy(i int) *CountryCreate {
-	cc.mutation.SetCreatedBy(i)
-	return cc
+func (_c *CountryCreate) SetCreatedBy(v int) *CountryCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (cc *CountryCreate) SetCreatedAt(t time.Time) *CountryCreate {
-	cc.mutation.SetCreatedAt(t)
-	return cc
+func (_c *CountryCreate) SetCreatedAt(v time.Time) *CountryCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableCreatedAt(t *time.Time) *CountryCreate {
-	if t != nil {
-		cc.SetCreatedAt(*t)
+func (_c *CountryCreate) SetNillableCreatedAt(v *time.Time) *CountryCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cc *CountryCreate) SetUpdatedBy(i int) *CountryCreate {
-	cc.mutation.SetUpdatedBy(i)
-	return cc
+func (_c *CountryCreate) SetUpdatedBy(v int) *CountryCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableUpdatedBy(i *int) *CountryCreate {
-	if i != nil {
-		cc.SetUpdatedBy(*i)
+func (_c *CountryCreate) SetNillableUpdatedBy(v *int) *CountryCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cc *CountryCreate) SetUpdatedAt(t time.Time) *CountryCreate {
-	cc.mutation.SetUpdatedAt(t)
-	return cc
+func (_c *CountryCreate) SetUpdatedAt(v time.Time) *CountryCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableUpdatedAt(t *time.Time) *CountryCreate {
-	if t != nil {
-		cc.SetUpdatedAt(*t)
+func (_c *CountryCreate) SetNillableUpdatedAt(v *time.Time) *CountryCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (cc *CountryCreate) SetName(s string) *CountryCreate {
-	cc.mutation.SetName(s)
-	return cc
+func (_c *CountryCreate) SetName(v string) *CountryCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableName(s *string) *CountryCreate {
-	if s != nil {
-		cc.SetName(*s)
+func (_c *CountryCreate) SetNillableName(v *string) *CountryCreate {
+	if v != nil {
+		_c.SetName(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetNameEn sets the "name_en" field.
-func (cc *CountryCreate) SetNameEn(s string) *CountryCreate {
-	cc.mutation.SetNameEn(s)
-	return cc
+func (_c *CountryCreate) SetNameEn(v string) *CountryCreate {
+	_c.mutation.SetNameEn(v)
+	return _c
 }
 
 // SetNillableNameEn sets the "name_en" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableNameEn(s *string) *CountryCreate {
-	if s != nil {
-		cc.SetNameEn(*s)
+func (_c *CountryCreate) SetNillableNameEn(v *string) *CountryCreate {
+	if v != nil {
+		_c.SetNameEn(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (cc *CountryCreate) SetCode(s string) *CountryCreate {
-	cc.mutation.SetCode(s)
-	return cc
+func (_c *CountryCreate) SetCode(v string) *CountryCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (cc *CountryCreate) SetDisplaySort(i int32) *CountryCreate {
-	cc.mutation.SetDisplaySort(i)
-	return cc
+func (_c *CountryCreate) SetDisplaySort(v int32) *CountryCreate {
+	_c.mutation.SetDisplaySort(v)
+	return _c
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableDisplaySort(i *int32) *CountryCreate {
-	if i != nil {
-		cc.SetDisplaySort(*i)
+func (_c *CountryCreate) SetNillableDisplaySort(v *int32) *CountryCreate {
+	if v != nil {
+		_c.SetDisplaySort(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (cc *CountryCreate) SetStatus(ts typex.SimpleStatus) *CountryCreate {
-	cc.mutation.SetStatus(ts)
-	return cc
+func (_c *CountryCreate) SetStatus(v typex.SimpleStatus) *CountryCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cc *CountryCreate) SetNillableStatus(ts *typex.SimpleStatus) *CountryCreate {
-	if ts != nil {
-		cc.SetStatus(*ts)
+func (_c *CountryCreate) SetNillableStatus(v *typex.SimpleStatus) *CountryCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (cc *CountryCreate) SetID(i int) *CountryCreate {
-	cc.mutation.SetID(i)
-	return cc
+func (_c *CountryCreate) SetID(v int) *CountryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddRegionIDs adds the "regions" edge to the Region entity by IDs.
-func (cc *CountryCreate) AddRegionIDs(ids ...int) *CountryCreate {
-	cc.mutation.AddRegionIDs(ids...)
-	return cc
+func (_c *CountryCreate) AddRegionIDs(ids ...int) *CountryCreate {
+	_c.mutation.AddRegionIDs(ids...)
+	return _c
 }
 
 // AddRegions adds the "regions" edges to the Region entity.
-func (cc *CountryCreate) AddRegions(r ...*Region) *CountryCreate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_c *CountryCreate) AddRegions(v ...*Region) *CountryCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cc.AddRegionIDs(ids...)
+	return _c.AddRegionIDs(ids...)
 }
 
 // Mutation returns the CountryMutation object of the builder.
-func (cc *CountryCreate) Mutation() *CountryMutation {
-	return cc.mutation
+func (_c *CountryCreate) Mutation() *CountryMutation {
+	return _c.mutation
 }
 
 // Save creates the Country in the database.
-func (cc *CountryCreate) Save(ctx context.Context) (*Country, error) {
-	if err := cc.defaults(); err != nil {
+func (_c *CountryCreate) Save(ctx context.Context) (*Country, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (cc *CountryCreate) SaveX(ctx context.Context) *Country {
-	v, err := cc.Save(ctx)
+func (_c *CountryCreate) SaveX(ctx context.Context) *Country {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -178,51 +178,51 @@ func (cc *CountryCreate) SaveX(ctx context.Context) *Country {
 }
 
 // Exec executes the query.
-func (cc *CountryCreate) Exec(ctx context.Context) error {
-	_, err := cc.Save(ctx)
+func (_c *CountryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cc *CountryCreate) ExecX(ctx context.Context) {
-	if err := cc.Exec(ctx); err != nil {
+func (_c *CountryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cc *CountryCreate) defaults() error {
-	if _, ok := cc.mutation.CreatedAt(); !ok {
+func (_c *CountryCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if country.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized country.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := country.DefaultCreatedAt()
-		cc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := cc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := country.DefaultStatus
-		cc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cc *CountryCreate) check() error {
-	if _, ok := cc.mutation.CreatedBy(); !ok {
+func (_c *CountryCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Country.created_by"`)}
 	}
-	if _, ok := cc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Country.created_at"`)}
 	}
-	if _, ok := cc.mutation.Code(); !ok {
+	if _, ok := _c.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "Country.code"`)}
 	}
-	if v, ok := cc.mutation.Code(); ok {
+	if v, ok := _c.mutation.Code(); ok {
 		if err := country.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Country.code": %w`, err)}
 		}
 	}
-	if v, ok := cc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := country.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Country.status": %w`, err)}
 		}
@@ -230,12 +230,12 @@ func (cc *CountryCreate) check() error {
 	return nil
 }
 
-func (cc *CountryCreate) sqlSave(ctx context.Context) (*Country, error) {
-	if err := cc.check(); err != nil {
+func (_c *CountryCreate) sqlSave(ctx context.Context) (*Country, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := cc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, cc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -245,58 +245,58 @@ func (cc *CountryCreate) sqlSave(ctx context.Context) (*Country, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	cc.mutation.id = &_node.ID
-	cc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (cc *CountryCreate) createSpec() (*Country, *sqlgraph.CreateSpec) {
+func (_c *CountryCreate) createSpec() (*Country, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Country{config: cc.config}
+		_node = &Country{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(country.Table, sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = cc.conflict
-	if id, ok := cc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(country.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := cc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(country.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := cc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(country.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := cc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(country.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := cc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(country.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := cc.mutation.NameEn(); ok {
+	if value, ok := _c.mutation.NameEn(); ok {
 		_spec.SetField(country.FieldNameEn, field.TypeString, value)
 		_node.NameEn = value
 	}
-	if value, ok := cc.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(country.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := cc.mutation.DisplaySort(); ok {
+	if value, ok := _c.mutation.DisplaySort(); ok {
 		_spec.SetField(country.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
 	}
-	if value, ok := cc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(country.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := cc.mutation.RegionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RegionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -331,10 +331,10 @@ func (cc *CountryCreate) createSpec() (*Country, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (cc *CountryCreate) OnConflict(opts ...sql.ConflictOption) *CountryUpsertOne {
-	cc.conflict = opts
+func (_c *CountryCreate) OnConflict(opts ...sql.ConflictOption) *CountryUpsertOne {
+	_c.conflict = opts
 	return &CountryUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -344,10 +344,10 @@ func (cc *CountryCreate) OnConflict(opts ...sql.ConflictOption) *CountryUpsertOn
 //	client.Country.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (cc *CountryCreate) OnConflictColumns(columns ...string) *CountryUpsertOne {
-	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
+func (_c *CountryCreate) OnConflictColumns(columns ...string) *CountryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &CountryUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -746,16 +746,16 @@ type CountryCreateBulk struct {
 }
 
 // Save creates the Country entities in the database.
-func (ccb *CountryCreateBulk) Save(ctx context.Context) ([]*Country, error) {
-	if ccb.err != nil {
-		return nil, ccb.err
+func (_c *CountryCreateBulk) Save(ctx context.Context) ([]*Country, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ccb.builders))
-	nodes := make([]*Country, len(ccb.builders))
-	mutators := make([]Mutator, len(ccb.builders))
-	for i := range ccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Country, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ccb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CountryMutation)
@@ -769,12 +769,12 @@ func (ccb *CountryCreateBulk) Save(ctx context.Context) ([]*Country, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -798,7 +798,7 @@ func (ccb *CountryCreateBulk) Save(ctx context.Context) ([]*Country, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -806,8 +806,8 @@ func (ccb *CountryCreateBulk) Save(ctx context.Context) ([]*Country, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ccb *CountryCreateBulk) SaveX(ctx context.Context) []*Country {
-	v, err := ccb.Save(ctx)
+func (_c *CountryCreateBulk) SaveX(ctx context.Context) []*Country {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -815,14 +815,14 @@ func (ccb *CountryCreateBulk) SaveX(ctx context.Context) []*Country {
 }
 
 // Exec executes the query.
-func (ccb *CountryCreateBulk) Exec(ctx context.Context) error {
-	_, err := ccb.Save(ctx)
+func (_c *CountryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ccb *CountryCreateBulk) ExecX(ctx context.Context) {
-	if err := ccb.Exec(ctx); err != nil {
+func (_c *CountryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -842,10 +842,10 @@ func (ccb *CountryCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ccb *CountryCreateBulk) OnConflict(opts ...sql.ConflictOption) *CountryUpsertBulk {
-	ccb.conflict = opts
+func (_c *CountryCreateBulk) OnConflict(opts ...sql.ConflictOption) *CountryUpsertBulk {
+	_c.conflict = opts
 	return &CountryUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 
@@ -855,10 +855,10 @@ func (ccb *CountryCreateBulk) OnConflict(opts ...sql.ConflictOption) *CountryUps
 //	client.Country.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ccb *CountryCreateBulk) OnConflictColumns(columns ...string) *CountryUpsertBulk {
-	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
+func (_c *CountryCreateBulk) OnConflictColumns(columns ...string) *CountryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &CountryUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 

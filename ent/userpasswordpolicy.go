@@ -92,7 +92,7 @@ func (*UserPasswordPolicy) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserPasswordPolicy fields.
-func (upp *UserPasswordPolicy) assignValues(columns []string, values []any) error {
+func (_m *UserPasswordPolicy) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -103,87 +103,87 @@ func (upp *UserPasswordPolicy) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			upp.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case userpasswordpolicy.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				upp.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case userpasswordpolicy.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				upp.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case userpasswordpolicy.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				upp.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case userpasswordpolicy.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				upp.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case userpasswordpolicy.FieldTenantID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				upp.TenantID = int(value.Int64)
+				_m.TenantID = int(value.Int64)
 			}
 		case userpasswordpolicy.FieldLength:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field length", values[i])
 			} else if value.Valid {
-				upp.Length = int32(value.Int64)
+				_m.Length = int32(value.Int64)
 			}
 		case userpasswordpolicy.FieldIncludeElement:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field include_element", values[i])
 			} else if value.Valid {
-				upp.IncludeElement = int32(value.Int64)
+				_m.IncludeElement = int32(value.Int64)
 			}
 		case userpasswordpolicy.FieldIncludeChar:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field include_char", values[i])
 			} else if value.Valid {
-				upp.IncludeChar = int32(value.Int64)
+				_m.IncludeChar = int32(value.Int64)
 			}
 		case userpasswordpolicy.FieldAllowIncludeUserName:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field allow_include_user_name", values[i])
 			} else if value.Valid {
-				upp.AllowIncludeUserName = value.Bool
+				_m.AllowIncludeUserName = value.Bool
 			}
 		case userpasswordpolicy.FieldInvalidDay:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field invalid_day", values[i])
 			} else if value.Valid {
-				upp.InvalidDay = int32(value.Int64)
+				_m.InvalidDay = int32(value.Int64)
 			}
 		case userpasswordpolicy.FieldInvalidLoginLimit:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field invalid_login_limit", values[i])
 			} else if value.Valid {
-				upp.InvalidLoginLimit = value.Bool
+				_m.InvalidLoginLimit = value.Bool
 			}
 		case userpasswordpolicy.FieldRetry:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field retry", values[i])
 			} else if value.Valid {
-				upp.Retry = int32(value.Int64)
+				_m.Retry = int32(value.Int64)
 			}
 		case userpasswordpolicy.FieldCaptchaTimes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field captcha_times", values[i])
 			} else if value.Valid {
-				upp.CaptchaTimes = int32(value.Int64)
+				_m.CaptchaTimes = int32(value.Int64)
 			}
 		default:
-			upp.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -191,76 +191,76 @@ func (upp *UserPasswordPolicy) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserPasswordPolicy.
 // This includes values selected through modifiers, order, etc.
-func (upp *UserPasswordPolicy) Value(name string) (ent.Value, error) {
-	return upp.selectValues.Get(name)
+func (_m *UserPasswordPolicy) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the UserPasswordPolicy entity.
-func (upp *UserPasswordPolicy) QueryOrg() *OrgQuery {
-	return NewUserPasswordPolicyClient(upp.config).QueryOrg(upp)
+func (_m *UserPasswordPolicy) QueryOrg() *OrgQuery {
+	return NewUserPasswordPolicyClient(_m.config).QueryOrg(_m)
 }
 
 // Update returns a builder for updating this UserPasswordPolicy.
 // Note that you need to call UserPasswordPolicy.Unwrap() before calling this method if this UserPasswordPolicy
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (upp *UserPasswordPolicy) Update() *UserPasswordPolicyUpdateOne {
-	return NewUserPasswordPolicyClient(upp.config).UpdateOne(upp)
+func (_m *UserPasswordPolicy) Update() *UserPasswordPolicyUpdateOne {
+	return NewUserPasswordPolicyClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserPasswordPolicy entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (upp *UserPasswordPolicy) Unwrap() *UserPasswordPolicy {
-	_tx, ok := upp.config.driver.(*txDriver)
+func (_m *UserPasswordPolicy) Unwrap() *UserPasswordPolicy {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserPasswordPolicy is not a transactional entity")
 	}
-	upp.config.driver = _tx.drv
-	return upp
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (upp *UserPasswordPolicy) String() string {
+func (_m *UserPasswordPolicy) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserPasswordPolicy(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", upp.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", upp.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(upp.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", upp.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(upp.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", upp.TenantID))
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
 	builder.WriteString(", ")
 	builder.WriteString("length=")
-	builder.WriteString(fmt.Sprintf("%v", upp.Length))
+	builder.WriteString(fmt.Sprintf("%v", _m.Length))
 	builder.WriteString(", ")
 	builder.WriteString("include_element=")
-	builder.WriteString(fmt.Sprintf("%v", upp.IncludeElement))
+	builder.WriteString(fmt.Sprintf("%v", _m.IncludeElement))
 	builder.WriteString(", ")
 	builder.WriteString("include_char=")
-	builder.WriteString(fmt.Sprintf("%v", upp.IncludeChar))
+	builder.WriteString(fmt.Sprintf("%v", _m.IncludeChar))
 	builder.WriteString(", ")
 	builder.WriteString("allow_include_user_name=")
-	builder.WriteString(fmt.Sprintf("%v", upp.AllowIncludeUserName))
+	builder.WriteString(fmt.Sprintf("%v", _m.AllowIncludeUserName))
 	builder.WriteString(", ")
 	builder.WriteString("invalid_day=")
-	builder.WriteString(fmt.Sprintf("%v", upp.InvalidDay))
+	builder.WriteString(fmt.Sprintf("%v", _m.InvalidDay))
 	builder.WriteString(", ")
 	builder.WriteString("invalid_login_limit=")
-	builder.WriteString(fmt.Sprintf("%v", upp.InvalidLoginLimit))
+	builder.WriteString(fmt.Sprintf("%v", _m.InvalidLoginLimit))
 	builder.WriteString(", ")
 	builder.WriteString("retry=")
-	builder.WriteString(fmt.Sprintf("%v", upp.Retry))
+	builder.WriteString(fmt.Sprintf("%v", _m.Retry))
 	builder.WriteString(", ")
 	builder.WriteString("captcha_times=")
-	builder.WriteString(fmt.Sprintf("%v", upp.CaptchaTimes))
+	builder.WriteString(fmt.Sprintf("%v", _m.CaptchaTimes))
 	builder.WriteByte(')')
 	return builder.String()
 }

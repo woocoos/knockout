@@ -25,298 +25,298 @@ type AppMenuUpdate struct {
 }
 
 // Where appends a list predicates to the AppMenuUpdate builder.
-func (amu *AppMenuUpdate) Where(ps ...predicate.AppMenu) *AppMenuUpdate {
-	amu.mutation.Where(ps...)
-	return amu
+func (_u *AppMenuUpdate) Where(ps ...predicate.AppMenu) *AppMenuUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (amu *AppMenuUpdate) SetUpdatedBy(i int) *AppMenuUpdate {
-	amu.mutation.ResetUpdatedBy()
-	amu.mutation.SetUpdatedBy(i)
-	return amu
+func (_u *AppMenuUpdate) SetUpdatedBy(v int) *AppMenuUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableUpdatedBy(i *int) *AppMenuUpdate {
-	if i != nil {
-		amu.SetUpdatedBy(*i)
+func (_u *AppMenuUpdate) SetNillableUpdatedBy(v *int) *AppMenuUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (amu *AppMenuUpdate) AddUpdatedBy(i int) *AppMenuUpdate {
-	amu.mutation.AddUpdatedBy(i)
-	return amu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppMenuUpdate) AddUpdatedBy(v int) *AppMenuUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (amu *AppMenuUpdate) ClearUpdatedBy() *AppMenuUpdate {
-	amu.mutation.ClearUpdatedBy()
-	return amu
+func (_u *AppMenuUpdate) ClearUpdatedBy() *AppMenuUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (amu *AppMenuUpdate) SetUpdatedAt(t time.Time) *AppMenuUpdate {
-	amu.mutation.SetUpdatedAt(t)
-	return amu
+func (_u *AppMenuUpdate) SetUpdatedAt(v time.Time) *AppMenuUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableUpdatedAt(t *time.Time) *AppMenuUpdate {
-	if t != nil {
-		amu.SetUpdatedAt(*t)
+func (_u *AppMenuUpdate) SetNillableUpdatedAt(v *time.Time) *AppMenuUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (amu *AppMenuUpdate) ClearUpdatedAt() *AppMenuUpdate {
-	amu.mutation.ClearUpdatedAt()
-	return amu
+func (_u *AppMenuUpdate) ClearUpdatedAt() *AppMenuUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (amu *AppMenuUpdate) SetParentID(i int) *AppMenuUpdate {
-	amu.mutation.SetParentID(i)
-	return amu
+func (_u *AppMenuUpdate) SetParentID(v int) *AppMenuUpdate {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableParentID(i *int) *AppMenuUpdate {
-	if i != nil {
-		amu.SetParentID(*i)
+func (_u *AppMenuUpdate) SetNillableParentID(v *int) *AppMenuUpdate {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return amu
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (amu *AppMenuUpdate) SetKind(a appmenu.Kind) *AppMenuUpdate {
-	amu.mutation.SetKind(a)
-	return amu
+func (_u *AppMenuUpdate) SetKind(v appmenu.Kind) *AppMenuUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableKind(a *appmenu.Kind) *AppMenuUpdate {
-	if a != nil {
-		amu.SetKind(*a)
+func (_u *AppMenuUpdate) SetNillableKind(v *appmenu.Kind) *AppMenuUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return amu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (amu *AppMenuUpdate) SetName(s string) *AppMenuUpdate {
-	amu.mutation.SetName(s)
-	return amu
+func (_u *AppMenuUpdate) SetName(v string) *AppMenuUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableName(s *string) *AppMenuUpdate {
-	if s != nil {
-		amu.SetName(*s)
+func (_u *AppMenuUpdate) SetNillableName(v *string) *AppMenuUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return amu
+	return _u
 }
 
 // SetIcon sets the "icon" field.
-func (amu *AppMenuUpdate) SetIcon(s string) *AppMenuUpdate {
-	amu.mutation.SetIcon(s)
-	return amu
+func (_u *AppMenuUpdate) SetIcon(v string) *AppMenuUpdate {
+	_u.mutation.SetIcon(v)
+	return _u
 }
 
 // SetNillableIcon sets the "icon" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableIcon(s *string) *AppMenuUpdate {
-	if s != nil {
-		amu.SetIcon(*s)
+func (_u *AppMenuUpdate) SetNillableIcon(v *string) *AppMenuUpdate {
+	if v != nil {
+		_u.SetIcon(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearIcon clears the value of the "icon" field.
-func (amu *AppMenuUpdate) ClearIcon() *AppMenuUpdate {
-	amu.mutation.ClearIcon()
-	return amu
+func (_u *AppMenuUpdate) ClearIcon() *AppMenuUpdate {
+	_u.mutation.ClearIcon()
+	return _u
 }
 
 // SetRoute sets the "route" field.
-func (amu *AppMenuUpdate) SetRoute(s string) *AppMenuUpdate {
-	amu.mutation.SetRoute(s)
-	return amu
+func (_u *AppMenuUpdate) SetRoute(v string) *AppMenuUpdate {
+	_u.mutation.SetRoute(v)
+	return _u
 }
 
 // SetNillableRoute sets the "route" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableRoute(s *string) *AppMenuUpdate {
-	if s != nil {
-		amu.SetRoute(*s)
+func (_u *AppMenuUpdate) SetNillableRoute(v *string) *AppMenuUpdate {
+	if v != nil {
+		_u.SetRoute(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearRoute clears the value of the "route" field.
-func (amu *AppMenuUpdate) ClearRoute() *AppMenuUpdate {
-	amu.mutation.ClearRoute()
-	return amu
+func (_u *AppMenuUpdate) ClearRoute() *AppMenuUpdate {
+	_u.mutation.ClearRoute()
+	return _u
 }
 
 // SetActionID sets the "action_id" field.
-func (amu *AppMenuUpdate) SetActionID(i int) *AppMenuUpdate {
-	amu.mutation.SetActionID(i)
-	return amu
+func (_u *AppMenuUpdate) SetActionID(v int) *AppMenuUpdate {
+	_u.mutation.SetActionID(v)
+	return _u
 }
 
 // SetNillableActionID sets the "action_id" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableActionID(i *int) *AppMenuUpdate {
-	if i != nil {
-		amu.SetActionID(*i)
+func (_u *AppMenuUpdate) SetNillableActionID(v *int) *AppMenuUpdate {
+	if v != nil {
+		_u.SetActionID(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearActionID clears the value of the "action_id" field.
-func (amu *AppMenuUpdate) ClearActionID() *AppMenuUpdate {
-	amu.mutation.ClearActionID()
-	return amu
+func (_u *AppMenuUpdate) ClearActionID() *AppMenuUpdate {
+	_u.mutation.ClearActionID()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (amu *AppMenuUpdate) SetComments(s string) *AppMenuUpdate {
-	amu.mutation.SetComments(s)
-	return amu
+func (_u *AppMenuUpdate) SetComments(v string) *AppMenuUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableComments(s *string) *AppMenuUpdate {
-	if s != nil {
-		amu.SetComments(*s)
+func (_u *AppMenuUpdate) SetNillableComments(v *string) *AppMenuUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (amu *AppMenuUpdate) ClearComments() *AppMenuUpdate {
-	amu.mutation.ClearComments()
-	return amu
+func (_u *AppMenuUpdate) ClearComments() *AppMenuUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (amu *AppMenuUpdate) SetDisplaySort(i int32) *AppMenuUpdate {
-	amu.mutation.ResetDisplaySort()
-	amu.mutation.SetDisplaySort(i)
-	return amu
+func (_u *AppMenuUpdate) SetDisplaySort(v int32) *AppMenuUpdate {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableDisplaySort(i *int32) *AppMenuUpdate {
-	if i != nil {
-		amu.SetDisplaySort(*i)
+func (_u *AppMenuUpdate) SetNillableDisplaySort(v *int32) *AppMenuUpdate {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (amu *AppMenuUpdate) AddDisplaySort(i int32) *AppMenuUpdate {
-	amu.mutation.AddDisplaySort(i)
-	return amu
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *AppMenuUpdate) AddDisplaySort(v int32) *AppMenuUpdate {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (amu *AppMenuUpdate) ClearDisplaySort() *AppMenuUpdate {
-	amu.mutation.ClearDisplaySort()
-	return amu
+func (_u *AppMenuUpdate) ClearDisplaySort() *AppMenuUpdate {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (amu *AppMenuUpdate) SetStatus(ts typex.SimpleStatus) *AppMenuUpdate {
-	amu.mutation.SetStatus(ts)
-	return amu
+func (_u *AppMenuUpdate) SetStatus(v typex.SimpleStatus) *AppMenuUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuUpdate {
-	if ts != nil {
-		amu.SetStatus(*ts)
+func (_u *AppMenuUpdate) SetNillableStatus(v *typex.SimpleStatus) *AppMenuUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return amu
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (amu *AppMenuUpdate) ClearStatus() *AppMenuUpdate {
-	amu.mutation.ClearStatus()
-	return amu
+func (_u *AppMenuUpdate) ClearStatus() *AppMenuUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetAction sets the "action" edge to the AppAction entity.
-func (amu *AppMenuUpdate) SetAction(a *AppAction) *AppMenuUpdate {
-	return amu.SetActionID(a.ID)
+func (_u *AppMenuUpdate) SetAction(v *AppAction) *AppMenuUpdate {
+	return _u.SetActionID(v.ID)
 }
 
 // SetParent sets the "parent" edge to the AppMenu entity.
-func (amu *AppMenuUpdate) SetParent(a *AppMenu) *AppMenuUpdate {
-	return amu.SetParentID(a.ID)
+func (_u *AppMenuUpdate) SetParent(v *AppMenu) *AppMenuUpdate {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
-func (amu *AppMenuUpdate) AddChildIDs(ids ...int) *AppMenuUpdate {
-	amu.mutation.AddChildIDs(ids...)
-	return amu
+func (_u *AppMenuUpdate) AddChildIDs(ids ...int) *AppMenuUpdate {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the AppMenu entity.
-func (amu *AppMenuUpdate) AddChildren(a ...*AppMenu) *AppMenuUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppMenuUpdate) AddChildren(v ...*AppMenu) *AppMenuUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return amu.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // Mutation returns the AppMenuMutation object of the builder.
-func (amu *AppMenuUpdate) Mutation() *AppMenuMutation {
-	return amu.mutation
+func (_u *AppMenuUpdate) Mutation() *AppMenuMutation {
+	return _u.mutation
 }
 
 // ClearAction clears the "action" edge to the AppAction entity.
-func (amu *AppMenuUpdate) ClearAction() *AppMenuUpdate {
-	amu.mutation.ClearAction()
-	return amu
+func (_u *AppMenuUpdate) ClearAction() *AppMenuUpdate {
+	_u.mutation.ClearAction()
+	return _u
 }
 
 // ClearParent clears the "parent" edge to the AppMenu entity.
-func (amu *AppMenuUpdate) ClearParent() *AppMenuUpdate {
-	amu.mutation.ClearParent()
-	return amu
+func (_u *AppMenuUpdate) ClearParent() *AppMenuUpdate {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the AppMenu entity.
-func (amu *AppMenuUpdate) ClearChildren() *AppMenuUpdate {
-	amu.mutation.ClearChildren()
-	return amu
+func (_u *AppMenuUpdate) ClearChildren() *AppMenuUpdate {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to AppMenu entities by IDs.
-func (amu *AppMenuUpdate) RemoveChildIDs(ids ...int) *AppMenuUpdate {
-	amu.mutation.RemoveChildIDs(ids...)
-	return amu
+func (_u *AppMenuUpdate) RemoveChildIDs(ids ...int) *AppMenuUpdate {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to AppMenu entities.
-func (amu *AppMenuUpdate) RemoveChildren(a ...*AppMenu) *AppMenuUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppMenuUpdate) RemoveChildren(v ...*AppMenu) *AppMenuUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return amu.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (amu *AppMenuUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, amu.sqlSave, amu.mutation, amu.hooks)
+func (_u *AppMenuUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amu *AppMenuUpdate) SaveX(ctx context.Context) int {
-	affected, err := amu.Save(ctx)
+func (_u *AppMenuUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -324,103 +324,103 @@ func (amu *AppMenuUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (amu *AppMenuUpdate) Exec(ctx context.Context) error {
-	_, err := amu.Save(ctx)
+func (_u *AppMenuUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amu *AppMenuUpdate) ExecX(ctx context.Context) {
-	if err := amu.Exec(ctx); err != nil {
+func (_u *AppMenuUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (amu *AppMenuUpdate) check() error {
-	if v, ok := amu.mutation.Kind(); ok {
+func (_u *AppMenuUpdate) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
 	}
-	if v, ok := amu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := appmenu.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
-	if amu.mutation.ParentCleared() && len(amu.mutation.ParentIDs()) > 0 {
+	if _u.mutation.ParentCleared() && len(_u.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppMenu.parent"`)
 	}
 	return nil
 }
 
-func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := amu.check(); err != nil {
-		return n, err
+func (_u *AppMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appmenu.Table, appmenu.Columns, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
-	if ps := amu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := amu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appmenu.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := amu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appmenu.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if amu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := amu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appmenu.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if amu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := amu.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := amu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 	}
-	if value, ok := amu.mutation.Icon(); ok {
+	if value, ok := _u.mutation.Icon(); ok {
 		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
 	}
-	if amu.mutation.IconCleared() {
+	if _u.mutation.IconCleared() {
 		_spec.ClearField(appmenu.FieldIcon, field.TypeString)
 	}
-	if value, ok := amu.mutation.Route(); ok {
+	if value, ok := _u.mutation.Route(); ok {
 		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
 	}
-	if amu.mutation.RouteCleared() {
+	if _u.mutation.RouteCleared() {
 		_spec.ClearField(appmenu.FieldRoute, field.TypeString)
 	}
-	if value, ok := amu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 	}
-	if amu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appmenu.FieldComments, field.TypeString)
 	}
-	if value, ok := amu.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := amu.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if amu.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := amu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
 	}
-	if amu.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(appmenu.FieldStatus, field.TypeEnum)
 	}
-	if amu.mutation.ActionCleared() {
+	if _u.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -433,7 +433,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amu.mutation.ActionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -449,7 +449,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if amu.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -462,7 +462,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amu.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -478,7 +478,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if amu.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -491,7 +491,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amu.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !amu.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -507,7 +507,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amu.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -523,7 +523,7 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, amu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appmenu.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -531,8 +531,8 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	amu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppMenuUpdateOne is the builder for updating a single AppMenu entity.
@@ -544,305 +544,305 @@ type AppMenuUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (amuo *AppMenuUpdateOne) SetUpdatedBy(i int) *AppMenuUpdateOne {
-	amuo.mutation.ResetUpdatedBy()
-	amuo.mutation.SetUpdatedBy(i)
-	return amuo
+func (_u *AppMenuUpdateOne) SetUpdatedBy(v int) *AppMenuUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableUpdatedBy(i *int) *AppMenuUpdateOne {
-	if i != nil {
-		amuo.SetUpdatedBy(*i)
+func (_u *AppMenuUpdateOne) SetNillableUpdatedBy(v *int) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (amuo *AppMenuUpdateOne) AddUpdatedBy(i int) *AppMenuUpdateOne {
-	amuo.mutation.AddUpdatedBy(i)
-	return amuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppMenuUpdateOne) AddUpdatedBy(v int) *AppMenuUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (amuo *AppMenuUpdateOne) ClearUpdatedBy() *AppMenuUpdateOne {
-	amuo.mutation.ClearUpdatedBy()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearUpdatedBy() *AppMenuUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (amuo *AppMenuUpdateOne) SetUpdatedAt(t time.Time) *AppMenuUpdateOne {
-	amuo.mutation.SetUpdatedAt(t)
-	return amuo
+func (_u *AppMenuUpdateOne) SetUpdatedAt(v time.Time) *AppMenuUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppMenuUpdateOne {
-	if t != nil {
-		amuo.SetUpdatedAt(*t)
+func (_u *AppMenuUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (amuo *AppMenuUpdateOne) ClearUpdatedAt() *AppMenuUpdateOne {
-	amuo.mutation.ClearUpdatedAt()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearUpdatedAt() *AppMenuUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (amuo *AppMenuUpdateOne) SetParentID(i int) *AppMenuUpdateOne {
-	amuo.mutation.SetParentID(i)
-	return amuo
+func (_u *AppMenuUpdateOne) SetParentID(v int) *AppMenuUpdateOne {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableParentID(i *int) *AppMenuUpdateOne {
-	if i != nil {
-		amuo.SetParentID(*i)
+func (_u *AppMenuUpdateOne) SetNillableParentID(v *int) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return amuo
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (amuo *AppMenuUpdateOne) SetKind(a appmenu.Kind) *AppMenuUpdateOne {
-	amuo.mutation.SetKind(a)
-	return amuo
+func (_u *AppMenuUpdateOne) SetKind(v appmenu.Kind) *AppMenuUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableKind(a *appmenu.Kind) *AppMenuUpdateOne {
-	if a != nil {
-		amuo.SetKind(*a)
+func (_u *AppMenuUpdateOne) SetNillableKind(v *appmenu.Kind) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return amuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (amuo *AppMenuUpdateOne) SetName(s string) *AppMenuUpdateOne {
-	amuo.mutation.SetName(s)
-	return amuo
+func (_u *AppMenuUpdateOne) SetName(v string) *AppMenuUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableName(s *string) *AppMenuUpdateOne {
-	if s != nil {
-		amuo.SetName(*s)
+func (_u *AppMenuUpdateOne) SetNillableName(v *string) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return amuo
+	return _u
 }
 
 // SetIcon sets the "icon" field.
-func (amuo *AppMenuUpdateOne) SetIcon(s string) *AppMenuUpdateOne {
-	amuo.mutation.SetIcon(s)
-	return amuo
+func (_u *AppMenuUpdateOne) SetIcon(v string) *AppMenuUpdateOne {
+	_u.mutation.SetIcon(v)
+	return _u
 }
 
 // SetNillableIcon sets the "icon" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableIcon(s *string) *AppMenuUpdateOne {
-	if s != nil {
-		amuo.SetIcon(*s)
+func (_u *AppMenuUpdateOne) SetNillableIcon(v *string) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetIcon(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearIcon clears the value of the "icon" field.
-func (amuo *AppMenuUpdateOne) ClearIcon() *AppMenuUpdateOne {
-	amuo.mutation.ClearIcon()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearIcon() *AppMenuUpdateOne {
+	_u.mutation.ClearIcon()
+	return _u
 }
 
 // SetRoute sets the "route" field.
-func (amuo *AppMenuUpdateOne) SetRoute(s string) *AppMenuUpdateOne {
-	amuo.mutation.SetRoute(s)
-	return amuo
+func (_u *AppMenuUpdateOne) SetRoute(v string) *AppMenuUpdateOne {
+	_u.mutation.SetRoute(v)
+	return _u
 }
 
 // SetNillableRoute sets the "route" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableRoute(s *string) *AppMenuUpdateOne {
-	if s != nil {
-		amuo.SetRoute(*s)
+func (_u *AppMenuUpdateOne) SetNillableRoute(v *string) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetRoute(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearRoute clears the value of the "route" field.
-func (amuo *AppMenuUpdateOne) ClearRoute() *AppMenuUpdateOne {
-	amuo.mutation.ClearRoute()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearRoute() *AppMenuUpdateOne {
+	_u.mutation.ClearRoute()
+	return _u
 }
 
 // SetActionID sets the "action_id" field.
-func (amuo *AppMenuUpdateOne) SetActionID(i int) *AppMenuUpdateOne {
-	amuo.mutation.SetActionID(i)
-	return amuo
+func (_u *AppMenuUpdateOne) SetActionID(v int) *AppMenuUpdateOne {
+	_u.mutation.SetActionID(v)
+	return _u
 }
 
 // SetNillableActionID sets the "action_id" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableActionID(i *int) *AppMenuUpdateOne {
-	if i != nil {
-		amuo.SetActionID(*i)
+func (_u *AppMenuUpdateOne) SetNillableActionID(v *int) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetActionID(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearActionID clears the value of the "action_id" field.
-func (amuo *AppMenuUpdateOne) ClearActionID() *AppMenuUpdateOne {
-	amuo.mutation.ClearActionID()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearActionID() *AppMenuUpdateOne {
+	_u.mutation.ClearActionID()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (amuo *AppMenuUpdateOne) SetComments(s string) *AppMenuUpdateOne {
-	amuo.mutation.SetComments(s)
-	return amuo
+func (_u *AppMenuUpdateOne) SetComments(v string) *AppMenuUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableComments(s *string) *AppMenuUpdateOne {
-	if s != nil {
-		amuo.SetComments(*s)
+func (_u *AppMenuUpdateOne) SetNillableComments(v *string) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (amuo *AppMenuUpdateOne) ClearComments() *AppMenuUpdateOne {
-	amuo.mutation.ClearComments()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearComments() *AppMenuUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (amuo *AppMenuUpdateOne) SetDisplaySort(i int32) *AppMenuUpdateOne {
-	amuo.mutation.ResetDisplaySort()
-	amuo.mutation.SetDisplaySort(i)
-	return amuo
+func (_u *AppMenuUpdateOne) SetDisplaySort(v int32) *AppMenuUpdateOne {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableDisplaySort(i *int32) *AppMenuUpdateOne {
-	if i != nil {
-		amuo.SetDisplaySort(*i)
+func (_u *AppMenuUpdateOne) SetNillableDisplaySort(v *int32) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (amuo *AppMenuUpdateOne) AddDisplaySort(i int32) *AppMenuUpdateOne {
-	amuo.mutation.AddDisplaySort(i)
-	return amuo
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *AppMenuUpdateOne) AddDisplaySort(v int32) *AppMenuUpdateOne {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (amuo *AppMenuUpdateOne) ClearDisplaySort() *AppMenuUpdateOne {
-	amuo.mutation.ClearDisplaySort()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearDisplaySort() *AppMenuUpdateOne {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (amuo *AppMenuUpdateOne) SetStatus(ts typex.SimpleStatus) *AppMenuUpdateOne {
-	amuo.mutation.SetStatus(ts)
-	return amuo
+func (_u *AppMenuUpdateOne) SetStatus(v typex.SimpleStatus) *AppMenuUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuUpdateOne {
-	if ts != nil {
-		amuo.SetStatus(*ts)
+func (_u *AppMenuUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *AppMenuUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return amuo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (amuo *AppMenuUpdateOne) ClearStatus() *AppMenuUpdateOne {
-	amuo.mutation.ClearStatus()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearStatus() *AppMenuUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetAction sets the "action" edge to the AppAction entity.
-func (amuo *AppMenuUpdateOne) SetAction(a *AppAction) *AppMenuUpdateOne {
-	return amuo.SetActionID(a.ID)
+func (_u *AppMenuUpdateOne) SetAction(v *AppAction) *AppMenuUpdateOne {
+	return _u.SetActionID(v.ID)
 }
 
 // SetParent sets the "parent" edge to the AppMenu entity.
-func (amuo *AppMenuUpdateOne) SetParent(a *AppMenu) *AppMenuUpdateOne {
-	return amuo.SetParentID(a.ID)
+func (_u *AppMenuUpdateOne) SetParent(v *AppMenu) *AppMenuUpdateOne {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
-func (amuo *AppMenuUpdateOne) AddChildIDs(ids ...int) *AppMenuUpdateOne {
-	amuo.mutation.AddChildIDs(ids...)
-	return amuo
+func (_u *AppMenuUpdateOne) AddChildIDs(ids ...int) *AppMenuUpdateOne {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the AppMenu entity.
-func (amuo *AppMenuUpdateOne) AddChildren(a ...*AppMenu) *AppMenuUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppMenuUpdateOne) AddChildren(v ...*AppMenu) *AppMenuUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return amuo.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // Mutation returns the AppMenuMutation object of the builder.
-func (amuo *AppMenuUpdateOne) Mutation() *AppMenuMutation {
-	return amuo.mutation
+func (_u *AppMenuUpdateOne) Mutation() *AppMenuMutation {
+	return _u.mutation
 }
 
 // ClearAction clears the "action" edge to the AppAction entity.
-func (amuo *AppMenuUpdateOne) ClearAction() *AppMenuUpdateOne {
-	amuo.mutation.ClearAction()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearAction() *AppMenuUpdateOne {
+	_u.mutation.ClearAction()
+	return _u
 }
 
 // ClearParent clears the "parent" edge to the AppMenu entity.
-func (amuo *AppMenuUpdateOne) ClearParent() *AppMenuUpdateOne {
-	amuo.mutation.ClearParent()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearParent() *AppMenuUpdateOne {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the AppMenu entity.
-func (amuo *AppMenuUpdateOne) ClearChildren() *AppMenuUpdateOne {
-	amuo.mutation.ClearChildren()
-	return amuo
+func (_u *AppMenuUpdateOne) ClearChildren() *AppMenuUpdateOne {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to AppMenu entities by IDs.
-func (amuo *AppMenuUpdateOne) RemoveChildIDs(ids ...int) *AppMenuUpdateOne {
-	amuo.mutation.RemoveChildIDs(ids...)
-	return amuo
+func (_u *AppMenuUpdateOne) RemoveChildIDs(ids ...int) *AppMenuUpdateOne {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to AppMenu entities.
-func (amuo *AppMenuUpdateOne) RemoveChildren(a ...*AppMenu) *AppMenuUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppMenuUpdateOne) RemoveChildren(v ...*AppMenu) *AppMenuUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return amuo.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // Where appends a list predicates to the AppMenuUpdate builder.
-func (amuo *AppMenuUpdateOne) Where(ps ...predicate.AppMenu) *AppMenuUpdateOne {
-	amuo.mutation.Where(ps...)
-	return amuo
+func (_u *AppMenuUpdateOne) Where(ps ...predicate.AppMenu) *AppMenuUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (amuo *AppMenuUpdateOne) Select(field string, fields ...string) *AppMenuUpdateOne {
-	amuo.fields = append([]string{field}, fields...)
-	return amuo
+func (_u *AppMenuUpdateOne) Select(field string, fields ...string) *AppMenuUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppMenu entity.
-func (amuo *AppMenuUpdateOne) Save(ctx context.Context) (*AppMenu, error) {
-	return withHooks(ctx, amuo.sqlSave, amuo.mutation, amuo.hooks)
+func (_u *AppMenuUpdateOne) Save(ctx context.Context) (*AppMenu, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amuo *AppMenuUpdateOne) SaveX(ctx context.Context) *AppMenu {
-	node, err := amuo.Save(ctx)
+func (_u *AppMenuUpdateOne) SaveX(ctx context.Context) *AppMenu {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -850,47 +850,47 @@ func (amuo *AppMenuUpdateOne) SaveX(ctx context.Context) *AppMenu {
 }
 
 // Exec executes the query on the entity.
-func (amuo *AppMenuUpdateOne) Exec(ctx context.Context) error {
-	_, err := amuo.Save(ctx)
+func (_u *AppMenuUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amuo *AppMenuUpdateOne) ExecX(ctx context.Context) {
-	if err := amuo.Exec(ctx); err != nil {
+func (_u *AppMenuUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (amuo *AppMenuUpdateOne) check() error {
-	if v, ok := amuo.mutation.Kind(); ok {
+func (_u *AppMenuUpdateOne) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
 	}
-	if v, ok := amuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := appmenu.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
-	if amuo.mutation.ParentCleared() && len(amuo.mutation.ParentIDs()) > 0 {
+	if _u.mutation.ParentCleared() && len(_u.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppMenu.parent"`)
 	}
 	return nil
 }
 
-func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err error) {
-	if err := amuo.check(); err != nil {
+func (_u *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appmenu.Table, appmenu.Columns, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
-	id, ok := amuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppMenu.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := amuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appmenu.FieldID)
 		for _, f := range fields {
@@ -902,68 +902,68 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 			}
 		}
 	}
-	if ps := amuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := amuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appmenu.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := amuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appmenu.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if amuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := amuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appmenu.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if amuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := amuo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := amuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 	}
-	if value, ok := amuo.mutation.Icon(); ok {
+	if value, ok := _u.mutation.Icon(); ok {
 		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
 	}
-	if amuo.mutation.IconCleared() {
+	if _u.mutation.IconCleared() {
 		_spec.ClearField(appmenu.FieldIcon, field.TypeString)
 	}
-	if value, ok := amuo.mutation.Route(); ok {
+	if value, ok := _u.mutation.Route(); ok {
 		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
 	}
-	if amuo.mutation.RouteCleared() {
+	if _u.mutation.RouteCleared() {
 		_spec.ClearField(appmenu.FieldRoute, field.TypeString)
 	}
-	if value, ok := amuo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 	}
-	if amuo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(appmenu.FieldComments, field.TypeString)
 	}
-	if value, ok := amuo.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := amuo.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if amuo.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := amuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
 	}
-	if amuo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(appmenu.FieldStatus, field.TypeEnum)
 	}
-	if amuo.mutation.ActionCleared() {
+	if _u.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -976,7 +976,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amuo.mutation.ActionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -992,7 +992,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if amuo.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1005,7 +1005,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amuo.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1021,7 +1021,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if amuo.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1034,7 +1034,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amuo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !amuo.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1050,7 +1050,7 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amuo.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1066,10 +1066,10 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppMenu{config: amuo.config}
+	_node = &AppMenu{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, amuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appmenu.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1077,6 +1077,6 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 		}
 		return nil, err
 	}
-	amuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

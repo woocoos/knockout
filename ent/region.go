@@ -117,7 +117,7 @@ func (*Region) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Region fields.
-func (r *Region) assignValues(columns []string, values []any) error {
+func (_m *Region) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -128,82 +128,82 @@ func (r *Region) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			r.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case region.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				r.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case region.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				r.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case region.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				r.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case region.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				r.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case region.FieldParentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
-				r.ParentID = int(value.Int64)
+				_m.ParentID = int(value.Int64)
 			}
 		case region.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				r.Name = value.String
+				_m.Name = value.String
 			}
 		case region.FieldNameEn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name_en", values[i])
 			} else if value.Valid {
-				r.NameEn = value.String
+				_m.NameEn = value.String
 			}
 		case region.FieldShortCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field short_code", values[i])
 			} else if value.Valid {
-				r.ShortCode = value.String
+				_m.ShortCode = value.String
 			}
 		case region.FieldZipCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field zip_code", values[i])
 			} else if value.Valid {
-				r.ZipCode = value.String
+				_m.ZipCode = value.String
 			}
 		case region.FieldCountryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field country_id", values[i])
 			} else if value.Valid {
-				r.CountryID = new(int)
-				*r.CountryID = int(value.Int64)
+				_m.CountryID = new(int)
+				*_m.CountryID = int(value.Int64)
 			}
 		case region.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
-				r.DisplaySort = int32(value.Int64)
+				_m.DisplaySort = int32(value.Int64)
 			}
 		case region.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				r.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			r.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -211,110 +211,110 @@ func (r *Region) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Region.
 // This includes values selected through modifiers, order, etc.
-func (r *Region) Value(name string) (ent.Value, error) {
-	return r.selectValues.Get(name)
+func (_m *Region) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryParent queries the "parent" edge of the Region entity.
-func (r *Region) QueryParent() *RegionQuery {
-	return NewRegionClient(r.config).QueryParent(r)
+func (_m *Region) QueryParent() *RegionQuery {
+	return NewRegionClient(_m.config).QueryParent(_m)
 }
 
 // QueryChildren queries the "children" edge of the Region entity.
-func (r *Region) QueryChildren() *RegionQuery {
-	return NewRegionClient(r.config).QueryChildren(r)
+func (_m *Region) QueryChildren() *RegionQuery {
+	return NewRegionClient(_m.config).QueryChildren(_m)
 }
 
 // QueryCountry queries the "country" edge of the Region entity.
-func (r *Region) QueryCountry() *CountryQuery {
-	return NewRegionClient(r.config).QueryCountry(r)
+func (_m *Region) QueryCountry() *CountryQuery {
+	return NewRegionClient(_m.config).QueryCountry(_m)
 }
 
 // Update returns a builder for updating this Region.
 // Note that you need to call Region.Unwrap() before calling this method if this Region
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (r *Region) Update() *RegionUpdateOne {
-	return NewRegionClient(r.config).UpdateOne(r)
+func (_m *Region) Update() *RegionUpdateOne {
+	return NewRegionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Region entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (r *Region) Unwrap() *Region {
-	_tx, ok := r.config.driver.(*txDriver)
+func (_m *Region) Unwrap() *Region {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Region is not a transactional entity")
 	}
-	r.config.driver = _tx.drv
-	return r
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (r *Region) String() string {
+func (_m *Region) String() string {
 	var builder strings.Builder
 	builder.WriteString("Region(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", r.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(r.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", r.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(r.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
-	builder.WriteString(fmt.Sprintf("%v", r.ParentID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(r.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("name_en=")
-	builder.WriteString(r.NameEn)
+	builder.WriteString(_m.NameEn)
 	builder.WriteString(", ")
 	builder.WriteString("short_code=")
-	builder.WriteString(r.ShortCode)
+	builder.WriteString(_m.ShortCode)
 	builder.WriteString(", ")
 	builder.WriteString("zip_code=")
-	builder.WriteString(r.ZipCode)
+	builder.WriteString(_m.ZipCode)
 	builder.WriteString(", ")
-	if v := r.CountryID; v != nil {
+	if v := _m.CountryID; v != nil {
 		builder.WriteString("country_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
-	builder.WriteString(fmt.Sprintf("%v", r.DisplaySort))
+	builder.WriteString(fmt.Sprintf("%v", _m.DisplaySort))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", r.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedChildren returns the Children named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (r *Region) NamedChildren(name string) ([]*Region, error) {
-	if r.Edges.namedChildren == nil {
+func (_m *Region) NamedChildren(name string) ([]*Region, error) {
+	if _m.Edges.namedChildren == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := r.Edges.namedChildren[name]
+	nodes, ok := _m.Edges.namedChildren[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (r *Region) appendNamedChildren(name string, edges ...*Region) {
-	if r.Edges.namedChildren == nil {
-		r.Edges.namedChildren = make(map[string][]*Region)
+func (_m *Region) appendNamedChildren(name string, edges ...*Region) {
+	if _m.Edges.namedChildren == nil {
+		_m.Edges.namedChildren = make(map[string][]*Region)
 	}
 	if len(edges) == 0 {
-		r.Edges.namedChildren[name] = []*Region{}
+		_m.Edges.namedChildren[name] = []*Region{}
 	} else {
-		r.Edges.namedChildren[name] = append(r.Edges.namedChildren[name], edges...)
+		_m.Edges.namedChildren[name] = append(_m.Edges.namedChildren[name], edges...)
 	}
 }
 

@@ -2,6 +2,10 @@ package testsuite
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"strconv"
+
 	"entgo.io/ent/dialect/sql"
 	"github.com/alicebob/miniredis/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,12 +17,10 @@ import (
 	ecx "github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	schemahook "github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/migrate"
 	"github.com/woocoos/knockout/test"
-	"os"
-	"path/filepath"
-	"strconv"
 )
 
 type BaseSuite struct {
@@ -47,10 +49,13 @@ func (o *BaseSuite) Setup() error {
 	drv, err := sql.Open(o.DriverName, o.DSN)
 	o.Require().NoError(err)
 	o.Client = ent.NewClient(ent.Driver(drv))
+	schemahook.RegisterAllHooks(o.Client)
+
 	o.AuthDbClient = casbinent.NewClient(casbinent.Driver(drv))
 
 	td, _ := ecx.BuildEntCacheDriver(o.Cnf.Sub("entcache"), drv)
 	o.CacheClient = ent.NewClient(ent.Driver(td)).Debug()
+	schemahook.RegisterAllHooks(o.CacheClient)
 
 	err = o.Client.Schema.Create(context.Background(),
 		migrate.WithDropIndex(true),
@@ -84,6 +89,7 @@ func initMiniRedis(cnf *conf.AppConfiguration) *miniredis.Miniredis {
 	if err != nil {
 		panic(err)
 	}
+	cnf.Parser().Set("cache.redis.addrs", []string{db.Addr()})
 	cnf.Parser().Set("store.redis.addrs", []string{db.Addr()})
 	cnf.Parser().Set("authz.watcherOptions.options.addr", db.Addr())
 

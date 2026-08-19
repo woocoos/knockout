@@ -8,7 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-func (a *App) Menus(
+func (_m *App) Menus(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppMenuOrder, where *AppMenuWhereInput,
 ) (*AppMenuConnection, error) {
 	opts := []AppMenuPaginateOption{
@@ -16,8 +16,8 @@ func (a *App) Menus(
 		WithAppMenuFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[0][alias]
-	if nodes, err := a.NamedMenus(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[0][alias]
+	if nodes, err := _m.NamedMenus(alias); err == nil || hasTotalCount {
 		pager, err := newAppMenuPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -26,10 +26,10 @@ func (a *App) Menus(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryMenus().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryMenus().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (a *App) Actions(
+func (_m *App) Actions(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppActionOrder, where *AppActionWhereInput,
 ) (*AppActionConnection, error) {
 	opts := []AppActionPaginateOption{
@@ -37,8 +37,8 @@ func (a *App) Actions(
 		WithAppActionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[1][alias]
-	if nodes, err := a.NamedActions(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[1][alias]
+	if nodes, err := _m.NamedActions(alias); err == nil || hasTotalCount {
 		pager, err := newAppActionPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -47,10 +47,10 @@ func (a *App) Actions(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryActions().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryActions().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (a *App) Resources(
+func (_m *App) Resources(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppResOrder, where *AppResWhereInput,
 ) (*AppResConnection, error) {
 	opts := []AppResPaginateOption{
@@ -58,8 +58,8 @@ func (a *App) Resources(
 		WithAppResFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[2][alias]
-	if nodes, err := a.NamedResources(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[2][alias]
+	if nodes, err := _m.NamedResources(alias); err == nil || hasTotalCount {
 		pager, err := newAppResPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -68,46 +68,46 @@ func (a *App) Resources(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryResources().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryResources().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (a *App) Roles(ctx context.Context) (result []*AppRole, err error) {
+func (_m *App) Roles(ctx context.Context) (result []*AppRole, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = a.NamedRoles(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedRoles(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = a.Edges.RolesOrErr()
+		result, err = _m.Edges.RolesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = a.QueryRoles().All(ctx)
+		result, err = _m.QueryRoles().All(ctx)
 	}
 	return result, err
 }
 
-func (a *App) Policies(ctx context.Context) (result []*AppPolicy, err error) {
+func (_m *App) Policies(ctx context.Context) (result []*AppPolicy, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = a.NamedPolicies(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedPolicies(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = a.Edges.PoliciesOrErr()
+		result, err = _m.Edges.PoliciesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = a.QueryPolicies().All(ctx)
+		result, err = _m.QueryPolicies().All(ctx)
 	}
 	return result, err
 }
 
-func (a *App) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+func (_m *App) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = a.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = a.Edges.PolicyViewsOrErr()
+		result, err = _m.Edges.PolicyViewsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = a.QueryPolicyViews().All(ctx)
+		result, err = _m.QueryPolicyViews().All(ctx)
 	}
 	return result, err
 }
 
-func (a *App) Orgs(
+func (_m *App) Orgs(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgOrder, where *OrgWhereInput,
 ) (*OrgConnection, error) {
 	opts := []OrgPaginateOption{
@@ -115,8 +115,8 @@ func (a *App) Orgs(
 		WithOrgFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
-	if nodes, err := a.NamedOrgs(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
+	if nodes, err := _m.NamedOrgs(alias); err == nil || hasTotalCount {
 		pager, err := newOrgPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -125,10 +125,10 @@ func (a *App) Orgs(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryOrgs().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryOrgs().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (a *App) Dicts(
+func (_m *App) Dicts(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppDictOrder, where *AppDictWhereInput,
 ) (*AppDictConnection, error) {
 	opts := []AppDictPaginateOption{
@@ -136,8 +136,8 @@ func (a *App) Dicts(
 		WithAppDictFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[7][alias]
-	if nodes, err := a.NamedDicts(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[7][alias]
+	if nodes, err := _m.NamedDicts(alias); err == nil || hasTotalCount {
 		pager, err := newAppDictPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -146,274 +146,274 @@ func (a *App) Dicts(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryDicts().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryDicts().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (aa *AppAction) App(ctx context.Context) (*App, error) {
-	result, err := aa.Edges.AppOrErr()
+func (_m *AppAction) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = aa.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (aa *AppAction) Menus(ctx context.Context) (result []*AppMenu, err error) {
+func (_m *AppAction) Menus(ctx context.Context) (result []*AppMenu, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = aa.NamedMenus(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedMenus(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = aa.Edges.MenusOrErr()
+		result, err = _m.Edges.MenusOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = aa.QueryMenus().All(ctx)
+		result, err = _m.QueryMenus().All(ctx)
 	}
 	return result, err
 }
 
-func (ad *AppDict) App(ctx context.Context) (*App, error) {
-	result, err := ad.Edges.AppOrErr()
+func (_m *AppDict) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = ad.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ad *AppDict) Items(ctx context.Context) (result []*AppDictItem, err error) {
+func (_m *AppDict) Items(ctx context.Context) (result []*AppDictItem, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ad.NamedItems(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedItems(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ad.Edges.ItemsOrErr()
+		result, err = _m.Edges.ItemsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ad.QueryItems().All(ctx)
+		result, err = _m.QueryItems().All(ctx)
 	}
 	return result, err
 }
 
-func (adi *AppDictItem) Dict(ctx context.Context) (*AppDict, error) {
-	result, err := adi.Edges.DictOrErr()
+func (_m *AppDictItem) Dict(ctx context.Context) (*AppDict, error) {
+	result, err := _m.Edges.DictOrErr()
 	if IsNotLoaded(err) {
-		result, err = adi.QueryDict().Only(ctx)
+		result, err = _m.QueryDict().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (adi *AppDictItem) Org(ctx context.Context) (*Org, error) {
-	result, err := adi.Edges.OrgOrErr()
+func (_m *AppDictItem) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = adi.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (am *AppMenu) App(ctx context.Context) (*App, error) {
-	result, err := am.Edges.AppOrErr()
+func (_m *AppMenu) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = am.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (am *AppMenu) Action(ctx context.Context) (*AppAction, error) {
-	result, err := am.Edges.ActionOrErr()
+func (_m *AppMenu) Action(ctx context.Context) (*AppAction, error) {
+	result, err := _m.Edges.ActionOrErr()
 	if IsNotLoaded(err) {
-		result, err = am.QueryAction().Only(ctx)
+		result, err = _m.QueryAction().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (am *AppMenu) Parent(ctx context.Context) (*AppMenu, error) {
-	result, err := am.Edges.ParentOrErr()
+func (_m *AppMenu) Parent(ctx context.Context) (*AppMenu, error) {
+	result, err := _m.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
-		result, err = am.QueryParent().Only(ctx)
+		result, err = _m.QueryParent().Only(ctx)
 	}
 	return result, err
 }
 
-func (am *AppMenu) Children(ctx context.Context) (result []*AppMenu, err error) {
+func (_m *AppMenu) Children(ctx context.Context) (result []*AppMenu, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = am.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = am.Edges.ChildrenOrErr()
+		result, err = _m.Edges.ChildrenOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = am.QueryChildren().All(ctx)
+		result, err = _m.QueryChildren().All(ctx)
 	}
 	return result, err
 }
 
-func (ap *AppPolicy) App(ctx context.Context) (*App, error) {
-	result, err := ap.Edges.AppOrErr()
+func (_m *AppPolicy) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = ap.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ap *AppPolicy) Roles(ctx context.Context) (result []*AppRole, err error) {
+func (_m *AppPolicy) Roles(ctx context.Context) (result []*AppRole, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ap.NamedRoles(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedRoles(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ap.Edges.RolesOrErr()
+		result, err = _m.Edges.RolesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ap.QueryRoles().All(ctx)
+		result, err = _m.QueryRoles().All(ctx)
 	}
 	return result, err
 }
 
-func (ap *AppPolicy) OrgPolicies(ctx context.Context) (result []*OrgPolicy, err error) {
+func (_m *AppPolicy) OrgPolicies(ctx context.Context) (result []*OrgPolicy, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ap.NamedOrgPolicies(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedOrgPolicies(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ap.Edges.OrgPoliciesOrErr()
+		result, err = _m.Edges.OrgPoliciesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ap.QueryOrgPolicies().All(ctx)
+		result, err = _m.QueryOrgPolicies().All(ctx)
 	}
 	return result, err
 }
 
-func (ap *AppPolicy) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+func (_m *AppPolicy) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ap.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ap.Edges.PolicyViewsOrErr()
+		result, err = _m.Edges.PolicyViewsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ap.QueryPolicyViews().All(ctx)
+		result, err = _m.QueryPolicyViews().All(ctx)
 	}
 	return result, err
 }
 
-func (apv *AppPolicyView) App(ctx context.Context) (*App, error) {
-	result, err := apv.Edges.AppOrErr()
+func (_m *AppPolicyView) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = apv.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (apv *AppPolicyView) AppPolicy(ctx context.Context) (*AppPolicy, error) {
-	result, err := apv.Edges.AppPolicyOrErr()
+func (_m *AppPolicyView) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := _m.Edges.AppPolicyOrErr()
 	if IsNotLoaded(err) {
-		result, err = apv.QueryAppPolicy().Only(ctx)
+		result, err = _m.QueryAppPolicy().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (apv *AppPolicyView) Parent(ctx context.Context) (*AppPolicyView, error) {
-	result, err := apv.Edges.ParentOrErr()
+func (_m *AppPolicyView) Parent(ctx context.Context) (*AppPolicyView, error) {
+	result, err := _m.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
-		result, err = apv.QueryParent().Only(ctx)
+		result, err = _m.QueryParent().Only(ctx)
 	}
 	return result, err
 }
 
-func (apv *AppPolicyView) Children(ctx context.Context) (result []*AppPolicyView, err error) {
+func (_m *AppPolicyView) Children(ctx context.Context) (result []*AppPolicyView, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = apv.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = apv.Edges.ChildrenOrErr()
+		result, err = _m.Edges.ChildrenOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = apv.QueryChildren().All(ctx)
+		result, err = _m.QueryChildren().All(ctx)
 	}
 	return result, err
 }
 
-func (ar *AppRes) App(ctx context.Context) (*App, error) {
-	result, err := ar.Edges.AppOrErr()
+func (_m *AppRes) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = ar.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ar *AppRole) App(ctx context.Context) (*App, error) {
-	result, err := ar.Edges.AppOrErr()
+func (_m *AppRole) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = ar.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error) {
+func (_m *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ar.NamedPolicies(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedPolicies(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ar.Edges.PoliciesOrErr()
+		result, err = _m.Edges.PoliciesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ar.QueryPolicies().All(ctx)
+		result, err = _m.QueryPolicies().All(ctx)
 	}
 	return result, err
 }
 
-func (c *Country) Regions(ctx context.Context) (result []*Region, err error) {
+func (_m *Country) Regions(ctx context.Context) (result []*Region, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = c.NamedRegions(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedRegions(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = c.Edges.RegionsOrErr()
+		result, err = _m.Edges.RegionsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = c.QueryRegions().All(ctx)
+		result, err = _m.QueryRegions().All(ctx)
 	}
 	return result, err
 }
 
-func (fi *FileIdentity) Source(ctx context.Context) (*FileSource, error) {
-	result, err := fi.Edges.SourceOrErr()
+func (_m *FileIdentity) Source(ctx context.Context) (*FileSource, error) {
+	result, err := _m.Edges.SourceOrErr()
 	if IsNotLoaded(err) {
-		result, err = fi.QuerySource().Only(ctx)
+		result, err = _m.QuerySource().Only(ctx)
 	}
 	return result, err
 }
 
-func (fi *FileIdentity) Org(ctx context.Context) (*Org, error) {
-	result, err := fi.Edges.OrgOrErr()
+func (_m *FileIdentity) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = fi.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, err
 }
 
-func (oc *OauthClient) User(ctx context.Context) (*User, error) {
-	result, err := oc.Edges.UserOrErr()
+func (_m *OauthClient) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = oc.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, err
 }
 
-func (o *Org) Parent(ctx context.Context) (*Org, error) {
-	result, err := o.Edges.ParentOrErr()
+func (_m *Org) Parent(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
-		result, err = o.QueryParent().Only(ctx)
+		result, err = _m.QueryParent().Only(ctx)
 	}
 	return result, err
 }
 
-func (o *Org) Children(ctx context.Context) (result []*Org, err error) {
+func (_m *Org) Children(ctx context.Context) (result []*Org, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = o.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = o.Edges.ChildrenOrErr()
+		result, err = _m.Edges.ChildrenOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = o.QueryChildren().All(ctx)
+		result, err = _m.QueryChildren().All(ctx)
 	}
 	return result, err
 }
 
-func (o *Org) Owner(ctx context.Context) (*User, error) {
-	result, err := o.Edges.OwnerOrErr()
+func (_m *Org) Owner(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.OwnerOrErr()
 	if IsNotLoaded(err) {
-		result, err = o.QueryOwner().Only(ctx)
+		result, err = _m.QueryOwner().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (o *Org) Users(
+func (_m *Org) Users(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserOrder, where *UserWhereInput,
 ) (*UserConnection, error) {
 	opts := []UserPaginateOption{
@@ -421,8 +421,8 @@ func (o *Org) Users(
 		WithUserFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[3][alias]
-	if nodes, err := o.NamedUsers(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	if nodes, err := _m.NamedUsers(alias); err == nil || hasTotalCount {
 		pager, err := newUserPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -431,10 +431,10 @@ func (o *Org) Users(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return o.QueryUsers().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryUsers().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Org) Permissions(
+func (_m *Org) Permissions(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *PermissionOrder, where *PermissionWhereInput,
 ) (*PermissionConnection, error) {
 	opts := []PermissionPaginateOption{
@@ -442,8 +442,8 @@ func (o *Org) Permissions(
 		WithPermissionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[4][alias]
-	if nodes, err := o.NamedPermissions(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[4][alias]
+	if nodes, err := _m.NamedPermissions(alias); err == nil || hasTotalCount {
 		pager, err := newPermissionPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -452,10 +452,10 @@ func (o *Org) Permissions(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return o.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Org) Policies(
+func (_m *Org) Policies(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgPolicyOrder, where *OrgPolicyWhereInput,
 ) (*OrgPolicyConnection, error) {
 	opts := []OrgPolicyPaginateOption{
@@ -463,8 +463,8 @@ func (o *Org) Policies(
 		WithOrgPolicyFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[5][alias]
-	if nodes, err := o.NamedPolicies(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[5][alias]
+	if nodes, err := _m.NamedPolicies(alias); err == nil || hasTotalCount {
 		pager, err := newOrgPolicyPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -473,10 +473,10 @@ func (o *Org) Policies(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return o.QueryPolicies().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryPolicies().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Org) Apps(
+func (_m *Org) Apps(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppOrder, where *AppWhereInput,
 ) (*AppConnection, error) {
 	opts := []AppPaginateOption{
@@ -484,8 +484,8 @@ func (o *Org) Apps(
 		WithAppFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[6][alias]
-	if nodes, err := o.NamedApps(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
+	if nodes, err := _m.NamedApps(alias); err == nil || hasTotalCount {
 		pager, err := newAppPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -494,150 +494,150 @@ func (o *Org) Apps(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return o.QueryApps().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryApps().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err error) {
+func (_m *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = o.NamedFileIdentities(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedFileIdentities(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = o.Edges.FileIdentitiesOrErr()
+		result, err = _m.Edges.FileIdentitiesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = o.QueryFileIdentities().All(ctx)
+		result, err = _m.QueryFileIdentities().All(ctx)
 	}
 	return result, err
 }
 
-func (o *Org) UserPasswordPolicy(ctx context.Context) (*UserPasswordPolicy, error) {
-	result, err := o.Edges.UserPasswordPolicyOrErr()
+func (_m *Org) UserPasswordPolicy(ctx context.Context) (*UserPasswordPolicy, error) {
+	result, err := _m.Edges.UserPasswordPolicyOrErr()
 	if IsNotLoaded(err) {
-		result, err = o.QueryUserPasswordPolicy().Only(ctx)
+		result, err = _m.QueryUserPasswordPolicy().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (o *Org) OrgQuota(ctx context.Context) (result []*Quota, err error) {
+func (_m *Org) OrgQuota(ctx context.Context) (result []*Quota, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = o.NamedOrgQuota(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedOrgQuota(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = o.Edges.OrgQuotaOrErr()
+		result, err = _m.Edges.OrgQuotaOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = o.QueryOrgQuota().All(ctx)
+		result, err = _m.QueryOrgQuota().All(ctx)
 	}
 	return result, err
 }
 
-func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
-	result, err := op.Edges.OrgOrErr()
+func (_m *OrgPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = op.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err error) {
+func (_m *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = op.NamedPermissions(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedPermissions(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = op.Edges.PermissionsOrErr()
+		result, err = _m.Edges.PermissionsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = op.QueryPermissions().All(ctx)
+		result, err = _m.QueryPermissions().All(ctx)
 	}
 	return result, err
 }
 
-func (op *OrgPolicy) AppPolicy(ctx context.Context) (*AppPolicy, error) {
-	result, err := op.Edges.AppPolicyOrErr()
+func (_m *OrgPolicy) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := _m.Edges.AppPolicyOrErr()
 	if IsNotLoaded(err) {
-		result, err = op.QueryAppPolicy().Only(ctx)
+		result, err = _m.QueryAppPolicy().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (op *OrgPolicy) App(ctx context.Context) (*App, error) {
-	result, err := op.Edges.AppOrErr()
+func (_m *OrgPolicy) App(ctx context.Context) (*App, error) {
+	result, err := _m.Edges.AppOrErr()
 	if IsNotLoaded(err) {
-		result, err = op.QueryApp().Only(ctx)
+		result, err = _m.QueryApp().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (oup *OrgUserPreference) User(ctx context.Context) (*User, error) {
-	result, err := oup.Edges.UserOrErr()
+func (_m *OrgUserPreference) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = oup.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, err
 }
 
-func (oup *OrgUserPreference) Org(ctx context.Context) (*Org, error) {
-	result, err := oup.Edges.OrgOrErr()
+func (_m *OrgUserPreference) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = oup.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, err
 }
 
-func (pe *Permission) Org(ctx context.Context) (*Org, error) {
-	result, err := pe.Edges.OrgOrErr()
+func (_m *Permission) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = pe.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, err
 }
 
-func (pe *Permission) User(ctx context.Context) (*User, error) {
-	result, err := pe.Edges.UserOrErr()
+func (_m *Permission) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = pe.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (pe *Permission) Role(ctx context.Context) (*OrgRole, error) {
-	result, err := pe.Edges.RoleOrErr()
+func (_m *Permission) Role(ctx context.Context) (*OrgRole, error) {
+	result, err := _m.Edges.RoleOrErr()
 	if IsNotLoaded(err) {
-		result, err = pe.QueryRole().Only(ctx)
+		result, err = _m.QueryRole().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
-	result, err := pe.Edges.OrgPolicyOrErr()
+func (_m *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
+	result, err := _m.Edges.OrgPolicyOrErr()
 	if IsNotLoaded(err) {
-		result, err = pe.QueryOrgPolicy().Only(ctx)
+		result, err = _m.QueryOrgPolicy().Only(ctx)
 	}
 	return result, err
 }
 
-func (q *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
-	result, err := q.Edges.QuotaItemOrErr()
+func (_m *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
+	result, err := _m.Edges.QuotaItemOrErr()
 	if IsNotLoaded(err) {
-		result, err = q.QueryQuotaItem().Only(ctx)
+		result, err = _m.QueryQuotaItem().Only(ctx)
 	}
 	return result, err
 }
 
-func (q *Quota) QuotaOrg(ctx context.Context) (*Org, error) {
-	result, err := q.Edges.QuotaOrgOrErr()
+func (_m *Quota) QuotaOrg(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.QuotaOrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = q.QueryQuotaOrg().Only(ctx)
+		result, err = _m.QueryQuotaOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (q *Quota) QuotaUser(ctx context.Context) (*User, error) {
-	result, err := q.Edges.QuotaUserOrErr()
+func (_m *Quota) QuotaUser(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.QuotaUserOrErr()
 	if IsNotLoaded(err) {
-		result, err = q.QueryQuotaUser().Only(ctx)
+		result, err = _m.QueryQuotaUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (qi *QuotaItem) Quota(
+func (_m *QuotaItem) Quota(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *QuotaOrder, where *QuotaWhereInput,
 ) (*QuotaConnection, error) {
 	opts := []QuotaPaginateOption{
@@ -645,8 +645,8 @@ func (qi *QuotaItem) Quota(
 		WithQuotaFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := qi.Edges.totalCount[0][alias]
-	if nodes, err := qi.NamedQuota(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[0][alias]
+	if nodes, err := _m.NamedQuota(alias); err == nil || hasTotalCount {
 		pager, err := newQuotaPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -655,58 +655,58 @@ func (qi *QuotaItem) Quota(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return qi.QueryQuota().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryQuota().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (r *Region) Parent(ctx context.Context) (*Region, error) {
-	result, err := r.Edges.ParentOrErr()
+func (_m *Region) Parent(ctx context.Context) (*Region, error) {
+	result, err := _m.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
-		result, err = r.QueryParent().Only(ctx)
+		result, err = _m.QueryParent().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (r *Region) Children(ctx context.Context) (result []*Region, err error) {
+func (_m *Region) Children(ctx context.Context) (result []*Region, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = r.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = r.Edges.ChildrenOrErr()
+		result, err = _m.Edges.ChildrenOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = r.QueryChildren().All(ctx)
+		result, err = _m.QueryChildren().All(ctx)
 	}
 	return result, err
 }
 
-func (r *Region) Country(ctx context.Context) (*Country, error) {
-	result, err := r.Edges.CountryOrErr()
+func (_m *Region) Country(ctx context.Context) (*Country, error) {
+	result, err := _m.Edges.CountryOrErr()
 	if IsNotLoaded(err) {
-		result, err = r.QueryCountry().Only(ctx)
+		result, err = _m.QueryCountry().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (u *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {
+func (_m *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedIdentities(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedIdentities(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.IdentitiesOrErr()
+		result, err = _m.Edges.IdentitiesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryIdentities().All(ctx)
+		result, err = _m.QueryIdentities().All(ctx)
 	}
 	return result, err
 }
 
-func (u *User) LoginProfile(ctx context.Context) (*UserLoginProfile, error) {
-	result, err := u.Edges.LoginProfileOrErr()
+func (_m *User) LoginProfile(ctx context.Context) (*UserLoginProfile, error) {
+	result, err := _m.Edges.LoginProfileOrErr()
 	if IsNotLoaded(err) {
-		result, err = u.QueryLoginProfile().Only(ctx)
+		result, err = _m.QueryLoginProfile().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (u *User) Devices(
+func (_m *User) Devices(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserDeviceOrder, where *UserDeviceWhereInput,
 ) (*UserDeviceConnection, error) {
 	opts := []UserDevicePaginateOption{
@@ -714,8 +714,8 @@ func (u *User) Devices(
 		WithUserDeviceFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := u.Edges.totalCount[2][alias]
-	if nodes, err := u.NamedDevices(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[2][alias]
+	if nodes, err := _m.NamedDevices(alias); err == nil || hasTotalCount {
 		pager, err := newUserDevicePager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -724,10 +724,10 @@ func (u *User) Devices(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return u.QueryDevices().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryDevices().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (u *User) Permissions(
+func (_m *User) Permissions(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *PermissionOrder, where *PermissionWhereInput,
 ) (*PermissionConnection, error) {
 	opts := []PermissionPaginateOption{
@@ -735,8 +735,8 @@ func (u *User) Permissions(
 		WithPermissionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := u.Edges.totalCount[3][alias]
-	if nodes, err := u.NamedPermissions(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	if nodes, err := _m.NamedPermissions(alias); err == nil || hasTotalCount {
 		pager, err := newPermissionPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -745,105 +745,105 @@ func (u *User) Permissions(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return u.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (u *User) OauthClients(ctx context.Context) (result []*OauthClient, err error) {
+func (_m *User) OauthClients(ctx context.Context) (result []*OauthClient, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedOauthClients(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedOauthClients(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.OauthClientsOrErr()
+		result, err = _m.Edges.OauthClientsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryOauthClients().All(ctx)
+		result, err = _m.QueryOauthClients().All(ctx)
 	}
 	return result, err
 }
 
-func (u *User) Addresses(ctx context.Context) (result []*UserAddr, err error) {
+func (_m *User) Addresses(ctx context.Context) (result []*UserAddr, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedAddresses(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedAddresses(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.AddressesOrErr()
+		result, err = _m.Edges.AddressesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryAddresses().All(ctx)
+		result, err = _m.QueryAddresses().All(ctx)
 	}
 	return result, err
 }
 
-func (u *User) Citizenship(ctx context.Context) (*Country, error) {
-	result, err := u.Edges.CitizenshipOrErr()
+func (_m *User) Citizenship(ctx context.Context) (*Country, error) {
+	result, err := _m.Edges.CitizenshipOrErr()
 	if IsNotLoaded(err) {
-		result, err = u.QueryCitizenship().Only(ctx)
+		result, err = _m.QueryCitizenship().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (u *User) UserQuota(ctx context.Context) (result []*Quota, err error) {
+func (_m *User) UserQuota(ctx context.Context) (result []*Quota, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedUserQuota(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedUserQuota(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.UserQuotaOrErr()
+		result, err = _m.Edges.UserQuotaOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryUserQuota().All(ctx)
+		result, err = _m.QueryUserQuota().All(ctx)
 	}
 	return result, err
 }
 
-func (ua *UserAddr) User(ctx context.Context) (*User, error) {
-	result, err := ua.Edges.UserOrErr()
+func (_m *UserAddr) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = ua.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ua *UserAddr) Region(ctx context.Context) (*Region, error) {
-	result, err := ua.Edges.RegionOrErr()
+func (_m *UserAddr) Region(ctx context.Context) (*Region, error) {
+	result, err := _m.Edges.RegionOrErr()
 	if IsNotLoaded(err) {
-		result, err = ua.QueryRegion().Only(ctx)
+		result, err = _m.QueryRegion().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ud *UserDevice) User(ctx context.Context) (*User, error) {
-	result, err := ud.Edges.UserOrErr()
+func (_m *UserDevice) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = ud.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ui *UserIdentity) User(ctx context.Context) (*User, error) {
-	result, err := ui.Edges.UserOrErr()
+func (_m *UserIdentity) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = ui.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (ulp *UserLoginProfile) User(ctx context.Context) (*User, error) {
-	result, err := ulp.Edges.UserOrErr()
+func (_m *UserLoginProfile) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = ulp.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (up *UserPassword) User(ctx context.Context) (*User, error) {
-	result, err := up.Edges.UserOrErr()
+func (_m *UserPassword) User(ctx context.Context) (*User, error) {
+	result, err := _m.Edges.UserOrErr()
 	if IsNotLoaded(err) {
-		result, err = up.QueryUser().Only(ctx)
+		result, err = _m.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (upp *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
-	result, err := upp.Edges.OrgOrErr()
+func (_m *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := _m.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = upp.QueryOrg().Only(ctx)
+		result, err = _m.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

@@ -25,149 +25,149 @@ type AppActionCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (aac *AppActionCreate) SetCreatedBy(i int) *AppActionCreate {
-	aac.mutation.SetCreatedBy(i)
-	return aac
+func (_c *AppActionCreate) SetCreatedBy(v int) *AppActionCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (aac *AppActionCreate) SetCreatedAt(t time.Time) *AppActionCreate {
-	aac.mutation.SetCreatedAt(t)
-	return aac
+func (_c *AppActionCreate) SetCreatedAt(v time.Time) *AppActionCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableCreatedAt(t *time.Time) *AppActionCreate {
-	if t != nil {
-		aac.SetCreatedAt(*t)
+func (_c *AppActionCreate) SetNillableCreatedAt(v *time.Time) *AppActionCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aac *AppActionCreate) SetUpdatedBy(i int) *AppActionCreate {
-	aac.mutation.SetUpdatedBy(i)
-	return aac
+func (_c *AppActionCreate) SetUpdatedBy(v int) *AppActionCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableUpdatedBy(i *int) *AppActionCreate {
-	if i != nil {
-		aac.SetUpdatedBy(*i)
+func (_c *AppActionCreate) SetNillableUpdatedBy(v *int) *AppActionCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aac *AppActionCreate) SetUpdatedAt(t time.Time) *AppActionCreate {
-	aac.mutation.SetUpdatedAt(t)
-	return aac
+func (_c *AppActionCreate) SetUpdatedAt(v time.Time) *AppActionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableUpdatedAt(t *time.Time) *AppActionCreate {
-	if t != nil {
-		aac.SetUpdatedAt(*t)
+func (_c *AppActionCreate) SetNillableUpdatedAt(v *time.Time) *AppActionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (aac *AppActionCreate) SetAppID(i int) *AppActionCreate {
-	aac.mutation.SetAppID(i)
-	return aac
+func (_c *AppActionCreate) SetAppID(v int) *AppActionCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableAppID(i *int) *AppActionCreate {
-	if i != nil {
-		aac.SetAppID(*i)
+func (_c *AppActionCreate) SetNillableAppID(v *int) *AppActionCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetName sets the "name" field.
-func (aac *AppActionCreate) SetName(s string) *AppActionCreate {
-	aac.mutation.SetName(s)
-	return aac
+func (_c *AppActionCreate) SetName(v string) *AppActionCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (aac *AppActionCreate) SetKind(a appaction.Kind) *AppActionCreate {
-	aac.mutation.SetKind(a)
-	return aac
+func (_c *AppActionCreate) SetKind(v appaction.Kind) *AppActionCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetMethod sets the "method" field.
-func (aac *AppActionCreate) SetMethod(a appaction.Method) *AppActionCreate {
-	aac.mutation.SetMethod(a)
-	return aac
+func (_c *AppActionCreate) SetMethod(v appaction.Method) *AppActionCreate {
+	_c.mutation.SetMethod(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (aac *AppActionCreate) SetComments(s string) *AppActionCreate {
-	aac.mutation.SetComments(s)
-	return aac
+func (_c *AppActionCreate) SetComments(v string) *AppActionCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableComments(s *string) *AppActionCreate {
-	if s != nil {
-		aac.SetComments(*s)
+func (_c *AppActionCreate) SetNillableComments(v *string) *AppActionCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (aac *AppActionCreate) SetID(i int) *AppActionCreate {
-	aac.mutation.SetID(i)
-	return aac
+func (_c *AppActionCreate) SetID(v int) *AppActionCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (aac *AppActionCreate) SetNillableID(i *int) *AppActionCreate {
-	if i != nil {
-		aac.SetID(*i)
+func (_c *AppActionCreate) SetNillableID(v *int) *AppActionCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return aac
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (aac *AppActionCreate) SetApp(a *App) *AppActionCreate {
-	return aac.SetAppID(a.ID)
+func (_c *AppActionCreate) SetApp(v *App) *AppActionCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (aac *AppActionCreate) AddMenuIDs(ids ...int) *AppActionCreate {
-	aac.mutation.AddMenuIDs(ids...)
-	return aac
+func (_c *AppActionCreate) AddMenuIDs(ids ...int) *AppActionCreate {
+	_c.mutation.AddMenuIDs(ids...)
+	return _c
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (aac *AppActionCreate) AddMenus(a ...*AppMenu) *AppActionCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppActionCreate) AddMenus(v ...*AppMenu) *AppActionCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return aac.AddMenuIDs(ids...)
+	return _c.AddMenuIDs(ids...)
 }
 
 // Mutation returns the AppActionMutation object of the builder.
-func (aac *AppActionCreate) Mutation() *AppActionMutation {
-	return aac.mutation
+func (_c *AppActionCreate) Mutation() *AppActionMutation {
+	return _c.mutation
 }
 
 // Save creates the AppAction in the database.
-func (aac *AppActionCreate) Save(ctx context.Context) (*AppAction, error) {
-	if err := aac.defaults(); err != nil {
+func (_c *AppActionCreate) Save(ctx context.Context) (*AppAction, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, aac.sqlSave, aac.mutation, aac.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (aac *AppActionCreate) SaveX(ctx context.Context) *AppAction {
-	v, err := aac.Save(ctx)
+func (_c *AppActionCreate) SaveX(ctx context.Context) *AppAction {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -175,65 +175,65 @@ func (aac *AppActionCreate) SaveX(ctx context.Context) *AppAction {
 }
 
 // Exec executes the query.
-func (aac *AppActionCreate) Exec(ctx context.Context) error {
-	_, err := aac.Save(ctx)
+func (_c *AppActionCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aac *AppActionCreate) ExecX(ctx context.Context) {
-	if err := aac.Exec(ctx); err != nil {
+func (_c *AppActionCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (aac *AppActionCreate) defaults() error {
-	if _, ok := aac.mutation.CreatedAt(); !ok {
+func (_c *AppActionCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if appaction.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized appaction.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := appaction.DefaultCreatedAt()
-		aac.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := aac.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if appaction.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appaction.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := appaction.DefaultID()
-		aac.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aac *AppActionCreate) check() error {
-	if _, ok := aac.mutation.CreatedBy(); !ok {
+func (_c *AppActionCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppAction.created_by"`)}
 	}
-	if _, ok := aac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppAction.created_at"`)}
 	}
-	if _, ok := aac.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppAction.name"`)}
 	}
-	if v, ok := aac.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := appaction.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppAction.name": %w`, err)}
 		}
 	}
-	if _, ok := aac.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "AppAction.kind"`)}
 	}
-	if v, ok := aac.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := appaction.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppAction.kind": %w`, err)}
 		}
 	}
-	if _, ok := aac.mutation.Method(); !ok {
+	if _, ok := _c.mutation.Method(); !ok {
 		return &ValidationError{Name: "method", err: errors.New(`ent: missing required field "AppAction.method"`)}
 	}
-	if v, ok := aac.mutation.Method(); ok {
+	if v, ok := _c.mutation.Method(); ok {
 		if err := appaction.MethodValidator(v); err != nil {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
@@ -241,12 +241,12 @@ func (aac *AppActionCreate) check() error {
 	return nil
 }
 
-func (aac *AppActionCreate) sqlSave(ctx context.Context) (*AppAction, error) {
-	if err := aac.check(); err != nil {
+func (_c *AppActionCreate) sqlSave(ctx context.Context) (*AppAction, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := aac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, aac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -256,54 +256,54 @@ func (aac *AppActionCreate) sqlSave(ctx context.Context) (*AppAction, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	aac.mutation.id = &_node.ID
-	aac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
+func (_c *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppAction{config: aac.config}
+		_node = &AppAction{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appaction.Table, sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = aac.conflict
-	if id, ok := aac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := aac.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(appaction.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := aac.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appaction.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := aac.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(appaction.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := aac.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appaction.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := aac.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(appaction.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := aac.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(appaction.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := aac.mutation.Method(); ok {
+	if value, ok := _c.mutation.Method(); ok {
 		_spec.SetField(appaction.FieldMethod, field.TypeEnum, value)
 		_node.Method = value
 	}
-	if value, ok := aac.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(appaction.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if nodes := aac.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -320,7 +320,7 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 		_node.AppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := aac.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -355,10 +355,10 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (aac *AppActionCreate) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertOne {
-	aac.conflict = opts
+func (_c *AppActionCreate) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertOne {
+	_c.conflict = opts
 	return &AppActionUpsertOne{
-		create: aac,
+		create: _c,
 	}
 }
 
@@ -368,10 +368,10 @@ func (aac *AppActionCreate) OnConflict(opts ...sql.ConflictOption) *AppActionUps
 //	client.AppAction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aac *AppActionCreate) OnConflictColumns(columns ...string) *AppActionUpsertOne {
-	aac.conflict = append(aac.conflict, sql.ConflictColumns(columns...))
+func (_c *AppActionCreate) OnConflictColumns(columns ...string) *AppActionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppActionUpsertOne{
-		create: aac,
+		create: _c,
 	}
 }
 
@@ -695,16 +695,16 @@ type AppActionCreateBulk struct {
 }
 
 // Save creates the AppAction entities in the database.
-func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error) {
-	if aacb.err != nil {
-		return nil, aacb.err
+func (_c *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(aacb.builders))
-	nodes := make([]*AppAction, len(aacb.builders))
-	mutators := make([]Mutator, len(aacb.builders))
-	for i := range aacb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppAction, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := aacb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppActionMutation)
@@ -718,12 +718,12 @@ func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, aacb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = aacb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, aacb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -747,7 +747,7 @@ func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, aacb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -755,8 +755,8 @@ func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aacb *AppActionCreateBulk) SaveX(ctx context.Context) []*AppAction {
-	v, err := aacb.Save(ctx)
+func (_c *AppActionCreateBulk) SaveX(ctx context.Context) []*AppAction {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -764,14 +764,14 @@ func (aacb *AppActionCreateBulk) SaveX(ctx context.Context) []*AppAction {
 }
 
 // Exec executes the query.
-func (aacb *AppActionCreateBulk) Exec(ctx context.Context) error {
-	_, err := aacb.Save(ctx)
+func (_c *AppActionCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacb *AppActionCreateBulk) ExecX(ctx context.Context) {
-	if err := aacb.Exec(ctx); err != nil {
+func (_c *AppActionCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -791,10 +791,10 @@ func (aacb *AppActionCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (aacb *AppActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertBulk {
-	aacb.conflict = opts
+func (_c *AppActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertBulk {
+	_c.conflict = opts
 	return &AppActionUpsertBulk{
-		create: aacb,
+		create: _c,
 	}
 }
 
@@ -804,10 +804,10 @@ func (aacb *AppActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppActi
 //	client.AppAction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aacb *AppActionCreateBulk) OnConflictColumns(columns ...string) *AppActionUpsertBulk {
-	aacb.conflict = append(aacb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppActionCreateBulk) OnConflictColumns(columns ...string) *AppActionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppActionUpsertBulk{
-		create: aacb,
+		create: _c,
 	}
 }
 

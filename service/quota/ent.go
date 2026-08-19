@@ -2,8 +2,9 @@ package quota
 
 import (
 	"context"
-	"entgo.io/ent"
 	"fmt"
+
+	"entgo.io/ent"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"

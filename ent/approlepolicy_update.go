@@ -25,154 +25,154 @@ type AppRolePolicyUpdate struct {
 }
 
 // Where appends a list predicates to the AppRolePolicyUpdate builder.
-func (arpu *AppRolePolicyUpdate) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyUpdate {
-	arpu.mutation.Where(ps...)
-	return arpu
+func (_u *AppRolePolicyUpdate) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (arpu *AppRolePolicyUpdate) SetUpdatedBy(i int) *AppRolePolicyUpdate {
-	arpu.mutation.ResetUpdatedBy()
-	arpu.mutation.SetUpdatedBy(i)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetUpdatedBy(v int) *AppRolePolicyUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (arpu *AppRolePolicyUpdate) SetNillableUpdatedBy(i *int) *AppRolePolicyUpdate {
-	if i != nil {
-		arpu.SetUpdatedBy(*i)
+func (_u *AppRolePolicyUpdate) SetNillableUpdatedBy(v *int) *AppRolePolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return arpu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (arpu *AppRolePolicyUpdate) AddUpdatedBy(i int) *AppRolePolicyUpdate {
-	arpu.mutation.AddUpdatedBy(i)
-	return arpu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppRolePolicyUpdate) AddUpdatedBy(v int) *AppRolePolicyUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (arpu *AppRolePolicyUpdate) ClearUpdatedBy() *AppRolePolicyUpdate {
-	arpu.mutation.ClearUpdatedBy()
-	return arpu
+func (_u *AppRolePolicyUpdate) ClearUpdatedBy() *AppRolePolicyUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (arpu *AppRolePolicyUpdate) SetUpdatedAt(t time.Time) *AppRolePolicyUpdate {
-	arpu.mutation.SetUpdatedAt(t)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetUpdatedAt(v time.Time) *AppRolePolicyUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (arpu *AppRolePolicyUpdate) SetNillableUpdatedAt(t *time.Time) *AppRolePolicyUpdate {
-	if t != nil {
-		arpu.SetUpdatedAt(*t)
+func (_u *AppRolePolicyUpdate) SetNillableUpdatedAt(v *time.Time) *AppRolePolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return arpu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (arpu *AppRolePolicyUpdate) ClearUpdatedAt() *AppRolePolicyUpdate {
-	arpu.mutation.ClearUpdatedAt()
-	return arpu
+func (_u *AppRolePolicyUpdate) ClearUpdatedAt() *AppRolePolicyUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAppRoleID sets the "app_role_id" field.
-func (arpu *AppRolePolicyUpdate) SetAppRoleID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.SetAppRoleID(i)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetAppRoleID(v int) *AppRolePolicyUpdate {
+	_u.mutation.SetAppRoleID(v)
+	return _u
 }
 
 // SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
-func (arpu *AppRolePolicyUpdate) SetNillableAppRoleID(i *int) *AppRolePolicyUpdate {
-	if i != nil {
-		arpu.SetAppRoleID(*i)
+func (_u *AppRolePolicyUpdate) SetNillableAppRoleID(v *int) *AppRolePolicyUpdate {
+	if v != nil {
+		_u.SetAppRoleID(*v)
 	}
-	return arpu
+	return _u
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.SetAppPolicyID(i)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetAppPolicyID(v int) *AppRolePolicyUpdate {
+	_u.mutation.SetAppPolicyID(v)
+	return _u
 }
 
 // SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
-func (arpu *AppRolePolicyUpdate) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdate {
-	if i != nil {
-		arpu.SetAppPolicyID(*i)
+func (_u *AppRolePolicyUpdate) SetNillableAppPolicyID(v *int) *AppRolePolicyUpdate {
+	if v != nil {
+		_u.SetAppPolicyID(*v)
 	}
-	return arpu
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (arpu *AppRolePolicyUpdate) SetAppID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.ResetAppID()
-	arpu.mutation.SetAppID(i)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetAppID(v int) *AppRolePolicyUpdate {
+	_u.mutation.ResetAppID()
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (arpu *AppRolePolicyUpdate) SetNillableAppID(i *int) *AppRolePolicyUpdate {
-	if i != nil {
-		arpu.SetAppID(*i)
+func (_u *AppRolePolicyUpdate) SetNillableAppID(v *int) *AppRolePolicyUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return arpu
+	return _u
 }
 
-// AddAppID adds i to the "app_id" field.
-func (arpu *AppRolePolicyUpdate) AddAppID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.AddAppID(i)
-	return arpu
+// AddAppID adds value to the "app_id" field.
+func (_u *AppRolePolicyUpdate) AddAppID(v int) *AppRolePolicyUpdate {
+	_u.mutation.AddAppID(v)
+	return _u
 }
 
 // SetRoleID sets the "role" edge to the AppRole entity by ID.
-func (arpu *AppRolePolicyUpdate) SetRoleID(id int) *AppRolePolicyUpdate {
-	arpu.mutation.SetRoleID(id)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetRoleID(id int) *AppRolePolicyUpdate {
+	_u.mutation.SetRoleID(id)
+	return _u
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
-func (arpu *AppRolePolicyUpdate) SetRole(a *AppRole) *AppRolePolicyUpdate {
-	return arpu.SetRoleID(a.ID)
+func (_u *AppRolePolicyUpdate) SetRole(v *AppRole) *AppRolePolicyUpdate {
+	return _u.SetRoleID(v.ID)
 }
 
 // SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
-func (arpu *AppRolePolicyUpdate) SetPolicyID(id int) *AppRolePolicyUpdate {
-	arpu.mutation.SetPolicyID(id)
-	return arpu
+func (_u *AppRolePolicyUpdate) SetPolicyID(id int) *AppRolePolicyUpdate {
+	_u.mutation.SetPolicyID(id)
+	return _u
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
-func (arpu *AppRolePolicyUpdate) SetPolicy(a *AppPolicy) *AppRolePolicyUpdate {
-	return arpu.SetPolicyID(a.ID)
+func (_u *AppRolePolicyUpdate) SetPolicy(v *AppPolicy) *AppRolePolicyUpdate {
+	return _u.SetPolicyID(v.ID)
 }
 
 // Mutation returns the AppRolePolicyMutation object of the builder.
-func (arpu *AppRolePolicyUpdate) Mutation() *AppRolePolicyMutation {
-	return arpu.mutation
+func (_u *AppRolePolicyUpdate) Mutation() *AppRolePolicyMutation {
+	return _u.mutation
 }
 
 // ClearRole clears the "role" edge to the AppRole entity.
-func (arpu *AppRolePolicyUpdate) ClearRole() *AppRolePolicyUpdate {
-	arpu.mutation.ClearRole()
-	return arpu
+func (_u *AppRolePolicyUpdate) ClearRole() *AppRolePolicyUpdate {
+	_u.mutation.ClearRole()
+	return _u
 }
 
 // ClearPolicy clears the "policy" edge to the AppPolicy entity.
-func (arpu *AppRolePolicyUpdate) ClearPolicy() *AppRolePolicyUpdate {
-	arpu.mutation.ClearPolicy()
-	return arpu
+func (_u *AppRolePolicyUpdate) ClearPolicy() *AppRolePolicyUpdate {
+	_u.mutation.ClearPolicy()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (arpu *AppRolePolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, arpu.sqlSave, arpu.mutation, arpu.hooks)
+func (_u *AppRolePolicyUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (arpu *AppRolePolicyUpdate) SaveX(ctx context.Context) int {
-	affected, err := arpu.Save(ctx)
+func (_u *AppRolePolicyUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -180,63 +180,63 @@ func (arpu *AppRolePolicyUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (arpu *AppRolePolicyUpdate) Exec(ctx context.Context) error {
-	_, err := arpu.Save(ctx)
+func (_u *AppRolePolicyUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpu *AppRolePolicyUpdate) ExecX(ctx context.Context) {
-	if err := arpu.Exec(ctx); err != nil {
+func (_u *AppRolePolicyUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (arpu *AppRolePolicyUpdate) check() error {
-	if arpu.mutation.RoleCleared() && len(arpu.mutation.RoleIDs()) > 0 {
+func (_u *AppRolePolicyUpdate) check() error {
+	if _u.mutation.RoleCleared() && len(_u.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if arpu.mutation.PolicyCleared() && len(arpu.mutation.PolicyIDs()) > 0 {
+	if _u.mutation.PolicyCleared() && len(_u.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil
 }
 
-func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := arpu.check(); err != nil {
-		return n, err
+func (_u *AppRolePolicyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
-	if ps := arpu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := arpu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := arpu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(approlepolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if arpu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(approlepolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := arpu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if arpu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(approlepolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := arpu.mutation.AppID(); ok {
+	if value, ok := _u.mutation.AppID(); ok {
 		_spec.SetField(approlepolicy.FieldAppID, field.TypeInt, value)
 	}
-	if value, ok := arpu.mutation.AddedAppID(); ok {
+	if value, ok := _u.mutation.AddedAppID(); ok {
 		_spec.AddField(approlepolicy.FieldAppID, field.TypeInt, value)
 	}
-	if arpu.mutation.RoleCleared() {
+	if _u.mutation.RoleCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -249,7 +249,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := arpu.mutation.RoleIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RoleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -265,7 +265,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if arpu.mutation.PolicyCleared() {
+	if _u.mutation.PolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -278,7 +278,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := arpu.mutation.PolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -294,7 +294,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, arpu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{approlepolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -302,8 +302,8 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		return 0, err
 	}
-	arpu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppRolePolicyUpdateOne is the builder for updating a single AppRolePolicy entity.
@@ -315,161 +315,161 @@ type AppRolePolicyUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (arpuo *AppRolePolicyUpdateOne) SetUpdatedBy(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.ResetUpdatedBy()
-	arpuo.mutation.SetUpdatedBy(i)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetUpdatedBy(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (arpuo *AppRolePolicyUpdateOne) SetNillableUpdatedBy(i *int) *AppRolePolicyUpdateOne {
-	if i != nil {
-		arpuo.SetUpdatedBy(*i)
+func (_u *AppRolePolicyUpdateOne) SetNillableUpdatedBy(v *int) *AppRolePolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return arpuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (arpuo *AppRolePolicyUpdateOne) AddUpdatedBy(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.AddUpdatedBy(i)
-	return arpuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppRolePolicyUpdateOne) AddUpdatedBy(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (arpuo *AppRolePolicyUpdateOne) ClearUpdatedBy() *AppRolePolicyUpdateOne {
-	arpuo.mutation.ClearUpdatedBy()
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) ClearUpdatedBy() *AppRolePolicyUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (arpuo *AppRolePolicyUpdateOne) SetUpdatedAt(t time.Time) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetUpdatedAt(t)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetUpdatedAt(v time.Time) *AppRolePolicyUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (arpuo *AppRolePolicyUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppRolePolicyUpdateOne {
-	if t != nil {
-		arpuo.SetUpdatedAt(*t)
+func (_u *AppRolePolicyUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppRolePolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return arpuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (arpuo *AppRolePolicyUpdateOne) ClearUpdatedAt() *AppRolePolicyUpdateOne {
-	arpuo.mutation.ClearUpdatedAt()
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) ClearUpdatedAt() *AppRolePolicyUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAppRoleID sets the "app_role_id" field.
-func (arpuo *AppRolePolicyUpdateOne) SetAppRoleID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetAppRoleID(i)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetAppRoleID(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.SetAppRoleID(v)
+	return _u
 }
 
 // SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
-func (arpuo *AppRolePolicyUpdateOne) SetNillableAppRoleID(i *int) *AppRolePolicyUpdateOne {
-	if i != nil {
-		arpuo.SetAppRoleID(*i)
+func (_u *AppRolePolicyUpdateOne) SetNillableAppRoleID(v *int) *AppRolePolicyUpdateOne {
+	if v != nil {
+		_u.SetAppRoleID(*v)
 	}
-	return arpuo
+	return _u
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetAppPolicyID(i)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetAppPolicyID(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.SetAppPolicyID(v)
+	return _u
 }
 
 // SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
-func (arpuo *AppRolePolicyUpdateOne) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdateOne {
-	if i != nil {
-		arpuo.SetAppPolicyID(*i)
+func (_u *AppRolePolicyUpdateOne) SetNillableAppPolicyID(v *int) *AppRolePolicyUpdateOne {
+	if v != nil {
+		_u.SetAppPolicyID(*v)
 	}
-	return arpuo
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (arpuo *AppRolePolicyUpdateOne) SetAppID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.ResetAppID()
-	arpuo.mutation.SetAppID(i)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetAppID(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.ResetAppID()
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (arpuo *AppRolePolicyUpdateOne) SetNillableAppID(i *int) *AppRolePolicyUpdateOne {
-	if i != nil {
-		arpuo.SetAppID(*i)
+func (_u *AppRolePolicyUpdateOne) SetNillableAppID(v *int) *AppRolePolicyUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return arpuo
+	return _u
 }
 
-// AddAppID adds i to the "app_id" field.
-func (arpuo *AppRolePolicyUpdateOne) AddAppID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.AddAppID(i)
-	return arpuo
+// AddAppID adds value to the "app_id" field.
+func (_u *AppRolePolicyUpdateOne) AddAppID(v int) *AppRolePolicyUpdateOne {
+	_u.mutation.AddAppID(v)
+	return _u
 }
 
 // SetRoleID sets the "role" edge to the AppRole entity by ID.
-func (arpuo *AppRolePolicyUpdateOne) SetRoleID(id int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetRoleID(id)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetRoleID(id int) *AppRolePolicyUpdateOne {
+	_u.mutation.SetRoleID(id)
+	return _u
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
-func (arpuo *AppRolePolicyUpdateOne) SetRole(a *AppRole) *AppRolePolicyUpdateOne {
-	return arpuo.SetRoleID(a.ID)
+func (_u *AppRolePolicyUpdateOne) SetRole(v *AppRole) *AppRolePolicyUpdateOne {
+	return _u.SetRoleID(v.ID)
 }
 
 // SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
-func (arpuo *AppRolePolicyUpdateOne) SetPolicyID(id int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetPolicyID(id)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) SetPolicyID(id int) *AppRolePolicyUpdateOne {
+	_u.mutation.SetPolicyID(id)
+	return _u
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
-func (arpuo *AppRolePolicyUpdateOne) SetPolicy(a *AppPolicy) *AppRolePolicyUpdateOne {
-	return arpuo.SetPolicyID(a.ID)
+func (_u *AppRolePolicyUpdateOne) SetPolicy(v *AppPolicy) *AppRolePolicyUpdateOne {
+	return _u.SetPolicyID(v.ID)
 }
 
 // Mutation returns the AppRolePolicyMutation object of the builder.
-func (arpuo *AppRolePolicyUpdateOne) Mutation() *AppRolePolicyMutation {
-	return arpuo.mutation
+func (_u *AppRolePolicyUpdateOne) Mutation() *AppRolePolicyMutation {
+	return _u.mutation
 }
 
 // ClearRole clears the "role" edge to the AppRole entity.
-func (arpuo *AppRolePolicyUpdateOne) ClearRole() *AppRolePolicyUpdateOne {
-	arpuo.mutation.ClearRole()
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) ClearRole() *AppRolePolicyUpdateOne {
+	_u.mutation.ClearRole()
+	return _u
 }
 
 // ClearPolicy clears the "policy" edge to the AppPolicy entity.
-func (arpuo *AppRolePolicyUpdateOne) ClearPolicy() *AppRolePolicyUpdateOne {
-	arpuo.mutation.ClearPolicy()
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) ClearPolicy() *AppRolePolicyUpdateOne {
+	_u.mutation.ClearPolicy()
+	return _u
 }
 
 // Where appends a list predicates to the AppRolePolicyUpdate builder.
-func (arpuo *AppRolePolicyUpdateOne) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyUpdateOne {
-	arpuo.mutation.Where(ps...)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (arpuo *AppRolePolicyUpdateOne) Select(field string, fields ...string) *AppRolePolicyUpdateOne {
-	arpuo.fields = append([]string{field}, fields...)
-	return arpuo
+func (_u *AppRolePolicyUpdateOne) Select(field string, fields ...string) *AppRolePolicyUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppRolePolicy entity.
-func (arpuo *AppRolePolicyUpdateOne) Save(ctx context.Context) (*AppRolePolicy, error) {
-	return withHooks(ctx, arpuo.sqlSave, arpuo.mutation, arpuo.hooks)
+func (_u *AppRolePolicyUpdateOne) Save(ctx context.Context) (*AppRolePolicy, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (arpuo *AppRolePolicyUpdateOne) SaveX(ctx context.Context) *AppRolePolicy {
-	node, err := arpuo.Save(ctx)
+func (_u *AppRolePolicyUpdateOne) SaveX(ctx context.Context) *AppRolePolicy {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -477,40 +477,40 @@ func (arpuo *AppRolePolicyUpdateOne) SaveX(ctx context.Context) *AppRolePolicy {
 }
 
 // Exec executes the query on the entity.
-func (arpuo *AppRolePolicyUpdateOne) Exec(ctx context.Context) error {
-	_, err := arpuo.Save(ctx)
+func (_u *AppRolePolicyUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpuo *AppRolePolicyUpdateOne) ExecX(ctx context.Context) {
-	if err := arpuo.Exec(ctx); err != nil {
+func (_u *AppRolePolicyUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (arpuo *AppRolePolicyUpdateOne) check() error {
-	if arpuo.mutation.RoleCleared() && len(arpuo.mutation.RoleIDs()) > 0 {
+func (_u *AppRolePolicyUpdateOne) check() error {
+	if _u.mutation.RoleCleared() && len(_u.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if arpuo.mutation.PolicyCleared() && len(arpuo.mutation.PolicyIDs()) > 0 {
+	if _u.mutation.PolicyCleared() && len(_u.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil
 }
 
-func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRolePolicy, err error) {
-	if err := arpuo.check(); err != nil {
+func (_u *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRolePolicy, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
-	id, ok := arpuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppRolePolicy.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := arpuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, approlepolicy.FieldID)
 		for _, f := range fields {
@@ -522,35 +522,35 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 			}
 		}
 	}
-	if ps := arpuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := arpuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := arpuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(approlepolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if arpuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(approlepolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := arpuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if arpuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(approlepolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := arpuo.mutation.AppID(); ok {
+	if value, ok := _u.mutation.AppID(); ok {
 		_spec.SetField(approlepolicy.FieldAppID, field.TypeInt, value)
 	}
-	if value, ok := arpuo.mutation.AddedAppID(); ok {
+	if value, ok := _u.mutation.AddedAppID(); ok {
 		_spec.AddField(approlepolicy.FieldAppID, field.TypeInt, value)
 	}
-	if arpuo.mutation.RoleCleared() {
+	if _u.mutation.RoleCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -563,7 +563,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := arpuo.mutation.RoleIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RoleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -579,7 +579,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if arpuo.mutation.PolicyCleared() {
+	if _u.mutation.PolicyCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -592,7 +592,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := arpuo.mutation.PolicyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -608,10 +608,10 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppRolePolicy{config: arpuo.config}
+	_node = &AppRolePolicy{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, arpuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{approlepolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -619,6 +619,6 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 		}
 		return nil, err
 	}
-	arpuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

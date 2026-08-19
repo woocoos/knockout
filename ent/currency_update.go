@@ -24,133 +24,133 @@ type CurrencyUpdate struct {
 }
 
 // Where appends a list predicates to the CurrencyUpdate builder.
-func (cu *CurrencyUpdate) Where(ps ...predicate.Currency) *CurrencyUpdate {
-	cu.mutation.Where(ps...)
-	return cu
+func (_u *CurrencyUpdate) Where(ps ...predicate.Currency) *CurrencyUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cu *CurrencyUpdate) SetUpdatedBy(i int) *CurrencyUpdate {
-	cu.mutation.ResetUpdatedBy()
-	cu.mutation.SetUpdatedBy(i)
-	return cu
+func (_u *CurrencyUpdate) SetUpdatedBy(v int) *CurrencyUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableUpdatedBy(i *int) *CurrencyUpdate {
-	if i != nil {
-		cu.SetUpdatedBy(*i)
+func (_u *CurrencyUpdate) SetNillableUpdatedBy(v *int) *CurrencyUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return cu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (cu *CurrencyUpdate) AddUpdatedBy(i int) *CurrencyUpdate {
-	cu.mutation.AddUpdatedBy(i)
-	return cu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *CurrencyUpdate) AddUpdatedBy(v int) *CurrencyUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (cu *CurrencyUpdate) ClearUpdatedBy() *CurrencyUpdate {
-	cu.mutation.ClearUpdatedBy()
-	return cu
+func (_u *CurrencyUpdate) ClearUpdatedBy() *CurrencyUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cu *CurrencyUpdate) SetUpdatedAt(t time.Time) *CurrencyUpdate {
-	cu.mutation.SetUpdatedAt(t)
-	return cu
+func (_u *CurrencyUpdate) SetUpdatedAt(v time.Time) *CurrencyUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableUpdatedAt(t *time.Time) *CurrencyUpdate {
-	if t != nil {
-		cu.SetUpdatedAt(*t)
+func (_u *CurrencyUpdate) SetNillableUpdatedAt(v *time.Time) *CurrencyUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (cu *CurrencyUpdate) ClearUpdatedAt() *CurrencyUpdate {
-	cu.mutation.ClearUpdatedAt()
-	return cu
+func (_u *CurrencyUpdate) ClearUpdatedAt() *CurrencyUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (cu *CurrencyUpdate) SetCode(s string) *CurrencyUpdate {
-	cu.mutation.SetCode(s)
-	return cu
+func (_u *CurrencyUpdate) SetCode(v string) *CurrencyUpdate {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableCode(s *string) *CurrencyUpdate {
-	if s != nil {
-		cu.SetCode(*s)
+func (_u *CurrencyUpdate) SetNillableCode(v *string) *CurrencyUpdate {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cu *CurrencyUpdate) SetName(s string) *CurrencyUpdate {
-	cu.mutation.SetName(s)
-	return cu
+func (_u *CurrencyUpdate) SetName(v string) *CurrencyUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableName(s *string) *CurrencyUpdate {
-	if s != nil {
-		cu.SetName(*s)
+func (_u *CurrencyUpdate) SetNillableName(v *string) *CurrencyUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetSign sets the "sign" field.
-func (cu *CurrencyUpdate) SetSign(s string) *CurrencyUpdate {
-	cu.mutation.SetSign(s)
-	return cu
+func (_u *CurrencyUpdate) SetSign(v string) *CurrencyUpdate {
+	_u.mutation.SetSign(v)
+	return _u
 }
 
 // SetNillableSign sets the "sign" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableSign(s *string) *CurrencyUpdate {
-	if s != nil {
-		cu.SetSign(*s)
+func (_u *CurrencyUpdate) SetNillableSign(v *string) *CurrencyUpdate {
+	if v != nil {
+		_u.SetSign(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearSign clears the value of the "sign" field.
-func (cu *CurrencyUpdate) ClearSign() *CurrencyUpdate {
-	cu.mutation.ClearSign()
-	return cu
+func (_u *CurrencyUpdate) ClearSign() *CurrencyUpdate {
+	_u.mutation.ClearSign()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (cu *CurrencyUpdate) SetStatus(ts typex.SimpleStatus) *CurrencyUpdate {
-	cu.mutation.SetStatus(ts)
-	return cu
+func (_u *CurrencyUpdate) SetStatus(v typex.SimpleStatus) *CurrencyUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cu *CurrencyUpdate) SetNillableStatus(ts *typex.SimpleStatus) *CurrencyUpdate {
-	if ts != nil {
-		cu.SetStatus(*ts)
+func (_u *CurrencyUpdate) SetNillableStatus(v *typex.SimpleStatus) *CurrencyUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return cu
+	return _u
 }
 
 // Mutation returns the CurrencyMutation object of the builder.
-func (cu *CurrencyUpdate) Mutation() *CurrencyMutation {
-	return cu.mutation
+func (_u *CurrencyUpdate) Mutation() *CurrencyMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cu *CurrencyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
+func (_u *CurrencyUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cu *CurrencyUpdate) SaveX(ctx context.Context) int {
-	affected, err := cu.Save(ctx)
+func (_u *CurrencyUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -158,36 +158,36 @@ func (cu *CurrencyUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cu *CurrencyUpdate) Exec(ctx context.Context) error {
-	_, err := cu.Save(ctx)
+func (_u *CurrencyUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cu *CurrencyUpdate) ExecX(ctx context.Context) {
-	if err := cu.Exec(ctx); err != nil {
+func (_u *CurrencyUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cu *CurrencyUpdate) check() error {
-	if v, ok := cu.mutation.Code(); ok {
+func (_u *CurrencyUpdate) check() error {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := currency.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Currency.code": %w`, err)}
 		}
 	}
-	if v, ok := cu.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := currency.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Currency.name": %w`, err)}
 		}
 	}
-	if v, ok := cu.mutation.Sign(); ok {
+	if v, ok := _u.mutation.Sign(); ok {
 		if err := currency.SignValidator(v); err != nil {
 			return &ValidationError{Name: "sign", err: fmt.Errorf(`ent: validator failed for field "Currency.sign": %w`, err)}
 		}
 	}
-	if v, ok := cu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := currency.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Currency.status": %w`, err)}
 		}
@@ -195,49 +195,49 @@ func (cu *CurrencyUpdate) check() error {
 	return nil
 }
 
-func (cu *CurrencyUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := cu.check(); err != nil {
-		return n, err
+func (_u *CurrencyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(currency.Table, currency.Columns, sqlgraph.NewFieldSpec(currency.FieldID, field.TypeInt))
-	if ps := cu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(currency.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(currency.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if cu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(currency.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := cu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(currency.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if cu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(currency.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := cu.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(currency.FieldCode, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(currency.FieldName, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.Sign(); ok {
+	if value, ok := _u.mutation.Sign(); ok {
 		_spec.SetField(currency.FieldSign, field.TypeString, value)
 	}
-	if cu.mutation.SignCleared() {
+	if _u.mutation.SignCleared() {
 		_spec.ClearField(currency.FieldSign, field.TypeString)
 	}
-	if value, ok := cu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(currency.FieldStatus, field.TypeEnum, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{currency.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -245,8 +245,8 @@ func (cu *CurrencyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	cu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // CurrencyUpdateOne is the builder for updating a single Currency entity.
@@ -258,140 +258,140 @@ type CurrencyUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cuo *CurrencyUpdateOne) SetUpdatedBy(i int) *CurrencyUpdateOne {
-	cuo.mutation.ResetUpdatedBy()
-	cuo.mutation.SetUpdatedBy(i)
-	return cuo
+func (_u *CurrencyUpdateOne) SetUpdatedBy(v int) *CurrencyUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableUpdatedBy(i *int) *CurrencyUpdateOne {
-	if i != nil {
-		cuo.SetUpdatedBy(*i)
+func (_u *CurrencyUpdateOne) SetNillableUpdatedBy(v *int) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return cuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (cuo *CurrencyUpdateOne) AddUpdatedBy(i int) *CurrencyUpdateOne {
-	cuo.mutation.AddUpdatedBy(i)
-	return cuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *CurrencyUpdateOne) AddUpdatedBy(v int) *CurrencyUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (cuo *CurrencyUpdateOne) ClearUpdatedBy() *CurrencyUpdateOne {
-	cuo.mutation.ClearUpdatedBy()
-	return cuo
+func (_u *CurrencyUpdateOne) ClearUpdatedBy() *CurrencyUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cuo *CurrencyUpdateOne) SetUpdatedAt(t time.Time) *CurrencyUpdateOne {
-	cuo.mutation.SetUpdatedAt(t)
-	return cuo
+func (_u *CurrencyUpdateOne) SetUpdatedAt(v time.Time) *CurrencyUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableUpdatedAt(t *time.Time) *CurrencyUpdateOne {
-	if t != nil {
-		cuo.SetUpdatedAt(*t)
+func (_u *CurrencyUpdateOne) SetNillableUpdatedAt(v *time.Time) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (cuo *CurrencyUpdateOne) ClearUpdatedAt() *CurrencyUpdateOne {
-	cuo.mutation.ClearUpdatedAt()
-	return cuo
+func (_u *CurrencyUpdateOne) ClearUpdatedAt() *CurrencyUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (cuo *CurrencyUpdateOne) SetCode(s string) *CurrencyUpdateOne {
-	cuo.mutation.SetCode(s)
-	return cuo
+func (_u *CurrencyUpdateOne) SetCode(v string) *CurrencyUpdateOne {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableCode(s *string) *CurrencyUpdateOne {
-	if s != nil {
-		cuo.SetCode(*s)
+func (_u *CurrencyUpdateOne) SetNillableCode(v *string) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cuo *CurrencyUpdateOne) SetName(s string) *CurrencyUpdateOne {
-	cuo.mutation.SetName(s)
-	return cuo
+func (_u *CurrencyUpdateOne) SetName(v string) *CurrencyUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableName(s *string) *CurrencyUpdateOne {
-	if s != nil {
-		cuo.SetName(*s)
+func (_u *CurrencyUpdateOne) SetNillableName(v *string) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetSign sets the "sign" field.
-func (cuo *CurrencyUpdateOne) SetSign(s string) *CurrencyUpdateOne {
-	cuo.mutation.SetSign(s)
-	return cuo
+func (_u *CurrencyUpdateOne) SetSign(v string) *CurrencyUpdateOne {
+	_u.mutation.SetSign(v)
+	return _u
 }
 
 // SetNillableSign sets the "sign" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableSign(s *string) *CurrencyUpdateOne {
-	if s != nil {
-		cuo.SetSign(*s)
+func (_u *CurrencyUpdateOne) SetNillableSign(v *string) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetSign(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearSign clears the value of the "sign" field.
-func (cuo *CurrencyUpdateOne) ClearSign() *CurrencyUpdateOne {
-	cuo.mutation.ClearSign()
-	return cuo
+func (_u *CurrencyUpdateOne) ClearSign() *CurrencyUpdateOne {
+	_u.mutation.ClearSign()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (cuo *CurrencyUpdateOne) SetStatus(ts typex.SimpleStatus) *CurrencyUpdateOne {
-	cuo.mutation.SetStatus(ts)
-	return cuo
+func (_u *CurrencyUpdateOne) SetStatus(v typex.SimpleStatus) *CurrencyUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cuo *CurrencyUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *CurrencyUpdateOne {
-	if ts != nil {
-		cuo.SetStatus(*ts)
+func (_u *CurrencyUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *CurrencyUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return cuo
+	return _u
 }
 
 // Mutation returns the CurrencyMutation object of the builder.
-func (cuo *CurrencyUpdateOne) Mutation() *CurrencyMutation {
-	return cuo.mutation
+func (_u *CurrencyUpdateOne) Mutation() *CurrencyMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the CurrencyUpdate builder.
-func (cuo *CurrencyUpdateOne) Where(ps ...predicate.Currency) *CurrencyUpdateOne {
-	cuo.mutation.Where(ps...)
-	return cuo
+func (_u *CurrencyUpdateOne) Where(ps ...predicate.Currency) *CurrencyUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cuo *CurrencyUpdateOne) Select(field string, fields ...string) *CurrencyUpdateOne {
-	cuo.fields = append([]string{field}, fields...)
-	return cuo
+func (_u *CurrencyUpdateOne) Select(field string, fields ...string) *CurrencyUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Currency entity.
-func (cuo *CurrencyUpdateOne) Save(ctx context.Context) (*Currency, error) {
-	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+func (_u *CurrencyUpdateOne) Save(ctx context.Context) (*Currency, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cuo *CurrencyUpdateOne) SaveX(ctx context.Context) *Currency {
-	node, err := cuo.Save(ctx)
+func (_u *CurrencyUpdateOne) SaveX(ctx context.Context) *Currency {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -399,36 +399,36 @@ func (cuo *CurrencyUpdateOne) SaveX(ctx context.Context) *Currency {
 }
 
 // Exec executes the query on the entity.
-func (cuo *CurrencyUpdateOne) Exec(ctx context.Context) error {
-	_, err := cuo.Save(ctx)
+func (_u *CurrencyUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cuo *CurrencyUpdateOne) ExecX(ctx context.Context) {
-	if err := cuo.Exec(ctx); err != nil {
+func (_u *CurrencyUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cuo *CurrencyUpdateOne) check() error {
-	if v, ok := cuo.mutation.Code(); ok {
+func (_u *CurrencyUpdateOne) check() error {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := currency.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Currency.code": %w`, err)}
 		}
 	}
-	if v, ok := cuo.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := currency.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Currency.name": %w`, err)}
 		}
 	}
-	if v, ok := cuo.mutation.Sign(); ok {
+	if v, ok := _u.mutation.Sign(); ok {
 		if err := currency.SignValidator(v); err != nil {
 			return &ValidationError{Name: "sign", err: fmt.Errorf(`ent: validator failed for field "Currency.sign": %w`, err)}
 		}
 	}
-	if v, ok := cuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := currency.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Currency.status": %w`, err)}
 		}
@@ -436,17 +436,17 @@ func (cuo *CurrencyUpdateOne) check() error {
 	return nil
 }
 
-func (cuo *CurrencyUpdateOne) sqlSave(ctx context.Context) (_node *Currency, err error) {
-	if err := cuo.check(); err != nil {
+func (_u *CurrencyUpdateOne) sqlSave(ctx context.Context) (_node *Currency, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(currency.Table, currency.Columns, sqlgraph.NewFieldSpec(currency.FieldID, field.TypeInt))
-	id, ok := cuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Currency.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := cuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, currency.FieldID)
 		for _, f := range fields {
@@ -458,47 +458,47 @@ func (cuo *CurrencyUpdateOne) sqlSave(ctx context.Context) (_node *Currency, err
 			}
 		}
 	}
-	if ps := cuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(currency.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(currency.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if cuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(currency.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := cuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(currency.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if cuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(currency.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := cuo.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(currency.FieldCode, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(currency.FieldName, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.Sign(); ok {
+	if value, ok := _u.mutation.Sign(); ok {
 		_spec.SetField(currency.FieldSign, field.TypeString, value)
 	}
-	if cuo.mutation.SignCleared() {
+	if _u.mutation.SignCleared() {
 		_spec.ClearField(currency.FieldSign, field.TypeString)
 	}
-	if value, ok := cuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(currency.FieldStatus, field.TypeEnum, value)
 	}
-	_node = &Currency{config: cuo.config}
+	_node = &Currency{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, cuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{currency.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -506,6 +506,6 @@ func (cuo *CurrencyUpdateOne) sqlSave(ctx context.Context) (_node *Currency, err
 		}
 		return nil, err
 	}
-	cuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

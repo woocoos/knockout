@@ -24,270 +24,270 @@ type UserAddrUpdate struct {
 }
 
 // Where appends a list predicates to the UserAddrUpdate builder.
-func (uau *UserAddrUpdate) Where(ps ...predicate.UserAddr) *UserAddrUpdate {
-	uau.mutation.Where(ps...)
-	return uau
+func (_u *UserAddrUpdate) Where(ps ...predicate.UserAddr) *UserAddrUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uau *UserAddrUpdate) SetUpdatedBy(i int) *UserAddrUpdate {
-	uau.mutation.ResetUpdatedBy()
-	uau.mutation.SetUpdatedBy(i)
-	return uau
+func (_u *UserAddrUpdate) SetUpdatedBy(v int) *UserAddrUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableUpdatedBy(i *int) *UserAddrUpdate {
-	if i != nil {
-		uau.SetUpdatedBy(*i)
+func (_u *UserAddrUpdate) SetNillableUpdatedBy(v *int) *UserAddrUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uau
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uau *UserAddrUpdate) AddUpdatedBy(i int) *UserAddrUpdate {
-	uau.mutation.AddUpdatedBy(i)
-	return uau
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserAddrUpdate) AddUpdatedBy(v int) *UserAddrUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uau *UserAddrUpdate) ClearUpdatedBy() *UserAddrUpdate {
-	uau.mutation.ClearUpdatedBy()
-	return uau
+func (_u *UserAddrUpdate) ClearUpdatedBy() *UserAddrUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uau *UserAddrUpdate) SetUpdatedAt(t time.Time) *UserAddrUpdate {
-	uau.mutation.SetUpdatedAt(t)
-	return uau
+func (_u *UserAddrUpdate) SetUpdatedAt(v time.Time) *UserAddrUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableUpdatedAt(t *time.Time) *UserAddrUpdate {
-	if t != nil {
-		uau.SetUpdatedAt(*t)
+func (_u *UserAddrUpdate) SetNillableUpdatedAt(v *time.Time) *UserAddrUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uau *UserAddrUpdate) ClearUpdatedAt() *UserAddrUpdate {
-	uau.mutation.ClearUpdatedAt()
-	return uau
+func (_u *UserAddrUpdate) ClearUpdatedAt() *UserAddrUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAddrType sets the "addr_type" field.
-func (uau *UserAddrUpdate) SetAddrType(ut useraddr.AddrType) *UserAddrUpdate {
-	uau.mutation.SetAddrType(ut)
-	return uau
+func (_u *UserAddrUpdate) SetAddrType(v useraddr.AddrType) *UserAddrUpdate {
+	_u.mutation.SetAddrType(v)
+	return _u
 }
 
 // SetNillableAddrType sets the "addr_type" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableAddrType(ut *useraddr.AddrType) *UserAddrUpdate {
-	if ut != nil {
-		uau.SetAddrType(*ut)
+func (_u *UserAddrUpdate) SetNillableAddrType(v *useraddr.AddrType) *UserAddrUpdate {
+	if v != nil {
+		_u.SetAddrType(*v)
 	}
-	return uau
+	return _u
 }
 
 // SetRegionID sets the "region_id" field.
-func (uau *UserAddrUpdate) SetRegionID(i int) *UserAddrUpdate {
-	uau.mutation.SetRegionID(i)
-	return uau
+func (_u *UserAddrUpdate) SetRegionID(v int) *UserAddrUpdate {
+	_u.mutation.SetRegionID(v)
+	return _u
 }
 
 // SetNillableRegionID sets the "region_id" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableRegionID(i *int) *UserAddrUpdate {
-	if i != nil {
-		uau.SetRegionID(*i)
+func (_u *UserAddrUpdate) SetNillableRegionID(v *int) *UserAddrUpdate {
+	if v != nil {
+		_u.SetRegionID(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearRegionID clears the value of the "region_id" field.
-func (uau *UserAddrUpdate) ClearRegionID() *UserAddrUpdate {
-	uau.mutation.ClearRegionID()
-	return uau
+func (_u *UserAddrUpdate) ClearRegionID() *UserAddrUpdate {
+	_u.mutation.ClearRegionID()
+	return _u
 }
 
 // SetAddr sets the "addr" field.
-func (uau *UserAddrUpdate) SetAddr(s string) *UserAddrUpdate {
-	uau.mutation.SetAddr(s)
-	return uau
+func (_u *UserAddrUpdate) SetAddr(v string) *UserAddrUpdate {
+	_u.mutation.SetAddr(v)
+	return _u
 }
 
 // SetNillableAddr sets the "addr" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableAddr(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetAddr(*s)
+func (_u *UserAddrUpdate) SetNillableAddr(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetAddr(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearAddr clears the value of the "addr" field.
-func (uau *UserAddrUpdate) ClearAddr() *UserAddrUpdate {
-	uau.mutation.ClearAddr()
-	return uau
+func (_u *UserAddrUpdate) ClearAddr() *UserAddrUpdate {
+	_u.mutation.ClearAddr()
+	return _u
 }
 
 // SetEmail sets the "email" field.
-func (uau *UserAddrUpdate) SetEmail(s string) *UserAddrUpdate {
-	uau.mutation.SetEmail(s)
-	return uau
+func (_u *UserAddrUpdate) SetEmail(v string) *UserAddrUpdate {
+	_u.mutation.SetEmail(v)
+	return _u
 }
 
 // SetNillableEmail sets the "email" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableEmail(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetEmail(*s)
+func (_u *UserAddrUpdate) SetNillableEmail(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetEmail(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearEmail clears the value of the "email" field.
-func (uau *UserAddrUpdate) ClearEmail() *UserAddrUpdate {
-	uau.mutation.ClearEmail()
-	return uau
+func (_u *UserAddrUpdate) ClearEmail() *UserAddrUpdate {
+	_u.mutation.ClearEmail()
+	return _u
 }
 
 // SetFax sets the "fax" field.
-func (uau *UserAddrUpdate) SetFax(s string) *UserAddrUpdate {
-	uau.mutation.SetFax(s)
-	return uau
+func (_u *UserAddrUpdate) SetFax(v string) *UserAddrUpdate {
+	_u.mutation.SetFax(v)
+	return _u
 }
 
 // SetNillableFax sets the "fax" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableFax(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetFax(*s)
+func (_u *UserAddrUpdate) SetNillableFax(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetFax(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearFax clears the value of the "fax" field.
-func (uau *UserAddrUpdate) ClearFax() *UserAddrUpdate {
-	uau.mutation.ClearFax()
-	return uau
+func (_u *UserAddrUpdate) ClearFax() *UserAddrUpdate {
+	_u.mutation.ClearFax()
+	return _u
 }
 
 // SetZipCode sets the "zip_code" field.
-func (uau *UserAddrUpdate) SetZipCode(s string) *UserAddrUpdate {
-	uau.mutation.SetZipCode(s)
-	return uau
+func (_u *UserAddrUpdate) SetZipCode(v string) *UserAddrUpdate {
+	_u.mutation.SetZipCode(v)
+	return _u
 }
 
 // SetNillableZipCode sets the "zip_code" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableZipCode(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetZipCode(*s)
+func (_u *UserAddrUpdate) SetNillableZipCode(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetZipCode(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearZipCode clears the value of the "zip_code" field.
-func (uau *UserAddrUpdate) ClearZipCode() *UserAddrUpdate {
-	uau.mutation.ClearZipCode()
-	return uau
+func (_u *UserAddrUpdate) ClearZipCode() *UserAddrUpdate {
+	_u.mutation.ClearZipCode()
+	return _u
 }
 
 // SetTel sets the "tel" field.
-func (uau *UserAddrUpdate) SetTel(s string) *UserAddrUpdate {
-	uau.mutation.SetTel(s)
-	return uau
+func (_u *UserAddrUpdate) SetTel(v string) *UserAddrUpdate {
+	_u.mutation.SetTel(v)
+	return _u
 }
 
 // SetNillableTel sets the "tel" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableTel(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetTel(*s)
+func (_u *UserAddrUpdate) SetNillableTel(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetTel(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearTel clears the value of the "tel" field.
-func (uau *UserAddrUpdate) ClearTel() *UserAddrUpdate {
-	uau.mutation.ClearTel()
-	return uau
+func (_u *UserAddrUpdate) ClearTel() *UserAddrUpdate {
+	_u.mutation.ClearTel()
+	return _u
 }
 
 // SetMobile sets the "mobile" field.
-func (uau *UserAddrUpdate) SetMobile(s string) *UserAddrUpdate {
-	uau.mutation.SetMobile(s)
-	return uau
+func (_u *UserAddrUpdate) SetMobile(v string) *UserAddrUpdate {
+	_u.mutation.SetMobile(v)
+	return _u
 }
 
 // SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableMobile(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetMobile(*s)
+func (_u *UserAddrUpdate) SetNillableMobile(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetMobile(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearMobile clears the value of the "mobile" field.
-func (uau *UserAddrUpdate) ClearMobile() *UserAddrUpdate {
-	uau.mutation.ClearMobile()
-	return uau
+func (_u *UserAddrUpdate) ClearMobile() *UserAddrUpdate {
+	_u.mutation.ClearMobile()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (uau *UserAddrUpdate) SetName(s string) *UserAddrUpdate {
-	uau.mutation.SetName(s)
-	return uau
+func (_u *UserAddrUpdate) SetName(v string) *UserAddrUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableName(s *string) *UserAddrUpdate {
-	if s != nil {
-		uau.SetName(*s)
+func (_u *UserAddrUpdate) SetNillableName(v *string) *UserAddrUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return uau
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (uau *UserAddrUpdate) ClearName() *UserAddrUpdate {
-	uau.mutation.ClearName()
-	return uau
+func (_u *UserAddrUpdate) ClearName() *UserAddrUpdate {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetIsDefault sets the "is_default" field.
-func (uau *UserAddrUpdate) SetIsDefault(b bool) *UserAddrUpdate {
-	uau.mutation.SetIsDefault(b)
-	return uau
+func (_u *UserAddrUpdate) SetIsDefault(v bool) *UserAddrUpdate {
+	_u.mutation.SetIsDefault(v)
+	return _u
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (uau *UserAddrUpdate) SetNillableIsDefault(b *bool) *UserAddrUpdate {
-	if b != nil {
-		uau.SetIsDefault(*b)
+func (_u *UserAddrUpdate) SetNillableIsDefault(v *bool) *UserAddrUpdate {
+	if v != nil {
+		_u.SetIsDefault(*v)
 	}
-	return uau
+	return _u
 }
 
 // SetRegion sets the "region" edge to the Region entity.
-func (uau *UserAddrUpdate) SetRegion(r *Region) *UserAddrUpdate {
-	return uau.SetRegionID(r.ID)
+func (_u *UserAddrUpdate) SetRegion(v *Region) *UserAddrUpdate {
+	return _u.SetRegionID(v.ID)
 }
 
 // Mutation returns the UserAddrMutation object of the builder.
-func (uau *UserAddrUpdate) Mutation() *UserAddrMutation {
-	return uau.mutation
+func (_u *UserAddrUpdate) Mutation() *UserAddrMutation {
+	return _u.mutation
 }
 
 // ClearRegion clears the "region" edge to the Region entity.
-func (uau *UserAddrUpdate) ClearRegion() *UserAddrUpdate {
-	uau.mutation.ClearRegion()
-	return uau
+func (_u *UserAddrUpdate) ClearRegion() *UserAddrUpdate {
+	_u.mutation.ClearRegion()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (uau *UserAddrUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, uau.sqlSave, uau.mutation, uau.hooks)
+func (_u *UserAddrUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uau *UserAddrUpdate) SaveX(ctx context.Context) int {
-	affected, err := uau.Save(ctx)
+func (_u *UserAddrUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -295,51 +295,51 @@ func (uau *UserAddrUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (uau *UserAddrUpdate) Exec(ctx context.Context) error {
-	_, err := uau.Save(ctx)
+func (_u *UserAddrUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uau *UserAddrUpdate) ExecX(ctx context.Context) {
-	if err := uau.Exec(ctx); err != nil {
+func (_u *UserAddrUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uau *UserAddrUpdate) check() error {
-	if v, ok := uau.mutation.AddrType(); ok {
+func (_u *UserAddrUpdate) check() error {
+	if v, ok := _u.mutation.AddrType(); ok {
 		if err := useraddr.AddrTypeValidator(v); err != nil {
 			return &ValidationError{Name: "addr_type", err: fmt.Errorf(`ent: validator failed for field "UserAddr.addr_type": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.Email(); ok {
+	if v, ok := _u.mutation.Email(); ok {
 		if err := useraddr.EmailValidator(v); err != nil {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserAddr.email": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.Fax(); ok {
+	if v, ok := _u.mutation.Fax(); ok {
 		if err := useraddr.FaxValidator(v); err != nil {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.ZipCode(); ok {
+	if v, ok := _u.mutation.ZipCode(); ok {
 		if err := useraddr.ZipCodeValidator(v); err != nil {
 			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.Tel(); ok {
+	if v, ok := _u.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.Mobile(); ok {
+	if v, ok := _u.mutation.Mobile(); ok {
 		if err := useraddr.MobileValidator(v); err != nil {
 			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "UserAddr.mobile": %w`, err)}
 		}
 	}
-	if v, ok := uau.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := useraddr.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "UserAddr.name": %w`, err)}
 		}
@@ -347,82 +347,82 @@ func (uau *UserAddrUpdate) check() error {
 	return nil
 }
 
-func (uau *UserAddrUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := uau.check(); err != nil {
-		return n, err
+func (_u *UserAddrUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(useraddr.Table, useraddr.Columns, sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt))
-	if ps := uau.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uau.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(useraddr.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uau.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(useraddr.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uau.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(useraddr.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uau.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(useraddr.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uau.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(useraddr.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uau.mutation.AddrType(); ok {
+	if value, ok := _u.mutation.AddrType(); ok {
 		_spec.SetField(useraddr.FieldAddrType, field.TypeEnum, value)
 	}
-	if value, ok := uau.mutation.Addr(); ok {
+	if value, ok := _u.mutation.Addr(); ok {
 		_spec.SetField(useraddr.FieldAddr, field.TypeString, value)
 	}
-	if uau.mutation.AddrCleared() {
+	if _u.mutation.AddrCleared() {
 		_spec.ClearField(useraddr.FieldAddr, field.TypeString)
 	}
-	if value, ok := uau.mutation.Email(); ok {
+	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(useraddr.FieldEmail, field.TypeString, value)
 	}
-	if uau.mutation.EmailCleared() {
+	if _u.mutation.EmailCleared() {
 		_spec.ClearField(useraddr.FieldEmail, field.TypeString)
 	}
-	if value, ok := uau.mutation.Fax(); ok {
+	if value, ok := _u.mutation.Fax(); ok {
 		_spec.SetField(useraddr.FieldFax, field.TypeString, value)
 	}
-	if uau.mutation.FaxCleared() {
+	if _u.mutation.FaxCleared() {
 		_spec.ClearField(useraddr.FieldFax, field.TypeString)
 	}
-	if value, ok := uau.mutation.ZipCode(); ok {
+	if value, ok := _u.mutation.ZipCode(); ok {
 		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
 	}
-	if uau.mutation.ZipCodeCleared() {
+	if _u.mutation.ZipCodeCleared() {
 		_spec.ClearField(useraddr.FieldZipCode, field.TypeString)
 	}
-	if value, ok := uau.mutation.Tel(); ok {
+	if value, ok := _u.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)
 	}
-	if uau.mutation.TelCleared() {
+	if _u.mutation.TelCleared() {
 		_spec.ClearField(useraddr.FieldTel, field.TypeString)
 	}
-	if value, ok := uau.mutation.Mobile(); ok {
+	if value, ok := _u.mutation.Mobile(); ok {
 		_spec.SetField(useraddr.FieldMobile, field.TypeString, value)
 	}
-	if uau.mutation.MobileCleared() {
+	if _u.mutation.MobileCleared() {
 		_spec.ClearField(useraddr.FieldMobile, field.TypeString)
 	}
-	if value, ok := uau.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(useraddr.FieldName, field.TypeString, value)
 	}
-	if uau.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(useraddr.FieldName, field.TypeString)
 	}
-	if value, ok := uau.mutation.IsDefault(); ok {
+	if value, ok := _u.mutation.IsDefault(); ok {
 		_spec.SetField(useraddr.FieldIsDefault, field.TypeBool, value)
 	}
-	if uau.mutation.RegionCleared() {
+	if _u.mutation.RegionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -435,7 +435,7 @@ func (uau *UserAddrUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uau.mutation.RegionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RegionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -451,7 +451,7 @@ func (uau *UserAddrUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, uau.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{useraddr.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -459,8 +459,8 @@ func (uau *UserAddrUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	uau.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserAddrUpdateOne is the builder for updating a single UserAddr entity.
@@ -472,277 +472,277 @@ type UserAddrUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uauo *UserAddrUpdateOne) SetUpdatedBy(i int) *UserAddrUpdateOne {
-	uauo.mutation.ResetUpdatedBy()
-	uauo.mutation.SetUpdatedBy(i)
-	return uauo
+func (_u *UserAddrUpdateOne) SetUpdatedBy(v int) *UserAddrUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableUpdatedBy(i *int) *UserAddrUpdateOne {
-	if i != nil {
-		uauo.SetUpdatedBy(*i)
+func (_u *UserAddrUpdateOne) SetNillableUpdatedBy(v *int) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uauo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uauo *UserAddrUpdateOne) AddUpdatedBy(i int) *UserAddrUpdateOne {
-	uauo.mutation.AddUpdatedBy(i)
-	return uauo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserAddrUpdateOne) AddUpdatedBy(v int) *UserAddrUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uauo *UserAddrUpdateOne) ClearUpdatedBy() *UserAddrUpdateOne {
-	uauo.mutation.ClearUpdatedBy()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearUpdatedBy() *UserAddrUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uauo *UserAddrUpdateOne) SetUpdatedAt(t time.Time) *UserAddrUpdateOne {
-	uauo.mutation.SetUpdatedAt(t)
-	return uauo
+func (_u *UserAddrUpdateOne) SetUpdatedAt(v time.Time) *UserAddrUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserAddrUpdateOne {
-	if t != nil {
-		uauo.SetUpdatedAt(*t)
+func (_u *UserAddrUpdateOne) SetNillableUpdatedAt(v *time.Time) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uauo *UserAddrUpdateOne) ClearUpdatedAt() *UserAddrUpdateOne {
-	uauo.mutation.ClearUpdatedAt()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearUpdatedAt() *UserAddrUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetAddrType sets the "addr_type" field.
-func (uauo *UserAddrUpdateOne) SetAddrType(ut useraddr.AddrType) *UserAddrUpdateOne {
-	uauo.mutation.SetAddrType(ut)
-	return uauo
+func (_u *UserAddrUpdateOne) SetAddrType(v useraddr.AddrType) *UserAddrUpdateOne {
+	_u.mutation.SetAddrType(v)
+	return _u
 }
 
 // SetNillableAddrType sets the "addr_type" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableAddrType(ut *useraddr.AddrType) *UserAddrUpdateOne {
-	if ut != nil {
-		uauo.SetAddrType(*ut)
+func (_u *UserAddrUpdateOne) SetNillableAddrType(v *useraddr.AddrType) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetAddrType(*v)
 	}
-	return uauo
+	return _u
 }
 
 // SetRegionID sets the "region_id" field.
-func (uauo *UserAddrUpdateOne) SetRegionID(i int) *UserAddrUpdateOne {
-	uauo.mutation.SetRegionID(i)
-	return uauo
+func (_u *UserAddrUpdateOne) SetRegionID(v int) *UserAddrUpdateOne {
+	_u.mutation.SetRegionID(v)
+	return _u
 }
 
 // SetNillableRegionID sets the "region_id" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableRegionID(i *int) *UserAddrUpdateOne {
-	if i != nil {
-		uauo.SetRegionID(*i)
+func (_u *UserAddrUpdateOne) SetNillableRegionID(v *int) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetRegionID(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearRegionID clears the value of the "region_id" field.
-func (uauo *UserAddrUpdateOne) ClearRegionID() *UserAddrUpdateOne {
-	uauo.mutation.ClearRegionID()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearRegionID() *UserAddrUpdateOne {
+	_u.mutation.ClearRegionID()
+	return _u
 }
 
 // SetAddr sets the "addr" field.
-func (uauo *UserAddrUpdateOne) SetAddr(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetAddr(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetAddr(v string) *UserAddrUpdateOne {
+	_u.mutation.SetAddr(v)
+	return _u
 }
 
 // SetNillableAddr sets the "addr" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableAddr(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetAddr(*s)
+func (_u *UserAddrUpdateOne) SetNillableAddr(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetAddr(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearAddr clears the value of the "addr" field.
-func (uauo *UserAddrUpdateOne) ClearAddr() *UserAddrUpdateOne {
-	uauo.mutation.ClearAddr()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearAddr() *UserAddrUpdateOne {
+	_u.mutation.ClearAddr()
+	return _u
 }
 
 // SetEmail sets the "email" field.
-func (uauo *UserAddrUpdateOne) SetEmail(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetEmail(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetEmail(v string) *UserAddrUpdateOne {
+	_u.mutation.SetEmail(v)
+	return _u
 }
 
 // SetNillableEmail sets the "email" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableEmail(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetEmail(*s)
+func (_u *UserAddrUpdateOne) SetNillableEmail(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetEmail(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearEmail clears the value of the "email" field.
-func (uauo *UserAddrUpdateOne) ClearEmail() *UserAddrUpdateOne {
-	uauo.mutation.ClearEmail()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearEmail() *UserAddrUpdateOne {
+	_u.mutation.ClearEmail()
+	return _u
 }
 
 // SetFax sets the "fax" field.
-func (uauo *UserAddrUpdateOne) SetFax(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetFax(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetFax(v string) *UserAddrUpdateOne {
+	_u.mutation.SetFax(v)
+	return _u
 }
 
 // SetNillableFax sets the "fax" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableFax(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetFax(*s)
+func (_u *UserAddrUpdateOne) SetNillableFax(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetFax(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearFax clears the value of the "fax" field.
-func (uauo *UserAddrUpdateOne) ClearFax() *UserAddrUpdateOne {
-	uauo.mutation.ClearFax()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearFax() *UserAddrUpdateOne {
+	_u.mutation.ClearFax()
+	return _u
 }
 
 // SetZipCode sets the "zip_code" field.
-func (uauo *UserAddrUpdateOne) SetZipCode(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetZipCode(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetZipCode(v string) *UserAddrUpdateOne {
+	_u.mutation.SetZipCode(v)
+	return _u
 }
 
 // SetNillableZipCode sets the "zip_code" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableZipCode(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetZipCode(*s)
+func (_u *UserAddrUpdateOne) SetNillableZipCode(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetZipCode(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearZipCode clears the value of the "zip_code" field.
-func (uauo *UserAddrUpdateOne) ClearZipCode() *UserAddrUpdateOne {
-	uauo.mutation.ClearZipCode()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearZipCode() *UserAddrUpdateOne {
+	_u.mutation.ClearZipCode()
+	return _u
 }
 
 // SetTel sets the "tel" field.
-func (uauo *UserAddrUpdateOne) SetTel(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetTel(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetTel(v string) *UserAddrUpdateOne {
+	_u.mutation.SetTel(v)
+	return _u
 }
 
 // SetNillableTel sets the "tel" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableTel(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetTel(*s)
+func (_u *UserAddrUpdateOne) SetNillableTel(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetTel(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearTel clears the value of the "tel" field.
-func (uauo *UserAddrUpdateOne) ClearTel() *UserAddrUpdateOne {
-	uauo.mutation.ClearTel()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearTel() *UserAddrUpdateOne {
+	_u.mutation.ClearTel()
+	return _u
 }
 
 // SetMobile sets the "mobile" field.
-func (uauo *UserAddrUpdateOne) SetMobile(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetMobile(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetMobile(v string) *UserAddrUpdateOne {
+	_u.mutation.SetMobile(v)
+	return _u
 }
 
 // SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableMobile(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetMobile(*s)
+func (_u *UserAddrUpdateOne) SetNillableMobile(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetMobile(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearMobile clears the value of the "mobile" field.
-func (uauo *UserAddrUpdateOne) ClearMobile() *UserAddrUpdateOne {
-	uauo.mutation.ClearMobile()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearMobile() *UserAddrUpdateOne {
+	_u.mutation.ClearMobile()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (uauo *UserAddrUpdateOne) SetName(s string) *UserAddrUpdateOne {
-	uauo.mutation.SetName(s)
-	return uauo
+func (_u *UserAddrUpdateOne) SetName(v string) *UserAddrUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableName(s *string) *UserAddrUpdateOne {
-	if s != nil {
-		uauo.SetName(*s)
+func (_u *UserAddrUpdateOne) SetNillableName(v *string) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return uauo
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (uauo *UserAddrUpdateOne) ClearName() *UserAddrUpdateOne {
-	uauo.mutation.ClearName()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearName() *UserAddrUpdateOne {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetIsDefault sets the "is_default" field.
-func (uauo *UserAddrUpdateOne) SetIsDefault(b bool) *UserAddrUpdateOne {
-	uauo.mutation.SetIsDefault(b)
-	return uauo
+func (_u *UserAddrUpdateOne) SetIsDefault(v bool) *UserAddrUpdateOne {
+	_u.mutation.SetIsDefault(v)
+	return _u
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (uauo *UserAddrUpdateOne) SetNillableIsDefault(b *bool) *UserAddrUpdateOne {
-	if b != nil {
-		uauo.SetIsDefault(*b)
+func (_u *UserAddrUpdateOne) SetNillableIsDefault(v *bool) *UserAddrUpdateOne {
+	if v != nil {
+		_u.SetIsDefault(*v)
 	}
-	return uauo
+	return _u
 }
 
 // SetRegion sets the "region" edge to the Region entity.
-func (uauo *UserAddrUpdateOne) SetRegion(r *Region) *UserAddrUpdateOne {
-	return uauo.SetRegionID(r.ID)
+func (_u *UserAddrUpdateOne) SetRegion(v *Region) *UserAddrUpdateOne {
+	return _u.SetRegionID(v.ID)
 }
 
 // Mutation returns the UserAddrMutation object of the builder.
-func (uauo *UserAddrUpdateOne) Mutation() *UserAddrMutation {
-	return uauo.mutation
+func (_u *UserAddrUpdateOne) Mutation() *UserAddrMutation {
+	return _u.mutation
 }
 
 // ClearRegion clears the "region" edge to the Region entity.
-func (uauo *UserAddrUpdateOne) ClearRegion() *UserAddrUpdateOne {
-	uauo.mutation.ClearRegion()
-	return uauo
+func (_u *UserAddrUpdateOne) ClearRegion() *UserAddrUpdateOne {
+	_u.mutation.ClearRegion()
+	return _u
 }
 
 // Where appends a list predicates to the UserAddrUpdate builder.
-func (uauo *UserAddrUpdateOne) Where(ps ...predicate.UserAddr) *UserAddrUpdateOne {
-	uauo.mutation.Where(ps...)
-	return uauo
+func (_u *UserAddrUpdateOne) Where(ps ...predicate.UserAddr) *UserAddrUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (uauo *UserAddrUpdateOne) Select(field string, fields ...string) *UserAddrUpdateOne {
-	uauo.fields = append([]string{field}, fields...)
-	return uauo
+func (_u *UserAddrUpdateOne) Select(field string, fields ...string) *UserAddrUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserAddr entity.
-func (uauo *UserAddrUpdateOne) Save(ctx context.Context) (*UserAddr, error) {
-	return withHooks(ctx, uauo.sqlSave, uauo.mutation, uauo.hooks)
+func (_u *UserAddrUpdateOne) Save(ctx context.Context) (*UserAddr, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uauo *UserAddrUpdateOne) SaveX(ctx context.Context) *UserAddr {
-	node, err := uauo.Save(ctx)
+func (_u *UserAddrUpdateOne) SaveX(ctx context.Context) *UserAddr {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -750,51 +750,51 @@ func (uauo *UserAddrUpdateOne) SaveX(ctx context.Context) *UserAddr {
 }
 
 // Exec executes the query on the entity.
-func (uauo *UserAddrUpdateOne) Exec(ctx context.Context) error {
-	_, err := uauo.Save(ctx)
+func (_u *UserAddrUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uauo *UserAddrUpdateOne) ExecX(ctx context.Context) {
-	if err := uauo.Exec(ctx); err != nil {
+func (_u *UserAddrUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uauo *UserAddrUpdateOne) check() error {
-	if v, ok := uauo.mutation.AddrType(); ok {
+func (_u *UserAddrUpdateOne) check() error {
+	if v, ok := _u.mutation.AddrType(); ok {
 		if err := useraddr.AddrTypeValidator(v); err != nil {
 			return &ValidationError{Name: "addr_type", err: fmt.Errorf(`ent: validator failed for field "UserAddr.addr_type": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.Email(); ok {
+	if v, ok := _u.mutation.Email(); ok {
 		if err := useraddr.EmailValidator(v); err != nil {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserAddr.email": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.Fax(); ok {
+	if v, ok := _u.mutation.Fax(); ok {
 		if err := useraddr.FaxValidator(v); err != nil {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.ZipCode(); ok {
+	if v, ok := _u.mutation.ZipCode(); ok {
 		if err := useraddr.ZipCodeValidator(v); err != nil {
 			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.Tel(); ok {
+	if v, ok := _u.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.Mobile(); ok {
+	if v, ok := _u.mutation.Mobile(); ok {
 		if err := useraddr.MobileValidator(v); err != nil {
 			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "UserAddr.mobile": %w`, err)}
 		}
 	}
-	if v, ok := uauo.mutation.Name(); ok {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := useraddr.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "UserAddr.name": %w`, err)}
 		}
@@ -802,17 +802,17 @@ func (uauo *UserAddrUpdateOne) check() error {
 	return nil
 }
 
-func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, err error) {
-	if err := uauo.check(); err != nil {
+func (_u *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(useraddr.Table, useraddr.Columns, sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt))
-	id, ok := uauo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserAddr.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := uauo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, useraddr.FieldID)
 		for _, f := range fields {
@@ -824,77 +824,77 @@ func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, er
 			}
 		}
 	}
-	if ps := uauo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uauo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(useraddr.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uauo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(useraddr.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uauo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(useraddr.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uauo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(useraddr.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uauo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(useraddr.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uauo.mutation.AddrType(); ok {
+	if value, ok := _u.mutation.AddrType(); ok {
 		_spec.SetField(useraddr.FieldAddrType, field.TypeEnum, value)
 	}
-	if value, ok := uauo.mutation.Addr(); ok {
+	if value, ok := _u.mutation.Addr(); ok {
 		_spec.SetField(useraddr.FieldAddr, field.TypeString, value)
 	}
-	if uauo.mutation.AddrCleared() {
+	if _u.mutation.AddrCleared() {
 		_spec.ClearField(useraddr.FieldAddr, field.TypeString)
 	}
-	if value, ok := uauo.mutation.Email(); ok {
+	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(useraddr.FieldEmail, field.TypeString, value)
 	}
-	if uauo.mutation.EmailCleared() {
+	if _u.mutation.EmailCleared() {
 		_spec.ClearField(useraddr.FieldEmail, field.TypeString)
 	}
-	if value, ok := uauo.mutation.Fax(); ok {
+	if value, ok := _u.mutation.Fax(); ok {
 		_spec.SetField(useraddr.FieldFax, field.TypeString, value)
 	}
-	if uauo.mutation.FaxCleared() {
+	if _u.mutation.FaxCleared() {
 		_spec.ClearField(useraddr.FieldFax, field.TypeString)
 	}
-	if value, ok := uauo.mutation.ZipCode(); ok {
+	if value, ok := _u.mutation.ZipCode(); ok {
 		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
 	}
-	if uauo.mutation.ZipCodeCleared() {
+	if _u.mutation.ZipCodeCleared() {
 		_spec.ClearField(useraddr.FieldZipCode, field.TypeString)
 	}
-	if value, ok := uauo.mutation.Tel(); ok {
+	if value, ok := _u.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)
 	}
-	if uauo.mutation.TelCleared() {
+	if _u.mutation.TelCleared() {
 		_spec.ClearField(useraddr.FieldTel, field.TypeString)
 	}
-	if value, ok := uauo.mutation.Mobile(); ok {
+	if value, ok := _u.mutation.Mobile(); ok {
 		_spec.SetField(useraddr.FieldMobile, field.TypeString, value)
 	}
-	if uauo.mutation.MobileCleared() {
+	if _u.mutation.MobileCleared() {
 		_spec.ClearField(useraddr.FieldMobile, field.TypeString)
 	}
-	if value, ok := uauo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(useraddr.FieldName, field.TypeString, value)
 	}
-	if uauo.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(useraddr.FieldName, field.TypeString)
 	}
-	if value, ok := uauo.mutation.IsDefault(); ok {
+	if value, ok := _u.mutation.IsDefault(); ok {
 		_spec.SetField(useraddr.FieldIsDefault, field.TypeBool, value)
 	}
-	if uauo.mutation.RegionCleared() {
+	if _u.mutation.RegionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -907,7 +907,7 @@ func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uauo.mutation.RegionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RegionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -923,10 +923,10 @@ func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &UserAddr{config: uauo.config}
+	_node = &UserAddr{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, uauo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{useraddr.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -934,6 +934,6 @@ func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, er
 		}
 		return nil, err
 	}
-	uauo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -131,7 +131,7 @@ func (*OrgPolicy) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the OrgPolicy fields.
-func (op *OrgPolicy) assignValues(columns []string, values []any) error {
+func (_m *OrgPolicy) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -142,72 +142,72 @@ func (op *OrgPolicy) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			op.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case orgpolicy.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				op.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case orgpolicy.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				op.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case orgpolicy.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				op.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case orgpolicy.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				op.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case orgpolicy.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
 			} else if value.Valid {
-				op.OrgID = int(value.Int64)
+				_m.OrgID = int(value.Int64)
 			}
 		case orgpolicy.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				op.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case orgpolicy.FieldAppPolicyID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_policy_id", values[i])
 			} else if value.Valid {
-				op.AppPolicyID = new(int)
-				*op.AppPolicyID = int(value.Int64)
+				_m.AppPolicyID = new(int)
+				*_m.AppPolicyID = int(value.Int64)
 			}
 		case orgpolicy.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				op.Name = value.String
+				_m.Name = value.String
 			}
 		case orgpolicy.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				op.Comments = value.String
+				_m.Comments = value.String
 			}
 		case orgpolicy.FieldRules:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field rules", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &op.Rules); err != nil {
+				if err := json.Unmarshal(*value, &_m.Rules); err != nil {
 					return fmt.Errorf("unmarshal field rules: %w", err)
 				}
 			}
 		default:
-			op.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -215,109 +215,109 @@ func (op *OrgPolicy) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the OrgPolicy.
 // This includes values selected through modifiers, order, etc.
-func (op *OrgPolicy) Value(name string) (ent.Value, error) {
-	return op.selectValues.Get(name)
+func (_m *OrgPolicy) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the OrgPolicy entity.
-func (op *OrgPolicy) QueryOrg() *OrgQuery {
-	return NewOrgPolicyClient(op.config).QueryOrg(op)
+func (_m *OrgPolicy) QueryOrg() *OrgQuery {
+	return NewOrgPolicyClient(_m.config).QueryOrg(_m)
 }
 
 // QueryPermissions queries the "permissions" edge of the OrgPolicy entity.
-func (op *OrgPolicy) QueryPermissions() *PermissionQuery {
-	return NewOrgPolicyClient(op.config).QueryPermissions(op)
+func (_m *OrgPolicy) QueryPermissions() *PermissionQuery {
+	return NewOrgPolicyClient(_m.config).QueryPermissions(_m)
 }
 
 // QueryAppPolicy queries the "app_policy" edge of the OrgPolicy entity.
-func (op *OrgPolicy) QueryAppPolicy() *AppPolicyQuery {
-	return NewOrgPolicyClient(op.config).QueryAppPolicy(op)
+func (_m *OrgPolicy) QueryAppPolicy() *AppPolicyQuery {
+	return NewOrgPolicyClient(_m.config).QueryAppPolicy(_m)
 }
 
 // QueryApp queries the "app" edge of the OrgPolicy entity.
-func (op *OrgPolicy) QueryApp() *AppQuery {
-	return NewOrgPolicyClient(op.config).QueryApp(op)
+func (_m *OrgPolicy) QueryApp() *AppQuery {
+	return NewOrgPolicyClient(_m.config).QueryApp(_m)
 }
 
 // Update returns a builder for updating this OrgPolicy.
 // Note that you need to call OrgPolicy.Unwrap() before calling this method if this OrgPolicy
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (op *OrgPolicy) Update() *OrgPolicyUpdateOne {
-	return NewOrgPolicyClient(op.config).UpdateOne(op)
+func (_m *OrgPolicy) Update() *OrgPolicyUpdateOne {
+	return NewOrgPolicyClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the OrgPolicy entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (op *OrgPolicy) Unwrap() *OrgPolicy {
-	_tx, ok := op.config.driver.(*txDriver)
+func (_m *OrgPolicy) Unwrap() *OrgPolicy {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: OrgPolicy is not a transactional entity")
 	}
-	op.config.driver = _tx.drv
-	return op
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (op *OrgPolicy) String() string {
+func (_m *OrgPolicy) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgPolicy(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", op.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", op.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(op.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", op.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(op.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", op.OrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", op.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
-	if v := op.AppPolicyID; v != nil {
+	if v := _m.AppPolicyID; v != nil {
 		builder.WriteString("app_policy_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(op.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(op.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("rules=")
-	builder.WriteString(fmt.Sprintf("%v", op.Rules))
+	builder.WriteString(fmt.Sprintf("%v", _m.Rules))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedPermissions returns the Permissions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (op *OrgPolicy) NamedPermissions(name string) ([]*Permission, error) {
-	if op.Edges.namedPermissions == nil {
+func (_m *OrgPolicy) NamedPermissions(name string) ([]*Permission, error) {
+	if _m.Edges.namedPermissions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := op.Edges.namedPermissions[name]
+	nodes, ok := _m.Edges.namedPermissions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (op *OrgPolicy) appendNamedPermissions(name string, edges ...*Permission) {
-	if op.Edges.namedPermissions == nil {
-		op.Edges.namedPermissions = make(map[string][]*Permission)
+func (_m *OrgPolicy) appendNamedPermissions(name string, edges ...*Permission) {
+	if _m.Edges.namedPermissions == nil {
+		_m.Edges.namedPermissions = make(map[string][]*Permission)
 	}
 	if len(edges) == 0 {
-		op.Edges.namedPermissions[name] = []*Permission{}
+		_m.Edges.namedPermissions[name] = []*Permission{}
 	} else {
-		op.Edges.namedPermissions[name] = append(op.Edges.namedPermissions[name], edges...)
+		_m.Edges.namedPermissions[name] = append(_m.Edges.namedPermissions[name], edges...)
 	}
 }
 

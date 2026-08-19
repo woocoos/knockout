@@ -135,7 +135,7 @@ func (*AppMenu) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppMenu fields.
-func (am *AppMenu) assignValues(columns []string, values []any) error {
+func (_m *AppMenu) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -146,94 +146,94 @@ func (am *AppMenu) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			am.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case appmenu.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				am.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case appmenu.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				am.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case appmenu.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				am.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case appmenu.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				am.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appmenu.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				am.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case appmenu.FieldParentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
-				am.ParentID = int(value.Int64)
+				_m.ParentID = int(value.Int64)
 			}
 		case appmenu.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				am.Kind = appmenu.Kind(value.String)
+				_m.Kind = appmenu.Kind(value.String)
 			}
 		case appmenu.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				am.Name = value.String
+				_m.Name = value.String
 			}
 		case appmenu.FieldIcon:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field icon", values[i])
 			} else if value.Valid {
-				am.Icon = value.String
+				_m.Icon = value.String
 			}
 		case appmenu.FieldRoute:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field route", values[i])
 			} else if value.Valid {
-				am.Route = value.String
+				_m.Route = value.String
 			}
 		case appmenu.FieldActionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_id", values[i])
 			} else if value.Valid {
-				am.ActionID = new(int)
-				*am.ActionID = int(value.Int64)
+				_m.ActionID = new(int)
+				*_m.ActionID = int(value.Int64)
 			}
 		case appmenu.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				am.Comments = value.String
+				_m.Comments = value.String
 			}
 		case appmenu.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
-				am.DisplaySort = int32(value.Int64)
+				_m.DisplaySort = int32(value.Int64)
 			}
 		case appmenu.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				am.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			am.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -241,121 +241,121 @@ func (am *AppMenu) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppMenu.
 // This includes values selected through modifiers, order, etc.
-func (am *AppMenu) Value(name string) (ent.Value, error) {
-	return am.selectValues.Get(name)
+func (_m *AppMenu) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppMenu entity.
-func (am *AppMenu) QueryApp() *AppQuery {
-	return NewAppMenuClient(am.config).QueryApp(am)
+func (_m *AppMenu) QueryApp() *AppQuery {
+	return NewAppMenuClient(_m.config).QueryApp(_m)
 }
 
 // QueryAction queries the "action" edge of the AppMenu entity.
-func (am *AppMenu) QueryAction() *AppActionQuery {
-	return NewAppMenuClient(am.config).QueryAction(am)
+func (_m *AppMenu) QueryAction() *AppActionQuery {
+	return NewAppMenuClient(_m.config).QueryAction(_m)
 }
 
 // QueryParent queries the "parent" edge of the AppMenu entity.
-func (am *AppMenu) QueryParent() *AppMenuQuery {
-	return NewAppMenuClient(am.config).QueryParent(am)
+func (_m *AppMenu) QueryParent() *AppMenuQuery {
+	return NewAppMenuClient(_m.config).QueryParent(_m)
 }
 
 // QueryChildren queries the "children" edge of the AppMenu entity.
-func (am *AppMenu) QueryChildren() *AppMenuQuery {
-	return NewAppMenuClient(am.config).QueryChildren(am)
+func (_m *AppMenu) QueryChildren() *AppMenuQuery {
+	return NewAppMenuClient(_m.config).QueryChildren(_m)
 }
 
 // Update returns a builder for updating this AppMenu.
 // Note that you need to call AppMenu.Unwrap() before calling this method if this AppMenu
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (am *AppMenu) Update() *AppMenuUpdateOne {
-	return NewAppMenuClient(am.config).UpdateOne(am)
+func (_m *AppMenu) Update() *AppMenuUpdateOne {
+	return NewAppMenuClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppMenu entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (am *AppMenu) Unwrap() *AppMenu {
-	_tx, ok := am.config.driver.(*txDriver)
+func (_m *AppMenu) Unwrap() *AppMenu {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppMenu is not a transactional entity")
 	}
-	am.config.driver = _tx.drv
-	return am
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (am *AppMenu) String() string {
+func (_m *AppMenu) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppMenu(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", am.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", am.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(am.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", am.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(am.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", am.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
-	builder.WriteString(fmt.Sprintf("%v", am.ParentID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", am.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(am.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("icon=")
-	builder.WriteString(am.Icon)
+	builder.WriteString(_m.Icon)
 	builder.WriteString(", ")
 	builder.WriteString("route=")
-	builder.WriteString(am.Route)
+	builder.WriteString(_m.Route)
 	builder.WriteString(", ")
-	if v := am.ActionID; v != nil {
+	if v := _m.ActionID; v != nil {
 		builder.WriteString("action_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(am.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
-	builder.WriteString(fmt.Sprintf("%v", am.DisplaySort))
+	builder.WriteString(fmt.Sprintf("%v", _m.DisplaySort))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", am.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedChildren returns the Children named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (am *AppMenu) NamedChildren(name string) ([]*AppMenu, error) {
-	if am.Edges.namedChildren == nil {
+func (_m *AppMenu) NamedChildren(name string) ([]*AppMenu, error) {
+	if _m.Edges.namedChildren == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := am.Edges.namedChildren[name]
+	nodes, ok := _m.Edges.namedChildren[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (am *AppMenu) appendNamedChildren(name string, edges ...*AppMenu) {
-	if am.Edges.namedChildren == nil {
-		am.Edges.namedChildren = make(map[string][]*AppMenu)
+func (_m *AppMenu) appendNamedChildren(name string, edges ...*AppMenu) {
+	if _m.Edges.namedChildren == nil {
+		_m.Edges.namedChildren = make(map[string][]*AppMenu)
 	}
 	if len(edges) == 0 {
-		am.Edges.namedChildren[name] = []*AppMenu{}
+		_m.Edges.namedChildren[name] = []*AppMenu{}
 	} else {
-		am.Edges.namedChildren[name] = append(am.Edges.namedChildren[name], edges...)
+		_m.Edges.namedChildren[name] = append(_m.Edges.namedChildren[name], edges...)
 	}
 }
 

@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout/ent/region"
 )
 
 // Region holds the schema definition for the Region entity.
@@ -57,11 +56,5 @@ func (Region) Edges() []ent.Edge {
 		edge.To("children", Region.Type).
 			From("parent").Unique().Field("parent_id"),
 		edge.From("country", Country.Type).Ref("regions").Field("country_id").Unique(),
-	}
-}
-
-func (Region) Hooks() []ent.Hook {
-	return []ent.Hook{
-		InitDisplaySortHook(region.Table),
 	}
 }

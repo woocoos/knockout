@@ -9,6 +9,7 @@ import (
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -65,6 +66,7 @@ func InitBase(name, dsn string) {
 		panic(err)
 	}
 	ds.portal = ent.NewClient(ent.Driver(drv))
+	hook.RegisterAllHooks(ds.portal)
 	ds.casbin = casbinent.NewClient(casbinent.Driver(drv))
 
 	ctx := context.Background()

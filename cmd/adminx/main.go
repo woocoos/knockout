@@ -6,6 +6,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	schemahook "github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/job"
@@ -21,6 +22,7 @@ func main() {
 	ents := koapp.BuildEntComponents(app.AppConfiguration())
 	drv := ents["portal"]
 	portalClient := ent.NewClient(ent.Driver(drv))
+	schemahook.RegisterAllHooks(portalClient)
 	casbinClient := casbinent.NewClient(casbinent.Driver(drv))
 	if app.AppConfiguration().Development {
 		portalClient = portalClient.Debug()

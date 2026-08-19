@@ -90,7 +90,7 @@ func (*OrgApp) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the OrgApp fields.
-func (oa *OrgApp) assignValues(columns []string, values []any) error {
+func (_m *OrgApp) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -101,45 +101,45 @@ func (oa *OrgApp) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			oa.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case orgapp.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				oa.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case orgapp.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				oa.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case orgapp.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				oa.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case orgapp.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				oa.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case orgapp.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
 			} else if value.Valid {
-				oa.OrgID = int(value.Int64)
+				_m.OrgID = int(value.Int64)
 			}
 		case orgapp.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				oa.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		default:
-			oa.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -147,60 +147,60 @@ func (oa *OrgApp) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the OrgApp.
 // This includes values selected through modifiers, order, etc.
-func (oa *OrgApp) Value(name string) (ent.Value, error) {
-	return oa.selectValues.Get(name)
+func (_m *OrgApp) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the OrgApp entity.
-func (oa *OrgApp) QueryApp() *AppQuery {
-	return NewOrgAppClient(oa.config).QueryApp(oa)
+func (_m *OrgApp) QueryApp() *AppQuery {
+	return NewOrgAppClient(_m.config).QueryApp(_m)
 }
 
 // QueryOrg queries the "org" edge of the OrgApp entity.
-func (oa *OrgApp) QueryOrg() *OrgQuery {
-	return NewOrgAppClient(oa.config).QueryOrg(oa)
+func (_m *OrgApp) QueryOrg() *OrgQuery {
+	return NewOrgAppClient(_m.config).QueryOrg(_m)
 }
 
 // Update returns a builder for updating this OrgApp.
 // Note that you need to call OrgApp.Unwrap() before calling this method if this OrgApp
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (oa *OrgApp) Update() *OrgAppUpdateOne {
-	return NewOrgAppClient(oa.config).UpdateOne(oa)
+func (_m *OrgApp) Update() *OrgAppUpdateOne {
+	return NewOrgAppClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the OrgApp entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (oa *OrgApp) Unwrap() *OrgApp {
-	_tx, ok := oa.config.driver.(*txDriver)
+func (_m *OrgApp) Unwrap() *OrgApp {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: OrgApp is not a transactional entity")
 	}
-	oa.config.driver = _tx.drv
-	return oa
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (oa *OrgApp) String() string {
+func (_m *OrgApp) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgApp(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", oa.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", oa.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(oa.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", oa.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(oa.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", oa.OrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", oa.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteByte(')')
 	return builder.String()
 }

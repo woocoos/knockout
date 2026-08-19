@@ -20,56 +20,56 @@ type AppRolePolicyDelete struct {
 }
 
 // Where appends a list predicates to the AppRolePolicyDelete builder.
-func (arpd *AppRolePolicyDelete) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyDelete {
-	arpd.mutation.Where(ps...)
-	return arpd
+func (_d *AppRolePolicyDelete) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (arpd *AppRolePolicyDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, arpd.sqlExec, arpd.mutation, arpd.hooks)
+func (_d *AppRolePolicyDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpd *AppRolePolicyDelete) ExecX(ctx context.Context) int {
-	n, err := arpd.Exec(ctx)
+func (_d *AppRolePolicyDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (arpd *AppRolePolicyDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *AppRolePolicyDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(approlepolicy.Table, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
-	if ps := arpd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, arpd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	arpd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // AppRolePolicyDeleteOne is the builder for deleting a single AppRolePolicy entity.
 type AppRolePolicyDeleteOne struct {
-	arpd *AppRolePolicyDelete
+	_d *AppRolePolicyDelete
 }
 
 // Where appends a list predicates to the AppRolePolicyDelete builder.
-func (arpdo *AppRolePolicyDeleteOne) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyDeleteOne {
-	arpdo.arpd.mutation.Where(ps...)
-	return arpdo
+func (_d *AppRolePolicyDeleteOne) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (arpdo *AppRolePolicyDeleteOne) Exec(ctx context.Context) error {
-	n, err := arpdo.arpd.Exec(ctx)
+func (_d *AppRolePolicyDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (arpdo *AppRolePolicyDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpdo *AppRolePolicyDeleteOne) ExecX(ctx context.Context) {
-	if err := arpdo.Exec(ctx); err != nil {
+func (_d *AppRolePolicyDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -26,150 +26,150 @@ type OrgUserPreferenceUpdate struct {
 }
 
 // Where appends a list predicates to the OrgUserPreferenceUpdate builder.
-func (oupu *OrgUserPreferenceUpdate) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceUpdate {
-	oupu.mutation.Where(ps...)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oupu *OrgUserPreferenceUpdate) SetUpdatedBy(i int) *OrgUserPreferenceUpdate {
-	oupu.mutation.ResetUpdatedBy()
-	oupu.mutation.SetUpdatedBy(i)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetUpdatedBy(v int) *OrgUserPreferenceUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oupu *OrgUserPreferenceUpdate) SetNillableUpdatedBy(i *int) *OrgUserPreferenceUpdate {
-	if i != nil {
-		oupu.SetUpdatedBy(*i)
+func (_u *OrgUserPreferenceUpdate) SetNillableUpdatedBy(v *int) *OrgUserPreferenceUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return oupu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (oupu *OrgUserPreferenceUpdate) AddUpdatedBy(i int) *OrgUserPreferenceUpdate {
-	oupu.mutation.AddUpdatedBy(i)
-	return oupu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUserPreferenceUpdate) AddUpdatedBy(v int) *OrgUserPreferenceUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (oupu *OrgUserPreferenceUpdate) ClearUpdatedBy() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearUpdatedBy()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearUpdatedBy() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oupu *OrgUserPreferenceUpdate) SetUpdatedAt(t time.Time) *OrgUserPreferenceUpdate {
-	oupu.mutation.SetUpdatedAt(t)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetUpdatedAt(v time.Time) *OrgUserPreferenceUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oupu *OrgUserPreferenceUpdate) SetNillableUpdatedAt(t *time.Time) *OrgUserPreferenceUpdate {
-	if t != nil {
-		oupu.SetUpdatedAt(*t)
+func (_u *OrgUserPreferenceUpdate) SetNillableUpdatedAt(v *time.Time) *OrgUserPreferenceUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return oupu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (oupu *OrgUserPreferenceUpdate) ClearUpdatedAt() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearUpdatedAt()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearUpdatedAt() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (oupu *OrgUserPreferenceUpdate) SetUserID(i int) *OrgUserPreferenceUpdate {
-	oupu.mutation.SetUserID(i)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetUserID(v int) *OrgUserPreferenceUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (oupu *OrgUserPreferenceUpdate) SetNillableUserID(i *int) *OrgUserPreferenceUpdate {
-	if i != nil {
-		oupu.SetUserID(*i)
+func (_u *OrgUserPreferenceUpdate) SetNillableUserID(v *int) *OrgUserPreferenceUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return oupu
+	return _u
 }
 
 // SetMenuFavorite sets the "menu_favorite" field.
-func (oupu *OrgUserPreferenceUpdate) SetMenuFavorite(i []int) *OrgUserPreferenceUpdate {
-	oupu.mutation.SetMenuFavorite(i)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetMenuFavorite(v []int) *OrgUserPreferenceUpdate {
+	_u.mutation.SetMenuFavorite(v)
+	return _u
 }
 
-// AppendMenuFavorite appends i to the "menu_favorite" field.
-func (oupu *OrgUserPreferenceUpdate) AppendMenuFavorite(i []int) *OrgUserPreferenceUpdate {
-	oupu.mutation.AppendMenuFavorite(i)
-	return oupu
+// AppendMenuFavorite appends value to the "menu_favorite" field.
+func (_u *OrgUserPreferenceUpdate) AppendMenuFavorite(v []int) *OrgUserPreferenceUpdate {
+	_u.mutation.AppendMenuFavorite(v)
+	return _u
 }
 
 // ClearMenuFavorite clears the value of the "menu_favorite" field.
-func (oupu *OrgUserPreferenceUpdate) ClearMenuFavorite() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearMenuFavorite()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearMenuFavorite() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearMenuFavorite()
+	return _u
 }
 
 // SetMenuRecent sets the "menu_recent" field.
-func (oupu *OrgUserPreferenceUpdate) SetMenuRecent(i []int) *OrgUserPreferenceUpdate {
-	oupu.mutation.SetMenuRecent(i)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetMenuRecent(v []int) *OrgUserPreferenceUpdate {
+	_u.mutation.SetMenuRecent(v)
+	return _u
 }
 
-// AppendMenuRecent appends i to the "menu_recent" field.
-func (oupu *OrgUserPreferenceUpdate) AppendMenuRecent(i []int) *OrgUserPreferenceUpdate {
-	oupu.mutation.AppendMenuRecent(i)
-	return oupu
+// AppendMenuRecent appends value to the "menu_recent" field.
+func (_u *OrgUserPreferenceUpdate) AppendMenuRecent(v []int) *OrgUserPreferenceUpdate {
+	_u.mutation.AppendMenuRecent(v)
+	return _u
 }
 
 // ClearMenuRecent clears the value of the "menu_recent" field.
-func (oupu *OrgUserPreferenceUpdate) ClearMenuRecent() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearMenuRecent()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearMenuRecent() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearMenuRecent()
+	return _u
 }
 
 // SetClientPreferences sets the "client_preferences" field.
-func (oupu *OrgUserPreferenceUpdate) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdate {
-	oupu.mutation.SetClientPreferences(tp)
-	return oupu
+func (_u *OrgUserPreferenceUpdate) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpdate {
+	_u.mutation.SetClientPreferences(v)
+	return _u
 }
 
-// AppendClientPreferences appends tp to the "client_preferences" field.
-func (oupu *OrgUserPreferenceUpdate) AppendClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdate {
-	oupu.mutation.AppendClientPreferences(tp)
-	return oupu
+// AppendClientPreferences appends value to the "client_preferences" field.
+func (_u *OrgUserPreferenceUpdate) AppendClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpdate {
+	_u.mutation.AppendClientPreferences(v)
+	return _u
 }
 
 // ClearClientPreferences clears the value of the "client_preferences" field.
-func (oupu *OrgUserPreferenceUpdate) ClearClientPreferences() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearClientPreferences()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearClientPreferences() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearClientPreferences()
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (oupu *OrgUserPreferenceUpdate) SetUser(u *User) *OrgUserPreferenceUpdate {
-	return oupu.SetUserID(u.ID)
+func (_u *OrgUserPreferenceUpdate) SetUser(v *User) *OrgUserPreferenceUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the OrgUserPreferenceMutation object of the builder.
-func (oupu *OrgUserPreferenceUpdate) Mutation() *OrgUserPreferenceMutation {
-	return oupu.mutation
+func (_u *OrgUserPreferenceUpdate) Mutation() *OrgUserPreferenceMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (oupu *OrgUserPreferenceUpdate) ClearUser() *OrgUserPreferenceUpdate {
-	oupu.mutation.ClearUser()
-	return oupu
+func (_u *OrgUserPreferenceUpdate) ClearUser() *OrgUserPreferenceUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (oupu *OrgUserPreferenceUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, oupu.sqlSave, oupu.mutation, oupu.hooks)
+func (_u *OrgUserPreferenceUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oupu *OrgUserPreferenceUpdate) SaveX(ctx context.Context) int {
-	affected, err := oupu.Save(ctx)
+func (_u *OrgUserPreferenceUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -177,90 +177,90 @@ func (oupu *OrgUserPreferenceUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (oupu *OrgUserPreferenceUpdate) Exec(ctx context.Context) error {
-	_, err := oupu.Save(ctx)
+func (_u *OrgUserPreferenceUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oupu *OrgUserPreferenceUpdate) ExecX(ctx context.Context) {
-	if err := oupu.Exec(ctx); err != nil {
+func (_u *OrgUserPreferenceUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oupu *OrgUserPreferenceUpdate) check() error {
-	if oupu.mutation.UserCleared() && len(oupu.mutation.UserIDs()) > 0 {
+func (_u *OrgUserPreferenceUpdate) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.user"`)
 	}
-	if oupu.mutation.OrgCleared() && len(oupu.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.org"`)
 	}
 	return nil
 }
 
-func (oupu *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := oupu.check(); err != nil {
-		return n, err
+func (_u *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orguserpreference.Table, orguserpreference.Columns, sqlgraph.NewFieldSpec(orguserpreference.FieldID, field.TypeInt))
-	if ps := oupu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := oupu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := oupu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orguserpreference.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if oupu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orguserpreference.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := oupu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if oupu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguserpreference.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := oupu.mutation.MenuFavorite(); ok {
+	if value, ok := _u.mutation.MenuFavorite(); ok {
 		_spec.SetField(orguserpreference.FieldMenuFavorite, field.TypeJSON, value)
 	}
-	if value, ok := oupu.mutation.AppendedMenuFavorite(); ok {
+	if value, ok := _u.mutation.AppendedMenuFavorite(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldMenuFavorite, value)
 		})
 	}
-	if oupu.mutation.MenuFavoriteCleared() {
+	if _u.mutation.MenuFavoriteCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuFavorite, field.TypeJSON)
 	}
-	if value, ok := oupu.mutation.MenuRecent(); ok {
+	if value, ok := _u.mutation.MenuRecent(); ok {
 		_spec.SetField(orguserpreference.FieldMenuRecent, field.TypeJSON, value)
 	}
-	if value, ok := oupu.mutation.AppendedMenuRecent(); ok {
+	if value, ok := _u.mutation.AppendedMenuRecent(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldMenuRecent, value)
 		})
 	}
-	if oupu.mutation.MenuRecentCleared() {
+	if _u.mutation.MenuRecentCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuRecent, field.TypeJSON)
 	}
-	if value, ok := oupu.mutation.ClientPreferences(); ok {
+	if value, ok := _u.mutation.ClientPreferences(); ok {
 		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
 	}
-	if value, ok := oupu.mutation.AppendedClientPreferences(); ok {
+	if value, ok := _u.mutation.AppendedClientPreferences(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldClientPreferences, value)
 		})
 	}
-	if oupu.mutation.ClientPreferencesCleared() {
+	if _u.mutation.ClientPreferencesCleared() {
 		_spec.ClearField(orguserpreference.FieldClientPreferences, field.TypeJSON)
 	}
-	if oupu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -273,7 +273,7 @@ func (oupu *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oupu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -289,7 +289,7 @@ func (oupu *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, oupu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orguserpreference.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -297,8 +297,8 @@ func (oupu *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	oupu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrgUserPreferenceUpdateOne is the builder for updating a single OrgUserPreference entity.
@@ -310,157 +310,157 @@ type OrgUserPreferenceUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetUpdatedBy(i int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ResetUpdatedBy()
-	oupuo.mutation.SetUpdatedBy(i)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetUpdatedBy(v int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oupuo *OrgUserPreferenceUpdateOne) SetNillableUpdatedBy(i *int) *OrgUserPreferenceUpdateOne {
-	if i != nil {
-		oupuo.SetUpdatedBy(*i)
+func (_u *OrgUserPreferenceUpdateOne) SetNillableUpdatedBy(v *int) *OrgUserPreferenceUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return oupuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (oupuo *OrgUserPreferenceUpdateOne) AddUpdatedBy(i int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.AddUpdatedBy(i)
-	return oupuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUserPreferenceUpdateOne) AddUpdatedBy(v int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearUpdatedBy() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearUpdatedBy()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearUpdatedBy() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetUpdatedAt(t time.Time) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.SetUpdatedAt(t)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetUpdatedAt(v time.Time) *OrgUserPreferenceUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oupuo *OrgUserPreferenceUpdateOne) SetNillableUpdatedAt(t *time.Time) *OrgUserPreferenceUpdateOne {
-	if t != nil {
-		oupuo.SetUpdatedAt(*t)
+func (_u *OrgUserPreferenceUpdateOne) SetNillableUpdatedAt(v *time.Time) *OrgUserPreferenceUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return oupuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearUpdatedAt() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearUpdatedAt()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearUpdatedAt() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetUserID(i int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.SetUserID(i)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetUserID(v int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (oupuo *OrgUserPreferenceUpdateOne) SetNillableUserID(i *int) *OrgUserPreferenceUpdateOne {
-	if i != nil {
-		oupuo.SetUserID(*i)
+func (_u *OrgUserPreferenceUpdateOne) SetNillableUserID(v *int) *OrgUserPreferenceUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return oupuo
+	return _u
 }
 
 // SetMenuFavorite sets the "menu_favorite" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetMenuFavorite(i []int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.SetMenuFavorite(i)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetMenuFavorite(v []int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.SetMenuFavorite(v)
+	return _u
 }
 
-// AppendMenuFavorite appends i to the "menu_favorite" field.
-func (oupuo *OrgUserPreferenceUpdateOne) AppendMenuFavorite(i []int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.AppendMenuFavorite(i)
-	return oupuo
+// AppendMenuFavorite appends value to the "menu_favorite" field.
+func (_u *OrgUserPreferenceUpdateOne) AppendMenuFavorite(v []int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.AppendMenuFavorite(v)
+	return _u
 }
 
 // ClearMenuFavorite clears the value of the "menu_favorite" field.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearMenuFavorite() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearMenuFavorite()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearMenuFavorite() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearMenuFavorite()
+	return _u
 }
 
 // SetMenuRecent sets the "menu_recent" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetMenuRecent(i []int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.SetMenuRecent(i)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetMenuRecent(v []int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.SetMenuRecent(v)
+	return _u
 }
 
-// AppendMenuRecent appends i to the "menu_recent" field.
-func (oupuo *OrgUserPreferenceUpdateOne) AppendMenuRecent(i []int) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.AppendMenuRecent(i)
-	return oupuo
+// AppendMenuRecent appends value to the "menu_recent" field.
+func (_u *OrgUserPreferenceUpdateOne) AppendMenuRecent(v []int) *OrgUserPreferenceUpdateOne {
+	_u.mutation.AppendMenuRecent(v)
+	return _u
 }
 
 // ClearMenuRecent clears the value of the "menu_recent" field.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearMenuRecent() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearMenuRecent()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearMenuRecent() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearMenuRecent()
+	return _u
 }
 
 // SetClientPreferences sets the "client_preferences" field.
-func (oupuo *OrgUserPreferenceUpdateOne) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.SetClientPreferences(tp)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpdateOne {
+	_u.mutation.SetClientPreferences(v)
+	return _u
 }
 
-// AppendClientPreferences appends tp to the "client_preferences" field.
-func (oupuo *OrgUserPreferenceUpdateOne) AppendClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.AppendClientPreferences(tp)
-	return oupuo
+// AppendClientPreferences appends value to the "client_preferences" field.
+func (_u *OrgUserPreferenceUpdateOne) AppendClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpdateOne {
+	_u.mutation.AppendClientPreferences(v)
+	return _u
 }
 
 // ClearClientPreferences clears the value of the "client_preferences" field.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearClientPreferences() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearClientPreferences()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearClientPreferences() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearClientPreferences()
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (oupuo *OrgUserPreferenceUpdateOne) SetUser(u *User) *OrgUserPreferenceUpdateOne {
-	return oupuo.SetUserID(u.ID)
+func (_u *OrgUserPreferenceUpdateOne) SetUser(v *User) *OrgUserPreferenceUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the OrgUserPreferenceMutation object of the builder.
-func (oupuo *OrgUserPreferenceUpdateOne) Mutation() *OrgUserPreferenceMutation {
-	return oupuo.mutation
+func (_u *OrgUserPreferenceUpdateOne) Mutation() *OrgUserPreferenceMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (oupuo *OrgUserPreferenceUpdateOne) ClearUser() *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.ClearUser()
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) ClearUser() *OrgUserPreferenceUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Where appends a list predicates to the OrgUserPreferenceUpdate builder.
-func (oupuo *OrgUserPreferenceUpdateOne) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceUpdateOne {
-	oupuo.mutation.Where(ps...)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) Where(ps ...predicate.OrgUserPreference) *OrgUserPreferenceUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (oupuo *OrgUserPreferenceUpdateOne) Select(field string, fields ...string) *OrgUserPreferenceUpdateOne {
-	oupuo.fields = append([]string{field}, fields...)
-	return oupuo
+func (_u *OrgUserPreferenceUpdateOne) Select(field string, fields ...string) *OrgUserPreferenceUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated OrgUserPreference entity.
-func (oupuo *OrgUserPreferenceUpdateOne) Save(ctx context.Context) (*OrgUserPreference, error) {
-	return withHooks(ctx, oupuo.sqlSave, oupuo.mutation, oupuo.hooks)
+func (_u *OrgUserPreferenceUpdateOne) Save(ctx context.Context) (*OrgUserPreference, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oupuo *OrgUserPreferenceUpdateOne) SaveX(ctx context.Context) *OrgUserPreference {
-	node, err := oupuo.Save(ctx)
+func (_u *OrgUserPreferenceUpdateOne) SaveX(ctx context.Context) *OrgUserPreference {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -468,40 +468,40 @@ func (oupuo *OrgUserPreferenceUpdateOne) SaveX(ctx context.Context) *OrgUserPref
 }
 
 // Exec executes the query on the entity.
-func (oupuo *OrgUserPreferenceUpdateOne) Exec(ctx context.Context) error {
-	_, err := oupuo.Save(ctx)
+func (_u *OrgUserPreferenceUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oupuo *OrgUserPreferenceUpdateOne) ExecX(ctx context.Context) {
-	if err := oupuo.Exec(ctx); err != nil {
+func (_u *OrgUserPreferenceUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oupuo *OrgUserPreferenceUpdateOne) check() error {
-	if oupuo.mutation.UserCleared() && len(oupuo.mutation.UserIDs()) > 0 {
+func (_u *OrgUserPreferenceUpdateOne) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.user"`)
 	}
-	if oupuo.mutation.OrgCleared() && len(oupuo.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.org"`)
 	}
 	return nil
 }
 
-func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *OrgUserPreference, err error) {
-	if err := oupuo.check(); err != nil {
+func (_u *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *OrgUserPreference, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orguserpreference.Table, orguserpreference.Columns, sqlgraph.NewFieldSpec(orguserpreference.FieldID, field.TypeInt))
-	id, ok := oupuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OrgUserPreference.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := oupuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orguserpreference.FieldID)
 		for _, f := range fields {
@@ -513,62 +513,62 @@ func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *Or
 			}
 		}
 	}
-	if ps := oupuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := oupuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := oupuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orguserpreference.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if oupuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orguserpreference.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := oupuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if oupuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguserpreference.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := oupuo.mutation.MenuFavorite(); ok {
+	if value, ok := _u.mutation.MenuFavorite(); ok {
 		_spec.SetField(orguserpreference.FieldMenuFavorite, field.TypeJSON, value)
 	}
-	if value, ok := oupuo.mutation.AppendedMenuFavorite(); ok {
+	if value, ok := _u.mutation.AppendedMenuFavorite(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldMenuFavorite, value)
 		})
 	}
-	if oupuo.mutation.MenuFavoriteCleared() {
+	if _u.mutation.MenuFavoriteCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuFavorite, field.TypeJSON)
 	}
-	if value, ok := oupuo.mutation.MenuRecent(); ok {
+	if value, ok := _u.mutation.MenuRecent(); ok {
 		_spec.SetField(orguserpreference.FieldMenuRecent, field.TypeJSON, value)
 	}
-	if value, ok := oupuo.mutation.AppendedMenuRecent(); ok {
+	if value, ok := _u.mutation.AppendedMenuRecent(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldMenuRecent, value)
 		})
 	}
-	if oupuo.mutation.MenuRecentCleared() {
+	if _u.mutation.MenuRecentCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuRecent, field.TypeJSON)
 	}
-	if value, ok := oupuo.mutation.ClientPreferences(); ok {
+	if value, ok := _u.mutation.ClientPreferences(); ok {
 		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
 	}
-	if value, ok := oupuo.mutation.AppendedClientPreferences(); ok {
+	if value, ok := _u.mutation.AppendedClientPreferences(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orguserpreference.FieldClientPreferences, value)
 		})
 	}
-	if oupuo.mutation.ClientPreferencesCleared() {
+	if _u.mutation.ClientPreferencesCleared() {
 		_spec.ClearField(orguserpreference.FieldClientPreferences, field.TypeJSON)
 	}
-	if oupuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -581,7 +581,7 @@ func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *Or
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oupuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -597,10 +597,10 @@ func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *Or
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &OrgUserPreference{config: oupuo.config}
+	_node = &OrgUserPreference{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, oupuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orguserpreference.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -608,6 +608,6 @@ func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *Or
 		}
 		return nil, err
 	}
-	oupuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

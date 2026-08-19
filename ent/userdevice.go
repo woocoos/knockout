@@ -93,7 +93,7 @@ func (*UserDevice) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserDevice fields.
-func (ud *UserDevice) assignValues(columns []string, values []any) error {
+func (_m *UserDevice) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -104,87 +104,87 @@ func (ud *UserDevice) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ud.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case userdevice.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ud.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case userdevice.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ud.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case userdevice.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ud.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case userdevice.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ud.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case userdevice.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				ud.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case userdevice.FieldDeviceUID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_uid", values[i])
 			} else if value.Valid {
-				ud.DeviceUID = value.String
+				_m.DeviceUID = value.String
 			}
 		case userdevice.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
-				ud.DeviceName = value.String
+				_m.DeviceName = value.String
 			}
 		case userdevice.FieldSystemName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field system_name", values[i])
 			} else if value.Valid {
-				ud.SystemName = value.String
+				_m.SystemName = value.String
 			}
 		case userdevice.FieldSystemVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field system_version", values[i])
 			} else if value.Valid {
-				ud.SystemVersion = value.String
+				_m.SystemVersion = value.String
 			}
 		case userdevice.FieldAppVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field app_version", values[i])
 			} else if value.Valid {
-				ud.AppVersion = value.String
+				_m.AppVersion = value.String
 			}
 		case userdevice.FieldDeviceModel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_model", values[i])
 			} else if value.Valid {
-				ud.DeviceModel = value.String
+				_m.DeviceModel = value.String
 			}
 		case userdevice.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				ud.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		case userdevice.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				ud.Comments = value.String
+				_m.Comments = value.String
 			}
 		default:
-			ud.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -192,76 +192,76 @@ func (ud *UserDevice) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserDevice.
 // This includes values selected through modifiers, order, etc.
-func (ud *UserDevice) Value(name string) (ent.Value, error) {
-	return ud.selectValues.Get(name)
+func (_m *UserDevice) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserDevice entity.
-func (ud *UserDevice) QueryUser() *UserQuery {
-	return NewUserDeviceClient(ud.config).QueryUser(ud)
+func (_m *UserDevice) QueryUser() *UserQuery {
+	return NewUserDeviceClient(_m.config).QueryUser(_m)
 }
 
 // Update returns a builder for updating this UserDevice.
 // Note that you need to call UserDevice.Unwrap() before calling this method if this UserDevice
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ud *UserDevice) Update() *UserDeviceUpdateOne {
-	return NewUserDeviceClient(ud.config).UpdateOne(ud)
+func (_m *UserDevice) Update() *UserDeviceUpdateOne {
+	return NewUserDeviceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserDevice entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ud *UserDevice) Unwrap() *UserDevice {
-	_tx, ok := ud.config.driver.(*txDriver)
+func (_m *UserDevice) Unwrap() *UserDevice {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserDevice is not a transactional entity")
 	}
-	ud.config.driver = _tx.drv
-	return ud
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ud *UserDevice) String() string {
+func (_m *UserDevice) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserDevice(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ud.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ud.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ud.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ud.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ud.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", ud.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("device_uid=")
-	builder.WriteString(ud.DeviceUID)
+	builder.WriteString(_m.DeviceUID)
 	builder.WriteString(", ")
 	builder.WriteString("device_name=")
-	builder.WriteString(ud.DeviceName)
+	builder.WriteString(_m.DeviceName)
 	builder.WriteString(", ")
 	builder.WriteString("system_name=")
-	builder.WriteString(ud.SystemName)
+	builder.WriteString(_m.SystemName)
 	builder.WriteString(", ")
 	builder.WriteString("system_version=")
-	builder.WriteString(ud.SystemVersion)
+	builder.WriteString(_m.SystemVersion)
 	builder.WriteString(", ")
 	builder.WriteString("app_version=")
-	builder.WriteString(ud.AppVersion)
+	builder.WriteString(_m.AppVersion)
 	builder.WriteString(", ")
 	builder.WriteString("device_model=")
-	builder.WriteString(ud.DeviceModel)
+	builder.WriteString(_m.DeviceModel)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", ud.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(ud.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteByte(')')
 	return builder.String()
 }

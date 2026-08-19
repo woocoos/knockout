@@ -33,390 +33,390 @@ type AppCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (ac *AppCreate) SetCreatedBy(i int) *AppCreate {
-	ac.mutation.SetCreatedBy(i)
-	return ac
+func (_c *AppCreate) SetCreatedBy(v int) *AppCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ac *AppCreate) SetCreatedAt(t time.Time) *AppCreate {
-	ac.mutation.SetCreatedAt(t)
-	return ac
+func (_c *AppCreate) SetCreatedAt(v time.Time) *AppCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ac *AppCreate) SetNillableCreatedAt(t *time.Time) *AppCreate {
-	if t != nil {
-		ac.SetCreatedAt(*t)
+func (_c *AppCreate) SetNillableCreatedAt(v *time.Time) *AppCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ac *AppCreate) SetUpdatedBy(i int) *AppCreate {
-	ac.mutation.SetUpdatedBy(i)
-	return ac
+func (_c *AppCreate) SetUpdatedBy(v int) *AppCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ac *AppCreate) SetNillableUpdatedBy(i *int) *AppCreate {
-	if i != nil {
-		ac.SetUpdatedBy(*i)
+func (_c *AppCreate) SetNillableUpdatedBy(v *int) *AppCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ac *AppCreate) SetUpdatedAt(t time.Time) *AppCreate {
-	ac.mutation.SetUpdatedAt(t)
-	return ac
+func (_c *AppCreate) SetUpdatedAt(v time.Time) *AppCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ac *AppCreate) SetNillableUpdatedAt(t *time.Time) *AppCreate {
-	if t != nil {
-		ac.SetUpdatedAt(*t)
+func (_c *AppCreate) SetNillableUpdatedAt(v *time.Time) *AppCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetName sets the "name" field.
-func (ac *AppCreate) SetName(s string) *AppCreate {
-	ac.mutation.SetName(s)
-	return ac
+func (_c *AppCreate) SetName(v string) *AppCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (ac *AppCreate) SetCode(s string) *AppCreate {
-	ac.mutation.SetCode(s)
-	return ac
+func (_c *AppCreate) SetCode(v string) *AppCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (ac *AppCreate) SetKind(a app.Kind) *AppCreate {
-	ac.mutation.SetKind(a)
-	return ac
+func (_c *AppCreate) SetKind(v app.Kind) *AppCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetRedirectURI sets the "redirect_uri" field.
-func (ac *AppCreate) SetRedirectURI(s string) *AppCreate {
-	ac.mutation.SetRedirectURI(s)
-	return ac
+func (_c *AppCreate) SetRedirectURI(v string) *AppCreate {
+	_c.mutation.SetRedirectURI(v)
+	return _c
 }
 
 // SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
-func (ac *AppCreate) SetNillableRedirectURI(s *string) *AppCreate {
-	if s != nil {
-		ac.SetRedirectURI(*s)
+func (_c *AppCreate) SetNillableRedirectURI(v *string) *AppCreate {
+	if v != nil {
+		_c.SetRedirectURI(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetAppKey sets the "app_key" field.
-func (ac *AppCreate) SetAppKey(s string) *AppCreate {
-	ac.mutation.SetAppKey(s)
-	return ac
+func (_c *AppCreate) SetAppKey(v string) *AppCreate {
+	_c.mutation.SetAppKey(v)
+	return _c
 }
 
 // SetNillableAppKey sets the "app_key" field if the given value is not nil.
-func (ac *AppCreate) SetNillableAppKey(s *string) *AppCreate {
-	if s != nil {
-		ac.SetAppKey(*s)
+func (_c *AppCreate) SetNillableAppKey(v *string) *AppCreate {
+	if v != nil {
+		_c.SetAppKey(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetAppSecret sets the "app_secret" field.
-func (ac *AppCreate) SetAppSecret(s string) *AppCreate {
-	ac.mutation.SetAppSecret(s)
-	return ac
+func (_c *AppCreate) SetAppSecret(v string) *AppCreate {
+	_c.mutation.SetAppSecret(v)
+	return _c
 }
 
 // SetNillableAppSecret sets the "app_secret" field if the given value is not nil.
-func (ac *AppCreate) SetNillableAppSecret(s *string) *AppCreate {
-	if s != nil {
-		ac.SetAppSecret(*s)
+func (_c *AppCreate) SetNillableAppSecret(v *string) *AppCreate {
+	if v != nil {
+		_c.SetAppSecret(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetScopes sets the "scopes" field.
-func (ac *AppCreate) SetScopes(s string) *AppCreate {
-	ac.mutation.SetScopes(s)
-	return ac
+func (_c *AppCreate) SetScopes(v string) *AppCreate {
+	_c.mutation.SetScopes(v)
+	return _c
 }
 
 // SetNillableScopes sets the "scopes" field if the given value is not nil.
-func (ac *AppCreate) SetNillableScopes(s *string) *AppCreate {
-	if s != nil {
-		ac.SetScopes(*s)
+func (_c *AppCreate) SetNillableScopes(v *string) *AppCreate {
+	if v != nil {
+		_c.SetScopes(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetTokenValidity sets the "token_validity" field.
-func (ac *AppCreate) SetTokenValidity(i int32) *AppCreate {
-	ac.mutation.SetTokenValidity(i)
-	return ac
+func (_c *AppCreate) SetTokenValidity(v int32) *AppCreate {
+	_c.mutation.SetTokenValidity(v)
+	return _c
 }
 
 // SetNillableTokenValidity sets the "token_validity" field if the given value is not nil.
-func (ac *AppCreate) SetNillableTokenValidity(i *int32) *AppCreate {
-	if i != nil {
-		ac.SetTokenValidity(*i)
+func (_c *AppCreate) SetNillableTokenValidity(v *int32) *AppCreate {
+	if v != nil {
+		_c.SetTokenValidity(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetRefreshTokenValidity sets the "refresh_token_validity" field.
-func (ac *AppCreate) SetRefreshTokenValidity(i int32) *AppCreate {
-	ac.mutation.SetRefreshTokenValidity(i)
-	return ac
+func (_c *AppCreate) SetRefreshTokenValidity(v int32) *AppCreate {
+	_c.mutation.SetRefreshTokenValidity(v)
+	return _c
 }
 
 // SetNillableRefreshTokenValidity sets the "refresh_token_validity" field if the given value is not nil.
-func (ac *AppCreate) SetNillableRefreshTokenValidity(i *int32) *AppCreate {
-	if i != nil {
-		ac.SetRefreshTokenValidity(*i)
+func (_c *AppCreate) SetNillableRefreshTokenValidity(v *int32) *AppCreate {
+	if v != nil {
+		_c.SetRefreshTokenValidity(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetLogo sets the "logo" field.
-func (ac *AppCreate) SetLogo(s string) *AppCreate {
-	ac.mutation.SetLogo(s)
-	return ac
+func (_c *AppCreate) SetLogo(v string) *AppCreate {
+	_c.mutation.SetLogo(v)
+	return _c
 }
 
 // SetNillableLogo sets the "logo" field if the given value is not nil.
-func (ac *AppCreate) SetNillableLogo(s *string) *AppCreate {
-	if s != nil {
-		ac.SetLogo(*s)
+func (_c *AppCreate) SetNillableLogo(v *string) *AppCreate {
+	if v != nil {
+		_c.SetLogo(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (ac *AppCreate) SetComments(s string) *AppCreate {
-	ac.mutation.SetComments(s)
-	return ac
+func (_c *AppCreate) SetComments(v string) *AppCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (ac *AppCreate) SetNillableComments(s *string) *AppCreate {
-	if s != nil {
-		ac.SetComments(*s)
+func (_c *AppCreate) SetNillableComments(v *string) *AppCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (ac *AppCreate) SetStatus(ts typex.SimpleStatus) *AppCreate {
-	ac.mutation.SetStatus(ts)
-	return ac
+func (_c *AppCreate) SetStatus(v typex.SimpleStatus) *AppCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ac *AppCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppCreate {
-	if ts != nil {
-		ac.SetStatus(*ts)
+func (_c *AppCreate) SetNillableStatus(v *typex.SimpleStatus) *AppCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetOrgPrivate sets the "org_private" field.
-func (ac *AppCreate) SetOrgPrivate(b bool) *AppCreate {
-	ac.mutation.SetOrgPrivate(b)
-	return ac
+func (_c *AppCreate) SetOrgPrivate(v bool) *AppCreate {
+	_c.mutation.SetOrgPrivate(v)
+	return _c
 }
 
 // SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
-func (ac *AppCreate) SetNillableOrgPrivate(b *bool) *AppCreate {
-	if b != nil {
-		ac.SetOrgPrivate(*b)
+func (_c *AppCreate) SetNillableOrgPrivate(v *bool) *AppCreate {
+	if v != nil {
+		_c.SetOrgPrivate(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetOwnerOrgID sets the "owner_org_id" field.
-func (ac *AppCreate) SetOwnerOrgID(i int) *AppCreate {
-	ac.mutation.SetOwnerOrgID(i)
-	return ac
+func (_c *AppCreate) SetOwnerOrgID(v int) *AppCreate {
+	_c.mutation.SetOwnerOrgID(v)
+	return _c
 }
 
 // SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableOwnerOrgID(i *int) *AppCreate {
-	if i != nil {
-		ac.SetOwnerOrgID(*i)
+func (_c *AppCreate) SetNillableOwnerOrgID(v *int) *AppCreate {
+	if v != nil {
+		_c.SetOwnerOrgID(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ac *AppCreate) SetID(i int) *AppCreate {
-	ac.mutation.SetID(i)
-	return ac
+func (_c *AppCreate) SetID(v int) *AppCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableID(i *int) *AppCreate {
-	if i != nil {
-		ac.SetID(*i)
+func (_c *AppCreate) SetNillableID(v *int) *AppCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return ac
+	return _c
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (ac *AppCreate) AddMenuIDs(ids ...int) *AppCreate {
-	ac.mutation.AddMenuIDs(ids...)
-	return ac
+func (_c *AppCreate) AddMenuIDs(ids ...int) *AppCreate {
+	_c.mutation.AddMenuIDs(ids...)
+	return _c
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (ac *AppCreate) AddMenus(a ...*AppMenu) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddMenus(v ...*AppMenu) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddMenuIDs(ids...)
+	return _c.AddMenuIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the AppAction entity by IDs.
-func (ac *AppCreate) AddActionIDs(ids ...int) *AppCreate {
-	ac.mutation.AddActionIDs(ids...)
-	return ac
+func (_c *AppCreate) AddActionIDs(ids ...int) *AppCreate {
+	_c.mutation.AddActionIDs(ids...)
+	return _c
 }
 
 // AddActions adds the "actions" edges to the AppAction entity.
-func (ac *AppCreate) AddActions(a ...*AppAction) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddActions(v ...*AppAction) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddActionIDs(ids...)
+	return _c.AddActionIDs(ids...)
 }
 
 // AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (ac *AppCreate) AddResourceIDs(ids ...int) *AppCreate {
-	ac.mutation.AddResourceIDs(ids...)
-	return ac
+func (_c *AppCreate) AddResourceIDs(ids ...int) *AppCreate {
+	_c.mutation.AddResourceIDs(ids...)
+	return _c
 }
 
 // AddResources adds the "resources" edges to the AppRes entity.
-func (ac *AppCreate) AddResources(a ...*AppRes) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddResources(v ...*AppRes) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddResourceIDs(ids...)
+	return _c.AddResourceIDs(ids...)
 }
 
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
-func (ac *AppCreate) AddRoleIDs(ids ...int) *AppCreate {
-	ac.mutation.AddRoleIDs(ids...)
-	return ac
+func (_c *AppCreate) AddRoleIDs(ids ...int) *AppCreate {
+	_c.mutation.AddRoleIDs(ids...)
+	return _c
 }
 
 // AddRoles adds the "roles" edges to the AppRole entity.
-func (ac *AppCreate) AddRoles(a ...*AppRole) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddRoles(v ...*AppRole) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddRoleIDs(ids...)
+	return _c.AddRoleIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (ac *AppCreate) AddPolicyIDs(ids ...int) *AppCreate {
-	ac.mutation.AddPolicyIDs(ids...)
-	return ac
+func (_c *AppCreate) AddPolicyIDs(ids ...int) *AppCreate {
+	_c.mutation.AddPolicyIDs(ids...)
+	return _c
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (ac *AppCreate) AddPolicies(a ...*AppPolicy) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddPolicies(v ...*AppPolicy) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddPolicyIDs(ids...)
+	return _c.AddPolicyIDs(ids...)
 }
 
 // AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
-func (ac *AppCreate) AddPolicyViewIDs(ids ...int) *AppCreate {
-	ac.mutation.AddPolicyViewIDs(ids...)
-	return ac
+func (_c *AppCreate) AddPolicyViewIDs(ids ...int) *AppCreate {
+	_c.mutation.AddPolicyViewIDs(ids...)
+	return _c
 }
 
 // AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
-func (ac *AppCreate) AddPolicyViews(a ...*AppPolicyView) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddPolicyViews(v ...*AppPolicyView) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddPolicyViewIDs(ids...)
+	return _c.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
-func (ac *AppCreate) AddOrgIDs(ids ...int) *AppCreate {
-	ac.mutation.AddOrgIDs(ids...)
-	return ac
+func (_c *AppCreate) AddOrgIDs(ids ...int) *AppCreate {
+	_c.mutation.AddOrgIDs(ids...)
+	return _c
 }
 
 // AddOrgs adds the "orgs" edges to the Org entity.
-func (ac *AppCreate) AddOrgs(o ...*Org) *AppCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *AppCreate) AddOrgs(v ...*Org) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddOrgIDs(ids...)
+	return _c.AddOrgIDs(ids...)
 }
 
 // AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
-func (ac *AppCreate) AddDictIDs(ids ...int) *AppCreate {
-	ac.mutation.AddDictIDs(ids...)
-	return ac
+func (_c *AppCreate) AddDictIDs(ids ...int) *AppCreate {
+	_c.mutation.AddDictIDs(ids...)
+	return _c
 }
 
 // AddDicts adds the "dicts" edges to the AppDict entity.
-func (ac *AppCreate) AddDicts(a ...*AppDict) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddDicts(v ...*AppDict) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddDictIDs(ids...)
+	return _c.AddDictIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (ac *AppCreate) AddOrgAppIDs(ids ...int) *AppCreate {
-	ac.mutation.AddOrgAppIDs(ids...)
-	return ac
+func (_c *AppCreate) AddOrgAppIDs(ids ...int) *AppCreate {
+	_c.mutation.AddOrgAppIDs(ids...)
+	return _c
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (ac *AppCreate) AddOrgApp(o ...*OrgApp) *AppCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *AppCreate) AddOrgApp(v ...*OrgApp) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddOrgAppIDs(ids...)
+	return _c.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (ac *AppCreate) Mutation() *AppMutation {
-	return ac.mutation
+func (_c *AppCreate) Mutation() *AppMutation {
+	return _c.mutation
 }
 
 // Save creates the App in the database.
-func (ac *AppCreate) Save(ctx context.Context) (*App, error) {
-	if err := ac.defaults(); err != nil {
+func (_c *AppCreate) Save(ctx context.Context) (*App, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *AppCreate) SaveX(ctx context.Context) *App {
-	v, err := ac.Save(ctx)
+func (_c *AppCreate) SaveX(ctx context.Context) *App {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -424,98 +424,98 @@ func (ac *AppCreate) SaveX(ctx context.Context) *App {
 }
 
 // Exec executes the query.
-func (ac *AppCreate) Exec(ctx context.Context) error {
-	_, err := ac.Save(ctx)
+func (_c *AppCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ac *AppCreate) ExecX(ctx context.Context) {
-	if err := ac.Exec(ctx); err != nil {
+func (_c *AppCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ac *AppCreate) defaults() error {
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+func (_c *AppCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if app.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized app.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := app.DefaultCreatedAt()
-		ac.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := ac.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := app.DefaultStatus
-		ac.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
-	if _, ok := ac.mutation.OrgPrivate(); !ok {
+	if _, ok := _c.mutation.OrgPrivate(); !ok {
 		v := app.DefaultOrgPrivate
-		ac.mutation.SetOrgPrivate(v)
+		_c.mutation.SetOrgPrivate(v)
 	}
-	if _, ok := ac.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if app.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized app.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := app.DefaultID()
-		ac.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ac *AppCreate) check() error {
-	if _, ok := ac.mutation.CreatedBy(); !ok {
+func (_c *AppCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "App.created_by"`)}
 	}
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
 	}
-	if _, ok := ac.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "App.name"`)}
 	}
-	if v, ok := ac.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := app.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "App.name": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.Code(); !ok {
+	if _, ok := _c.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "App.code"`)}
 	}
-	if v, ok := ac.mutation.Code(); ok {
+	if v, ok := _c.mutation.Code(); ok {
 		if err := app.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "App.code": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "App.kind"`)}
 	}
-	if v, ok := ac.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := app.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "App.kind": %w`, err)}
 		}
 	}
-	if v, ok := ac.mutation.RedirectURI(); ok {
+	if v, ok := _c.mutation.RedirectURI(); ok {
 		if err := app.RedirectURIValidator(v); err != nil {
 			return &ValidationError{Name: "redirect_uri", err: fmt.Errorf(`ent: validator failed for field "App.redirect_uri": %w`, err)}
 		}
 	}
-	if v, ok := ac.mutation.AppSecret(); ok {
+	if v, ok := _c.mutation.AppSecret(); ok {
 		if err := app.AppSecretValidator(v); err != nil {
 			return &ValidationError{Name: "app_secret", err: fmt.Errorf(`ent: validator failed for field "App.app_secret": %w`, err)}
 		}
 	}
-	if v, ok := ac.mutation.Scopes(); ok {
+	if v, ok := _c.mutation.Scopes(); ok {
 		if err := app.ScopesValidator(v); err != nil {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
-	if v, ok := ac.mutation.Logo(); ok {
+	if v, ok := _c.mutation.Logo(); ok {
 		if err := app.LogoValidator(v); err != nil {
 			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
 		}
 	}
-	if v, ok := ac.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
 		}
@@ -523,12 +523,12 @@ func (ac *AppCreate) check() error {
 	return nil
 }
 
-func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
-	if err := ac.check(); err != nil {
+func (_c *AppCreate) sqlSave(ctx context.Context) (*App, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -538,94 +538,94 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	ac.mutation.id = &_node.ID
-	ac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
+func (_c *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	var (
-		_node = &App{config: ac.config}
+		_node = &App{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = ac.conflict
-	if id, ok := ac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ac.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(app.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := ac.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := ac.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(app.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := ac.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ac.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ac.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(app.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := ac.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(app.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := ac.mutation.RedirectURI(); ok {
+	if value, ok := _c.mutation.RedirectURI(); ok {
 		_spec.SetField(app.FieldRedirectURI, field.TypeString, value)
 		_node.RedirectURI = value
 	}
-	if value, ok := ac.mutation.AppKey(); ok {
+	if value, ok := _c.mutation.AppKey(); ok {
 		_spec.SetField(app.FieldAppKey, field.TypeString, value)
 		_node.AppKey = value
 	}
-	if value, ok := ac.mutation.AppSecret(); ok {
+	if value, ok := _c.mutation.AppSecret(); ok {
 		_spec.SetField(app.FieldAppSecret, field.TypeString, value)
 		_node.AppSecret = value
 	}
-	if value, ok := ac.mutation.Scopes(); ok {
+	if value, ok := _c.mutation.Scopes(); ok {
 		_spec.SetField(app.FieldScopes, field.TypeString, value)
 		_node.Scopes = value
 	}
-	if value, ok := ac.mutation.TokenValidity(); ok {
+	if value, ok := _c.mutation.TokenValidity(); ok {
 		_spec.SetField(app.FieldTokenValidity, field.TypeInt32, value)
 		_node.TokenValidity = value
 	}
-	if value, ok := ac.mutation.RefreshTokenValidity(); ok {
+	if value, ok := _c.mutation.RefreshTokenValidity(); ok {
 		_spec.SetField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 		_node.RefreshTokenValidity = value
 	}
-	if value, ok := ac.mutation.Logo(); ok {
+	if value, ok := _c.mutation.Logo(); ok {
 		_spec.SetField(app.FieldLogo, field.TypeString, value)
 		_node.Logo = value
 	}
-	if value, ok := ac.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := ac.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ac.mutation.OrgPrivate(); ok {
+	if value, ok := _c.mutation.OrgPrivate(); ok {
 		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 		_node.OrgPrivate = value
 	}
-	if value, ok := ac.mutation.OwnerOrgID(); ok {
+	if value, ok := _c.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
 		_node.OwnerOrgID = value
 	}
-	if nodes := ac.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -641,7 +641,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -657,7 +657,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.ResourcesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ResourcesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -673,7 +673,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -689,7 +689,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -705,7 +705,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PolicyViewsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -721,7 +721,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.OrgsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -735,13 +735,13 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: ac.config, mutation: newOrgAppMutation(ac.config, OpCreate)}
+		createE := &OrgAppCreate{config: _c.config, mutation: newOrgAppMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.DictsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.DictsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -757,7 +757,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -792,10 +792,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
-	ac.conflict = opts
+func (_c *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
+	_c.conflict = opts
 	return &AppUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -805,10 +805,10 @@ func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
 //	client.App.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ac *AppCreate) OnConflictColumns(columns ...string) *AppUpsertOne {
-	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
+func (_c *AppCreate) OnConflictColumns(columns ...string) *AppUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -1535,16 +1535,16 @@ type AppCreateBulk struct {
 }
 
 // Save creates the App entities in the database.
-func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
-	if acb.err != nil {
-		return nil, acb.err
+func (_c *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*App, len(acb.builders))
-	mutators := make([]Mutator, len(acb.builders))
-	for i := range acb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*App, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := acb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppMutation)
@@ -1558,12 +1558,12 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, acb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = acb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, acb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1587,7 +1587,7 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, acb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1595,8 +1595,8 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *AppCreateBulk) SaveX(ctx context.Context) []*App {
-	v, err := acb.Save(ctx)
+func (_c *AppCreateBulk) SaveX(ctx context.Context) []*App {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1604,14 +1604,14 @@ func (acb *AppCreateBulk) SaveX(ctx context.Context) []*App {
 }
 
 // Exec executes the query.
-func (acb *AppCreateBulk) Exec(ctx context.Context) error {
-	_, err := acb.Save(ctx)
+func (_c *AppCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acb *AppCreateBulk) ExecX(ctx context.Context) {
-	if err := acb.Exec(ctx); err != nil {
+func (_c *AppCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1631,10 +1631,10 @@ func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
-	acb.conflict = opts
+func (_c *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
+	_c.conflict = opts
 	return &AppUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 
@@ -1644,10 +1644,10 @@ func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk 
 //	client.App.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (acb *AppCreateBulk) OnConflictColumns(columns ...string) *AppUpsertBulk {
-	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppCreateBulk) OnConflictColumns(columns ...string) *AppUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 

@@ -20,56 +20,56 @@ type AppMenuDelete struct {
 }
 
 // Where appends a list predicates to the AppMenuDelete builder.
-func (amd *AppMenuDelete) Where(ps ...predicate.AppMenu) *AppMenuDelete {
-	amd.mutation.Where(ps...)
-	return amd
+func (_d *AppMenuDelete) Where(ps ...predicate.AppMenu) *AppMenuDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (amd *AppMenuDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, amd.sqlExec, amd.mutation, amd.hooks)
+func (_d *AppMenuDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amd *AppMenuDelete) ExecX(ctx context.Context) int {
-	n, err := amd.Exec(ctx)
+func (_d *AppMenuDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (amd *AppMenuDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *AppMenuDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(appmenu.Table, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
-	if ps := amd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, amd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	amd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // AppMenuDeleteOne is the builder for deleting a single AppMenu entity.
 type AppMenuDeleteOne struct {
-	amd *AppMenuDelete
+	_d *AppMenuDelete
 }
 
 // Where appends a list predicates to the AppMenuDelete builder.
-func (amdo *AppMenuDeleteOne) Where(ps ...predicate.AppMenu) *AppMenuDeleteOne {
-	amdo.amd.mutation.Where(ps...)
-	return amdo
+func (_d *AppMenuDeleteOne) Where(ps ...predicate.AppMenu) *AppMenuDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (amdo *AppMenuDeleteOne) Exec(ctx context.Context) error {
-	n, err := amdo.amd.Exec(ctx)
+func (_d *AppMenuDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (amdo *AppMenuDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amdo *AppMenuDeleteOne) ExecX(ctx context.Context) {
-	if err := amdo.Exec(ctx); err != nil {
+func (_d *AppMenuDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

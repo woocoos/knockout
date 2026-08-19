@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -9,8 +8,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/hook"
 )
 
 // UserAddr holds the schema definition for the UserAddr entity.
@@ -63,20 +60,4 @@ func (UserAddr) Edges() []ent.Edge {
 		edge.From("user", User.Type).Ref("addresses").Field("user_id").Unique().Immutable(),
 		edge.To("region", Region.Type).Field("region_id").Unique().Comment("地区信息"),
 	}
-}
-
-// Hooks of the UserAddr.
-func (UserAddr) Hooks() []ent.Hook {
-	return []ent.Hook{
-		contactUnique(),
-	}
-}
-
-func contactUnique() ent.Hook {
-	return hook.On(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.UserAddrFunc(func(ctx context.Context, m *gen.UserAddrMutation) (ent.Value, error) {
-				return next.Mutate(ctx, m)
-			})
-		}, ent.OpCreate|ent.OpUpdateOne)
 }

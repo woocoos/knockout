@@ -1,26 +1,19 @@
 package schema
 
 import (
-	"context"
+	"regexp"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/intercept"
-	"github.com/woocoos/knockout/ent/org"
-	"github.com/woocoos/knockout/ent/orguser"
-	"github.com/woocoos/knockout/ent/user"
-	"regexp"
-	"strconv"
 )
 
 // Org 组织目录定义,是企业目录的容器.
@@ -97,113 +90,5 @@ func (Org) Edges() []ent.Edge {
 		edge.To("user_password_policy", UserPasswordPolicy.Type).Unique().Comment("组织下密码策略"),
 		edge.To("org_quota", Quota.Type).Comment("组织下登录策略").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
-	}
-}
-
-func (Org) Hooks() []ent.Hook {
-	return []ent.Hook{
-		pathHook(),
-		InitDisplaySortHook(org.Table),
-		hook.On(checkDeleteHook(), ent.OpDeleteOne),
-		hook.On(ownerCheckHook(), ent.OpCreate|ent.OpUpdateOne|ent.OpUpdate),
-	}
-}
-
-func pathHook() ent.Hook {
-	return hook.On(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.OrgFunc(func(ctx context.Context, mutation *gen.OrgMutation) (gen.Value, error) {
-				if _, ok := mutation.Path(); ok {
-					return next.Mutate(ctx, mutation)
-				}
-				// 采用IntID，优先执行才有数据库id
-				value, err := next.Mutate(ctx, mutation)
-				if err != nil {
-					return nil, err
-				}
-				ov := value.(*gen.Org)
-				if pid, ok := mutation.ParentID(); ok {
-					id, _ := mutation.ID()
-					code := strconv.FormatInt(int64(id), 36)
-					path := code
-					if pid != 0 {
-						parentPath := ""
-						prow, err := mutation.Client().Org.Query().Where(org.ID(pid)).
-							Select(org.FieldPath).Only(ctx)
-						if err != nil {
-							if !gen.IsNotFound(err) {
-								return nil, err
-							}
-							parentPath = ""
-						} else {
-							parentPath = prow.Path + "/"
-						}
-						path = parentPath + path
-					}
-					ov.Path = path
-
-					if ov.Code == "" {
-						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=?, code=? WHERE id=?", path, code, id)
-						ov.Code = code
-					} else {
-						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? WHERE id=?", path, id)
-					}
-					if err != nil {
-						return nil, err
-					}
-				}
-				return value, nil
-			})
-		}, ent.OpCreate)
-}
-
-func checkDeleteHook() ent.Hook {
-	return func(next ent.Mutator) ent.Mutator {
-		return hook.OrgFunc(func(ctx context.Context, mutation *gen.OrgMutation) (gen.Value, error) {
-			if mutation.Op() == ent.OpDeleteOne {
-				if id, ok := mutation.ID(); ok {
-					count, err := mutation.Client().Org.Query().Where(
-						org.ParentID(id),
-					).Count(ctx)
-					if err != nil {
-						return nil, err
-					}
-					if count > 0 {
-						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization has children")
-					}
-				}
-			}
-			return next.Mutate(ctx, mutation)
-		})
-	}
-}
-
-// 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
-func ownerCheckHook() ent.Hook {
-	return func(next ent.Mutator) ent.Mutator {
-		return hook.OrgFunc(func(ctx context.Context, m *gen.OrgMutation) (gen.Value, error) {
-			if uid, ok := m.OwnerID(); ok {
-				usr, err := m.Client().User.Get(ctx, uid)
-				if err != nil {
-					return nil, err
-				}
-				if usr.UserType != user.UserTypeAccount {
-					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "owner must be account: %s", usr.DisplayName)
-				}
-				m.SetKind(org.KindRoot)
-				if m.Op().Is(ent.OpUpdateOne) {
-					id, _ := m.ID()
-					has, _ := m.Client().OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(id)).Exist(ctx)
-					if !has {
-						err = m.Client().OrgUser.Create().SetOrgID(id).SetUserID(uid).SetDisplayName(usr.DisplayName).
-							Exec(ctx)
-						if err != nil {
-							return nil, err
-						}
-					}
-				}
-			}
-			return next.Mutate(ctx, m)
-		})
 	}
 }

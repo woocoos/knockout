@@ -27,161 +27,161 @@ type OrgUserCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (ouc *OrgUserCreate) SetCreatedBy(i int) *OrgUserCreate {
-	ouc.mutation.SetCreatedBy(i)
-	return ouc
+func (_c *OrgUserCreate) SetCreatedBy(v int) *OrgUserCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ouc *OrgUserCreate) SetCreatedAt(t time.Time) *OrgUserCreate {
-	ouc.mutation.SetCreatedAt(t)
-	return ouc
+func (_c *OrgUserCreate) SetCreatedAt(v time.Time) *OrgUserCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ouc *OrgUserCreate) SetNillableCreatedAt(t *time.Time) *OrgUserCreate {
-	if t != nil {
-		ouc.SetCreatedAt(*t)
+func (_c *OrgUserCreate) SetNillableCreatedAt(v *time.Time) *OrgUserCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ouc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ouc *OrgUserCreate) SetUpdatedBy(i int) *OrgUserCreate {
-	ouc.mutation.SetUpdatedBy(i)
-	return ouc
+func (_c *OrgUserCreate) SetUpdatedBy(v int) *OrgUserCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ouc *OrgUserCreate) SetNillableUpdatedBy(i *int) *OrgUserCreate {
-	if i != nil {
-		ouc.SetUpdatedBy(*i)
+func (_c *OrgUserCreate) SetNillableUpdatedBy(v *int) *OrgUserCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return ouc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ouc *OrgUserCreate) SetUpdatedAt(t time.Time) *OrgUserCreate {
-	ouc.mutation.SetUpdatedAt(t)
-	return ouc
+func (_c *OrgUserCreate) SetUpdatedAt(v time.Time) *OrgUserCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ouc *OrgUserCreate) SetNillableUpdatedAt(t *time.Time) *OrgUserCreate {
-	if t != nil {
-		ouc.SetUpdatedAt(*t)
+func (_c *OrgUserCreate) SetNillableUpdatedAt(v *time.Time) *OrgUserCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ouc
+	return _c
 }
 
 // SetOrgID sets the "org_id" field.
-func (ouc *OrgUserCreate) SetOrgID(i int) *OrgUserCreate {
-	ouc.mutation.SetOrgID(i)
-	return ouc
+func (_c *OrgUserCreate) SetOrgID(v int) *OrgUserCreate {
+	_c.mutation.SetOrgID(v)
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (ouc *OrgUserCreate) SetUserID(i int) *OrgUserCreate {
-	ouc.mutation.SetUserID(i)
-	return ouc
+func (_c *OrgUserCreate) SetUserID(v int) *OrgUserCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetJoinedAt sets the "joined_at" field.
-func (ouc *OrgUserCreate) SetJoinedAt(t time.Time) *OrgUserCreate {
-	ouc.mutation.SetJoinedAt(t)
-	return ouc
+func (_c *OrgUserCreate) SetJoinedAt(v time.Time) *OrgUserCreate {
+	_c.mutation.SetJoinedAt(v)
+	return _c
 }
 
 // SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
-func (ouc *OrgUserCreate) SetNillableJoinedAt(t *time.Time) *OrgUserCreate {
-	if t != nil {
-		ouc.SetJoinedAt(*t)
+func (_c *OrgUserCreate) SetNillableJoinedAt(v *time.Time) *OrgUserCreate {
+	if v != nil {
+		_c.SetJoinedAt(*v)
 	}
-	return ouc
+	return _c
 }
 
 // SetDisplayName sets the "display_name" field.
-func (ouc *OrgUserCreate) SetDisplayName(s string) *OrgUserCreate {
-	ouc.mutation.SetDisplayName(s)
-	return ouc
+func (_c *OrgUserCreate) SetDisplayName(v string) *OrgUserCreate {
+	_c.mutation.SetDisplayName(v)
+	return _c
 }
 
 // SetUserType sets the "user_type" field.
-func (ouc *OrgUserCreate) SetUserType(ot orguser.UserType) *OrgUserCreate {
-	ouc.mutation.SetUserType(ot)
-	return ouc
+func (_c *OrgUserCreate) SetUserType(v orguser.UserType) *OrgUserCreate {
+	_c.mutation.SetUserType(v)
+	return _c
 }
 
 // SetNillableUserType sets the "user_type" field if the given value is not nil.
-func (ouc *OrgUserCreate) SetNillableUserType(ot *orguser.UserType) *OrgUserCreate {
-	if ot != nil {
-		ouc.SetUserType(*ot)
+func (_c *OrgUserCreate) SetNillableUserType(v *orguser.UserType) *OrgUserCreate {
+	if v != nil {
+		_c.SetUserType(*v)
 	}
-	return ouc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ouc *OrgUserCreate) SetID(i int) *OrgUserCreate {
-	ouc.mutation.SetID(i)
-	return ouc
+func (_c *OrgUserCreate) SetID(v int) *OrgUserCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (ouc *OrgUserCreate) SetOrg(o *Org) *OrgUserCreate {
-	return ouc.SetOrgID(o.ID)
+func (_c *OrgUserCreate) SetOrg(v *Org) *OrgUserCreate {
+	return _c.SetOrgID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ouc *OrgUserCreate) SetUser(u *User) *OrgUserCreate {
-	return ouc.SetUserID(u.ID)
+func (_c *OrgUserCreate) SetUser(v *User) *OrgUserCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // AddOrgRoleIDs adds the "org_roles" edge to the OrgRole entity by IDs.
-func (ouc *OrgUserCreate) AddOrgRoleIDs(ids ...int) *OrgUserCreate {
-	ouc.mutation.AddOrgRoleIDs(ids...)
-	return ouc
+func (_c *OrgUserCreate) AddOrgRoleIDs(ids ...int) *OrgUserCreate {
+	_c.mutation.AddOrgRoleIDs(ids...)
+	return _c
 }
 
 // AddOrgRoles adds the "org_roles" edges to the OrgRole entity.
-func (ouc *OrgUserCreate) AddOrgRoles(o ...*OrgRole) *OrgUserCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgUserCreate) AddOrgRoles(v ...*OrgRole) *OrgUserCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouc.AddOrgRoleIDs(ids...)
+	return _c.AddOrgRoleIDs(ids...)
 }
 
 // AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
-func (ouc *OrgUserCreate) AddOrgRoleUserIDs(ids ...int) *OrgUserCreate {
-	ouc.mutation.AddOrgRoleUserIDs(ids...)
-	return ouc
+func (_c *OrgUserCreate) AddOrgRoleUserIDs(ids ...int) *OrgUserCreate {
+	_c.mutation.AddOrgRoleUserIDs(ids...)
+	return _c
 }
 
 // AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
-func (ouc *OrgUserCreate) AddOrgRoleUser(o ...*OrgRoleUser) *OrgUserCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_c *OrgUserCreate) AddOrgRoleUser(v ...*OrgRoleUser) *OrgUserCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouc.AddOrgRoleUserIDs(ids...)
+	return _c.AddOrgRoleUserIDs(ids...)
 }
 
 // Mutation returns the OrgUserMutation object of the builder.
-func (ouc *OrgUserCreate) Mutation() *OrgUserMutation {
-	return ouc.mutation
+func (_c *OrgUserCreate) Mutation() *OrgUserMutation {
+	return _c.mutation
 }
 
 // Save creates the OrgUser in the database.
-func (ouc *OrgUserCreate) Save(ctx context.Context) (*OrgUser, error) {
-	if err := ouc.defaults(); err != nil {
+func (_c *OrgUserCreate) Save(ctx context.Context) (*OrgUser, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, ouc.sqlSave, ouc.mutation, ouc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ouc *OrgUserCreate) SaveX(ctx context.Context) *OrgUser {
-	v, err := ouc.Save(ctx)
+func (_c *OrgUserCreate) SaveX(ctx context.Context) *OrgUser {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -189,84 +189,84 @@ func (ouc *OrgUserCreate) SaveX(ctx context.Context) *OrgUser {
 }
 
 // Exec executes the query.
-func (ouc *OrgUserCreate) Exec(ctx context.Context) error {
-	_, err := ouc.Save(ctx)
+func (_c *OrgUserCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ouc *OrgUserCreate) ExecX(ctx context.Context) {
-	if err := ouc.Exec(ctx); err != nil {
+func (_c *OrgUserCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ouc *OrgUserCreate) defaults() error {
-	if _, ok := ouc.mutation.CreatedAt(); !ok {
+func (_c *OrgUserCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if orguser.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized orguser.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := orguser.DefaultCreatedAt()
-		ouc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := ouc.mutation.JoinedAt(); !ok {
+	if _, ok := _c.mutation.JoinedAt(); !ok {
 		if orguser.DefaultJoinedAt == nil {
 			return fmt.Errorf("ent: uninitialized orguser.DefaultJoinedAt (forgotten import ent/runtime?)")
 		}
 		v := orguser.DefaultJoinedAt()
-		ouc.mutation.SetJoinedAt(v)
+		_c.mutation.SetJoinedAt(v)
 	}
-	if _, ok := ouc.mutation.UserType(); !ok {
+	if _, ok := _c.mutation.UserType(); !ok {
 		v := orguser.DefaultUserType
-		ouc.mutation.SetUserType(v)
+		_c.mutation.SetUserType(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ouc *OrgUserCreate) check() error {
-	if _, ok := ouc.mutation.CreatedBy(); !ok {
+func (_c *OrgUserCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "OrgUser.created_by"`)}
 	}
-	if _, ok := ouc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrgUser.created_at"`)}
 	}
-	if _, ok := ouc.mutation.OrgID(); !ok {
+	if _, ok := _c.mutation.OrgID(); !ok {
 		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgUser.org_id"`)}
 	}
-	if _, ok := ouc.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrgUser.user_id"`)}
 	}
-	if _, ok := ouc.mutation.JoinedAt(); !ok {
+	if _, ok := _c.mutation.JoinedAt(); !ok {
 		return &ValidationError{Name: "joined_at", err: errors.New(`ent: missing required field "OrgUser.joined_at"`)}
 	}
-	if _, ok := ouc.mutation.DisplayName(); !ok {
+	if _, ok := _c.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "OrgUser.display_name"`)}
 	}
-	if _, ok := ouc.mutation.UserType(); !ok {
+	if _, ok := _c.mutation.UserType(); !ok {
 		return &ValidationError{Name: "user_type", err: errors.New(`ent: missing required field "OrgUser.user_type"`)}
 	}
-	if v, ok := ouc.mutation.UserType(); ok {
+	if v, ok := _c.mutation.UserType(); ok {
 		if err := orguser.UserTypeValidator(v); err != nil {
 			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
 		}
 	}
-	if len(ouc.mutation.OrgIDs()) == 0 {
+	if len(_c.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgUser.org"`)}
 	}
-	if len(ouc.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgUser.user"`)}
 	}
 	return nil
 }
 
-func (ouc *OrgUserCreate) sqlSave(ctx context.Context) (*OrgUser, error) {
-	if err := ouc.check(); err != nil {
+func (_c *OrgUserCreate) sqlSave(ctx context.Context) (*OrgUser, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ouc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ouc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -276,50 +276,50 @@ func (ouc *OrgUserCreate) sqlSave(ctx context.Context) (*OrgUser, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	ouc.mutation.id = &_node.ID
-	ouc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
+func (_c *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 	var (
-		_node = &OrgUser{config: ouc.config}
+		_node = &OrgUser{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(orguser.Table, sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = ouc.conflict
-	if id, ok := ouc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ouc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(orguser.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := ouc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(orguser.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := ouc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguser.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := ouc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguser.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ouc.mutation.JoinedAt(); ok {
+	if value, ok := _c.mutation.JoinedAt(); ok {
 		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
 		_node.JoinedAt = value
 	}
-	if value, ok := ouc.mutation.DisplayName(); ok {
+	if value, ok := _c.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
 	}
-	if value, ok := ouc.mutation.UserType(); ok {
+	if value, ok := _c.mutation.UserType(); ok {
 		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
 		_node.UserType = value
 	}
-	if nodes := ouc.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -336,7 +336,7 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 		_node.OrgID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ouc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -353,7 +353,7 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ouc.mutation.OrgRolesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgRolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -367,13 +367,13 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgRoleUserCreate{config: ouc.config, mutation: newOrgRoleUserMutation(ouc.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _c.config, mutation: newOrgRoleUserMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ouc.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -408,10 +408,10 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (ouc *OrgUserCreate) OnConflict(opts ...sql.ConflictOption) *OrgUserUpsertOne {
-	ouc.conflict = opts
+func (_c *OrgUserCreate) OnConflict(opts ...sql.ConflictOption) *OrgUserUpsertOne {
+	_c.conflict = opts
 	return &OrgUserUpsertOne{
-		create: ouc,
+		create: _c,
 	}
 }
 
@@ -421,10 +421,10 @@ func (ouc *OrgUserCreate) OnConflict(opts ...sql.ConflictOption) *OrgUserUpsertO
 //	client.OrgUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ouc *OrgUserCreate) OnConflictColumns(columns ...string) *OrgUserUpsertOne {
-	ouc.conflict = append(ouc.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgUserCreate) OnConflictColumns(columns ...string) *OrgUserUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUserUpsertOne{
-		create: ouc,
+		create: _c,
 	}
 }
 
@@ -758,16 +758,16 @@ type OrgUserCreateBulk struct {
 }
 
 // Save creates the OrgUser entities in the database.
-func (oucb *OrgUserCreateBulk) Save(ctx context.Context) ([]*OrgUser, error) {
-	if oucb.err != nil {
-		return nil, oucb.err
+func (_c *OrgUserCreateBulk) Save(ctx context.Context) ([]*OrgUser, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(oucb.builders))
-	nodes := make([]*OrgUser, len(oucb.builders))
-	mutators := make([]Mutator, len(oucb.builders))
-	for i := range oucb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*OrgUser, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := oucb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrgUserMutation)
@@ -781,12 +781,12 @@ func (oucb *OrgUserCreateBulk) Save(ctx context.Context) ([]*OrgUser, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, oucb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = oucb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, oucb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -810,7 +810,7 @@ func (oucb *OrgUserCreateBulk) Save(ctx context.Context) ([]*OrgUser, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, oucb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -818,8 +818,8 @@ func (oucb *OrgUserCreateBulk) Save(ctx context.Context) ([]*OrgUser, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oucb *OrgUserCreateBulk) SaveX(ctx context.Context) []*OrgUser {
-	v, err := oucb.Save(ctx)
+func (_c *OrgUserCreateBulk) SaveX(ctx context.Context) []*OrgUser {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -827,14 +827,14 @@ func (oucb *OrgUserCreateBulk) SaveX(ctx context.Context) []*OrgUser {
 }
 
 // Exec executes the query.
-func (oucb *OrgUserCreateBulk) Exec(ctx context.Context) error {
-	_, err := oucb.Save(ctx)
+func (_c *OrgUserCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oucb *OrgUserCreateBulk) ExecX(ctx context.Context) {
-	if err := oucb.Exec(ctx); err != nil {
+func (_c *OrgUserCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -854,10 +854,10 @@ func (oucb *OrgUserCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (oucb *OrgUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUserUpsertBulk {
-	oucb.conflict = opts
+func (_c *OrgUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUserUpsertBulk {
+	_c.conflict = opts
 	return &OrgUserUpsertBulk{
-		create: oucb,
+		create: _c,
 	}
 }
 
@@ -867,10 +867,10 @@ func (oucb *OrgUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUserUp
 //	client.OrgUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (oucb *OrgUserCreateBulk) OnConflictColumns(columns ...string) *OrgUserUpsertBulk {
-	oucb.conflict = append(oucb.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgUserCreateBulk) OnConflictColumns(columns ...string) *OrgUserUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUserUpsertBulk{
-		create: oucb,
+		create: _c,
 	}
 }
 

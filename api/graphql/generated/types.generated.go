@@ -44,7 +44,7 @@ func (ec *executionContext) _AppPolicyViewOrgPolicy_orgPolicy(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OrgPolicy, nil
 	})
@@ -119,7 +119,7 @@ func (ec *executionContext) _AppPolicyViewOrgPolicy_appPolicyView(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AppPolicyView, nil
 	})
@@ -196,7 +196,7 @@ func (ec *executionContext) _ClientPreference_appCode(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AppCode, nil
 	})
@@ -240,7 +240,7 @@ func (ec *executionContext) _ClientPreference_values(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Values, nil
 	})
@@ -289,7 +289,7 @@ func (ec *executionContext) _ClientPreferenceValue_key(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Key, nil
 	})
@@ -333,7 +333,7 @@ func (ec *executionContext) _ClientPreferenceValue_value(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Value, nil
 	})
@@ -374,7 +374,7 @@ func (ec *executionContext) _ClientPreferenceValue_extension(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Extension, nil
 	})
@@ -415,7 +415,7 @@ func (ec *executionContext) _FileIdentityForApp_id(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -459,7 +459,7 @@ func (ec *executionContext) _FileIdentityForApp_tenantID(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TenantID, nil
 	})
@@ -503,7 +503,7 @@ func (ec *executionContext) _FileIdentityForApp_accessKeyID(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AccessKeyID, nil
 	})
@@ -547,7 +547,7 @@ func (ec *executionContext) _FileIdentityForApp_accessKeySecret(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AccessKeySecret, nil
 	})
@@ -591,7 +591,7 @@ func (ec *executionContext) _FileIdentityForApp_roleArn(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RoleArn, nil
 	})
@@ -635,7 +635,7 @@ func (ec *executionContext) _FileIdentityForApp_policy(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Policy, nil
 	})
@@ -676,7 +676,7 @@ func (ec *executionContext) _FileIdentityForApp_durationSeconds(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DurationSeconds, nil
 	})
@@ -717,7 +717,7 @@ func (ec *executionContext) _FileIdentityForApp_isDefault(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDefault, nil
 	})
@@ -761,7 +761,7 @@ func (ec *executionContext) _FileIdentityForApp_source(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Source, nil
 	})
@@ -833,7 +833,7 @@ func (ec *executionContext) _Mfa_secret(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Secret, nil
 	})
@@ -877,7 +877,7 @@ func (ec *executionContext) _Mfa_account(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Account, nil
 	})
@@ -921,7 +921,7 @@ func (ec *executionContext) _OrgFileIdentity_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -965,7 +965,7 @@ func (ec *executionContext) _OrgFileIdentity_createdBy(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedBy, nil
 	})
@@ -1009,7 +1009,7 @@ func (ec *executionContext) _OrgFileIdentity_createdAt(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
@@ -1053,7 +1053,7 @@ func (ec *executionContext) _OrgFileIdentity_updatedBy(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedBy, nil
 	})
@@ -1094,7 +1094,7 @@ func (ec *executionContext) _OrgFileIdentity_updatedAt(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
@@ -1135,7 +1135,7 @@ func (ec *executionContext) _OrgFileIdentity_tenantID(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TenantID, nil
 	})
@@ -1179,7 +1179,7 @@ func (ec *executionContext) _OrgFileIdentity_fileSourceID(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FileSourceID, nil
 	})
@@ -1223,7 +1223,7 @@ func (ec *executionContext) _OrgFileIdentity_isDefault(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDefault, nil
 	})
@@ -1267,7 +1267,7 @@ func (ec *executionContext) _OrgFileIdentity_comments(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Comments, nil
 	})
@@ -1308,7 +1308,7 @@ func (ec *executionContext) _OrgFileIdentity_source(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Source, nil
 	})
@@ -1380,7 +1380,7 @@ func (ec *executionContext) _OrgLogo_logo(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Logo, nil
 	})
@@ -1421,7 +1421,7 @@ func (ec *executionContext) _OrgLogo_thumbLogo(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ThumbLogo, nil
 	})
@@ -1462,7 +1462,7 @@ func (ec *executionContext) _OrgLogo_favicon(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Favicon, nil
 	})
@@ -1503,7 +1503,7 @@ func (ec *executionContext) _PolicyRule_effect(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Effect, nil
 	})
@@ -1547,7 +1547,7 @@ func (ec *executionContext) _PolicyRule_actions(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Actions, nil
 	})
@@ -1588,7 +1588,7 @@ func (ec *executionContext) _PolicyRule_resources(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Resources, nil
 	})
@@ -1629,7 +1629,7 @@ func (ec *executionContext) _PolicyRule_conditions(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Conditions, nil
 	})
@@ -1670,7 +1670,7 @@ func (ec *executionContext) _UserMfaInfo_mfaEnabled(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MfaEnabled, nil
 	})
@@ -1714,7 +1714,7 @@ func (ec *executionContext) _UserMfaInfo_secret(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Secret, nil
 	})
@@ -1758,7 +1758,7 @@ func (ec *executionContext) _UserMfaInfo_qrCodeUri(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.QRCodeURI, nil
 	})
@@ -1802,7 +1802,7 @@ func (ec *executionContext) _UserMfaInfo_accountName(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AccountName, nil
 	})
@@ -1838,10 +1838,10 @@ func (ec *executionContext) fieldContext_UserMfaInfo_accountName(_ context.Conte
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Context, obj interface{}) (model.AssignRoleUserInput, error) {
+func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Context, obj any) (model.AssignRoleUserInput, error) {
 	var it model.AssignRoleUserInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -1886,10 +1886,10 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputClientPreferenceInput(ctx context.Context, obj interface{}) (types.ClientPreference, error) {
+func (ec *executionContext) unmarshalInputClientPreferenceInput(ctx context.Context, obj any) (types.ClientPreference, error) {
 	var it types.ClientPreference
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -1920,10 +1920,10 @@ func (ec *executionContext) unmarshalInputClientPreferenceInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputClientPreferenceValueInput(ctx context.Context, obj interface{}) (types.ClientPreferenceValue, error) {
+func (ec *executionContext) unmarshalInputClientPreferenceValueInput(ctx context.Context, obj any) (types.ClientPreferenceValue, error) {
 	var it types.ClientPreferenceValue
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -1961,10 +1961,10 @@ func (ec *executionContext) unmarshalInputClientPreferenceValueInput(ctx context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj interface{}) (model.EnableDirectoryInput, error) {
+func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj any) (model.EnableDirectoryInput, error) {
 	var it model.EnableDirectoryInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -1995,10 +1995,10 @@ func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj interface{}) (model.GrantInput, error) {
+func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj any) (model.GrantInput, error) {
 	var it model.GrantInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -2036,10 +2036,10 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputOrgLogoInput(ctx context.Context, obj interface{}) (types.OrgLogo, error) {
+func (ec *executionContext) unmarshalInputOrgLogoInput(ctx context.Context, obj any) (types.OrgLogo, error) {
 	var it types.OrgLogo
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -2077,10 +2077,10 @@ func (ec *executionContext) unmarshalInputOrgLogoInput(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Context, obj interface{}) (model.OrgUserPreferenceInput, error) {
+func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Context, obj any) (model.OrgUserPreferenceInput, error) {
 	var it model.OrgUserPreferenceInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -2118,10 +2118,10 @@ func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Con
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, obj interface{}) (types.PolicyRule, error) {
+func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, obj any) (types.PolicyRule, error) {
 	var it types.PolicyRule
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -2685,7 +2685,7 @@ func (ec *executionContext) marshalNAppPolicyViewOrgPolicy2ᚖgithubᚗcomᚋwoo
 	return ec._AppPolicyViewOrgPolicy(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx context.Context, v interface{}) (model.AssignRoleUserInput, error) {
+func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx context.Context, v any) (model.AssignRoleUserInput, error) {
 	res, err := ec.unmarshalInputAssignRoleUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -2694,7 +2694,7 @@ func (ec *executionContext) marshalNClientPreference2githubᚗcomᚋwoocoosᚋkn
 	return ec._ClientPreference(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNClientPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v interface{}) (types.ClientPreference, error) {
+func (ec *executionContext) unmarshalNClientPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v any) (types.ClientPreference, error) {
 	res, err := ec.unmarshalInputClientPreferenceInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -2703,12 +2703,12 @@ func (ec *executionContext) marshalNClientPreferenceValue2githubᚗcomᚋwoocoos
 	return ec._ClientPreferenceValue(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNClientPreferenceValueInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx context.Context, v interface{}) (types.ClientPreferenceValue, error) {
+func (ec *executionContext) unmarshalNClientPreferenceValueInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx context.Context, v any) (types.ClientPreferenceValue, error) {
 	res, err := ec.unmarshalInputClientPreferenceValueInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
+func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v any) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -2767,7 +2767,7 @@ func (ec *executionContext) marshalNFileIdentityForApp2ᚖgithubᚗcomᚋwoocoos
 	return ec._FileIdentityForApp(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx context.Context, v interface{}) (model.ListAction, error) {
+func (ec *executionContext) unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx context.Context, v any) (model.ListAction, error) {
 	var res model.ListAction
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2791,12 +2791,12 @@ func (ec *executionContext) marshalNMfa2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋa
 	return ec._Mfa(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx context.Context, v interface{}) (model.OrgUserPreferenceInput, error) {
+func (ec *executionContext) unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx context.Context, v any) (model.OrgUserPreferenceInput, error) {
 	res, err := ec.unmarshalInputOrgUserPreferenceInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, v interface{}) (types.PolicyEffect, error) {
+func (ec *executionContext) unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, v any) (types.PolicyEffect, error) {
 	var res types.PolicyEffect
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2844,11 +2844,9 @@ func (ec *executionContext) marshalNPolicyRule2ᚕᚖgithubᚗcomᚋwoocoosᚋkn
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) ([]*types.PolicyRule, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v any) ([]*types.PolicyRule, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.PolicyRule, len(vSlice))
 	for i := range vSlice {
@@ -2861,7 +2859,7 @@ func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕᚖgithubᚗcomᚋwooco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, v interface{}) (model.TreeAction, error) {
+func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, v any) (model.TreeAction, error) {
 	var res model.TreeAction
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2939,14 +2937,12 @@ func (ec *executionContext) marshalOClientPreference2ᚖgithubᚗcomᚋwoocoos�
 	return ec._ClientPreference(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx context.Context, v interface{}) ([]types.ClientPreference, error) {
+func (ec *executionContext) unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx context.Context, v any) ([]types.ClientPreference, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]types.ClientPreference, len(vSlice))
 	for i := range vSlice {
@@ -2959,7 +2955,7 @@ func (ec *executionContext) unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwo
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOClientPreferenceInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v interface{}) (*types.ClientPreference, error) {
+func (ec *executionContext) unmarshalOClientPreferenceInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v any) (*types.ClientPreference, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -3014,14 +3010,12 @@ func (ec *executionContext) marshalOClientPreferenceValue2ᚕgithubᚗcomᚋwooc
 	return ret
 }
 
-func (ec *executionContext) unmarshalOClientPreferenceValueInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx context.Context, v interface{}) ([]types.ClientPreferenceValue, error) {
+func (ec *executionContext) unmarshalOClientPreferenceValueInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx context.Context, v any) ([]types.ClientPreferenceValue, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]types.ClientPreferenceValue, len(vSlice))
 	for i := range vSlice {
@@ -3041,7 +3035,7 @@ func (ec *executionContext) marshalOOrgLogo2ᚖgithubᚗcomᚋwoocoosᚋknockout
 	return ec._OrgLogo(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx context.Context, v interface{}) (*types.OrgLogo, error) {
+func (ec *executionContext) unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx context.Context, v any) (*types.OrgLogo, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -3056,14 +3050,12 @@ func (ec *executionContext) marshalOPolicyRule2ᚖgithubᚗcomᚋwoocoosᚋknock
 	return ec._PolicyRule(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) ([]*types.PolicyRule, error) {
+func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v any) ([]*types.PolicyRule, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.PolicyRule, len(vSlice))
 	for i := range vSlice {
@@ -3076,7 +3068,7 @@ func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕᚖgithubᚗcomᚋwooco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOPolicyRuleInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) (*types.PolicyRule, error) {
+func (ec *executionContext) unmarshalOPolicyRuleInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v any) (*types.PolicyRule, error) {
 	if v == nil {
 		return nil, nil
 	}

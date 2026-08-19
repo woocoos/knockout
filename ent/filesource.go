@@ -89,7 +89,7 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the FileSource fields.
-func (fs *FileSource) assignValues(columns []string, values []any) error {
+func (_m *FileSource) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -100,81 +100,81 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			fs.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case filesource.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				fs.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case filesource.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				fs.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case filesource.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				fs.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case filesource.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				fs.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case filesource.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				fs.Kind = filesource.Kind(value.String)
+				_m.Kind = filesource.Kind(value.String)
 			}
 		case filesource.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				fs.Comments = value.String
+				_m.Comments = value.String
 			}
 		case filesource.FieldEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field endpoint", values[i])
 			} else if value.Valid {
-				fs.Endpoint = value.String
+				_m.Endpoint = value.String
 			}
 		case filesource.FieldEndpointImmutable:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field endpoint_immutable", values[i])
 			} else if value.Valid {
-				fs.EndpointImmutable = value.Bool
+				_m.EndpointImmutable = value.Bool
 			}
 		case filesource.FieldStsEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field sts_endpoint", values[i])
 			} else if value.Valid {
-				fs.StsEndpoint = value.String
+				_m.StsEndpoint = value.String
 			}
 		case filesource.FieldRegion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field region", values[i])
 			} else if value.Valid {
-				fs.Region = value.String
+				_m.Region = value.String
 			}
 		case filesource.FieldBucket:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field bucket", values[i])
 			} else if value.Valid {
-				fs.Bucket = value.String
+				_m.Bucket = value.String
 			}
 		case filesource.FieldBucketURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field bucket_url", values[i])
 			} else if value.Valid {
-				fs.BucketURL = value.String
+				_m.BucketURL = value.String
 			}
 		default:
-			fs.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -182,98 +182,98 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the FileSource.
 // This includes values selected through modifiers, order, etc.
-func (fs *FileSource) Value(name string) (ent.Value, error) {
-	return fs.selectValues.Get(name)
+func (_m *FileSource) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryIdentities queries the "identities" edge of the FileSource entity.
-func (fs *FileSource) QueryIdentities() *FileIdentityQuery {
-	return NewFileSourceClient(fs.config).QueryIdentities(fs)
+func (_m *FileSource) QueryIdentities() *FileIdentityQuery {
+	return NewFileSourceClient(_m.config).QueryIdentities(_m)
 }
 
 // Update returns a builder for updating this FileSource.
 // Note that you need to call FileSource.Unwrap() before calling this method if this FileSource
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fs *FileSource) Update() *FileSourceUpdateOne {
-	return NewFileSourceClient(fs.config).UpdateOne(fs)
+func (_m *FileSource) Update() *FileSourceUpdateOne {
+	return NewFileSourceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the FileSource entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fs *FileSource) Unwrap() *FileSource {
-	_tx, ok := fs.config.driver.(*txDriver)
+func (_m *FileSource) Unwrap() *FileSource {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: FileSource is not a transactional entity")
 	}
-	fs.config.driver = _tx.drv
-	return fs
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (fs *FileSource) String() string {
+func (_m *FileSource) String() string {
 	var builder strings.Builder
 	builder.WriteString("FileSource(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", fs.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", fs.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(fs.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", fs.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fs.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", fs.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(fs.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("endpoint=")
-	builder.WriteString(fs.Endpoint)
+	builder.WriteString(_m.Endpoint)
 	builder.WriteString(", ")
 	builder.WriteString("endpoint_immutable=")
-	builder.WriteString(fmt.Sprintf("%v", fs.EndpointImmutable))
+	builder.WriteString(fmt.Sprintf("%v", _m.EndpointImmutable))
 	builder.WriteString(", ")
 	builder.WriteString("sts_endpoint=")
-	builder.WriteString(fs.StsEndpoint)
+	builder.WriteString(_m.StsEndpoint)
 	builder.WriteString(", ")
 	builder.WriteString("region=")
-	builder.WriteString(fs.Region)
+	builder.WriteString(_m.Region)
 	builder.WriteString(", ")
 	builder.WriteString("bucket=")
-	builder.WriteString(fs.Bucket)
+	builder.WriteString(_m.Bucket)
 	builder.WriteString(", ")
 	builder.WriteString("bucket_url=")
-	builder.WriteString(fs.BucketURL)
+	builder.WriteString(_m.BucketURL)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedIdentities returns the Identities named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (fs *FileSource) NamedIdentities(name string) ([]*FileIdentity, error) {
-	if fs.Edges.namedIdentities == nil {
+func (_m *FileSource) NamedIdentities(name string) ([]*FileIdentity, error) {
+	if _m.Edges.namedIdentities == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := fs.Edges.namedIdentities[name]
+	nodes, ok := _m.Edges.namedIdentities[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (fs *FileSource) appendNamedIdentities(name string, edges ...*FileIdentity) {
-	if fs.Edges.namedIdentities == nil {
-		fs.Edges.namedIdentities = make(map[string][]*FileIdentity)
+func (_m *FileSource) appendNamedIdentities(name string, edges ...*FileIdentity) {
+	if _m.Edges.namedIdentities == nil {
+		_m.Edges.namedIdentities = make(map[string][]*FileIdentity)
 	}
 	if len(edges) == 0 {
-		fs.Edges.namedIdentities[name] = []*FileIdentity{}
+		_m.Edges.namedIdentities[name] = []*FileIdentity{}
 	} else {
-		fs.Edges.namedIdentities[name] = append(fs.Edges.namedIdentities[name], edges...)
+		_m.Edges.namedIdentities[name] = append(_m.Edges.namedIdentities[name], edges...)
 	}
 }
 

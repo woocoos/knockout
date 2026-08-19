@@ -34,44 +34,44 @@ type AppRolePolicyQuery struct {
 }
 
 // Where adds a new predicate for the AppRolePolicyQuery builder.
-func (arpq *AppRolePolicyQuery) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyQuery {
-	arpq.predicates = append(arpq.predicates, ps...)
-	return arpq
+func (_q *AppRolePolicyQuery) Where(ps ...predicate.AppRolePolicy) *AppRolePolicyQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (arpq *AppRolePolicyQuery) Limit(limit int) *AppRolePolicyQuery {
-	arpq.ctx.Limit = &limit
-	return arpq
+func (_q *AppRolePolicyQuery) Limit(limit int) *AppRolePolicyQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (arpq *AppRolePolicyQuery) Offset(offset int) *AppRolePolicyQuery {
-	arpq.ctx.Offset = &offset
-	return arpq
+func (_q *AppRolePolicyQuery) Offset(offset int) *AppRolePolicyQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (arpq *AppRolePolicyQuery) Unique(unique bool) *AppRolePolicyQuery {
-	arpq.ctx.Unique = &unique
-	return arpq
+func (_q *AppRolePolicyQuery) Unique(unique bool) *AppRolePolicyQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (arpq *AppRolePolicyQuery) Order(o ...approlepolicy.OrderOption) *AppRolePolicyQuery {
-	arpq.order = append(arpq.order, o...)
-	return arpq
+func (_q *AppRolePolicyQuery) Order(o ...approlepolicy.OrderOption) *AppRolePolicyQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryRole chains the current query on the "role" edge.
-func (arpq *AppRolePolicyQuery) QueryRole() *AppRoleQuery {
-	query := (&AppRoleClient{config: arpq.config}).Query()
+func (_q *AppRolePolicyQuery) QueryRole() *AppRoleQuery {
+	query := (&AppRoleClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := arpq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := arpq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (arpq *AppRolePolicyQuery) QueryRole() *AppRoleQuery {
 			sqlgraph.To(approle.Table, approle.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.RoleTable, approlepolicy.RoleColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(arpq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryPolicy chains the current query on the "policy" edge.
-func (arpq *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
-	query := (&AppPolicyClient{config: arpq.config}).Query()
+func (_q *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := arpq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := arpq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (arpq *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.PolicyTable, approlepolicy.PolicyColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(arpq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (arpq *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
 
 // First returns the first AppRolePolicy entity from the query.
 // Returns a *NotFoundError when no AppRolePolicy was found.
-func (arpq *AppRolePolicyQuery) First(ctx context.Context) (*AppRolePolicy, error) {
-	nodes, err := arpq.Limit(1).All(setContextOp(ctx, arpq.ctx, ent.OpQueryFirst))
+func (_q *AppRolePolicyQuery) First(ctx context.Context) (*AppRolePolicy, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (arpq *AppRolePolicyQuery) First(ctx context.Context) (*AppRolePolicy, erro
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) FirstX(ctx context.Context) *AppRolePolicy {
-	node, err := arpq.First(ctx)
+func (_q *AppRolePolicyQuery) FirstX(ctx context.Context) *AppRolePolicy {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (arpq *AppRolePolicyQuery) FirstX(ctx context.Context) *AppRolePolicy {
 
 // FirstID returns the first AppRolePolicy ID from the query.
 // Returns a *NotFoundError when no AppRolePolicy ID was found.
-func (arpq *AppRolePolicyQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppRolePolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arpq.Limit(1).IDs(setContextOp(ctx, arpq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (arpq *AppRolePolicyQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) FirstIDX(ctx context.Context) int {
-	id, err := arpq.FirstID(ctx)
+func (_q *AppRolePolicyQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (arpq *AppRolePolicyQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single AppRolePolicy entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppRolePolicy entity is found.
 // Returns a *NotFoundError when no AppRolePolicy entities are found.
-func (arpq *AppRolePolicyQuery) Only(ctx context.Context) (*AppRolePolicy, error) {
-	nodes, err := arpq.Limit(2).All(setContextOp(ctx, arpq.ctx, ent.OpQueryOnly))
+func (_q *AppRolePolicyQuery) Only(ctx context.Context) (*AppRolePolicy, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (arpq *AppRolePolicyQuery) Only(ctx context.Context) (*AppRolePolicy, error
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) OnlyX(ctx context.Context) *AppRolePolicy {
-	node, err := arpq.Only(ctx)
+func (_q *AppRolePolicyQuery) OnlyX(ctx context.Context) *AppRolePolicy {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (arpq *AppRolePolicyQuery) OnlyX(ctx context.Context) *AppRolePolicy {
 // OnlyID is like Only, but returns the only AppRolePolicy ID in the query.
 // Returns a *NotSingularError when more than one AppRolePolicy ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (arpq *AppRolePolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppRolePolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arpq.Limit(2).IDs(setContextOp(ctx, arpq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (arpq *AppRolePolicyQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) OnlyIDX(ctx context.Context) int {
-	id, err := arpq.OnlyID(ctx)
+func (_q *AppRolePolicyQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (arpq *AppRolePolicyQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of AppRolePolicies.
-func (arpq *AppRolePolicyQuery) All(ctx context.Context) ([]*AppRolePolicy, error) {
-	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryAll)
-	if err := arpq.prepareQuery(ctx); err != nil {
+func (_q *AppRolePolicyQuery) All(ctx context.Context) ([]*AppRolePolicy, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppRolePolicy, *AppRolePolicyQuery]()
-	return withInterceptors[[]*AppRolePolicy](ctx, arpq, qr, arpq.inters)
+	return withInterceptors[[]*AppRolePolicy](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) AllX(ctx context.Context) []*AppRolePolicy {
-	nodes, err := arpq.All(ctx)
+func (_q *AppRolePolicyQuery) AllX(ctx context.Context) []*AppRolePolicy {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (arpq *AppRolePolicyQuery) AllX(ctx context.Context) []*AppRolePolicy {
 }
 
 // IDs executes the query and returns a list of AppRolePolicy IDs.
-func (arpq *AppRolePolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if arpq.ctx.Unique == nil && arpq.path != nil {
-		arpq.Unique(true)
+func (_q *AppRolePolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryIDs)
-	if err = arpq.Select(approlepolicy.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(approlepolicy.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) IDsX(ctx context.Context) []int {
-	ids, err := arpq.IDs(ctx)
+func (_q *AppRolePolicyQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (arpq *AppRolePolicyQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (arpq *AppRolePolicyQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryCount)
-	if err := arpq.prepareQuery(ctx); err != nil {
+func (_q *AppRolePolicyQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, arpq, querierCount[*AppRolePolicyQuery](), arpq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppRolePolicyQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) CountX(ctx context.Context) int {
-	count, err := arpq.Count(ctx)
+func (_q *AppRolePolicyQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (arpq *AppRolePolicyQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (arpq *AppRolePolicyQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryExist)
-	switch _, err := arpq.FirstID(ctx); {
+func (_q *AppRolePolicyQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (arpq *AppRolePolicyQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (arpq *AppRolePolicyQuery) ExistX(ctx context.Context) bool {
-	exist, err := arpq.Exist(ctx)
+func (_q *AppRolePolicyQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (arpq *AppRolePolicyQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppRolePolicyQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (arpq *AppRolePolicyQuery) Clone() *AppRolePolicyQuery {
-	if arpq == nil {
+func (_q *AppRolePolicyQuery) Clone() *AppRolePolicyQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppRolePolicyQuery{
-		config:     arpq.config,
-		ctx:        arpq.ctx.Clone(),
-		order:      append([]approlepolicy.OrderOption{}, arpq.order...),
-		inters:     append([]Interceptor{}, arpq.inters...),
-		predicates: append([]predicate.AppRolePolicy{}, arpq.predicates...),
-		withRole:   arpq.withRole.Clone(),
-		withPolicy: arpq.withPolicy.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]approlepolicy.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.AppRolePolicy{}, _q.predicates...),
+		withRole:   _q.withRole.Clone(),
+		withPolicy: _q.withPolicy.Clone(),
 		// clone intermediate query.
-		sql:  arpq.sql.Clone(),
-		path: arpq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithRole tells the query-builder to eager-load the nodes that are connected to
 // the "role" edge. The optional arguments are used to configure the query builder of the edge.
-func (arpq *AppRolePolicyQuery) WithRole(opts ...func(*AppRoleQuery)) *AppRolePolicyQuery {
-	query := (&AppRoleClient{config: arpq.config}).Query()
+func (_q *AppRolePolicyQuery) WithRole(opts ...func(*AppRoleQuery)) *AppRolePolicyQuery {
+	query := (&AppRoleClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	arpq.withRole = query
-	return arpq
+	_q.withRole = query
+	return _q
 }
 
 // WithPolicy tells the query-builder to eager-load the nodes that are connected to
 // the "policy" edge. The optional arguments are used to configure the query builder of the edge.
-func (arpq *AppRolePolicyQuery) WithPolicy(opts ...func(*AppPolicyQuery)) *AppRolePolicyQuery {
-	query := (&AppPolicyClient{config: arpq.config}).Query()
+func (_q *AppRolePolicyQuery) WithPolicy(opts ...func(*AppPolicyQuery)) *AppRolePolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	arpq.withPolicy = query
-	return arpq
+	_q.withPolicy = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (arpq *AppRolePolicyQuery) WithPolicy(opts ...func(*AppPolicyQuery)) *AppRo
 //		GroupBy(approlepolicy.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (arpq *AppRolePolicyQuery) GroupBy(field string, fields ...string) *AppRolePolicyGroupBy {
-	arpq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppRolePolicyGroupBy{build: arpq}
-	grbuild.flds = &arpq.ctx.Fields
+func (_q *AppRolePolicyQuery) GroupBy(field string, fields ...string) *AppRolePolicyGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppRolePolicyGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = approlepolicy.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,96 +365,96 @@ func (arpq *AppRolePolicyQuery) GroupBy(field string, fields ...string) *AppRole
 //	client.AppRolePolicy.Query().
 //		Select(approlepolicy.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (arpq *AppRolePolicyQuery) Select(fields ...string) *AppRolePolicySelect {
-	arpq.ctx.Fields = append(arpq.ctx.Fields, fields...)
-	sbuild := &AppRolePolicySelect{AppRolePolicyQuery: arpq}
+func (_q *AppRolePolicyQuery) Select(fields ...string) *AppRolePolicySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppRolePolicySelect{AppRolePolicyQuery: _q}
 	sbuild.label = approlepolicy.Label
-	sbuild.flds, sbuild.scan = &arpq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppRolePolicySelect configured with the given aggregations.
-func (arpq *AppRolePolicyQuery) Aggregate(fns ...AggregateFunc) *AppRolePolicySelect {
-	return arpq.Select().Aggregate(fns...)
+func (_q *AppRolePolicyQuery) Aggregate(fns ...AggregateFunc) *AppRolePolicySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (arpq *AppRolePolicyQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range arpq.inters {
+func (_q *AppRolePolicyQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, arpq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range arpq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !approlepolicy.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if arpq.path != nil {
-		prev, err := arpq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		arpq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (arpq *AppRolePolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppRolePolicy, error) {
+func (_q *AppRolePolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppRolePolicy, error) {
 	var (
 		nodes       = []*AppRolePolicy{}
-		_spec       = arpq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			arpq.withRole != nil,
-			arpq.withPolicy != nil,
+			_q.withRole != nil,
+			_q.withPolicy != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppRolePolicy).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppRolePolicy{config: arpq.config}
+		node := &AppRolePolicy{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(arpq.modifiers) > 0 {
-		_spec.Modifiers = arpq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, arpq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := arpq.withRole; query != nil {
-		if err := arpq.loadRole(ctx, query, nodes, nil,
+	if query := _q.withRole; query != nil {
+		if err := _q.loadRole(ctx, query, nodes, nil,
 			func(n *AppRolePolicy, e *AppRole) { n.Edges.Role = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := arpq.withPolicy; query != nil {
-		if err := arpq.loadPolicy(ctx, query, nodes, nil,
+	if query := _q.withPolicy; query != nil {
+		if err := _q.loadPolicy(ctx, query, nodes, nil,
 			func(n *AppRolePolicy, e *AppPolicy) { n.Edges.Policy = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range arpq.loadTotal {
-		if err := arpq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (arpq *AppRolePolicyQuery) loadRole(ctx context.Context, query *AppRoleQuery, nodes []*AppRolePolicy, init func(*AppRolePolicy), assign func(*AppRolePolicy, *AppRole)) error {
+func (_q *AppRolePolicyQuery) loadRole(ctx context.Context, query *AppRoleQuery, nodes []*AppRolePolicy, init func(*AppRolePolicy), assign func(*AppRolePolicy, *AppRole)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppRolePolicy)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (arpq *AppRolePolicyQuery) loadRole(ctx context.Context, query *AppRoleQuer
 	}
 	return nil
 }
-func (arpq *AppRolePolicyQuery) loadPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*AppRolePolicy, init func(*AppRolePolicy), assign func(*AppRolePolicy, *AppPolicy)) error {
+func (_q *AppRolePolicyQuery) loadPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*AppRolePolicy, init func(*AppRolePolicy), assign func(*AppRolePolicy, *AppPolicy)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppRolePolicy)
 	for i := range nodes {
@@ -513,27 +513,27 @@ func (arpq *AppRolePolicyQuery) loadPolicy(ctx context.Context, query *AppPolicy
 	return nil
 }
 
-func (arpq *AppRolePolicyQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := arpq.querySpec()
-	if len(arpq.modifiers) > 0 {
-		_spec.Modifiers = arpq.modifiers
+func (_q *AppRolePolicyQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = arpq.ctx.Fields
-	if len(arpq.ctx.Fields) > 0 {
-		_spec.Unique = arpq.ctx.Unique != nil && *arpq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, arpq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
-	_spec.From = arpq.sql
-	if unique := arpq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if arpq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := arpq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, approlepolicy.FieldID)
 		for i := range fields {
@@ -541,27 +541,27 @@ func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if arpq.withRole != nil {
+		if _q.withRole != nil {
 			_spec.Node.AddColumnOnce(approlepolicy.FieldAppRoleID)
 		}
-		if arpq.withPolicy != nil {
+		if _q.withPolicy != nil {
 			_spec.Node.AddColumnOnce(approlepolicy.FieldAppPolicyID)
 		}
 	}
-	if ps := arpq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := arpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := arpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := arpq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -571,33 +571,33 @@ func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (arpq *AppRolePolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(arpq.driver.Dialect())
+func (_q *AppRolePolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(approlepolicy.Table)
-	columns := arpq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = approlepolicy.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if arpq.sql != nil {
-		selector = arpq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if arpq.ctx.Unique != nil && *arpq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range arpq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range arpq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := arpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := arpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -610,41 +610,41 @@ type AppRolePolicyGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (arpgb *AppRolePolicyGroupBy) Aggregate(fns ...AggregateFunc) *AppRolePolicyGroupBy {
-	arpgb.fns = append(arpgb.fns, fns...)
-	return arpgb
+func (_g *AppRolePolicyGroupBy) Aggregate(fns ...AggregateFunc) *AppRolePolicyGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (arpgb *AppRolePolicyGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, arpgb.build.ctx, ent.OpQueryGroupBy)
-	if err := arpgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppRolePolicyGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppRolePolicyQuery, *AppRolePolicyGroupBy](ctx, arpgb.build, arpgb, arpgb.build.inters, v)
+	return scanWithInterceptors[*AppRolePolicyQuery, *AppRolePolicyGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (arpgb *AppRolePolicyGroupBy) sqlScan(ctx context.Context, root *AppRolePolicyQuery, v any) error {
+func (_g *AppRolePolicyGroupBy) sqlScan(ctx context.Context, root *AppRolePolicyQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(arpgb.fns))
-	for _, fn := range arpgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*arpgb.flds)+len(arpgb.fns))
-		for _, f := range *arpgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*arpgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := arpgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -658,27 +658,27 @@ type AppRolePolicySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (arps *AppRolePolicySelect) Aggregate(fns ...AggregateFunc) *AppRolePolicySelect {
-	arps.fns = append(arps.fns, fns...)
-	return arps
+func (_s *AppRolePolicySelect) Aggregate(fns ...AggregateFunc) *AppRolePolicySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (arps *AppRolePolicySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, arps.ctx, ent.OpQuerySelect)
-	if err := arps.prepareQuery(ctx); err != nil {
+func (_s *AppRolePolicySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppRolePolicyQuery, *AppRolePolicySelect](ctx, arps.AppRolePolicyQuery, arps, arps.inters, v)
+	return scanWithInterceptors[*AppRolePolicyQuery, *AppRolePolicySelect](ctx, _s.AppRolePolicyQuery, _s, _s.inters, v)
 }
 
-func (arps *AppRolePolicySelect) sqlScan(ctx context.Context, root *AppRolePolicyQuery, v any) error {
+func (_s *AppRolePolicySelect) sqlScan(ctx context.Context, root *AppRolePolicyQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(arps.fns))
-	for _, fn := range arps.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*arps.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -686,7 +686,7 @@ func (arps *AppRolePolicySelect) sqlScan(ctx context.Context, root *AppRolePolic
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := arps.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

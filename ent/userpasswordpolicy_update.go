@@ -23,273 +23,273 @@ type UserPasswordPolicyUpdate struct {
 }
 
 // Where appends a list predicates to the UserPasswordPolicyUpdate builder.
-func (uppu *UserPasswordPolicyUpdate) Where(ps ...predicate.UserPasswordPolicy) *UserPasswordPolicyUpdate {
-	uppu.mutation.Where(ps...)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) Where(ps ...predicate.UserPasswordPolicy) *UserPasswordPolicyUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uppu *UserPasswordPolicyUpdate) SetUpdatedBy(i int) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetUpdatedBy()
-	uppu.mutation.SetUpdatedBy(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetUpdatedBy(v int) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableUpdatedBy(i *int) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetUpdatedBy(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableUpdatedBy(v *int) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uppu *UserPasswordPolicyUpdate) AddUpdatedBy(i int) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddUpdatedBy(i)
-	return uppu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserPasswordPolicyUpdate) AddUpdatedBy(v int) *UserPasswordPolicyUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uppu *UserPasswordPolicyUpdate) ClearUpdatedBy() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearUpdatedBy()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearUpdatedBy() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uppu *UserPasswordPolicyUpdate) SetUpdatedAt(t time.Time) *UserPasswordPolicyUpdate {
-	uppu.mutation.SetUpdatedAt(t)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetUpdatedAt(v time.Time) *UserPasswordPolicyUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableUpdatedAt(t *time.Time) *UserPasswordPolicyUpdate {
-	if t != nil {
-		uppu.SetUpdatedAt(*t)
+func (_u *UserPasswordPolicyUpdate) SetNillableUpdatedAt(v *time.Time) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uppu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uppu *UserPasswordPolicyUpdate) ClearUpdatedAt() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearUpdatedAt()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearUpdatedAt() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetLength sets the "length" field.
-func (uppu *UserPasswordPolicyUpdate) SetLength(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetLength()
-	uppu.mutation.SetLength(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetLength(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetLength()
+	_u.mutation.SetLength(v)
+	return _u
 }
 
 // SetNillableLength sets the "length" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableLength(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetLength(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableLength(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetLength(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddLength adds i to the "length" field.
-func (uppu *UserPasswordPolicyUpdate) AddLength(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddLength(i)
-	return uppu
+// AddLength adds value to the "length" field.
+func (_u *UserPasswordPolicyUpdate) AddLength(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddLength(v)
+	return _u
 }
 
 // ClearLength clears the value of the "length" field.
-func (uppu *UserPasswordPolicyUpdate) ClearLength() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearLength()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearLength() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearLength()
+	return _u
 }
 
 // SetIncludeElement sets the "include_element" field.
-func (uppu *UserPasswordPolicyUpdate) SetIncludeElement(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetIncludeElement()
-	uppu.mutation.SetIncludeElement(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetIncludeElement(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetIncludeElement()
+	_u.mutation.SetIncludeElement(v)
+	return _u
 }
 
 // SetNillableIncludeElement sets the "include_element" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableIncludeElement(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetIncludeElement(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableIncludeElement(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetIncludeElement(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddIncludeElement adds i to the "include_element" field.
-func (uppu *UserPasswordPolicyUpdate) AddIncludeElement(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddIncludeElement(i)
-	return uppu
+// AddIncludeElement adds value to the "include_element" field.
+func (_u *UserPasswordPolicyUpdate) AddIncludeElement(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddIncludeElement(v)
+	return _u
 }
 
 // ClearIncludeElement clears the value of the "include_element" field.
-func (uppu *UserPasswordPolicyUpdate) ClearIncludeElement() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearIncludeElement()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearIncludeElement() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearIncludeElement()
+	return _u
 }
 
 // SetIncludeChar sets the "include_char" field.
-func (uppu *UserPasswordPolicyUpdate) SetIncludeChar(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetIncludeChar()
-	uppu.mutation.SetIncludeChar(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetIncludeChar(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetIncludeChar()
+	_u.mutation.SetIncludeChar(v)
+	return _u
 }
 
 // SetNillableIncludeChar sets the "include_char" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableIncludeChar(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetIncludeChar(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableIncludeChar(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetIncludeChar(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddIncludeChar adds i to the "include_char" field.
-func (uppu *UserPasswordPolicyUpdate) AddIncludeChar(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddIncludeChar(i)
-	return uppu
+// AddIncludeChar adds value to the "include_char" field.
+func (_u *UserPasswordPolicyUpdate) AddIncludeChar(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddIncludeChar(v)
+	return _u
 }
 
 // ClearIncludeChar clears the value of the "include_char" field.
-func (uppu *UserPasswordPolicyUpdate) ClearIncludeChar() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearIncludeChar()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearIncludeChar() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearIncludeChar()
+	return _u
 }
 
 // SetAllowIncludeUserName sets the "allow_include_user_name" field.
-func (uppu *UserPasswordPolicyUpdate) SetAllowIncludeUserName(b bool) *UserPasswordPolicyUpdate {
-	uppu.mutation.SetAllowIncludeUserName(b)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetAllowIncludeUserName(v bool) *UserPasswordPolicyUpdate {
+	_u.mutation.SetAllowIncludeUserName(v)
+	return _u
 }
 
 // SetNillableAllowIncludeUserName sets the "allow_include_user_name" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableAllowIncludeUserName(b *bool) *UserPasswordPolicyUpdate {
-	if b != nil {
-		uppu.SetAllowIncludeUserName(*b)
+func (_u *UserPasswordPolicyUpdate) SetNillableAllowIncludeUserName(v *bool) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetAllowIncludeUserName(*v)
 	}
-	return uppu
+	return _u
 }
 
 // ClearAllowIncludeUserName clears the value of the "allow_include_user_name" field.
-func (uppu *UserPasswordPolicyUpdate) ClearAllowIncludeUserName() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearAllowIncludeUserName()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearAllowIncludeUserName() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearAllowIncludeUserName()
+	return _u
 }
 
 // SetInvalidDay sets the "invalid_day" field.
-func (uppu *UserPasswordPolicyUpdate) SetInvalidDay(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetInvalidDay()
-	uppu.mutation.SetInvalidDay(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetInvalidDay(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetInvalidDay()
+	_u.mutation.SetInvalidDay(v)
+	return _u
 }
 
 // SetNillableInvalidDay sets the "invalid_day" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableInvalidDay(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetInvalidDay(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableInvalidDay(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetInvalidDay(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddInvalidDay adds i to the "invalid_day" field.
-func (uppu *UserPasswordPolicyUpdate) AddInvalidDay(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddInvalidDay(i)
-	return uppu
+// AddInvalidDay adds value to the "invalid_day" field.
+func (_u *UserPasswordPolicyUpdate) AddInvalidDay(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddInvalidDay(v)
+	return _u
 }
 
 // ClearInvalidDay clears the value of the "invalid_day" field.
-func (uppu *UserPasswordPolicyUpdate) ClearInvalidDay() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearInvalidDay()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearInvalidDay() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearInvalidDay()
+	return _u
 }
 
 // SetInvalidLoginLimit sets the "invalid_login_limit" field.
-func (uppu *UserPasswordPolicyUpdate) SetInvalidLoginLimit(b bool) *UserPasswordPolicyUpdate {
-	uppu.mutation.SetInvalidLoginLimit(b)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetInvalidLoginLimit(v bool) *UserPasswordPolicyUpdate {
+	_u.mutation.SetInvalidLoginLimit(v)
+	return _u
 }
 
 // SetNillableInvalidLoginLimit sets the "invalid_login_limit" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableInvalidLoginLimit(b *bool) *UserPasswordPolicyUpdate {
-	if b != nil {
-		uppu.SetInvalidLoginLimit(*b)
+func (_u *UserPasswordPolicyUpdate) SetNillableInvalidLoginLimit(v *bool) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetInvalidLoginLimit(*v)
 	}
-	return uppu
+	return _u
 }
 
 // ClearInvalidLoginLimit clears the value of the "invalid_login_limit" field.
-func (uppu *UserPasswordPolicyUpdate) ClearInvalidLoginLimit() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearInvalidLoginLimit()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearInvalidLoginLimit() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearInvalidLoginLimit()
+	return _u
 }
 
 // SetRetry sets the "retry" field.
-func (uppu *UserPasswordPolicyUpdate) SetRetry(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetRetry()
-	uppu.mutation.SetRetry(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetRetry(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetRetry()
+	_u.mutation.SetRetry(v)
+	return _u
 }
 
 // SetNillableRetry sets the "retry" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableRetry(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetRetry(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableRetry(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetRetry(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddRetry adds i to the "retry" field.
-func (uppu *UserPasswordPolicyUpdate) AddRetry(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddRetry(i)
-	return uppu
+// AddRetry adds value to the "retry" field.
+func (_u *UserPasswordPolicyUpdate) AddRetry(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddRetry(v)
+	return _u
 }
 
 // ClearRetry clears the value of the "retry" field.
-func (uppu *UserPasswordPolicyUpdate) ClearRetry() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearRetry()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearRetry() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearRetry()
+	return _u
 }
 
 // SetCaptchaTimes sets the "captcha_times" field.
-func (uppu *UserPasswordPolicyUpdate) SetCaptchaTimes(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.ResetCaptchaTimes()
-	uppu.mutation.SetCaptchaTimes(i)
-	return uppu
+func (_u *UserPasswordPolicyUpdate) SetCaptchaTimes(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.ResetCaptchaTimes()
+	_u.mutation.SetCaptchaTimes(v)
+	return _u
 }
 
 // SetNillableCaptchaTimes sets the "captcha_times" field if the given value is not nil.
-func (uppu *UserPasswordPolicyUpdate) SetNillableCaptchaTimes(i *int32) *UserPasswordPolicyUpdate {
-	if i != nil {
-		uppu.SetCaptchaTimes(*i)
+func (_u *UserPasswordPolicyUpdate) SetNillableCaptchaTimes(v *int32) *UserPasswordPolicyUpdate {
+	if v != nil {
+		_u.SetCaptchaTimes(*v)
 	}
-	return uppu
+	return _u
 }
 
-// AddCaptchaTimes adds i to the "captcha_times" field.
-func (uppu *UserPasswordPolicyUpdate) AddCaptchaTimes(i int32) *UserPasswordPolicyUpdate {
-	uppu.mutation.AddCaptchaTimes(i)
-	return uppu
+// AddCaptchaTimes adds value to the "captcha_times" field.
+func (_u *UserPasswordPolicyUpdate) AddCaptchaTimes(v int32) *UserPasswordPolicyUpdate {
+	_u.mutation.AddCaptchaTimes(v)
+	return _u
 }
 
 // ClearCaptchaTimes clears the value of the "captcha_times" field.
-func (uppu *UserPasswordPolicyUpdate) ClearCaptchaTimes() *UserPasswordPolicyUpdate {
-	uppu.mutation.ClearCaptchaTimes()
-	return uppu
+func (_u *UserPasswordPolicyUpdate) ClearCaptchaTimes() *UserPasswordPolicyUpdate {
+	_u.mutation.ClearCaptchaTimes()
+	return _u
 }
 
 // Mutation returns the UserPasswordPolicyMutation object of the builder.
-func (uppu *UserPasswordPolicyUpdate) Mutation() *UserPasswordPolicyMutation {
-	return uppu.mutation
+func (_u *UserPasswordPolicyUpdate) Mutation() *UserPasswordPolicyMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (uppu *UserPasswordPolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, uppu.sqlSave, uppu.mutation, uppu.hooks)
+func (_u *UserPasswordPolicyUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uppu *UserPasswordPolicyUpdate) SaveX(ctx context.Context) int {
-	affected, err := uppu.Save(ctx)
+func (_u *UserPasswordPolicyUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -297,41 +297,41 @@ func (uppu *UserPasswordPolicyUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (uppu *UserPasswordPolicyUpdate) Exec(ctx context.Context) error {
-	_, err := uppu.Save(ctx)
+func (_u *UserPasswordPolicyUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uppu *UserPasswordPolicyUpdate) ExecX(ctx context.Context) {
-	if err := uppu.Exec(ctx); err != nil {
+func (_u *UserPasswordPolicyUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uppu *UserPasswordPolicyUpdate) check() error {
-	if v, ok := uppu.mutation.Length(); ok {
+func (_u *UserPasswordPolicyUpdate) check() error {
+	if v, ok := _u.mutation.Length(); ok {
 		if err := userpasswordpolicy.LengthValidator(v); err != nil {
 			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
 		}
 	}
-	if v, ok := uppu.mutation.IncludeChar(); ok {
+	if v, ok := _u.mutation.IncludeChar(); ok {
 		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
 			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
 		}
 	}
-	if v, ok := uppu.mutation.InvalidDay(); ok {
+	if v, ok := _u.mutation.InvalidDay(); ok {
 		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
 			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
 		}
 	}
-	if v, ok := uppu.mutation.Retry(); ok {
+	if v, ok := _u.mutation.Retry(); ok {
 		if err := userpasswordpolicy.RetryValidator(v); err != nil {
 			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
 		}
 	}
-	if v, ok := uppu.mutation.CaptchaTimes(); ok {
+	if v, ok := _u.mutation.CaptchaTimes(); ok {
 		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
 			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
 		}
@@ -339,100 +339,100 @@ func (uppu *UserPasswordPolicyUpdate) check() error {
 	return nil
 }
 
-func (uppu *UserPasswordPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := uppu.check(); err != nil {
-		return n, err
+func (_u *UserPasswordPolicyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userpasswordpolicy.Table, userpasswordpolicy.Columns, sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt))
-	if ps := uppu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uppu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uppu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uppu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uppu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uppu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uppu.mutation.Length(); ok {
+	if value, ok := _u.mutation.Length(); ok {
 		_spec.SetField(userpasswordpolicy.FieldLength, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedLength(); ok {
+	if value, ok := _u.mutation.AddedLength(); ok {
 		_spec.AddField(userpasswordpolicy.FieldLength, field.TypeInt32, value)
 	}
-	if uppu.mutation.LengthCleared() {
+	if _u.mutation.LengthCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldLength, field.TypeInt32)
 	}
-	if value, ok := uppu.mutation.IncludeElement(); ok {
+	if value, ok := _u.mutation.IncludeElement(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedIncludeElement(); ok {
+	if value, ok := _u.mutation.AddedIncludeElement(); ok {
 		_spec.AddField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32, value)
 	}
-	if uppu.mutation.IncludeElementCleared() {
+	if _u.mutation.IncludeElementCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32)
 	}
-	if value, ok := uppu.mutation.IncludeChar(); ok {
+	if value, ok := _u.mutation.IncludeChar(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedIncludeChar(); ok {
+	if value, ok := _u.mutation.AddedIncludeChar(); ok {
 		_spec.AddField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32, value)
 	}
-	if uppu.mutation.IncludeCharCleared() {
+	if _u.mutation.IncludeCharCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32)
 	}
-	if value, ok := uppu.mutation.AllowIncludeUserName(); ok {
+	if value, ok := _u.mutation.AllowIncludeUserName(); ok {
 		_spec.SetField(userpasswordpolicy.FieldAllowIncludeUserName, field.TypeBool, value)
 	}
-	if uppu.mutation.AllowIncludeUserNameCleared() {
+	if _u.mutation.AllowIncludeUserNameCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldAllowIncludeUserName, field.TypeBool)
 	}
-	if value, ok := uppu.mutation.InvalidDay(); ok {
+	if value, ok := _u.mutation.InvalidDay(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedInvalidDay(); ok {
+	if value, ok := _u.mutation.AddedInvalidDay(); ok {
 		_spec.AddField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32, value)
 	}
-	if uppu.mutation.InvalidDayCleared() {
+	if _u.mutation.InvalidDayCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32)
 	}
-	if value, ok := uppu.mutation.InvalidLoginLimit(); ok {
+	if value, ok := _u.mutation.InvalidLoginLimit(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidLoginLimit, field.TypeBool, value)
 	}
-	if uppu.mutation.InvalidLoginLimitCleared() {
+	if _u.mutation.InvalidLoginLimitCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldInvalidLoginLimit, field.TypeBool)
 	}
-	if value, ok := uppu.mutation.Retry(); ok {
+	if value, ok := _u.mutation.Retry(); ok {
 		_spec.SetField(userpasswordpolicy.FieldRetry, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedRetry(); ok {
+	if value, ok := _u.mutation.AddedRetry(); ok {
 		_spec.AddField(userpasswordpolicy.FieldRetry, field.TypeInt32, value)
 	}
-	if uppu.mutation.RetryCleared() {
+	if _u.mutation.RetryCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldRetry, field.TypeInt32)
 	}
-	if value, ok := uppu.mutation.CaptchaTimes(); ok {
+	if value, ok := _u.mutation.CaptchaTimes(); ok {
 		_spec.SetField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32, value)
 	}
-	if value, ok := uppu.mutation.AddedCaptchaTimes(); ok {
+	if value, ok := _u.mutation.AddedCaptchaTimes(); ok {
 		_spec.AddField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32, value)
 	}
-	if uppu.mutation.CaptchaTimesCleared() {
+	if _u.mutation.CaptchaTimesCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, uppu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userpasswordpolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -440,8 +440,8 @@ func (uppu *UserPasswordPolicyUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		return 0, err
 	}
-	uppu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserPasswordPolicyUpdateOne is the builder for updating a single UserPasswordPolicy entity.
@@ -453,280 +453,280 @@ type UserPasswordPolicyUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetUpdatedBy(i int) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetUpdatedBy()
-	uppuo.mutation.SetUpdatedBy(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetUpdatedBy(v int) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableUpdatedBy(i *int) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetUpdatedBy(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableUpdatedBy(v *int) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddUpdatedBy(i int) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddUpdatedBy(i)
-	return uppuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserPasswordPolicyUpdateOne) AddUpdatedBy(v int) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearUpdatedBy() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearUpdatedBy()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearUpdatedBy() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetUpdatedAt(t time.Time) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.SetUpdatedAt(t)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetUpdatedAt(v time.Time) *UserPasswordPolicyUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserPasswordPolicyUpdateOne {
-	if t != nil {
-		uppuo.SetUpdatedAt(*t)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableUpdatedAt(v *time.Time) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uppuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearUpdatedAt() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearUpdatedAt()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearUpdatedAt() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetLength sets the "length" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetLength(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetLength()
-	uppuo.mutation.SetLength(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetLength(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetLength()
+	_u.mutation.SetLength(v)
+	return _u
 }
 
 // SetNillableLength sets the "length" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableLength(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetLength(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableLength(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetLength(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddLength adds i to the "length" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddLength(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddLength(i)
-	return uppuo
+// AddLength adds value to the "length" field.
+func (_u *UserPasswordPolicyUpdateOne) AddLength(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddLength(v)
+	return _u
 }
 
 // ClearLength clears the value of the "length" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearLength() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearLength()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearLength() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearLength()
+	return _u
 }
 
 // SetIncludeElement sets the "include_element" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetIncludeElement(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetIncludeElement()
-	uppuo.mutation.SetIncludeElement(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetIncludeElement(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetIncludeElement()
+	_u.mutation.SetIncludeElement(v)
+	return _u
 }
 
 // SetNillableIncludeElement sets the "include_element" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableIncludeElement(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetIncludeElement(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableIncludeElement(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetIncludeElement(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddIncludeElement adds i to the "include_element" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddIncludeElement(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddIncludeElement(i)
-	return uppuo
+// AddIncludeElement adds value to the "include_element" field.
+func (_u *UserPasswordPolicyUpdateOne) AddIncludeElement(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddIncludeElement(v)
+	return _u
 }
 
 // ClearIncludeElement clears the value of the "include_element" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearIncludeElement() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearIncludeElement()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearIncludeElement() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearIncludeElement()
+	return _u
 }
 
 // SetIncludeChar sets the "include_char" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetIncludeChar(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetIncludeChar()
-	uppuo.mutation.SetIncludeChar(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetIncludeChar(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetIncludeChar()
+	_u.mutation.SetIncludeChar(v)
+	return _u
 }
 
 // SetNillableIncludeChar sets the "include_char" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableIncludeChar(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetIncludeChar(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableIncludeChar(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetIncludeChar(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddIncludeChar adds i to the "include_char" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddIncludeChar(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddIncludeChar(i)
-	return uppuo
+// AddIncludeChar adds value to the "include_char" field.
+func (_u *UserPasswordPolicyUpdateOne) AddIncludeChar(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddIncludeChar(v)
+	return _u
 }
 
 // ClearIncludeChar clears the value of the "include_char" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearIncludeChar() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearIncludeChar()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearIncludeChar() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearIncludeChar()
+	return _u
 }
 
 // SetAllowIncludeUserName sets the "allow_include_user_name" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetAllowIncludeUserName(b bool) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.SetAllowIncludeUserName(b)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetAllowIncludeUserName(v bool) *UserPasswordPolicyUpdateOne {
+	_u.mutation.SetAllowIncludeUserName(v)
+	return _u
 }
 
 // SetNillableAllowIncludeUserName sets the "allow_include_user_name" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableAllowIncludeUserName(b *bool) *UserPasswordPolicyUpdateOne {
-	if b != nil {
-		uppuo.SetAllowIncludeUserName(*b)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableAllowIncludeUserName(v *bool) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetAllowIncludeUserName(*v)
 	}
-	return uppuo
+	return _u
 }
 
 // ClearAllowIncludeUserName clears the value of the "allow_include_user_name" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearAllowIncludeUserName() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearAllowIncludeUserName()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearAllowIncludeUserName() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearAllowIncludeUserName()
+	return _u
 }
 
 // SetInvalidDay sets the "invalid_day" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetInvalidDay(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetInvalidDay()
-	uppuo.mutation.SetInvalidDay(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetInvalidDay(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetInvalidDay()
+	_u.mutation.SetInvalidDay(v)
+	return _u
 }
 
 // SetNillableInvalidDay sets the "invalid_day" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableInvalidDay(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetInvalidDay(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableInvalidDay(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetInvalidDay(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddInvalidDay adds i to the "invalid_day" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddInvalidDay(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddInvalidDay(i)
-	return uppuo
+// AddInvalidDay adds value to the "invalid_day" field.
+func (_u *UserPasswordPolicyUpdateOne) AddInvalidDay(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddInvalidDay(v)
+	return _u
 }
 
 // ClearInvalidDay clears the value of the "invalid_day" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearInvalidDay() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearInvalidDay()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearInvalidDay() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearInvalidDay()
+	return _u
 }
 
 // SetInvalidLoginLimit sets the "invalid_login_limit" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetInvalidLoginLimit(b bool) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.SetInvalidLoginLimit(b)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetInvalidLoginLimit(v bool) *UserPasswordPolicyUpdateOne {
+	_u.mutation.SetInvalidLoginLimit(v)
+	return _u
 }
 
 // SetNillableInvalidLoginLimit sets the "invalid_login_limit" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableInvalidLoginLimit(b *bool) *UserPasswordPolicyUpdateOne {
-	if b != nil {
-		uppuo.SetInvalidLoginLimit(*b)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableInvalidLoginLimit(v *bool) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetInvalidLoginLimit(*v)
 	}
-	return uppuo
+	return _u
 }
 
 // ClearInvalidLoginLimit clears the value of the "invalid_login_limit" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearInvalidLoginLimit() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearInvalidLoginLimit()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearInvalidLoginLimit() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearInvalidLoginLimit()
+	return _u
 }
 
 // SetRetry sets the "retry" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetRetry(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetRetry()
-	uppuo.mutation.SetRetry(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetRetry(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetRetry()
+	_u.mutation.SetRetry(v)
+	return _u
 }
 
 // SetNillableRetry sets the "retry" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableRetry(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetRetry(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableRetry(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetRetry(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddRetry adds i to the "retry" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddRetry(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddRetry(i)
-	return uppuo
+// AddRetry adds value to the "retry" field.
+func (_u *UserPasswordPolicyUpdateOne) AddRetry(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddRetry(v)
+	return _u
 }
 
 // ClearRetry clears the value of the "retry" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearRetry() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearRetry()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearRetry() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearRetry()
+	return _u
 }
 
 // SetCaptchaTimes sets the "captcha_times" field.
-func (uppuo *UserPasswordPolicyUpdateOne) SetCaptchaTimes(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ResetCaptchaTimes()
-	uppuo.mutation.SetCaptchaTimes(i)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) SetCaptchaTimes(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.ResetCaptchaTimes()
+	_u.mutation.SetCaptchaTimes(v)
+	return _u
 }
 
 // SetNillableCaptchaTimes sets the "captcha_times" field if the given value is not nil.
-func (uppuo *UserPasswordPolicyUpdateOne) SetNillableCaptchaTimes(i *int32) *UserPasswordPolicyUpdateOne {
-	if i != nil {
-		uppuo.SetCaptchaTimes(*i)
+func (_u *UserPasswordPolicyUpdateOne) SetNillableCaptchaTimes(v *int32) *UserPasswordPolicyUpdateOne {
+	if v != nil {
+		_u.SetCaptchaTimes(*v)
 	}
-	return uppuo
+	return _u
 }
 
-// AddCaptchaTimes adds i to the "captcha_times" field.
-func (uppuo *UserPasswordPolicyUpdateOne) AddCaptchaTimes(i int32) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.AddCaptchaTimes(i)
-	return uppuo
+// AddCaptchaTimes adds value to the "captcha_times" field.
+func (_u *UserPasswordPolicyUpdateOne) AddCaptchaTimes(v int32) *UserPasswordPolicyUpdateOne {
+	_u.mutation.AddCaptchaTimes(v)
+	return _u
 }
 
 // ClearCaptchaTimes clears the value of the "captcha_times" field.
-func (uppuo *UserPasswordPolicyUpdateOne) ClearCaptchaTimes() *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.ClearCaptchaTimes()
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) ClearCaptchaTimes() *UserPasswordPolicyUpdateOne {
+	_u.mutation.ClearCaptchaTimes()
+	return _u
 }
 
 // Mutation returns the UserPasswordPolicyMutation object of the builder.
-func (uppuo *UserPasswordPolicyUpdateOne) Mutation() *UserPasswordPolicyMutation {
-	return uppuo.mutation
+func (_u *UserPasswordPolicyUpdateOne) Mutation() *UserPasswordPolicyMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the UserPasswordPolicyUpdate builder.
-func (uppuo *UserPasswordPolicyUpdateOne) Where(ps ...predicate.UserPasswordPolicy) *UserPasswordPolicyUpdateOne {
-	uppuo.mutation.Where(ps...)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) Where(ps ...predicate.UserPasswordPolicy) *UserPasswordPolicyUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (uppuo *UserPasswordPolicyUpdateOne) Select(field string, fields ...string) *UserPasswordPolicyUpdateOne {
-	uppuo.fields = append([]string{field}, fields...)
-	return uppuo
+func (_u *UserPasswordPolicyUpdateOne) Select(field string, fields ...string) *UserPasswordPolicyUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserPasswordPolicy entity.
-func (uppuo *UserPasswordPolicyUpdateOne) Save(ctx context.Context) (*UserPasswordPolicy, error) {
-	return withHooks(ctx, uppuo.sqlSave, uppuo.mutation, uppuo.hooks)
+func (_u *UserPasswordPolicyUpdateOne) Save(ctx context.Context) (*UserPasswordPolicy, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uppuo *UserPasswordPolicyUpdateOne) SaveX(ctx context.Context) *UserPasswordPolicy {
-	node, err := uppuo.Save(ctx)
+func (_u *UserPasswordPolicyUpdateOne) SaveX(ctx context.Context) *UserPasswordPolicy {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -734,41 +734,41 @@ func (uppuo *UserPasswordPolicyUpdateOne) SaveX(ctx context.Context) *UserPasswo
 }
 
 // Exec executes the query on the entity.
-func (uppuo *UserPasswordPolicyUpdateOne) Exec(ctx context.Context) error {
-	_, err := uppuo.Save(ctx)
+func (_u *UserPasswordPolicyUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uppuo *UserPasswordPolicyUpdateOne) ExecX(ctx context.Context) {
-	if err := uppuo.Exec(ctx); err != nil {
+func (_u *UserPasswordPolicyUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uppuo *UserPasswordPolicyUpdateOne) check() error {
-	if v, ok := uppuo.mutation.Length(); ok {
+func (_u *UserPasswordPolicyUpdateOne) check() error {
+	if v, ok := _u.mutation.Length(); ok {
 		if err := userpasswordpolicy.LengthValidator(v); err != nil {
 			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
 		}
 	}
-	if v, ok := uppuo.mutation.IncludeChar(); ok {
+	if v, ok := _u.mutation.IncludeChar(); ok {
 		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
 			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
 		}
 	}
-	if v, ok := uppuo.mutation.InvalidDay(); ok {
+	if v, ok := _u.mutation.InvalidDay(); ok {
 		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
 			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
 		}
 	}
-	if v, ok := uppuo.mutation.Retry(); ok {
+	if v, ok := _u.mutation.Retry(); ok {
 		if err := userpasswordpolicy.RetryValidator(v); err != nil {
 			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
 		}
 	}
-	if v, ok := uppuo.mutation.CaptchaTimes(); ok {
+	if v, ok := _u.mutation.CaptchaTimes(); ok {
 		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
 			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
 		}
@@ -776,17 +776,17 @@ func (uppuo *UserPasswordPolicyUpdateOne) check() error {
 	return nil
 }
 
-func (uppuo *UserPasswordPolicyUpdateOne) sqlSave(ctx context.Context) (_node *UserPasswordPolicy, err error) {
-	if err := uppuo.check(); err != nil {
+func (_u *UserPasswordPolicyUpdateOne) sqlSave(ctx context.Context) (_node *UserPasswordPolicy, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userpasswordpolicy.Table, userpasswordpolicy.Columns, sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt))
-	id, ok := uppuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserPasswordPolicy.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := uppuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userpasswordpolicy.FieldID)
 		for _, f := range fields {
@@ -798,98 +798,98 @@ func (uppuo *UserPasswordPolicyUpdateOne) sqlSave(ctx context.Context) (_node *U
 			}
 		}
 	}
-	if ps := uppuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uppuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uppuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uppuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uppuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uppuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uppuo.mutation.Length(); ok {
+	if value, ok := _u.mutation.Length(); ok {
 		_spec.SetField(userpasswordpolicy.FieldLength, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedLength(); ok {
+	if value, ok := _u.mutation.AddedLength(); ok {
 		_spec.AddField(userpasswordpolicy.FieldLength, field.TypeInt32, value)
 	}
-	if uppuo.mutation.LengthCleared() {
+	if _u.mutation.LengthCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldLength, field.TypeInt32)
 	}
-	if value, ok := uppuo.mutation.IncludeElement(); ok {
+	if value, ok := _u.mutation.IncludeElement(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedIncludeElement(); ok {
+	if value, ok := _u.mutation.AddedIncludeElement(); ok {
 		_spec.AddField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32, value)
 	}
-	if uppuo.mutation.IncludeElementCleared() {
+	if _u.mutation.IncludeElementCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32)
 	}
-	if value, ok := uppuo.mutation.IncludeChar(); ok {
+	if value, ok := _u.mutation.IncludeChar(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedIncludeChar(); ok {
+	if value, ok := _u.mutation.AddedIncludeChar(); ok {
 		_spec.AddField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32, value)
 	}
-	if uppuo.mutation.IncludeCharCleared() {
+	if _u.mutation.IncludeCharCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32)
 	}
-	if value, ok := uppuo.mutation.AllowIncludeUserName(); ok {
+	if value, ok := _u.mutation.AllowIncludeUserName(); ok {
 		_spec.SetField(userpasswordpolicy.FieldAllowIncludeUserName, field.TypeBool, value)
 	}
-	if uppuo.mutation.AllowIncludeUserNameCleared() {
+	if _u.mutation.AllowIncludeUserNameCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldAllowIncludeUserName, field.TypeBool)
 	}
-	if value, ok := uppuo.mutation.InvalidDay(); ok {
+	if value, ok := _u.mutation.InvalidDay(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedInvalidDay(); ok {
+	if value, ok := _u.mutation.AddedInvalidDay(); ok {
 		_spec.AddField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32, value)
 	}
-	if uppuo.mutation.InvalidDayCleared() {
+	if _u.mutation.InvalidDayCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32)
 	}
-	if value, ok := uppuo.mutation.InvalidLoginLimit(); ok {
+	if value, ok := _u.mutation.InvalidLoginLimit(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidLoginLimit, field.TypeBool, value)
 	}
-	if uppuo.mutation.InvalidLoginLimitCleared() {
+	if _u.mutation.InvalidLoginLimitCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldInvalidLoginLimit, field.TypeBool)
 	}
-	if value, ok := uppuo.mutation.Retry(); ok {
+	if value, ok := _u.mutation.Retry(); ok {
 		_spec.SetField(userpasswordpolicy.FieldRetry, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedRetry(); ok {
+	if value, ok := _u.mutation.AddedRetry(); ok {
 		_spec.AddField(userpasswordpolicy.FieldRetry, field.TypeInt32, value)
 	}
-	if uppuo.mutation.RetryCleared() {
+	if _u.mutation.RetryCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldRetry, field.TypeInt32)
 	}
-	if value, ok := uppuo.mutation.CaptchaTimes(); ok {
+	if value, ok := _u.mutation.CaptchaTimes(); ok {
 		_spec.SetField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32, value)
 	}
-	if value, ok := uppuo.mutation.AddedCaptchaTimes(); ok {
+	if value, ok := _u.mutation.AddedCaptchaTimes(); ok {
 		_spec.AddField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32, value)
 	}
-	if uppuo.mutation.CaptchaTimesCleared() {
+	if _u.mutation.CaptchaTimesCleared() {
 		_spec.ClearField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32)
 	}
-	_node = &UserPasswordPolicy{config: uppuo.config}
+	_node = &UserPasswordPolicy{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, uppuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userpasswordpolicy.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -897,6 +897,6 @@ func (uppuo *UserPasswordPolicyUpdateOne) sqlSave(ctx context.Context) (_node *U
 		}
 		return nil, err
 	}
-	uppuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

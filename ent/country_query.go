@@ -34,44 +34,44 @@ type CountryQuery struct {
 }
 
 // Where adds a new predicate for the CountryQuery builder.
-func (cq *CountryQuery) Where(ps ...predicate.Country) *CountryQuery {
-	cq.predicates = append(cq.predicates, ps...)
-	return cq
+func (_q *CountryQuery) Where(ps ...predicate.Country) *CountryQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (cq *CountryQuery) Limit(limit int) *CountryQuery {
-	cq.ctx.Limit = &limit
-	return cq
+func (_q *CountryQuery) Limit(limit int) *CountryQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (cq *CountryQuery) Offset(offset int) *CountryQuery {
-	cq.ctx.Offset = &offset
-	return cq
+func (_q *CountryQuery) Offset(offset int) *CountryQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (cq *CountryQuery) Unique(unique bool) *CountryQuery {
-	cq.ctx.Unique = &unique
-	return cq
+func (_q *CountryQuery) Unique(unique bool) *CountryQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (cq *CountryQuery) Order(o ...country.OrderOption) *CountryQuery {
-	cq.order = append(cq.order, o...)
-	return cq
+func (_q *CountryQuery) Order(o ...country.OrderOption) *CountryQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryRegions chains the current query on the "regions" edge.
-func (cq *CountryQuery) QueryRegions() *RegionQuery {
-	query := (&RegionClient{config: cq.config}).Query()
+func (_q *CountryQuery) QueryRegions() *RegionQuery {
+	query := (&RegionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := cq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := cq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,7 +80,7 @@ func (cq *CountryQuery) QueryRegions() *RegionQuery {
 			sqlgraph.To(region.Table, region.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, country.RegionsTable, country.RegionsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -88,8 +88,8 @@ func (cq *CountryQuery) QueryRegions() *RegionQuery {
 
 // First returns the first Country entity from the query.
 // Returns a *NotFoundError when no Country was found.
-func (cq *CountryQuery) First(ctx context.Context) (*Country, error) {
-	nodes, err := cq.Limit(1).All(setContextOp(ctx, cq.ctx, ent.OpQueryFirst))
+func (_q *CountryQuery) First(ctx context.Context) (*Country, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +100,8 @@ func (cq *CountryQuery) First(ctx context.Context) (*Country, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (cq *CountryQuery) FirstX(ctx context.Context) *Country {
-	node, err := cq.First(ctx)
+func (_q *CountryQuery) FirstX(ctx context.Context) *Country {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -110,9 +110,9 @@ func (cq *CountryQuery) FirstX(ctx context.Context) *Country {
 
 // FirstID returns the first Country ID from the query.
 // Returns a *NotFoundError when no Country ID was found.
-func (cq *CountryQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *CountryQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = cq.Limit(1).IDs(setContextOp(ctx, cq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -123,8 +123,8 @@ func (cq *CountryQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cq *CountryQuery) FirstIDX(ctx context.Context) int {
-	id, err := cq.FirstID(ctx)
+func (_q *CountryQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -134,8 +134,8 @@ func (cq *CountryQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single Country entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Country entity is found.
 // Returns a *NotFoundError when no Country entities are found.
-func (cq *CountryQuery) Only(ctx context.Context) (*Country, error) {
-	nodes, err := cq.Limit(2).All(setContextOp(ctx, cq.ctx, ent.OpQueryOnly))
+func (_q *CountryQuery) Only(ctx context.Context) (*Country, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -150,8 +150,8 @@ func (cq *CountryQuery) Only(ctx context.Context) (*Country, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (cq *CountryQuery) OnlyX(ctx context.Context) *Country {
-	node, err := cq.Only(ctx)
+func (_q *CountryQuery) OnlyX(ctx context.Context) *Country {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -161,9 +161,9 @@ func (cq *CountryQuery) OnlyX(ctx context.Context) *Country {
 // OnlyID is like Only, but returns the only Country ID in the query.
 // Returns a *NotSingularError when more than one Country ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cq *CountryQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *CountryQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = cq.Limit(2).IDs(setContextOp(ctx, cq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -178,8 +178,8 @@ func (cq *CountryQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cq *CountryQuery) OnlyIDX(ctx context.Context) int {
-	id, err := cq.OnlyID(ctx)
+func (_q *CountryQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -187,18 +187,18 @@ func (cq *CountryQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of Countries.
-func (cq *CountryQuery) All(ctx context.Context) ([]*Country, error) {
-	ctx = setContextOp(ctx, cq.ctx, ent.OpQueryAll)
-	if err := cq.prepareQuery(ctx); err != nil {
+func (_q *CountryQuery) All(ctx context.Context) ([]*Country, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Country, *CountryQuery]()
-	return withInterceptors[[]*Country](ctx, cq, qr, cq.inters)
+	return withInterceptors[[]*Country](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (cq *CountryQuery) AllX(ctx context.Context) []*Country {
-	nodes, err := cq.All(ctx)
+func (_q *CountryQuery) AllX(ctx context.Context) []*Country {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -206,20 +206,20 @@ func (cq *CountryQuery) AllX(ctx context.Context) []*Country {
 }
 
 // IDs executes the query and returns a list of Country IDs.
-func (cq *CountryQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if cq.ctx.Unique == nil && cq.path != nil {
-		cq.Unique(true)
+func (_q *CountryQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, cq.ctx, ent.OpQueryIDs)
-	if err = cq.Select(country.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(country.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cq *CountryQuery) IDsX(ctx context.Context) []int {
-	ids, err := cq.IDs(ctx)
+func (_q *CountryQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -227,17 +227,17 @@ func (cq *CountryQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (cq *CountryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, cq.ctx, ent.OpQueryCount)
-	if err := cq.prepareQuery(ctx); err != nil {
+func (_q *CountryQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, cq, querierCount[*CountryQuery](), cq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*CountryQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (cq *CountryQuery) CountX(ctx context.Context) int {
-	count, err := cq.Count(ctx)
+func (_q *CountryQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -245,9 +245,9 @@ func (cq *CountryQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (cq *CountryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, cq.ctx, ent.OpQueryExist)
-	switch _, err := cq.FirstID(ctx); {
+func (_q *CountryQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -258,8 +258,8 @@ func (cq *CountryQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (cq *CountryQuery) ExistX(ctx context.Context) bool {
-	exist, err := cq.Exist(ctx)
+func (_q *CountryQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -268,32 +268,32 @@ func (cq *CountryQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the CountryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (cq *CountryQuery) Clone() *CountryQuery {
-	if cq == nil {
+func (_q *CountryQuery) Clone() *CountryQuery {
+	if _q == nil {
 		return nil
 	}
 	return &CountryQuery{
-		config:      cq.config,
-		ctx:         cq.ctx.Clone(),
-		order:       append([]country.OrderOption{}, cq.order...),
-		inters:      append([]Interceptor{}, cq.inters...),
-		predicates:  append([]predicate.Country{}, cq.predicates...),
-		withRegions: cq.withRegions.Clone(),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]country.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.Country{}, _q.predicates...),
+		withRegions: _q.withRegions.Clone(),
 		// clone intermediate query.
-		sql:  cq.sql.Clone(),
-		path: cq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithRegions tells the query-builder to eager-load the nodes that are connected to
 // the "regions" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CountryQuery) WithRegions(opts ...func(*RegionQuery)) *CountryQuery {
-	query := (&RegionClient{config: cq.config}).Query()
+func (_q *CountryQuery) WithRegions(opts ...func(*RegionQuery)) *CountryQuery {
+	query := (&RegionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	cq.withRegions = query
-	return cq
+	_q.withRegions = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,10 +310,10 @@ func (cq *CountryQuery) WithRegions(opts ...func(*RegionQuery)) *CountryQuery {
 //		GroupBy(country.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (cq *CountryQuery) GroupBy(field string, fields ...string) *CountryGroupBy {
-	cq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &CountryGroupBy{build: cq}
-	grbuild.flds = &cq.ctx.Fields
+func (_q *CountryQuery) GroupBy(field string, fields ...string) *CountryGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &CountryGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = country.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -331,97 +331,97 @@ func (cq *CountryQuery) GroupBy(field string, fields ...string) *CountryGroupBy 
 //	client.Country.Query().
 //		Select(country.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (cq *CountryQuery) Select(fields ...string) *CountrySelect {
-	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
-	sbuild := &CountrySelect{CountryQuery: cq}
+func (_q *CountryQuery) Select(fields ...string) *CountrySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &CountrySelect{CountryQuery: _q}
 	sbuild.label = country.Label
-	sbuild.flds, sbuild.scan = &cq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a CountrySelect configured with the given aggregations.
-func (cq *CountryQuery) Aggregate(fns ...AggregateFunc) *CountrySelect {
-	return cq.Select().Aggregate(fns...)
+func (_q *CountryQuery) Aggregate(fns ...AggregateFunc) *CountrySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (cq *CountryQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range cq.inters {
+func (_q *CountryQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, cq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range cq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !country.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if cq.path != nil {
-		prev, err := cq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		cq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (cq *CountryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Country, error) {
+func (_q *CountryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Country, error) {
 	var (
 		nodes       = []*Country{}
-		_spec       = cq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			cq.withRegions != nil,
+			_q.withRegions != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Country).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Country{config: cq.config}
+		node := &Country{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(cq.modifiers) > 0 {
-		_spec.Modifiers = cq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, cq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := cq.withRegions; query != nil {
-		if err := cq.loadRegions(ctx, query, nodes,
+	if query := _q.withRegions; query != nil {
+		if err := _q.loadRegions(ctx, query, nodes,
 			func(n *Country) { n.Edges.Regions = []*Region{} },
 			func(n *Country, e *Region) { n.Edges.Regions = append(n.Edges.Regions, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range cq.withNamedRegions {
-		if err := cq.loadRegions(ctx, query, nodes,
+	for name, query := range _q.withNamedRegions {
+		if err := _q.loadRegions(ctx, query, nodes,
 			func(n *Country) { n.appendNamedRegions(name) },
 			func(n *Country, e *Region) { n.appendNamedRegions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range cq.loadTotal {
-		if err := cq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (cq *CountryQuery) loadRegions(ctx context.Context, query *RegionQuery, nodes []*Country, init func(*Country), assign func(*Country, *Region)) error {
+func (_q *CountryQuery) loadRegions(ctx context.Context, query *RegionQuery, nodes []*Country, init func(*Country), assign func(*Country, *Region)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Country)
 	for i := range nodes {
@@ -455,27 +455,27 @@ func (cq *CountryQuery) loadRegions(ctx context.Context, query *RegionQuery, nod
 	return nil
 }
 
-func (cq *CountryQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := cq.querySpec()
-	if len(cq.modifiers) > 0 {
-		_spec.Modifiers = cq.modifiers
+func (_q *CountryQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = cq.ctx.Fields
-	if len(cq.ctx.Fields) > 0 {
-		_spec.Unique = cq.ctx.Unique != nil && *cq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, cq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (cq *CountryQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *CountryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(country.Table, country.Columns, sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt))
-	_spec.From = cq.sql
-	if unique := cq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if cq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := cq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, country.FieldID)
 		for i := range fields {
@@ -484,20 +484,20 @@ func (cq *CountryQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := cq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := cq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := cq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := cq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -507,33 +507,33 @@ func (cq *CountryQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (cq *CountryQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(cq.driver.Dialect())
+func (_q *CountryQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(country.Table)
-	columns := cq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = country.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if cq.sql != nil {
-		selector = cq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if cq.ctx.Unique != nil && *cq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range cq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range cq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := cq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := cq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -541,16 +541,16 @@ func (cq *CountryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedRegions tells the query-builder to eager-load the nodes that are connected to the "regions"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (cq *CountryQuery) WithNamedRegions(name string, opts ...func(*RegionQuery)) *CountryQuery {
-	query := (&RegionClient{config: cq.config}).Query()
+func (_q *CountryQuery) WithNamedRegions(name string, opts ...func(*RegionQuery)) *CountryQuery {
+	query := (&RegionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if cq.withNamedRegions == nil {
-		cq.withNamedRegions = make(map[string]*RegionQuery)
+	if _q.withNamedRegions == nil {
+		_q.withNamedRegions = make(map[string]*RegionQuery)
 	}
-	cq.withNamedRegions[name] = query
-	return cq
+	_q.withNamedRegions[name] = query
+	return _q
 }
 
 // CountryGroupBy is the group-by builder for Country entities.
@@ -560,41 +560,41 @@ type CountryGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (cgb *CountryGroupBy) Aggregate(fns ...AggregateFunc) *CountryGroupBy {
-	cgb.fns = append(cgb.fns, fns...)
-	return cgb
+func (_g *CountryGroupBy) Aggregate(fns ...AggregateFunc) *CountryGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (cgb *CountryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cgb.build.ctx, ent.OpQueryGroupBy)
-	if err := cgb.build.prepareQuery(ctx); err != nil {
+func (_g *CountryGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*CountryQuery, *CountryGroupBy](ctx, cgb.build, cgb, cgb.build.inters, v)
+	return scanWithInterceptors[*CountryQuery, *CountryGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (cgb *CountryGroupBy) sqlScan(ctx context.Context, root *CountryQuery, v any) error {
+func (_g *CountryGroupBy) sqlScan(ctx context.Context, root *CountryQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(cgb.fns))
-	for _, fn := range cgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*cgb.flds)+len(cgb.fns))
-		for _, f := range *cgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*cgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := cgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -608,27 +608,27 @@ type CountrySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (cs *CountrySelect) Aggregate(fns ...AggregateFunc) *CountrySelect {
-	cs.fns = append(cs.fns, fns...)
-	return cs
+func (_s *CountrySelect) Aggregate(fns ...AggregateFunc) *CountrySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (cs *CountrySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cs.ctx, ent.OpQuerySelect)
-	if err := cs.prepareQuery(ctx); err != nil {
+func (_s *CountrySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*CountryQuery, *CountrySelect](ctx, cs.CountryQuery, cs, cs.inters, v)
+	return scanWithInterceptors[*CountryQuery, *CountrySelect](ctx, _s.CountryQuery, _s, _s.inters, v)
 }
 
-func (cs *CountrySelect) sqlScan(ctx context.Context, root *CountryQuery, v any) error {
+func (_s *CountrySelect) sqlScan(ctx context.Context, root *CountryQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(cs.fns))
-	for _, fn := range cs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*cs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -636,7 +636,7 @@ func (cs *CountrySelect) sqlScan(ctx context.Context, root *CountryQuery, v any)
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := cs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

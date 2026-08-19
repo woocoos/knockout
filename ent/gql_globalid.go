@@ -15,176 +15,176 @@ import (
 )
 
 // GlobalID returns the global identifier for the given App node.
-func (a *App) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("App:%d", a.ID)
+func (_m *App) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("App:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppAction node.
-func (aa *AppAction) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppAction:%d", aa.ID)
+func (_m *AppAction) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppAction:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppDict node.
-func (ad *AppDict) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppDict:%d", ad.ID)
+func (_m *AppDict) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppDict:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppDictItem node.
-func (adi *AppDictItem) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppDictItem:%d", adi.ID)
+func (_m *AppDictItem) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppDictItem:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppMenu node.
-func (am *AppMenu) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppMenu:%d", am.ID)
+func (_m *AppMenu) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppMenu:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppPolicy node.
-func (ap *AppPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppPolicy:%d", ap.ID)
+func (_m *AppPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppPolicy:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppPolicyView node.
-func (apv *AppPolicyView) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppPolicyView:%d", apv.ID)
+func (_m *AppPolicyView) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppPolicyView:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppRes node.
-func (ar *AppRes) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppRes:%d", ar.ID)
+func (_m *AppRes) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppRes:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppRole node.
-func (ar *AppRole) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("AppRole:%d", ar.ID)
+func (_m *AppRole) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppRole:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Country node.
-func (c *Country) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Country:%d", c.ID)
+func (_m *Country) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Country:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Currency node.
-func (c *Currency) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Currency:%d", c.ID)
+func (_m *Currency) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Currency:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given FileIdentity node.
-func (fi *FileIdentity) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("FileIdentity:%d", fi.ID)
+func (_m *FileIdentity) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("FileIdentity:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given FileSource node.
-func (fs *FileSource) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("FileSource:%d", fs.ID)
+func (_m *FileSource) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("FileSource:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OauthClient node.
-func (oc *OauthClient) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("OauthClient:%d", oc.ID)
+func (_m *OauthClient) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("OauthClient:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Org node.
-func (o *Org) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Org:%d", o.ID)
+func (_m *Org) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Org:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OrgPolicy node.
-func (op *OrgPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("OrgPolicy:%d", op.ID)
+func (_m *OrgPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("OrgPolicy:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OrgRole node.
-func (or *OrgRole) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("OrgRole:%d", or.ID)
+func (_m *OrgRole) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("OrgRole:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OrgUserPreference node.
-func (oup *OrgUserPreference) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("OrgUserPreference:%d", oup.ID)
+func (_m *OrgUserPreference) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("OrgUserPreference:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Permission node.
-func (pe *Permission) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Permission:%d", pe.ID)
+func (_m *Permission) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Permission:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Quota node.
-func (q *Quota) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Quota:%d", q.ID)
+func (_m *Quota) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Quota:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given QuotaItem node.
-func (qi *QuotaItem) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("QuotaItem:%d", qi.ID)
+func (_m *QuotaItem) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("QuotaItem:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Region node.
-func (r *Region) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("Region:%d", r.ID)
+func (_m *Region) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Region:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given User node.
-func (u *User) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("User:%d", u.ID)
+func (_m *User) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("User:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserAddr node.
-func (ua *UserAddr) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserAddr:%d", ua.ID)
+func (_m *UserAddr) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserAddr:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserDevice node.
-func (ud *UserDevice) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserDevice:%d", ud.ID)
+func (_m *UserDevice) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserDevice:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserIdentity node.
-func (ui *UserIdentity) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserIdentity:%d", ui.ID)
+func (_m *UserIdentity) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserIdentity:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserLoginProfile node.
-func (ulp *UserLoginProfile) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserLoginProfile:%d", ulp.ID)
+func (_m *UserLoginProfile) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserLoginProfile:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserPassword node.
-func (up *UserPassword) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserPassword:%d", up.ID)
+func (_m *UserPassword) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserPassword:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserPasswordPolicy node.
-func (upp *UserPasswordPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("UserPasswordPolicy:%d", upp.ID)
+func (_m *UserPasswordPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserPasswordPolicy:%d", _m.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -199,6 +199,7 @@ func FromGlobalID(s string) (*ResolvedGlobal, error) {
 	if len(tid) != 2 {
 		return nil, fmt.Errorf("invalid global identifier format %q", b)
 	}
+
 	return &ResolvedGlobal{Type: tid[0], ID: tid[1]}, nil
 }
 

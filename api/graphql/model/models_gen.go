@@ -150,7 +150,7 @@ func (e AppRolePolicyOrderField) String() string {
 	return string(e)
 }
 
-func (e *AppRolePolicyOrderField) UnmarshalGQL(v interface{}) error {
+func (e *AppRolePolicyOrderField) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -194,7 +194,7 @@ func (e ListAction) String() string {
 	return string(e)
 }
 
-func (e *ListAction) UnmarshalGQL(v interface{}) error {
+func (e *ListAction) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -234,7 +234,7 @@ func (e OrgRoleUserOrderField) String() string {
 	return string(e)
 }
 
-func (e *OrgRoleUserOrderField) UnmarshalGQL(v interface{}) error {
+func (e *OrgRoleUserOrderField) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -274,7 +274,7 @@ func (e OrgUserOrderField) String() string {
 	return string(e)
 }
 
-func (e *OrgUserOrderField) UnmarshalGQL(v interface{}) error {
+func (e *OrgUserOrderField) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -321,7 +321,7 @@ func (e TreeAction) String() string {
 	return string(e)
 }
 
-func (e *TreeAction) UnmarshalGQL(v interface{}) error {
+func (e *TreeAction) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")

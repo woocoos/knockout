@@ -111,7 +111,7 @@ func (*AppRole) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppRole fields.
-func (ar *AppRole) assignValues(columns []string, values []any) error {
+func (_m *AppRole) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -122,63 +122,63 @@ func (ar *AppRole) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ar.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case approle.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ar.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case approle.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ar.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case approle.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ar.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case approle.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ar.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case approle.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				ar.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case approle.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ar.Name = value.String
+				_m.Name = value.String
 			}
 		case approle.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				ar.Comments = value.String
+				_m.Comments = value.String
 			}
 		case approle.FieldAutoGrant:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field auto_grant", values[i])
 			} else if value.Valid {
-				ar.AutoGrant = value.Bool
+				_m.AutoGrant = value.Bool
 			}
 		case approle.FieldEditable:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field editable", values[i])
 			} else if value.Valid {
-				ar.Editable = value.Bool
+				_m.Editable = value.Bool
 			}
 		default:
-			ar.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -186,123 +186,123 @@ func (ar *AppRole) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppRole.
 // This includes values selected through modifiers, order, etc.
-func (ar *AppRole) Value(name string) (ent.Value, error) {
-	return ar.selectValues.Get(name)
+func (_m *AppRole) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppRole entity.
-func (ar *AppRole) QueryApp() *AppQuery {
-	return NewAppRoleClient(ar.config).QueryApp(ar)
+func (_m *AppRole) QueryApp() *AppQuery {
+	return NewAppRoleClient(_m.config).QueryApp(_m)
 }
 
 // QueryPolicies queries the "policies" edge of the AppRole entity.
-func (ar *AppRole) QueryPolicies() *AppPolicyQuery {
-	return NewAppRoleClient(ar.config).QueryPolicies(ar)
+func (_m *AppRole) QueryPolicies() *AppPolicyQuery {
+	return NewAppRoleClient(_m.config).QueryPolicies(_m)
 }
 
 // QueryAppRolePolicy queries the "app_role_policy" edge of the AppRole entity.
-func (ar *AppRole) QueryAppRolePolicy() *AppRolePolicyQuery {
-	return NewAppRoleClient(ar.config).QueryAppRolePolicy(ar)
+func (_m *AppRole) QueryAppRolePolicy() *AppRolePolicyQuery {
+	return NewAppRoleClient(_m.config).QueryAppRolePolicy(_m)
 }
 
 // Update returns a builder for updating this AppRole.
 // Note that you need to call AppRole.Unwrap() before calling this method if this AppRole
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ar *AppRole) Update() *AppRoleUpdateOne {
-	return NewAppRoleClient(ar.config).UpdateOne(ar)
+func (_m *AppRole) Update() *AppRoleUpdateOne {
+	return NewAppRoleClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppRole entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ar *AppRole) Unwrap() *AppRole {
-	_tx, ok := ar.config.driver.(*txDriver)
+func (_m *AppRole) Unwrap() *AppRole {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppRole is not a transactional entity")
 	}
-	ar.config.driver = _tx.drv
-	return ar
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ar *AppRole) String() string {
+func (_m *AppRole) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppRole(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ar.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ar.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ar.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ar.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ar.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", ar.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(ar.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(ar.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("auto_grant=")
-	builder.WriteString(fmt.Sprintf("%v", ar.AutoGrant))
+	builder.WriteString(fmt.Sprintf("%v", _m.AutoGrant))
 	builder.WriteString(", ")
 	builder.WriteString("editable=")
-	builder.WriteString(fmt.Sprintf("%v", ar.Editable))
+	builder.WriteString(fmt.Sprintf("%v", _m.Editable))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedPolicies returns the Policies named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ar *AppRole) NamedPolicies(name string) ([]*AppPolicy, error) {
-	if ar.Edges.namedPolicies == nil {
+func (_m *AppRole) NamedPolicies(name string) ([]*AppPolicy, error) {
+	if _m.Edges.namedPolicies == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ar.Edges.namedPolicies[name]
+	nodes, ok := _m.Edges.namedPolicies[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ar *AppRole) appendNamedPolicies(name string, edges ...*AppPolicy) {
-	if ar.Edges.namedPolicies == nil {
-		ar.Edges.namedPolicies = make(map[string][]*AppPolicy)
+func (_m *AppRole) appendNamedPolicies(name string, edges ...*AppPolicy) {
+	if _m.Edges.namedPolicies == nil {
+		_m.Edges.namedPolicies = make(map[string][]*AppPolicy)
 	}
 	if len(edges) == 0 {
-		ar.Edges.namedPolicies[name] = []*AppPolicy{}
+		_m.Edges.namedPolicies[name] = []*AppPolicy{}
 	} else {
-		ar.Edges.namedPolicies[name] = append(ar.Edges.namedPolicies[name], edges...)
+		_m.Edges.namedPolicies[name] = append(_m.Edges.namedPolicies[name], edges...)
 	}
 }
 
 // NamedAppRolePolicy returns the AppRolePolicy named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ar *AppRole) NamedAppRolePolicy(name string) ([]*AppRolePolicy, error) {
-	if ar.Edges.namedAppRolePolicy == nil {
+func (_m *AppRole) NamedAppRolePolicy(name string) ([]*AppRolePolicy, error) {
+	if _m.Edges.namedAppRolePolicy == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ar.Edges.namedAppRolePolicy[name]
+	nodes, ok := _m.Edges.namedAppRolePolicy[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ar *AppRole) appendNamedAppRolePolicy(name string, edges ...*AppRolePolicy) {
-	if ar.Edges.namedAppRolePolicy == nil {
-		ar.Edges.namedAppRolePolicy = make(map[string][]*AppRolePolicy)
+func (_m *AppRole) appendNamedAppRolePolicy(name string, edges ...*AppRolePolicy) {
+	if _m.Edges.namedAppRolePolicy == nil {
+		_m.Edges.namedAppRolePolicy = make(map[string][]*AppRolePolicy)
 	}
 	if len(edges) == 0 {
-		ar.Edges.namedAppRolePolicy[name] = []*AppRolePolicy{}
+		_m.Edges.namedAppRolePolicy[name] = []*AppRolePolicy{}
 	} else {
-		ar.Edges.namedAppRolePolicy[name] = append(ar.Edges.namedAppRolePolicy[name], edges...)
+		_m.Edges.namedAppRolePolicy[name] = append(_m.Edges.namedAppRolePolicy[name], edges...)
 	}
 }
 

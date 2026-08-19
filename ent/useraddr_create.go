@@ -25,231 +25,231 @@ type UserAddrCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (uac *UserAddrCreate) SetCreatedBy(i int) *UserAddrCreate {
-	uac.mutation.SetCreatedBy(i)
-	return uac
+func (_c *UserAddrCreate) SetCreatedBy(v int) *UserAddrCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (uac *UserAddrCreate) SetCreatedAt(t time.Time) *UserAddrCreate {
-	uac.mutation.SetCreatedAt(t)
-	return uac
+func (_c *UserAddrCreate) SetCreatedAt(v time.Time) *UserAddrCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableCreatedAt(t *time.Time) *UserAddrCreate {
-	if t != nil {
-		uac.SetCreatedAt(*t)
+func (_c *UserAddrCreate) SetNillableCreatedAt(v *time.Time) *UserAddrCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uac *UserAddrCreate) SetUpdatedBy(i int) *UserAddrCreate {
-	uac.mutation.SetUpdatedBy(i)
-	return uac
+func (_c *UserAddrCreate) SetUpdatedBy(v int) *UserAddrCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableUpdatedBy(i *int) *UserAddrCreate {
-	if i != nil {
-		uac.SetUpdatedBy(*i)
+func (_c *UserAddrCreate) SetNillableUpdatedBy(v *int) *UserAddrCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uac *UserAddrCreate) SetUpdatedAt(t time.Time) *UserAddrCreate {
-	uac.mutation.SetUpdatedAt(t)
-	return uac
+func (_c *UserAddrCreate) SetUpdatedAt(v time.Time) *UserAddrCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableUpdatedAt(t *time.Time) *UserAddrCreate {
-	if t != nil {
-		uac.SetUpdatedAt(*t)
+func (_c *UserAddrCreate) SetNillableUpdatedAt(v *time.Time) *UserAddrCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (uac *UserAddrCreate) SetUserID(i int) *UserAddrCreate {
-	uac.mutation.SetUserID(i)
-	return uac
+func (_c *UserAddrCreate) SetUserID(v int) *UserAddrCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableUserID(i *int) *UserAddrCreate {
-	if i != nil {
-		uac.SetUserID(*i)
+func (_c *UserAddrCreate) SetNillableUserID(v *int) *UserAddrCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetAddrType sets the "addr_type" field.
-func (uac *UserAddrCreate) SetAddrType(ut useraddr.AddrType) *UserAddrCreate {
-	uac.mutation.SetAddrType(ut)
-	return uac
+func (_c *UserAddrCreate) SetAddrType(v useraddr.AddrType) *UserAddrCreate {
+	_c.mutation.SetAddrType(v)
+	return _c
 }
 
 // SetRegionID sets the "region_id" field.
-func (uac *UserAddrCreate) SetRegionID(i int) *UserAddrCreate {
-	uac.mutation.SetRegionID(i)
-	return uac
+func (_c *UserAddrCreate) SetRegionID(v int) *UserAddrCreate {
+	_c.mutation.SetRegionID(v)
+	return _c
 }
 
 // SetNillableRegionID sets the "region_id" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableRegionID(i *int) *UserAddrCreate {
-	if i != nil {
-		uac.SetRegionID(*i)
+func (_c *UserAddrCreate) SetNillableRegionID(v *int) *UserAddrCreate {
+	if v != nil {
+		_c.SetRegionID(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetAddr sets the "addr" field.
-func (uac *UserAddrCreate) SetAddr(s string) *UserAddrCreate {
-	uac.mutation.SetAddr(s)
-	return uac
+func (_c *UserAddrCreate) SetAddr(v string) *UserAddrCreate {
+	_c.mutation.SetAddr(v)
+	return _c
 }
 
 // SetNillableAddr sets the "addr" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableAddr(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetAddr(*s)
+func (_c *UserAddrCreate) SetNillableAddr(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetAddr(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetEmail sets the "email" field.
-func (uac *UserAddrCreate) SetEmail(s string) *UserAddrCreate {
-	uac.mutation.SetEmail(s)
-	return uac
+func (_c *UserAddrCreate) SetEmail(v string) *UserAddrCreate {
+	_c.mutation.SetEmail(v)
+	return _c
 }
 
 // SetNillableEmail sets the "email" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableEmail(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetEmail(*s)
+func (_c *UserAddrCreate) SetNillableEmail(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetEmail(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetFax sets the "fax" field.
-func (uac *UserAddrCreate) SetFax(s string) *UserAddrCreate {
-	uac.mutation.SetFax(s)
-	return uac
+func (_c *UserAddrCreate) SetFax(v string) *UserAddrCreate {
+	_c.mutation.SetFax(v)
+	return _c
 }
 
 // SetNillableFax sets the "fax" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableFax(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetFax(*s)
+func (_c *UserAddrCreate) SetNillableFax(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetFax(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetZipCode sets the "zip_code" field.
-func (uac *UserAddrCreate) SetZipCode(s string) *UserAddrCreate {
-	uac.mutation.SetZipCode(s)
-	return uac
+func (_c *UserAddrCreate) SetZipCode(v string) *UserAddrCreate {
+	_c.mutation.SetZipCode(v)
+	return _c
 }
 
 // SetNillableZipCode sets the "zip_code" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableZipCode(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetZipCode(*s)
+func (_c *UserAddrCreate) SetNillableZipCode(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetZipCode(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetTel sets the "tel" field.
-func (uac *UserAddrCreate) SetTel(s string) *UserAddrCreate {
-	uac.mutation.SetTel(s)
-	return uac
+func (_c *UserAddrCreate) SetTel(v string) *UserAddrCreate {
+	_c.mutation.SetTel(v)
+	return _c
 }
 
 // SetNillableTel sets the "tel" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableTel(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetTel(*s)
+func (_c *UserAddrCreate) SetNillableTel(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetTel(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetMobile sets the "mobile" field.
-func (uac *UserAddrCreate) SetMobile(s string) *UserAddrCreate {
-	uac.mutation.SetMobile(s)
-	return uac
+func (_c *UserAddrCreate) SetMobile(v string) *UserAddrCreate {
+	_c.mutation.SetMobile(v)
+	return _c
 }
 
 // SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableMobile(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetMobile(*s)
+func (_c *UserAddrCreate) SetNillableMobile(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetMobile(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetName sets the "name" field.
-func (uac *UserAddrCreate) SetName(s string) *UserAddrCreate {
-	uac.mutation.SetName(s)
-	return uac
+func (_c *UserAddrCreate) SetName(v string) *UserAddrCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableName(s *string) *UserAddrCreate {
-	if s != nil {
-		uac.SetName(*s)
+func (_c *UserAddrCreate) SetNillableName(v *string) *UserAddrCreate {
+	if v != nil {
+		_c.SetName(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetIsDefault sets the "is_default" field.
-func (uac *UserAddrCreate) SetIsDefault(b bool) *UserAddrCreate {
-	uac.mutation.SetIsDefault(b)
-	return uac
+func (_c *UserAddrCreate) SetIsDefault(v bool) *UserAddrCreate {
+	_c.mutation.SetIsDefault(v)
+	return _c
 }
 
 // SetNillableIsDefault sets the "is_default" field if the given value is not nil.
-func (uac *UserAddrCreate) SetNillableIsDefault(b *bool) *UserAddrCreate {
-	if b != nil {
-		uac.SetIsDefault(*b)
+func (_c *UserAddrCreate) SetNillableIsDefault(v *bool) *UserAddrCreate {
+	if v != nil {
+		_c.SetIsDefault(*v)
 	}
-	return uac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (uac *UserAddrCreate) SetID(i int) *UserAddrCreate {
-	uac.mutation.SetID(i)
-	return uac
+func (_c *UserAddrCreate) SetID(v int) *UserAddrCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (uac *UserAddrCreate) SetUser(u *User) *UserAddrCreate {
-	return uac.SetUserID(u.ID)
+func (_c *UserAddrCreate) SetUser(v *User) *UserAddrCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // SetRegion sets the "region" edge to the Region entity.
-func (uac *UserAddrCreate) SetRegion(r *Region) *UserAddrCreate {
-	return uac.SetRegionID(r.ID)
+func (_c *UserAddrCreate) SetRegion(v *Region) *UserAddrCreate {
+	return _c.SetRegionID(v.ID)
 }
 
 // Mutation returns the UserAddrMutation object of the builder.
-func (uac *UserAddrCreate) Mutation() *UserAddrMutation {
-	return uac.mutation
+func (_c *UserAddrCreate) Mutation() *UserAddrMutation {
+	return _c.mutation
 }
 
 // Save creates the UserAddr in the database.
-func (uac *UserAddrCreate) Save(ctx context.Context) (*UserAddr, error) {
-	if err := uac.defaults(); err != nil {
+func (_c *UserAddrCreate) Save(ctx context.Context) (*UserAddr, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, uac.sqlSave, uac.mutation, uac.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (uac *UserAddrCreate) SaveX(ctx context.Context) *UserAddr {
-	v, err := uac.Save(ctx)
+func (_c *UserAddrCreate) SaveX(ctx context.Context) *UserAddr {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -257,92 +257,92 @@ func (uac *UserAddrCreate) SaveX(ctx context.Context) *UserAddr {
 }
 
 // Exec executes the query.
-func (uac *UserAddrCreate) Exec(ctx context.Context) error {
-	_, err := uac.Save(ctx)
+func (_c *UserAddrCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uac *UserAddrCreate) ExecX(ctx context.Context) {
-	if err := uac.Exec(ctx); err != nil {
+func (_c *UserAddrCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (uac *UserAddrCreate) defaults() error {
-	if _, ok := uac.mutation.CreatedAt(); !ok {
+func (_c *UserAddrCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if useraddr.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized useraddr.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := useraddr.DefaultCreatedAt()
-		uac.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := uac.mutation.IsDefault(); !ok {
+	if _, ok := _c.mutation.IsDefault(); !ok {
 		v := useraddr.DefaultIsDefault
-		uac.mutation.SetIsDefault(v)
+		_c.mutation.SetIsDefault(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uac *UserAddrCreate) check() error {
-	if _, ok := uac.mutation.CreatedBy(); !ok {
+func (_c *UserAddrCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "UserAddr.created_by"`)}
 	}
-	if _, ok := uac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserAddr.created_at"`)}
 	}
-	if _, ok := uac.mutation.AddrType(); !ok {
+	if _, ok := _c.mutation.AddrType(); !ok {
 		return &ValidationError{Name: "addr_type", err: errors.New(`ent: missing required field "UserAddr.addr_type"`)}
 	}
-	if v, ok := uac.mutation.AddrType(); ok {
+	if v, ok := _c.mutation.AddrType(); ok {
 		if err := useraddr.AddrTypeValidator(v); err != nil {
 			return &ValidationError{Name: "addr_type", err: fmt.Errorf(`ent: validator failed for field "UserAddr.addr_type": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.Email(); ok {
+	if v, ok := _c.mutation.Email(); ok {
 		if err := useraddr.EmailValidator(v); err != nil {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserAddr.email": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.Fax(); ok {
+	if v, ok := _c.mutation.Fax(); ok {
 		if err := useraddr.FaxValidator(v); err != nil {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.ZipCode(); ok {
+	if v, ok := _c.mutation.ZipCode(); ok {
 		if err := useraddr.ZipCodeValidator(v); err != nil {
 			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.Tel(); ok {
+	if v, ok := _c.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.Mobile(); ok {
+	if v, ok := _c.mutation.Mobile(); ok {
 		if err := useraddr.MobileValidator(v); err != nil {
 			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "UserAddr.mobile": %w`, err)}
 		}
 	}
-	if v, ok := uac.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := useraddr.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "UserAddr.name": %w`, err)}
 		}
 	}
-	if _, ok := uac.mutation.IsDefault(); !ok {
+	if _, ok := _c.mutation.IsDefault(); !ok {
 		return &ValidationError{Name: "is_default", err: errors.New(`ent: missing required field "UserAddr.is_default"`)}
 	}
 	return nil
 }
 
-func (uac *UserAddrCreate) sqlSave(ctx context.Context) (*UserAddr, error) {
-	if err := uac.check(); err != nil {
+func (_c *UserAddrCreate) sqlSave(ctx context.Context) (*UserAddr, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := uac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, uac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -352,74 +352,74 @@ func (uac *UserAddrCreate) sqlSave(ctx context.Context) (*UserAddr, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	uac.mutation.id = &_node.ID
-	uac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (uac *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
+func (_c *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserAddr{config: uac.config}
+		_node = &UserAddr{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(useraddr.Table, sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = uac.conflict
-	if id, ok := uac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := uac.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(useraddr.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := uac.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(useraddr.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := uac.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(useraddr.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := uac.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(useraddr.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := uac.mutation.AddrType(); ok {
+	if value, ok := _c.mutation.AddrType(); ok {
 		_spec.SetField(useraddr.FieldAddrType, field.TypeEnum, value)
 		_node.AddrType = value
 	}
-	if value, ok := uac.mutation.Addr(); ok {
+	if value, ok := _c.mutation.Addr(); ok {
 		_spec.SetField(useraddr.FieldAddr, field.TypeString, value)
 		_node.Addr = value
 	}
-	if value, ok := uac.mutation.Email(); ok {
+	if value, ok := _c.mutation.Email(); ok {
 		_spec.SetField(useraddr.FieldEmail, field.TypeString, value)
 		_node.Email = value
 	}
-	if value, ok := uac.mutation.Fax(); ok {
+	if value, ok := _c.mutation.Fax(); ok {
 		_spec.SetField(useraddr.FieldFax, field.TypeString, value)
 		_node.Fax = value
 	}
-	if value, ok := uac.mutation.ZipCode(); ok {
+	if value, ok := _c.mutation.ZipCode(); ok {
 		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
 		_node.ZipCode = value
 	}
-	if value, ok := uac.mutation.Tel(); ok {
+	if value, ok := _c.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)
 		_node.Tel = value
 	}
-	if value, ok := uac.mutation.Mobile(); ok {
+	if value, ok := _c.mutation.Mobile(); ok {
 		_spec.SetField(useraddr.FieldMobile, field.TypeString, value)
 		_node.Mobile = value
 	}
-	if value, ok := uac.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(useraddr.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := uac.mutation.IsDefault(); ok {
+	if value, ok := _c.mutation.IsDefault(); ok {
 		_spec.SetField(useraddr.FieldIsDefault, field.TypeBool, value)
 		_node.IsDefault = value
 	}
-	if nodes := uac.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -436,7 +436,7 @@ func (uac *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
 		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uac.mutation.RegionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RegionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -472,10 +472,10 @@ func (uac *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uac *UserAddrCreate) OnConflict(opts ...sql.ConflictOption) *UserAddrUpsertOne {
-	uac.conflict = opts
+func (_c *UserAddrCreate) OnConflict(opts ...sql.ConflictOption) *UserAddrUpsertOne {
+	_c.conflict = opts
 	return &UserAddrUpsertOne{
-		create: uac,
+		create: _c,
 	}
 }
 
@@ -485,10 +485,10 @@ func (uac *UserAddrCreate) OnConflict(opts ...sql.ConflictOption) *UserAddrUpser
 //	client.UserAddr.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uac *UserAddrCreate) OnConflictColumns(columns ...string) *UserAddrUpsertOne {
-	uac.conflict = append(uac.conflict, sql.ConflictColumns(columns...))
+func (_c *UserAddrCreate) OnConflictColumns(columns ...string) *UserAddrUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserAddrUpsertOne{
-		create: uac,
+		create: _c,
 	}
 }
 
@@ -1059,16 +1059,16 @@ type UserAddrCreateBulk struct {
 }
 
 // Save creates the UserAddr entities in the database.
-func (uacb *UserAddrCreateBulk) Save(ctx context.Context) ([]*UserAddr, error) {
-	if uacb.err != nil {
-		return nil, uacb.err
+func (_c *UserAddrCreateBulk) Save(ctx context.Context) ([]*UserAddr, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(uacb.builders))
-	nodes := make([]*UserAddr, len(uacb.builders))
-	mutators := make([]Mutator, len(uacb.builders))
-	for i := range uacb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserAddr, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := uacb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserAddrMutation)
@@ -1082,12 +1082,12 @@ func (uacb *UserAddrCreateBulk) Save(ctx context.Context) ([]*UserAddr, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, uacb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = uacb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, uacb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1111,7 +1111,7 @@ func (uacb *UserAddrCreateBulk) Save(ctx context.Context) ([]*UserAddr, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, uacb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1119,8 +1119,8 @@ func (uacb *UserAddrCreateBulk) Save(ctx context.Context) ([]*UserAddr, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uacb *UserAddrCreateBulk) SaveX(ctx context.Context) []*UserAddr {
-	v, err := uacb.Save(ctx)
+func (_c *UserAddrCreateBulk) SaveX(ctx context.Context) []*UserAddr {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1128,14 +1128,14 @@ func (uacb *UserAddrCreateBulk) SaveX(ctx context.Context) []*UserAddr {
 }
 
 // Exec executes the query.
-func (uacb *UserAddrCreateBulk) Exec(ctx context.Context) error {
-	_, err := uacb.Save(ctx)
+func (_c *UserAddrCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uacb *UserAddrCreateBulk) ExecX(ctx context.Context) {
-	if err := uacb.Exec(ctx); err != nil {
+func (_c *UserAddrCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1155,10 +1155,10 @@ func (uacb *UserAddrCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uacb *UserAddrCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserAddrUpsertBulk {
-	uacb.conflict = opts
+func (_c *UserAddrCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserAddrUpsertBulk {
+	_c.conflict = opts
 	return &UserAddrUpsertBulk{
-		create: uacb,
+		create: _c,
 	}
 }
 
@@ -1168,10 +1168,10 @@ func (uacb *UserAddrCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserAddr
 //	client.UserAddr.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uacb *UserAddrCreateBulk) OnConflictColumns(columns ...string) *UserAddrUpsertBulk {
-	uacb.conflict = append(uacb.conflict, sql.ConflictColumns(columns...))
+func (_c *UserAddrCreateBulk) OnConflictColumns(columns ...string) *UserAddrUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserAddrUpsertBulk{
-		create: uacb,
+		create: _c,
 	}
 }
 

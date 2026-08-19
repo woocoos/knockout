@@ -105,7 +105,7 @@ func (*AppDictItem) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppDictItem fields.
-func (adi *AppDictItem) assignValues(columns []string, values []any) error {
+func (_m *AppDictItem) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -116,81 +116,81 @@ func (adi *AppDictItem) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			adi.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case appdictitem.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				adi.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case appdictitem.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				adi.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case appdictitem.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				adi.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case appdictitem.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				adi.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appdictitem.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
 			} else if value.Valid {
-				adi.OrgID = int(value.Int64)
+				_m.OrgID = int(value.Int64)
 			}
 		case appdictitem.FieldDictID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field dict_id", values[i])
 			} else if value.Valid {
-				adi.DictID = int(value.Int64)
+				_m.DictID = int(value.Int64)
 			}
 		case appdictitem.FieldRefCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field ref_code", values[i])
 			} else if value.Valid {
-				adi.RefCode = value.String
+				_m.RefCode = value.String
 			}
 		case appdictitem.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				adi.Code = value.String
+				_m.Code = value.String
 			}
 		case appdictitem.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				adi.Name = value.String
+				_m.Name = value.String
 			}
 		case appdictitem.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				adi.Comments = value.String
+				_m.Comments = value.String
 			}
 		case appdictitem.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
-				adi.DisplaySort = int32(value.Int64)
+				_m.DisplaySort = int32(value.Int64)
 			}
 		case appdictitem.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				adi.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			adi.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -198,78 +198,78 @@ func (adi *AppDictItem) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppDictItem.
 // This includes values selected through modifiers, order, etc.
-func (adi *AppDictItem) Value(name string) (ent.Value, error) {
-	return adi.selectValues.Get(name)
+func (_m *AppDictItem) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryDict queries the "dict" edge of the AppDictItem entity.
-func (adi *AppDictItem) QueryDict() *AppDictQuery {
-	return NewAppDictItemClient(adi.config).QueryDict(adi)
+func (_m *AppDictItem) QueryDict() *AppDictQuery {
+	return NewAppDictItemClient(_m.config).QueryDict(_m)
 }
 
 // QueryOrg queries the "org" edge of the AppDictItem entity.
-func (adi *AppDictItem) QueryOrg() *OrgQuery {
-	return NewAppDictItemClient(adi.config).QueryOrg(adi)
+func (_m *AppDictItem) QueryOrg() *OrgQuery {
+	return NewAppDictItemClient(_m.config).QueryOrg(_m)
 }
 
 // Update returns a builder for updating this AppDictItem.
 // Note that you need to call AppDictItem.Unwrap() before calling this method if this AppDictItem
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (adi *AppDictItem) Update() *AppDictItemUpdateOne {
-	return NewAppDictItemClient(adi.config).UpdateOne(adi)
+func (_m *AppDictItem) Update() *AppDictItemUpdateOne {
+	return NewAppDictItemClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppDictItem entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (adi *AppDictItem) Unwrap() *AppDictItem {
-	_tx, ok := adi.config.driver.(*txDriver)
+func (_m *AppDictItem) Unwrap() *AppDictItem {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppDictItem is not a transactional entity")
 	}
-	adi.config.driver = _tx.drv
-	return adi
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (adi *AppDictItem) String() string {
+func (_m *AppDictItem) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppDictItem(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", adi.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", adi.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(adi.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", adi.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(adi.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", adi.OrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("dict_id=")
-	builder.WriteString(fmt.Sprintf("%v", adi.DictID))
+	builder.WriteString(fmt.Sprintf("%v", _m.DictID))
 	builder.WriteString(", ")
 	builder.WriteString("ref_code=")
-	builder.WriteString(adi.RefCode)
+	builder.WriteString(_m.RefCode)
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(adi.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(adi.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(adi.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
-	builder.WriteString(fmt.Sprintf("%v", adi.DisplaySort))
+	builder.WriteString(fmt.Sprintf("%v", _m.DisplaySort))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", adi.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }

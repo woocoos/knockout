@@ -36,44 +36,44 @@ type QuotaQuery struct {
 }
 
 // Where adds a new predicate for the QuotaQuery builder.
-func (qq *QuotaQuery) Where(ps ...predicate.Quota) *QuotaQuery {
-	qq.predicates = append(qq.predicates, ps...)
-	return qq
+func (_q *QuotaQuery) Where(ps ...predicate.Quota) *QuotaQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (qq *QuotaQuery) Limit(limit int) *QuotaQuery {
-	qq.ctx.Limit = &limit
-	return qq
+func (_q *QuotaQuery) Limit(limit int) *QuotaQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (qq *QuotaQuery) Offset(offset int) *QuotaQuery {
-	qq.ctx.Offset = &offset
-	return qq
+func (_q *QuotaQuery) Offset(offset int) *QuotaQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (qq *QuotaQuery) Unique(unique bool) *QuotaQuery {
-	qq.ctx.Unique = &unique
-	return qq
+func (_q *QuotaQuery) Unique(unique bool) *QuotaQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (qq *QuotaQuery) Order(o ...quota.OrderOption) *QuotaQuery {
-	qq.order = append(qq.order, o...)
-	return qq
+func (_q *QuotaQuery) Order(o ...quota.OrderOption) *QuotaQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryQuotaItem chains the current query on the "quota_item" edge.
-func (qq *QuotaQuery) QueryQuotaItem() *QuotaItemQuery {
-	query := (&QuotaItemClient{config: qq.config}).Query()
+func (_q *QuotaQuery) QueryQuotaItem() *QuotaItemQuery {
+	query := (&QuotaItemClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := qq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := qq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -82,20 +82,20 @@ func (qq *QuotaQuery) QueryQuotaItem() *QuotaItemQuery {
 			sqlgraph.To(quotaitem.Table, quotaitem.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaItemTable, quota.QuotaItemColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(qq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryQuotaOrg chains the current query on the "quota_org" edge.
-func (qq *QuotaQuery) QueryQuotaOrg() *OrgQuery {
-	query := (&OrgClient{config: qq.config}).Query()
+func (_q *QuotaQuery) QueryQuotaOrg() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := qq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := qq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -104,20 +104,20 @@ func (qq *QuotaQuery) QueryQuotaOrg() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaOrgTable, quota.QuotaOrgColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(qq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryQuotaUser chains the current query on the "quota_user" edge.
-func (qq *QuotaQuery) QueryQuotaUser() *UserQuery {
-	query := (&UserClient{config: qq.config}).Query()
+func (_q *QuotaQuery) QueryQuotaUser() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := qq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := qq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -126,7 +126,7 @@ func (qq *QuotaQuery) QueryQuotaUser() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaUserTable, quota.QuotaUserColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(qq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -134,8 +134,8 @@ func (qq *QuotaQuery) QueryQuotaUser() *UserQuery {
 
 // First returns the first Quota entity from the query.
 // Returns a *NotFoundError when no Quota was found.
-func (qq *QuotaQuery) First(ctx context.Context) (*Quota, error) {
-	nodes, err := qq.Limit(1).All(setContextOp(ctx, qq.ctx, ent.OpQueryFirst))
+func (_q *QuotaQuery) First(ctx context.Context) (*Quota, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -146,8 +146,8 @@ func (qq *QuotaQuery) First(ctx context.Context) (*Quota, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (qq *QuotaQuery) FirstX(ctx context.Context) *Quota {
-	node, err := qq.First(ctx)
+func (_q *QuotaQuery) FirstX(ctx context.Context) *Quota {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,9 +156,9 @@ func (qq *QuotaQuery) FirstX(ctx context.Context) *Quota {
 
 // FirstID returns the first Quota ID from the query.
 // Returns a *NotFoundError when no Quota ID was found.
-func (qq *QuotaQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *QuotaQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = qq.Limit(1).IDs(setContextOp(ctx, qq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -169,8 +169,8 @@ func (qq *QuotaQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (qq *QuotaQuery) FirstIDX(ctx context.Context) int {
-	id, err := qq.FirstID(ctx)
+func (_q *QuotaQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -180,8 +180,8 @@ func (qq *QuotaQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single Quota entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Quota entity is found.
 // Returns a *NotFoundError when no Quota entities are found.
-func (qq *QuotaQuery) Only(ctx context.Context) (*Quota, error) {
-	nodes, err := qq.Limit(2).All(setContextOp(ctx, qq.ctx, ent.OpQueryOnly))
+func (_q *QuotaQuery) Only(ctx context.Context) (*Quota, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -196,8 +196,8 @@ func (qq *QuotaQuery) Only(ctx context.Context) (*Quota, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (qq *QuotaQuery) OnlyX(ctx context.Context) *Quota {
-	node, err := qq.Only(ctx)
+func (_q *QuotaQuery) OnlyX(ctx context.Context) *Quota {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -207,9 +207,9 @@ func (qq *QuotaQuery) OnlyX(ctx context.Context) *Quota {
 // OnlyID is like Only, but returns the only Quota ID in the query.
 // Returns a *NotSingularError when more than one Quota ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (qq *QuotaQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *QuotaQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = qq.Limit(2).IDs(setContextOp(ctx, qq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -224,8 +224,8 @@ func (qq *QuotaQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (qq *QuotaQuery) OnlyIDX(ctx context.Context) int {
-	id, err := qq.OnlyID(ctx)
+func (_q *QuotaQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -233,18 +233,18 @@ func (qq *QuotaQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of QuotaSlice.
-func (qq *QuotaQuery) All(ctx context.Context) ([]*Quota, error) {
-	ctx = setContextOp(ctx, qq.ctx, ent.OpQueryAll)
-	if err := qq.prepareQuery(ctx); err != nil {
+func (_q *QuotaQuery) All(ctx context.Context) ([]*Quota, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Quota, *QuotaQuery]()
-	return withInterceptors[[]*Quota](ctx, qq, qr, qq.inters)
+	return withInterceptors[[]*Quota](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (qq *QuotaQuery) AllX(ctx context.Context) []*Quota {
-	nodes, err := qq.All(ctx)
+func (_q *QuotaQuery) AllX(ctx context.Context) []*Quota {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -252,20 +252,20 @@ func (qq *QuotaQuery) AllX(ctx context.Context) []*Quota {
 }
 
 // IDs executes the query and returns a list of Quota IDs.
-func (qq *QuotaQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if qq.ctx.Unique == nil && qq.path != nil {
-		qq.Unique(true)
+func (_q *QuotaQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, qq.ctx, ent.OpQueryIDs)
-	if err = qq.Select(quota.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(quota.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (qq *QuotaQuery) IDsX(ctx context.Context) []int {
-	ids, err := qq.IDs(ctx)
+func (_q *QuotaQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -273,17 +273,17 @@ func (qq *QuotaQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (qq *QuotaQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, qq.ctx, ent.OpQueryCount)
-	if err := qq.prepareQuery(ctx); err != nil {
+func (_q *QuotaQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, qq, querierCount[*QuotaQuery](), qq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*QuotaQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (qq *QuotaQuery) CountX(ctx context.Context) int {
-	count, err := qq.Count(ctx)
+func (_q *QuotaQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -291,9 +291,9 @@ func (qq *QuotaQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (qq *QuotaQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, qq.ctx, ent.OpQueryExist)
-	switch _, err := qq.FirstID(ctx); {
+func (_q *QuotaQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -304,8 +304,8 @@ func (qq *QuotaQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (qq *QuotaQuery) ExistX(ctx context.Context) bool {
-	exist, err := qq.Exist(ctx)
+func (_q *QuotaQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -314,56 +314,56 @@ func (qq *QuotaQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the QuotaQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (qq *QuotaQuery) Clone() *QuotaQuery {
-	if qq == nil {
+func (_q *QuotaQuery) Clone() *QuotaQuery {
+	if _q == nil {
 		return nil
 	}
 	return &QuotaQuery{
-		config:        qq.config,
-		ctx:           qq.ctx.Clone(),
-		order:         append([]quota.OrderOption{}, qq.order...),
-		inters:        append([]Interceptor{}, qq.inters...),
-		predicates:    append([]predicate.Quota{}, qq.predicates...),
-		withQuotaItem: qq.withQuotaItem.Clone(),
-		withQuotaOrg:  qq.withQuotaOrg.Clone(),
-		withQuotaUser: qq.withQuotaUser.Clone(),
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]quota.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.Quota{}, _q.predicates...),
+		withQuotaItem: _q.withQuotaItem.Clone(),
+		withQuotaOrg:  _q.withQuotaOrg.Clone(),
+		withQuotaUser: _q.withQuotaUser.Clone(),
 		// clone intermediate query.
-		sql:  qq.sql.Clone(),
-		path: qq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithQuotaItem tells the query-builder to eager-load the nodes that are connected to
 // the "quota_item" edge. The optional arguments are used to configure the query builder of the edge.
-func (qq *QuotaQuery) WithQuotaItem(opts ...func(*QuotaItemQuery)) *QuotaQuery {
-	query := (&QuotaItemClient{config: qq.config}).Query()
+func (_q *QuotaQuery) WithQuotaItem(opts ...func(*QuotaItemQuery)) *QuotaQuery {
+	query := (&QuotaItemClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	qq.withQuotaItem = query
-	return qq
+	_q.withQuotaItem = query
+	return _q
 }
 
 // WithQuotaOrg tells the query-builder to eager-load the nodes that are connected to
 // the "quota_org" edge. The optional arguments are used to configure the query builder of the edge.
-func (qq *QuotaQuery) WithQuotaOrg(opts ...func(*OrgQuery)) *QuotaQuery {
-	query := (&OrgClient{config: qq.config}).Query()
+func (_q *QuotaQuery) WithQuotaOrg(opts ...func(*OrgQuery)) *QuotaQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	qq.withQuotaOrg = query
-	return qq
+	_q.withQuotaOrg = query
+	return _q
 }
 
 // WithQuotaUser tells the query-builder to eager-load the nodes that are connected to
 // the "quota_user" edge. The optional arguments are used to configure the query builder of the edge.
-func (qq *QuotaQuery) WithQuotaUser(opts ...func(*UserQuery)) *QuotaQuery {
-	query := (&UserClient{config: qq.config}).Query()
+func (_q *QuotaQuery) WithQuotaUser(opts ...func(*UserQuery)) *QuotaQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	qq.withQuotaUser = query
-	return qq
+	_q.withQuotaUser = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -380,10 +380,10 @@ func (qq *QuotaQuery) WithQuotaUser(opts ...func(*UserQuery)) *QuotaQuery {
 //		GroupBy(quota.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (qq *QuotaQuery) GroupBy(field string, fields ...string) *QuotaGroupBy {
-	qq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &QuotaGroupBy{build: qq}
-	grbuild.flds = &qq.ctx.Fields
+func (_q *QuotaQuery) GroupBy(field string, fields ...string) *QuotaGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &QuotaGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = quota.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -401,103 +401,103 @@ func (qq *QuotaQuery) GroupBy(field string, fields ...string) *QuotaGroupBy {
 //	client.Quota.Query().
 //		Select(quota.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (qq *QuotaQuery) Select(fields ...string) *QuotaSelect {
-	qq.ctx.Fields = append(qq.ctx.Fields, fields...)
-	sbuild := &QuotaSelect{QuotaQuery: qq}
+func (_q *QuotaQuery) Select(fields ...string) *QuotaSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &QuotaSelect{QuotaQuery: _q}
 	sbuild.label = quota.Label
-	sbuild.flds, sbuild.scan = &qq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a QuotaSelect configured with the given aggregations.
-func (qq *QuotaQuery) Aggregate(fns ...AggregateFunc) *QuotaSelect {
-	return qq.Select().Aggregate(fns...)
+func (_q *QuotaQuery) Aggregate(fns ...AggregateFunc) *QuotaSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (qq *QuotaQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range qq.inters {
+func (_q *QuotaQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, qq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range qq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !quota.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if qq.path != nil {
-		prev, err := qq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		qq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (qq *QuotaQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Quota, error) {
+func (_q *QuotaQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Quota, error) {
 	var (
 		nodes       = []*Quota{}
-		_spec       = qq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			qq.withQuotaItem != nil,
-			qq.withQuotaOrg != nil,
-			qq.withQuotaUser != nil,
+			_q.withQuotaItem != nil,
+			_q.withQuotaOrg != nil,
+			_q.withQuotaUser != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Quota).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Quota{config: qq.config}
+		node := &Quota{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(qq.modifiers) > 0 {
-		_spec.Modifiers = qq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, qq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := qq.withQuotaItem; query != nil {
-		if err := qq.loadQuotaItem(ctx, query, nodes, nil,
+	if query := _q.withQuotaItem; query != nil {
+		if err := _q.loadQuotaItem(ctx, query, nodes, nil,
 			func(n *Quota, e *QuotaItem) { n.Edges.QuotaItem = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := qq.withQuotaOrg; query != nil {
-		if err := qq.loadQuotaOrg(ctx, query, nodes, nil,
+	if query := _q.withQuotaOrg; query != nil {
+		if err := _q.loadQuotaOrg(ctx, query, nodes, nil,
 			func(n *Quota, e *Org) { n.Edges.QuotaOrg = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := qq.withQuotaUser; query != nil {
-		if err := qq.loadQuotaUser(ctx, query, nodes, nil,
+	if query := _q.withQuotaUser; query != nil {
+		if err := _q.loadQuotaUser(ctx, query, nodes, nil,
 			func(n *Quota, e *User) { n.Edges.QuotaUser = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range qq.loadTotal {
-		if err := qq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (qq *QuotaQuery) loadQuotaItem(ctx context.Context, query *QuotaItemQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *QuotaItem)) error {
+func (_q *QuotaQuery) loadQuotaItem(ctx context.Context, query *QuotaItemQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *QuotaItem)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Quota)
 	for i := range nodes {
@@ -526,7 +526,7 @@ func (qq *QuotaQuery) loadQuotaItem(ctx context.Context, query *QuotaItemQuery, 
 	}
 	return nil
 }
-func (qq *QuotaQuery) loadQuotaOrg(ctx context.Context, query *OrgQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *Org)) error {
+func (_q *QuotaQuery) loadQuotaOrg(ctx context.Context, query *OrgQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Quota)
 	for i := range nodes {
@@ -555,7 +555,7 @@ func (qq *QuotaQuery) loadQuotaOrg(ctx context.Context, query *OrgQuery, nodes [
 	}
 	return nil
 }
-func (qq *QuotaQuery) loadQuotaUser(ctx context.Context, query *UserQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *User)) error {
+func (_q *QuotaQuery) loadQuotaUser(ctx context.Context, query *UserQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Quota)
 	for i := range nodes {
@@ -585,27 +585,27 @@ func (qq *QuotaQuery) loadQuotaUser(ctx context.Context, query *UserQuery, nodes
 	return nil
 }
 
-func (qq *QuotaQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := qq.querySpec()
-	if len(qq.modifiers) > 0 {
-		_spec.Modifiers = qq.modifiers
+func (_q *QuotaQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = qq.ctx.Fields
-	if len(qq.ctx.Fields) > 0 {
-		_spec.Unique = qq.ctx.Unique != nil && *qq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, qq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (qq *QuotaQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *QuotaQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(quota.Table, quota.Columns, sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt))
-	_spec.From = qq.sql
-	if unique := qq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if qq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := qq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, quota.FieldID)
 		for i := range fields {
@@ -613,30 +613,30 @@ func (qq *QuotaQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if qq.withQuotaItem != nil {
+		if _q.withQuotaItem != nil {
 			_spec.Node.AddColumnOnce(quota.FieldQuotaItemID)
 		}
-		if qq.withQuotaOrg != nil {
+		if _q.withQuotaOrg != nil {
 			_spec.Node.AddColumnOnce(quota.FieldTenantID)
 		}
-		if qq.withQuotaUser != nil {
+		if _q.withQuotaUser != nil {
 			_spec.Node.AddColumnOnce(quota.FieldUserID)
 		}
 	}
-	if ps := qq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := qq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := qq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := qq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -646,33 +646,33 @@ func (qq *QuotaQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (qq *QuotaQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(qq.driver.Dialect())
+func (_q *QuotaQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(quota.Table)
-	columns := qq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = quota.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if qq.sql != nil {
-		selector = qq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if qq.ctx.Unique != nil && *qq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range qq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range qq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := qq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := qq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -685,41 +685,41 @@ type QuotaGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (qgb *QuotaGroupBy) Aggregate(fns ...AggregateFunc) *QuotaGroupBy {
-	qgb.fns = append(qgb.fns, fns...)
-	return qgb
+func (_g *QuotaGroupBy) Aggregate(fns ...AggregateFunc) *QuotaGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (qgb *QuotaGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, qgb.build.ctx, ent.OpQueryGroupBy)
-	if err := qgb.build.prepareQuery(ctx); err != nil {
+func (_g *QuotaGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*QuotaQuery, *QuotaGroupBy](ctx, qgb.build, qgb, qgb.build.inters, v)
+	return scanWithInterceptors[*QuotaQuery, *QuotaGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (qgb *QuotaGroupBy) sqlScan(ctx context.Context, root *QuotaQuery, v any) error {
+func (_g *QuotaGroupBy) sqlScan(ctx context.Context, root *QuotaQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(qgb.fns))
-	for _, fn := range qgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*qgb.flds)+len(qgb.fns))
-		for _, f := range *qgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*qgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := qgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -733,27 +733,27 @@ type QuotaSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (qs *QuotaSelect) Aggregate(fns ...AggregateFunc) *QuotaSelect {
-	qs.fns = append(qs.fns, fns...)
-	return qs
+func (_s *QuotaSelect) Aggregate(fns ...AggregateFunc) *QuotaSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (qs *QuotaSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, qs.ctx, ent.OpQuerySelect)
-	if err := qs.prepareQuery(ctx); err != nil {
+func (_s *QuotaSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*QuotaQuery, *QuotaSelect](ctx, qs.QuotaQuery, qs, qs.inters, v)
+	return scanWithInterceptors[*QuotaQuery, *QuotaSelect](ctx, _s.QuotaQuery, _s, _s.inters, v)
 }
 
-func (qs *QuotaSelect) sqlScan(ctx context.Context, root *QuotaQuery, v any) error {
+func (_s *QuotaSelect) sqlScan(ctx context.Context, root *QuotaQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(qs.fns))
-	for _, fn := range qs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*qs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -761,7 +761,7 @@ func (qs *QuotaSelect) sqlScan(ctx context.Context, root *QuotaQuery, v any) err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := qs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

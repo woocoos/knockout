@@ -24,154 +24,154 @@ type FileSourceCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (fsc *FileSourceCreate) SetCreatedBy(i int) *FileSourceCreate {
-	fsc.mutation.SetCreatedBy(i)
-	return fsc
+func (_c *FileSourceCreate) SetCreatedBy(v int) *FileSourceCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fsc *FileSourceCreate) SetCreatedAt(t time.Time) *FileSourceCreate {
-	fsc.mutation.SetCreatedAt(t)
-	return fsc
+func (_c *FileSourceCreate) SetCreatedAt(v time.Time) *FileSourceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableCreatedAt(t *time.Time) *FileSourceCreate {
-	if t != nil {
-		fsc.SetCreatedAt(*t)
+func (_c *FileSourceCreate) SetNillableCreatedAt(v *time.Time) *FileSourceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return fsc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (fsc *FileSourceCreate) SetUpdatedBy(i int) *FileSourceCreate {
-	fsc.mutation.SetUpdatedBy(i)
-	return fsc
+func (_c *FileSourceCreate) SetUpdatedBy(v int) *FileSourceCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableUpdatedBy(i *int) *FileSourceCreate {
-	if i != nil {
-		fsc.SetUpdatedBy(*i)
+func (_c *FileSourceCreate) SetNillableUpdatedBy(v *int) *FileSourceCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return fsc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fsc *FileSourceCreate) SetUpdatedAt(t time.Time) *FileSourceCreate {
-	fsc.mutation.SetUpdatedAt(t)
-	return fsc
+func (_c *FileSourceCreate) SetUpdatedAt(v time.Time) *FileSourceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableUpdatedAt(t *time.Time) *FileSourceCreate {
-	if t != nil {
-		fsc.SetUpdatedAt(*t)
+func (_c *FileSourceCreate) SetNillableUpdatedAt(v *time.Time) *FileSourceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return fsc
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (fsc *FileSourceCreate) SetKind(f filesource.Kind) *FileSourceCreate {
-	fsc.mutation.SetKind(f)
-	return fsc
+func (_c *FileSourceCreate) SetKind(v filesource.Kind) *FileSourceCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (fsc *FileSourceCreate) SetComments(s string) *FileSourceCreate {
-	fsc.mutation.SetComments(s)
-	return fsc
+func (_c *FileSourceCreate) SetComments(v string) *FileSourceCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableComments(s *string) *FileSourceCreate {
-	if s != nil {
-		fsc.SetComments(*s)
+func (_c *FileSourceCreate) SetNillableComments(v *string) *FileSourceCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return fsc
+	return _c
 }
 
 // SetEndpoint sets the "endpoint" field.
-func (fsc *FileSourceCreate) SetEndpoint(s string) *FileSourceCreate {
-	fsc.mutation.SetEndpoint(s)
-	return fsc
+func (_c *FileSourceCreate) SetEndpoint(v string) *FileSourceCreate {
+	_c.mutation.SetEndpoint(v)
+	return _c
 }
 
 // SetEndpointImmutable sets the "endpoint_immutable" field.
-func (fsc *FileSourceCreate) SetEndpointImmutable(b bool) *FileSourceCreate {
-	fsc.mutation.SetEndpointImmutable(b)
-	return fsc
+func (_c *FileSourceCreate) SetEndpointImmutable(v bool) *FileSourceCreate {
+	_c.mutation.SetEndpointImmutable(v)
+	return _c
 }
 
 // SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableEndpointImmutable(b *bool) *FileSourceCreate {
-	if b != nil {
-		fsc.SetEndpointImmutable(*b)
+func (_c *FileSourceCreate) SetNillableEndpointImmutable(v *bool) *FileSourceCreate {
+	if v != nil {
+		_c.SetEndpointImmutable(*v)
 	}
-	return fsc
+	return _c
 }
 
 // SetStsEndpoint sets the "sts_endpoint" field.
-func (fsc *FileSourceCreate) SetStsEndpoint(s string) *FileSourceCreate {
-	fsc.mutation.SetStsEndpoint(s)
-	return fsc
+func (_c *FileSourceCreate) SetStsEndpoint(v string) *FileSourceCreate {
+	_c.mutation.SetStsEndpoint(v)
+	return _c
 }
 
 // SetRegion sets the "region" field.
-func (fsc *FileSourceCreate) SetRegion(s string) *FileSourceCreate {
-	fsc.mutation.SetRegion(s)
-	return fsc
+func (_c *FileSourceCreate) SetRegion(v string) *FileSourceCreate {
+	_c.mutation.SetRegion(v)
+	return _c
 }
 
 // SetBucket sets the "bucket" field.
-func (fsc *FileSourceCreate) SetBucket(s string) *FileSourceCreate {
-	fsc.mutation.SetBucket(s)
-	return fsc
+func (_c *FileSourceCreate) SetBucket(v string) *FileSourceCreate {
+	_c.mutation.SetBucket(v)
+	return _c
 }
 
 // SetBucketURL sets the "bucket_url" field.
-func (fsc *FileSourceCreate) SetBucketURL(s string) *FileSourceCreate {
-	fsc.mutation.SetBucketURL(s)
-	return fsc
+func (_c *FileSourceCreate) SetBucketURL(v string) *FileSourceCreate {
+	_c.mutation.SetBucketURL(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fsc *FileSourceCreate) SetID(i int) *FileSourceCreate {
-	fsc.mutation.SetID(i)
-	return fsc
+func (_c *FileSourceCreate) SetID(v int) *FileSourceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddIdentityIDs adds the "identities" edge to the FileIdentity entity by IDs.
-func (fsc *FileSourceCreate) AddIdentityIDs(ids ...int) *FileSourceCreate {
-	fsc.mutation.AddIdentityIDs(ids...)
-	return fsc
+func (_c *FileSourceCreate) AddIdentityIDs(ids ...int) *FileSourceCreate {
+	_c.mutation.AddIdentityIDs(ids...)
+	return _c
 }
 
 // AddIdentities adds the "identities" edges to the FileIdentity entity.
-func (fsc *FileSourceCreate) AddIdentities(f ...*FileIdentity) *FileSourceCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *FileSourceCreate) AddIdentities(v ...*FileIdentity) *FileSourceCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fsc.AddIdentityIDs(ids...)
+	return _c.AddIdentityIDs(ids...)
 }
 
 // Mutation returns the FileSourceMutation object of the builder.
-func (fsc *FileSourceCreate) Mutation() *FileSourceMutation {
-	return fsc.mutation
+func (_c *FileSourceCreate) Mutation() *FileSourceMutation {
+	return _c.mutation
 }
 
 // Save creates the FileSource in the database.
-func (fsc *FileSourceCreate) Save(ctx context.Context) (*FileSource, error) {
-	if err := fsc.defaults(); err != nil {
+func (_c *FileSourceCreate) Save(ctx context.Context) (*FileSource, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, fsc.sqlSave, fsc.mutation, fsc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fsc *FileSourceCreate) SaveX(ctx context.Context) *FileSource {
-	v, err := fsc.Save(ctx)
+func (_c *FileSourceCreate) SaveX(ctx context.Context) *FileSource {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,89 +179,89 @@ func (fsc *FileSourceCreate) SaveX(ctx context.Context) *FileSource {
 }
 
 // Exec executes the query.
-func (fsc *FileSourceCreate) Exec(ctx context.Context) error {
-	_, err := fsc.Save(ctx)
+func (_c *FileSourceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fsc *FileSourceCreate) ExecX(ctx context.Context) {
-	if err := fsc.Exec(ctx); err != nil {
+func (_c *FileSourceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fsc *FileSourceCreate) defaults() error {
-	if _, ok := fsc.mutation.CreatedAt(); !ok {
+func (_c *FileSourceCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if filesource.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized filesource.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := filesource.DefaultCreatedAt()
-		fsc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := fsc.mutation.EndpointImmutable(); !ok {
+	if _, ok := _c.mutation.EndpointImmutable(); !ok {
 		v := filesource.DefaultEndpointImmutable
-		fsc.mutation.SetEndpointImmutable(v)
+		_c.mutation.SetEndpointImmutable(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fsc *FileSourceCreate) check() error {
-	if _, ok := fsc.mutation.CreatedBy(); !ok {
+func (_c *FileSourceCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "FileSource.created_by"`)}
 	}
-	if _, ok := fsc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FileSource.created_at"`)}
 	}
-	if _, ok := fsc.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "FileSource.kind"`)}
 	}
-	if v, ok := fsc.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := filesource.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.Endpoint(); !ok {
+	if _, ok := _c.mutation.Endpoint(); !ok {
 		return &ValidationError{Name: "endpoint", err: errors.New(`ent: missing required field "FileSource.endpoint"`)}
 	}
-	if v, ok := fsc.mutation.Endpoint(); ok {
+	if v, ok := _c.mutation.Endpoint(); ok {
 		if err := filesource.EndpointValidator(v); err != nil {
 			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.EndpointImmutable(); !ok {
+	if _, ok := _c.mutation.EndpointImmutable(); !ok {
 		return &ValidationError{Name: "endpoint_immutable", err: errors.New(`ent: missing required field "FileSource.endpoint_immutable"`)}
 	}
-	if _, ok := fsc.mutation.StsEndpoint(); !ok {
+	if _, ok := _c.mutation.StsEndpoint(); !ok {
 		return &ValidationError{Name: "sts_endpoint", err: errors.New(`ent: missing required field "FileSource.sts_endpoint"`)}
 	}
-	if v, ok := fsc.mutation.StsEndpoint(); ok {
+	if v, ok := _c.mutation.StsEndpoint(); ok {
 		if err := filesource.StsEndpointValidator(v); err != nil {
 			return &ValidationError{Name: "sts_endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.sts_endpoint": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.Region(); !ok {
+	if _, ok := _c.mutation.Region(); !ok {
 		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "FileSource.region"`)}
 	}
-	if v, ok := fsc.mutation.Region(); ok {
+	if v, ok := _c.mutation.Region(); ok {
 		if err := filesource.RegionValidator(v); err != nil {
 			return &ValidationError{Name: "region", err: fmt.Errorf(`ent: validator failed for field "FileSource.region": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.Bucket(); !ok {
+	if _, ok := _c.mutation.Bucket(); !ok {
 		return &ValidationError{Name: "bucket", err: errors.New(`ent: missing required field "FileSource.bucket"`)}
 	}
-	if v, ok := fsc.mutation.Bucket(); ok {
+	if v, ok := _c.mutation.Bucket(); ok {
 		if err := filesource.BucketValidator(v); err != nil {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.BucketURL(); !ok {
+	if _, ok := _c.mutation.BucketURL(); !ok {
 		return &ValidationError{Name: "bucket_url", err: errors.New(`ent: missing required field "FileSource.bucket_url"`)}
 	}
-	if v, ok := fsc.mutation.BucketURL(); ok {
+	if v, ok := _c.mutation.BucketURL(); ok {
 		if err := filesource.BucketURLValidator(v); err != nil {
 			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
@@ -269,12 +269,12 @@ func (fsc *FileSourceCreate) check() error {
 	return nil
 }
 
-func (fsc *FileSourceCreate) sqlSave(ctx context.Context) (*FileSource, error) {
-	if err := fsc.check(); err != nil {
+func (_c *FileSourceCreate) sqlSave(ctx context.Context) (*FileSource, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -284,70 +284,70 @@ func (fsc *FileSourceCreate) sqlSave(ctx context.Context) (*FileSource, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	fsc.mutation.id = &_node.ID
-	fsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
+func (_c *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FileSource{config: fsc.config}
+		_node = &FileSource{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(filesource.Table, sqlgraph.NewFieldSpec(filesource.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = fsc.conflict
-	if id, ok := fsc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fsc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(filesource.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := fsc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(filesource.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := fsc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(filesource.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := fsc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(filesource.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fsc.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := fsc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(filesource.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := fsc.mutation.Endpoint(); ok {
+	if value, ok := _c.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 		_node.Endpoint = value
 	}
-	if value, ok := fsc.mutation.EndpointImmutable(); ok {
+	if value, ok := _c.mutation.EndpointImmutable(); ok {
 		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
 		_node.EndpointImmutable = value
 	}
-	if value, ok := fsc.mutation.StsEndpoint(); ok {
+	if value, ok := _c.mutation.StsEndpoint(); ok {
 		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
 		_node.StsEndpoint = value
 	}
-	if value, ok := fsc.mutation.Region(); ok {
+	if value, ok := _c.mutation.Region(); ok {
 		_spec.SetField(filesource.FieldRegion, field.TypeString, value)
 		_node.Region = value
 	}
-	if value, ok := fsc.mutation.Bucket(); ok {
+	if value, ok := _c.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 		_node.Bucket = value
 	}
-	if value, ok := fsc.mutation.BucketURL(); ok {
+	if value, ok := _c.mutation.BucketURL(); ok {
 		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
 		_node.BucketURL = value
 	}
-	if nodes := fsc.mutation.IdentitiesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -382,10 +382,10 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (fsc *FileSourceCreate) OnConflict(opts ...sql.ConflictOption) *FileSourceUpsertOne {
-	fsc.conflict = opts
+func (_c *FileSourceCreate) OnConflict(opts ...sql.ConflictOption) *FileSourceUpsertOne {
+	_c.conflict = opts
 	return &FileSourceUpsertOne{
-		create: fsc,
+		create: _c,
 	}
 }
 
@@ -395,10 +395,10 @@ func (fsc *FileSourceCreate) OnConflict(opts ...sql.ConflictOption) *FileSourceU
 //	client.FileSource.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fsc *FileSourceCreate) OnConflictColumns(columns ...string) *FileSourceUpsertOne {
-	fsc.conflict = append(fsc.conflict, sql.ConflictColumns(columns...))
+func (_c *FileSourceCreate) OnConflictColumns(columns ...string) *FileSourceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FileSourceUpsertOne{
-		create: fsc,
+		create: _c,
 	}
 }
 
@@ -823,16 +823,16 @@ type FileSourceCreateBulk struct {
 }
 
 // Save creates the FileSource entities in the database.
-func (fscb *FileSourceCreateBulk) Save(ctx context.Context) ([]*FileSource, error) {
-	if fscb.err != nil {
-		return nil, fscb.err
+func (_c *FileSourceCreateBulk) Save(ctx context.Context) ([]*FileSource, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(fscb.builders))
-	nodes := make([]*FileSource, len(fscb.builders))
-	mutators := make([]Mutator, len(fscb.builders))
-	for i := range fscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*FileSource, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := fscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FileSourceMutation)
@@ -846,12 +846,12 @@ func (fscb *FileSourceCreateBulk) Save(ctx context.Context) ([]*FileSource, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, fscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = fscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, fscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -875,7 +875,7 @@ func (fscb *FileSourceCreateBulk) Save(ctx context.Context) ([]*FileSource, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, fscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -883,8 +883,8 @@ func (fscb *FileSourceCreateBulk) Save(ctx context.Context) ([]*FileSource, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fscb *FileSourceCreateBulk) SaveX(ctx context.Context) []*FileSource {
-	v, err := fscb.Save(ctx)
+func (_c *FileSourceCreateBulk) SaveX(ctx context.Context) []*FileSource {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -892,14 +892,14 @@ func (fscb *FileSourceCreateBulk) SaveX(ctx context.Context) []*FileSource {
 }
 
 // Exec executes the query.
-func (fscb *FileSourceCreateBulk) Exec(ctx context.Context) error {
-	_, err := fscb.Save(ctx)
+func (_c *FileSourceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fscb *FileSourceCreateBulk) ExecX(ctx context.Context) {
-	if err := fscb.Exec(ctx); err != nil {
+func (_c *FileSourceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -919,10 +919,10 @@ func (fscb *FileSourceCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (fscb *FileSourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *FileSourceUpsertBulk {
-	fscb.conflict = opts
+func (_c *FileSourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *FileSourceUpsertBulk {
+	_c.conflict = opts
 	return &FileSourceUpsertBulk{
-		create: fscb,
+		create: _c,
 	}
 }
 
@@ -932,10 +932,10 @@ func (fscb *FileSourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *FileSo
 //	client.FileSource.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fscb *FileSourceCreateBulk) OnConflictColumns(columns ...string) *FileSourceUpsertBulk {
-	fscb.conflict = append(fscb.conflict, sql.ConflictColumns(columns...))
+func (_c *FileSourceCreateBulk) OnConflictColumns(columns ...string) *FileSourceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FileSourceUpsertBulk{
-		create: fscb,
+		create: _c,
 	}
 }
 

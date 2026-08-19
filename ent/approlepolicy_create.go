@@ -25,115 +25,115 @@ type AppRolePolicyCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (arpc *AppRolePolicyCreate) SetCreatedBy(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetCreatedBy(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetCreatedBy(v int) *AppRolePolicyCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (arpc *AppRolePolicyCreate) SetCreatedAt(t time.Time) *AppRolePolicyCreate {
-	arpc.mutation.SetCreatedAt(t)
-	return arpc
+func (_c *AppRolePolicyCreate) SetCreatedAt(v time.Time) *AppRolePolicyCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (arpc *AppRolePolicyCreate) SetNillableCreatedAt(t *time.Time) *AppRolePolicyCreate {
-	if t != nil {
-		arpc.SetCreatedAt(*t)
+func (_c *AppRolePolicyCreate) SetNillableCreatedAt(v *time.Time) *AppRolePolicyCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return arpc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (arpc *AppRolePolicyCreate) SetUpdatedBy(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetUpdatedBy(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetUpdatedBy(v int) *AppRolePolicyCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (arpc *AppRolePolicyCreate) SetNillableUpdatedBy(i *int) *AppRolePolicyCreate {
-	if i != nil {
-		arpc.SetUpdatedBy(*i)
+func (_c *AppRolePolicyCreate) SetNillableUpdatedBy(v *int) *AppRolePolicyCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return arpc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (arpc *AppRolePolicyCreate) SetUpdatedAt(t time.Time) *AppRolePolicyCreate {
-	arpc.mutation.SetUpdatedAt(t)
-	return arpc
+func (_c *AppRolePolicyCreate) SetUpdatedAt(v time.Time) *AppRolePolicyCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (arpc *AppRolePolicyCreate) SetNillableUpdatedAt(t *time.Time) *AppRolePolicyCreate {
-	if t != nil {
-		arpc.SetUpdatedAt(*t)
+func (_c *AppRolePolicyCreate) SetNillableUpdatedAt(v *time.Time) *AppRolePolicyCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return arpc
+	return _c
 }
 
 // SetAppRoleID sets the "app_role_id" field.
-func (arpc *AppRolePolicyCreate) SetAppRoleID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetAppRoleID(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetAppRoleID(v int) *AppRolePolicyCreate {
+	_c.mutation.SetAppRoleID(v)
+	return _c
 }
 
 // SetAppPolicyID sets the "app_policy_id" field.
-func (arpc *AppRolePolicyCreate) SetAppPolicyID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetAppPolicyID(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetAppPolicyID(v int) *AppRolePolicyCreate {
+	_c.mutation.SetAppPolicyID(v)
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (arpc *AppRolePolicyCreate) SetAppID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetAppID(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetAppID(v int) *AppRolePolicyCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (arpc *AppRolePolicyCreate) SetID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetID(i)
-	return arpc
+func (_c *AppRolePolicyCreate) SetID(v int) *AppRolePolicyCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetRoleID sets the "role" edge to the AppRole entity by ID.
-func (arpc *AppRolePolicyCreate) SetRoleID(id int) *AppRolePolicyCreate {
-	arpc.mutation.SetRoleID(id)
-	return arpc
+func (_c *AppRolePolicyCreate) SetRoleID(id int) *AppRolePolicyCreate {
+	_c.mutation.SetRoleID(id)
+	return _c
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
-func (arpc *AppRolePolicyCreate) SetRole(a *AppRole) *AppRolePolicyCreate {
-	return arpc.SetRoleID(a.ID)
+func (_c *AppRolePolicyCreate) SetRole(v *AppRole) *AppRolePolicyCreate {
+	return _c.SetRoleID(v.ID)
 }
 
 // SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
-func (arpc *AppRolePolicyCreate) SetPolicyID(id int) *AppRolePolicyCreate {
-	arpc.mutation.SetPolicyID(id)
-	return arpc
+func (_c *AppRolePolicyCreate) SetPolicyID(id int) *AppRolePolicyCreate {
+	_c.mutation.SetPolicyID(id)
+	return _c
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
-func (arpc *AppRolePolicyCreate) SetPolicy(a *AppPolicy) *AppRolePolicyCreate {
-	return arpc.SetPolicyID(a.ID)
+func (_c *AppRolePolicyCreate) SetPolicy(v *AppPolicy) *AppRolePolicyCreate {
+	return _c.SetPolicyID(v.ID)
 }
 
 // Mutation returns the AppRolePolicyMutation object of the builder.
-func (arpc *AppRolePolicyCreate) Mutation() *AppRolePolicyMutation {
-	return arpc.mutation
+func (_c *AppRolePolicyCreate) Mutation() *AppRolePolicyMutation {
+	return _c.mutation
 }
 
 // Save creates the AppRolePolicy in the database.
-func (arpc *AppRolePolicyCreate) Save(ctx context.Context) (*AppRolePolicy, error) {
-	if err := arpc.defaults(); err != nil {
+func (_c *AppRolePolicyCreate) Save(ctx context.Context) (*AppRolePolicy, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, arpc.sqlSave, arpc.mutation, arpc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (arpc *AppRolePolicyCreate) SaveX(ctx context.Context) *AppRolePolicy {
-	v, err := arpc.Save(ctx)
+func (_c *AppRolePolicyCreate) SaveX(ctx context.Context) *AppRolePolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -141,62 +141,62 @@ func (arpc *AppRolePolicyCreate) SaveX(ctx context.Context) *AppRolePolicy {
 }
 
 // Exec executes the query.
-func (arpc *AppRolePolicyCreate) Exec(ctx context.Context) error {
-	_, err := arpc.Save(ctx)
+func (_c *AppRolePolicyCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpc *AppRolePolicyCreate) ExecX(ctx context.Context) {
-	if err := arpc.Exec(ctx); err != nil {
+func (_c *AppRolePolicyCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (arpc *AppRolePolicyCreate) defaults() error {
-	if _, ok := arpc.mutation.CreatedAt(); !ok {
+func (_c *AppRolePolicyCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if approlepolicy.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized approlepolicy.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := approlepolicy.DefaultCreatedAt()
-		arpc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (arpc *AppRolePolicyCreate) check() error {
-	if _, ok := arpc.mutation.CreatedBy(); !ok {
+func (_c *AppRolePolicyCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppRolePolicy.created_by"`)}
 	}
-	if _, ok := arpc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRolePolicy.created_at"`)}
 	}
-	if _, ok := arpc.mutation.AppRoleID(); !ok {
+	if _, ok := _c.mutation.AppRoleID(); !ok {
 		return &ValidationError{Name: "app_role_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_role_id"`)}
 	}
-	if _, ok := arpc.mutation.AppPolicyID(); !ok {
+	if _, ok := _c.mutation.AppPolicyID(); !ok {
 		return &ValidationError{Name: "app_policy_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_policy_id"`)}
 	}
-	if _, ok := arpc.mutation.AppID(); !ok {
+	if _, ok := _c.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_id"`)}
 	}
-	if len(arpc.mutation.RoleIDs()) == 0 {
+	if len(_c.mutation.RoleIDs()) == 0 {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required edge "AppRolePolicy.role"`)}
 	}
-	if len(arpc.mutation.PolicyIDs()) == 0 {
+	if len(_c.mutation.PolicyIDs()) == 0 {
 		return &ValidationError{Name: "policy", err: errors.New(`ent: missing required edge "AppRolePolicy.policy"`)}
 	}
 	return nil
 }
 
-func (arpc *AppRolePolicyCreate) sqlSave(ctx context.Context) (*AppRolePolicy, error) {
-	if err := arpc.check(); err != nil {
+func (_c *AppRolePolicyCreate) sqlSave(ctx context.Context) (*AppRolePolicy, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := arpc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, arpc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -206,42 +206,42 @@ func (arpc *AppRolePolicyCreate) sqlSave(ctx context.Context) (*AppRolePolicy, e
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	arpc.mutation.id = &_node.ID
-	arpc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateSpec) {
+func (_c *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppRolePolicy{config: arpc.config}
+		_node = &AppRolePolicy{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(approlepolicy.Table, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = arpc.conflict
-	if id, ok := arpc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := arpc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(approlepolicy.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := arpc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(approlepolicy.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := arpc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := arpc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := arpc.mutation.AppID(); ok {
+	if value, ok := _c.mutation.AppID(); ok {
 		_spec.SetField(approlepolicy.FieldAppID, field.TypeInt, value)
 		_node.AppID = value
 	}
-	if nodes := arpc.mutation.RoleIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RoleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -258,7 +258,7 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 		_node.AppRoleID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := arpc.mutation.PolicyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -294,10 +294,10 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arpc *AppRolePolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppRolePolicyUpsertOne {
-	arpc.conflict = opts
+func (_c *AppRolePolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppRolePolicyUpsertOne {
+	_c.conflict = opts
 	return &AppRolePolicyUpsertOne{
-		create: arpc,
+		create: _c,
 	}
 }
 
@@ -307,10 +307,10 @@ func (arpc *AppRolePolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppRole
 //	client.AppRolePolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arpc *AppRolePolicyCreate) OnConflictColumns(columns ...string) *AppRolePolicyUpsertOne {
-	arpc.conflict = append(arpc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRolePolicyCreate) OnConflictColumns(columns ...string) *AppRolePolicyUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRolePolicyUpsertOne{
-		create: arpc,
+		create: _c,
 	}
 }
 
@@ -605,16 +605,16 @@ type AppRolePolicyCreateBulk struct {
 }
 
 // Save creates the AppRolePolicy entities in the database.
-func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolicy, error) {
-	if arpcb.err != nil {
-		return nil, arpcb.err
+func (_c *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolicy, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(arpcb.builders))
-	nodes := make([]*AppRolePolicy, len(arpcb.builders))
-	mutators := make([]Mutator, len(arpcb.builders))
-	for i := range arpcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppRolePolicy, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := arpcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppRolePolicyMutation)
@@ -628,12 +628,12 @@ func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolic
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, arpcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = arpcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, arpcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -657,7 +657,7 @@ func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolic
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, arpcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -665,8 +665,8 @@ func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolic
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (arpcb *AppRolePolicyCreateBulk) SaveX(ctx context.Context) []*AppRolePolicy {
-	v, err := arpcb.Save(ctx)
+func (_c *AppRolePolicyCreateBulk) SaveX(ctx context.Context) []*AppRolePolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -674,14 +674,14 @@ func (arpcb *AppRolePolicyCreateBulk) SaveX(ctx context.Context) []*AppRolePolic
 }
 
 // Exec executes the query.
-func (arpcb *AppRolePolicyCreateBulk) Exec(ctx context.Context) error {
-	_, err := arpcb.Save(ctx)
+func (_c *AppRolePolicyCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arpcb *AppRolePolicyCreateBulk) ExecX(ctx context.Context) {
-	if err := arpcb.Exec(ctx); err != nil {
+func (_c *AppRolePolicyCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -701,10 +701,10 @@ func (arpcb *AppRolePolicyCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arpcb *AppRolePolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRolePolicyUpsertBulk {
-	arpcb.conflict = opts
+func (_c *AppRolePolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRolePolicyUpsertBulk {
+	_c.conflict = opts
 	return &AppRolePolicyUpsertBulk{
-		create: arpcb,
+		create: _c,
 	}
 }
 
@@ -714,10 +714,10 @@ func (arpcb *AppRolePolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *Ap
 //	client.AppRolePolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arpcb *AppRolePolicyCreateBulk) OnConflictColumns(columns ...string) *AppRolePolicyUpsertBulk {
-	arpcb.conflict = append(arpcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRolePolicyCreateBulk) OnConflictColumns(columns ...string) *AppRolePolicyUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRolePolicyUpsertBulk{
-		create: arpcb,
+		create: _c,
 	}
 }
 

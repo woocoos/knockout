@@ -95,7 +95,7 @@ func (*AppDict) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppDict fields.
-func (ad *AppDict) assignValues(columns []string, values []any) error {
+func (_m *AppDict) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -106,57 +106,57 @@ func (ad *AppDict) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ad.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case appdict.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ad.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case appdict.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ad.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case appdict.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ad.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case appdict.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ad.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appdict.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				ad.AppID = int(value.Int64)
+				_m.AppID = int(value.Int64)
 			}
 		case appdict.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				ad.Code = value.String
+				_m.Code = value.String
 			}
 		case appdict.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ad.Name = value.String
+				_m.Name = value.String
 			}
 		case appdict.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				ad.Comments = value.String
+				_m.Comments = value.String
 			}
 		default:
-			ad.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -164,91 +164,91 @@ func (ad *AppDict) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppDict.
 // This includes values selected through modifiers, order, etc.
-func (ad *AppDict) Value(name string) (ent.Value, error) {
-	return ad.selectValues.Get(name)
+func (_m *AppDict) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppDict entity.
-func (ad *AppDict) QueryApp() *AppQuery {
-	return NewAppDictClient(ad.config).QueryApp(ad)
+func (_m *AppDict) QueryApp() *AppQuery {
+	return NewAppDictClient(_m.config).QueryApp(_m)
 }
 
 // QueryItems queries the "items" edge of the AppDict entity.
-func (ad *AppDict) QueryItems() *AppDictItemQuery {
-	return NewAppDictClient(ad.config).QueryItems(ad)
+func (_m *AppDict) QueryItems() *AppDictItemQuery {
+	return NewAppDictClient(_m.config).QueryItems(_m)
 }
 
 // Update returns a builder for updating this AppDict.
 // Note that you need to call AppDict.Unwrap() before calling this method if this AppDict
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ad *AppDict) Update() *AppDictUpdateOne {
-	return NewAppDictClient(ad.config).UpdateOne(ad)
+func (_m *AppDict) Update() *AppDictUpdateOne {
+	return NewAppDictClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppDict entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ad *AppDict) Unwrap() *AppDict {
-	_tx, ok := ad.config.driver.(*txDriver)
+func (_m *AppDict) Unwrap() *AppDict {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppDict is not a transactional entity")
 	}
-	ad.config.driver = _tx.drv
-	return ad
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ad *AppDict) String() string {
+func (_m *AppDict) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppDict(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ad.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ad.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ad.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ad.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ad.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", ad.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(ad.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(ad.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(ad.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedItems returns the Items named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ad *AppDict) NamedItems(name string) ([]*AppDictItem, error) {
-	if ad.Edges.namedItems == nil {
+func (_m *AppDict) NamedItems(name string) ([]*AppDictItem, error) {
+	if _m.Edges.namedItems == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ad.Edges.namedItems[name]
+	nodes, ok := _m.Edges.namedItems[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ad *AppDict) appendNamedItems(name string, edges ...*AppDictItem) {
-	if ad.Edges.namedItems == nil {
-		ad.Edges.namedItems = make(map[string][]*AppDictItem)
+func (_m *AppDict) appendNamedItems(name string, edges ...*AppDictItem) {
+	if _m.Edges.namedItems == nil {
+		_m.Edges.namedItems = make(map[string][]*AppDictItem)
 	}
 	if len(edges) == 0 {
-		ad.Edges.namedItems[name] = []*AppDictItem{}
+		_m.Edges.namedItems[name] = []*AppDictItem{}
 	} else {
-		ad.Edges.namedItems[name] = append(ad.Edges.namedItems[name], edges...)
+		_m.Edges.namedItems[name] = append(_m.Edges.namedItems[name], edges...)
 	}
 }
 

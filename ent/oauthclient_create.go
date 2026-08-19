@@ -25,146 +25,146 @@ type OauthClientCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (occ *OauthClientCreate) SetCreatedBy(i int) *OauthClientCreate {
-	occ.mutation.SetCreatedBy(i)
-	return occ
+func (_c *OauthClientCreate) SetCreatedBy(v int) *OauthClientCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (occ *OauthClientCreate) SetCreatedAt(t time.Time) *OauthClientCreate {
-	occ.mutation.SetCreatedAt(t)
-	return occ
+func (_c *OauthClientCreate) SetCreatedAt(v time.Time) *OauthClientCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableCreatedAt(t *time.Time) *OauthClientCreate {
-	if t != nil {
-		occ.SetCreatedAt(*t)
+func (_c *OauthClientCreate) SetNillableCreatedAt(v *time.Time) *OauthClientCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (occ *OauthClientCreate) SetUpdatedBy(i int) *OauthClientCreate {
-	occ.mutation.SetUpdatedBy(i)
-	return occ
+func (_c *OauthClientCreate) SetUpdatedBy(v int) *OauthClientCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableUpdatedBy(i *int) *OauthClientCreate {
-	if i != nil {
-		occ.SetUpdatedBy(*i)
+func (_c *OauthClientCreate) SetNillableUpdatedBy(v *int) *OauthClientCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (occ *OauthClientCreate) SetUpdatedAt(t time.Time) *OauthClientCreate {
-	occ.mutation.SetUpdatedAt(t)
-	return occ
+func (_c *OauthClientCreate) SetUpdatedAt(v time.Time) *OauthClientCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableUpdatedAt(t *time.Time) *OauthClientCreate {
-	if t != nil {
-		occ.SetUpdatedAt(*t)
+func (_c *OauthClientCreate) SetNillableUpdatedAt(v *time.Time) *OauthClientCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetName sets the "name" field.
-func (occ *OauthClientCreate) SetName(s string) *OauthClientCreate {
-	occ.mutation.SetName(s)
-	return occ
+func (_c *OauthClientCreate) SetName(v string) *OauthClientCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetClientID sets the "client_id" field.
-func (occ *OauthClientCreate) SetClientID(s string) *OauthClientCreate {
-	occ.mutation.SetClientID(s)
-	return occ
+func (_c *OauthClientCreate) SetClientID(v string) *OauthClientCreate {
+	_c.mutation.SetClientID(v)
+	return _c
 }
 
 // SetClientSecret sets the "client_secret" field.
-func (occ *OauthClientCreate) SetClientSecret(s string) *OauthClientCreate {
-	occ.mutation.SetClientSecret(s)
-	return occ
+func (_c *OauthClientCreate) SetClientSecret(v string) *OauthClientCreate {
+	_c.mutation.SetClientSecret(v)
+	return _c
 }
 
 // SetGrantTypes sets the "grant_types" field.
-func (occ *OauthClientCreate) SetGrantTypes(ot oauthclient.GrantTypes) *OauthClientCreate {
-	occ.mutation.SetGrantTypes(ot)
-	return occ
+func (_c *OauthClientCreate) SetGrantTypes(v oauthclient.GrantTypes) *OauthClientCreate {
+	_c.mutation.SetGrantTypes(v)
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (occ *OauthClientCreate) SetUserID(i int) *OauthClientCreate {
-	occ.mutation.SetUserID(i)
-	return occ
+func (_c *OauthClientCreate) SetUserID(v int) *OauthClientCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetLastAuthAt sets the "last_auth_at" field.
-func (occ *OauthClientCreate) SetLastAuthAt(t time.Time) *OauthClientCreate {
-	occ.mutation.SetLastAuthAt(t)
-	return occ
+func (_c *OauthClientCreate) SetLastAuthAt(v time.Time) *OauthClientCreate {
+	_c.mutation.SetLastAuthAt(v)
+	return _c
 }
 
 // SetNillableLastAuthAt sets the "last_auth_at" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableLastAuthAt(t *time.Time) *OauthClientCreate {
-	if t != nil {
-		occ.SetLastAuthAt(*t)
+func (_c *OauthClientCreate) SetNillableLastAuthAt(v *time.Time) *OauthClientCreate {
+	if v != nil {
+		_c.SetLastAuthAt(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (occ *OauthClientCreate) SetStatus(ts typex.SimpleStatus) *OauthClientCreate {
-	occ.mutation.SetStatus(ts)
-	return occ
+func (_c *OauthClientCreate) SetStatus(v typex.SimpleStatus) *OauthClientCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableStatus(ts *typex.SimpleStatus) *OauthClientCreate {
-	if ts != nil {
-		occ.SetStatus(*ts)
+func (_c *OauthClientCreate) SetNillableStatus(v *typex.SimpleStatus) *OauthClientCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetID sets the "id" field.
-func (occ *OauthClientCreate) SetID(i int) *OauthClientCreate {
-	occ.mutation.SetID(i)
-	return occ
+func (_c *OauthClientCreate) SetID(v int) *OauthClientCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (occ *OauthClientCreate) SetNillableID(i *int) *OauthClientCreate {
-	if i != nil {
-		occ.SetID(*i)
+func (_c *OauthClientCreate) SetNillableID(v *int) *OauthClientCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return occ
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (occ *OauthClientCreate) SetUser(u *User) *OauthClientCreate {
-	return occ.SetUserID(u.ID)
+func (_c *OauthClientCreate) SetUser(v *User) *OauthClientCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the OauthClientMutation object of the builder.
-func (occ *OauthClientCreate) Mutation() *OauthClientMutation {
-	return occ.mutation
+func (_c *OauthClientCreate) Mutation() *OauthClientMutation {
+	return _c.mutation
 }
 
 // Save creates the OauthClient in the database.
-func (occ *OauthClientCreate) Save(ctx context.Context) (*OauthClient, error) {
-	if err := occ.defaults(); err != nil {
+func (_c *OauthClientCreate) Save(ctx context.Context) (*OauthClient, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, occ.sqlSave, occ.mutation, occ.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (occ *OauthClientCreate) SaveX(ctx context.Context) *OauthClient {
-	v, err := occ.Save(ctx)
+func (_c *OauthClientCreate) SaveX(ctx context.Context) *OauthClient {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -172,104 +172,104 @@ func (occ *OauthClientCreate) SaveX(ctx context.Context) *OauthClient {
 }
 
 // Exec executes the query.
-func (occ *OauthClientCreate) Exec(ctx context.Context) error {
-	_, err := occ.Save(ctx)
+func (_c *OauthClientCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (occ *OauthClientCreate) ExecX(ctx context.Context) {
-	if err := occ.Exec(ctx); err != nil {
+func (_c *OauthClientCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (occ *OauthClientCreate) defaults() error {
-	if _, ok := occ.mutation.CreatedAt(); !ok {
+func (_c *OauthClientCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if oauthclient.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized oauthclient.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := oauthclient.DefaultCreatedAt()
-		occ.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := occ.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := oauthclient.DefaultStatus
-		occ.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
-	if _, ok := occ.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if oauthclient.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized oauthclient.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := oauthclient.DefaultID()
-		occ.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (occ *OauthClientCreate) check() error {
-	if _, ok := occ.mutation.CreatedBy(); !ok {
+func (_c *OauthClientCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "OauthClient.created_by"`)}
 	}
-	if _, ok := occ.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OauthClient.created_at"`)}
 	}
-	if _, ok := occ.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OauthClient.name"`)}
 	}
-	if v, ok := occ.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := oauthclient.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "OauthClient.name": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.ClientID(); !ok {
+	if _, ok := _c.mutation.ClientID(); !ok {
 		return &ValidationError{Name: "client_id", err: errors.New(`ent: missing required field "OauthClient.client_id"`)}
 	}
-	if v, ok := occ.mutation.ClientID(); ok {
+	if v, ok := _c.mutation.ClientID(); ok {
 		if err := oauthclient.ClientIDValidator(v); err != nil {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "OauthClient.client_id": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.ClientSecret(); !ok {
+	if _, ok := _c.mutation.ClientSecret(); !ok {
 		return &ValidationError{Name: "client_secret", err: errors.New(`ent: missing required field "OauthClient.client_secret"`)}
 	}
-	if v, ok := occ.mutation.ClientSecret(); ok {
+	if v, ok := _c.mutation.ClientSecret(); ok {
 		if err := oauthclient.ClientSecretValidator(v); err != nil {
 			return &ValidationError{Name: "client_secret", err: fmt.Errorf(`ent: validator failed for field "OauthClient.client_secret": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.GrantTypes(); !ok {
+	if _, ok := _c.mutation.GrantTypes(); !ok {
 		return &ValidationError{Name: "grant_types", err: errors.New(`ent: missing required field "OauthClient.grant_types"`)}
 	}
-	if v, ok := occ.mutation.GrantTypes(); ok {
+	if v, ok := _c.mutation.GrantTypes(); ok {
 		if err := oauthclient.GrantTypesValidator(v); err != nil {
 			return &ValidationError{Name: "grant_types", err: fmt.Errorf(`ent: validator failed for field "OauthClient.grant_types": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OauthClient.user_id"`)}
 	}
-	if _, ok := occ.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "OauthClient.status"`)}
 	}
-	if v, ok := occ.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := oauthclient.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if len(occ.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OauthClient.user"`)}
 	}
 	return nil
 }
 
-func (occ *OauthClientCreate) sqlSave(ctx context.Context) (*OauthClient, error) {
-	if err := occ.check(); err != nil {
+func (_c *OauthClientCreate) sqlSave(ctx context.Context) (*OauthClient, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := occ.createSpec()
-	if err := sqlgraph.CreateNode(ctx, occ.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -279,62 +279,62 @@ func (occ *OauthClientCreate) sqlSave(ctx context.Context) (*OauthClient, error)
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	occ.mutation.id = &_node.ID
-	occ.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (occ *OauthClientCreate) createSpec() (*OauthClient, *sqlgraph.CreateSpec) {
+func (_c *OauthClientCreate) createSpec() (*OauthClient, *sqlgraph.CreateSpec) {
 	var (
-		_node = &OauthClient{config: occ.config}
+		_node = &OauthClient{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(oauthclient.Table, sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = occ.conflict
-	if id, ok := occ.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := occ.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(oauthclient.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := occ.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(oauthclient.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := occ.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := occ.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(oauthclient.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := occ.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(oauthclient.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := occ.mutation.ClientID(); ok {
+	if value, ok := _c.mutation.ClientID(); ok {
 		_spec.SetField(oauthclient.FieldClientID, field.TypeString, value)
 		_node.ClientID = value
 	}
-	if value, ok := occ.mutation.ClientSecret(); ok {
+	if value, ok := _c.mutation.ClientSecret(); ok {
 		_spec.SetField(oauthclient.FieldClientSecret, field.TypeString, value)
 		_node.ClientSecret = value
 	}
-	if value, ok := occ.mutation.GrantTypes(); ok {
+	if value, ok := _c.mutation.GrantTypes(); ok {
 		_spec.SetField(oauthclient.FieldGrantTypes, field.TypeEnum, value)
 		_node.GrantTypes = value
 	}
-	if value, ok := occ.mutation.LastAuthAt(); ok {
+	if value, ok := _c.mutation.LastAuthAt(); ok {
 		_spec.SetField(oauthclient.FieldLastAuthAt, field.TypeTime, value)
 		_node.LastAuthAt = value
 	}
-	if value, ok := occ.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(oauthclient.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := occ.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -370,10 +370,10 @@ func (occ *OauthClientCreate) createSpec() (*OauthClient, *sqlgraph.CreateSpec) 
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (occ *OauthClientCreate) OnConflict(opts ...sql.ConflictOption) *OauthClientUpsertOne {
-	occ.conflict = opts
+func (_c *OauthClientCreate) OnConflict(opts ...sql.ConflictOption) *OauthClientUpsertOne {
+	_c.conflict = opts
 	return &OauthClientUpsertOne{
-		create: occ,
+		create: _c,
 	}
 }
 
@@ -383,10 +383,10 @@ func (occ *OauthClientCreate) OnConflict(opts ...sql.ConflictOption) *OauthClien
 //	client.OauthClient.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (occ *OauthClientCreate) OnConflictColumns(columns ...string) *OauthClientUpsertOne {
-	occ.conflict = append(occ.conflict, sql.ConflictColumns(columns...))
+func (_c *OauthClientCreate) OnConflictColumns(columns ...string) *OauthClientUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OauthClientUpsertOne{
-		create: occ,
+		create: _c,
 	}
 }
 
@@ -739,16 +739,16 @@ type OauthClientCreateBulk struct {
 }
 
 // Save creates the OauthClient entities in the database.
-func (occb *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, error) {
-	if occb.err != nil {
-		return nil, occb.err
+func (_c *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(occb.builders))
-	nodes := make([]*OauthClient, len(occb.builders))
-	mutators := make([]Mutator, len(occb.builders))
-	for i := range occb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*OauthClient, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := occb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OauthClientMutation)
@@ -762,12 +762,12 @@ func (occb *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, er
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, occb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = occb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, occb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -791,7 +791,7 @@ func (occb *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, er
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, occb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -799,8 +799,8 @@ func (occb *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, er
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (occb *OauthClientCreateBulk) SaveX(ctx context.Context) []*OauthClient {
-	v, err := occb.Save(ctx)
+func (_c *OauthClientCreateBulk) SaveX(ctx context.Context) []*OauthClient {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -808,14 +808,14 @@ func (occb *OauthClientCreateBulk) SaveX(ctx context.Context) []*OauthClient {
 }
 
 // Exec executes the query.
-func (occb *OauthClientCreateBulk) Exec(ctx context.Context) error {
-	_, err := occb.Save(ctx)
+func (_c *OauthClientCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (occb *OauthClientCreateBulk) ExecX(ctx context.Context) {
-	if err := occb.Exec(ctx); err != nil {
+func (_c *OauthClientCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -835,10 +835,10 @@ func (occb *OauthClientCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (occb *OauthClientCreateBulk) OnConflict(opts ...sql.ConflictOption) *OauthClientUpsertBulk {
-	occb.conflict = opts
+func (_c *OauthClientCreateBulk) OnConflict(opts ...sql.ConflictOption) *OauthClientUpsertBulk {
+	_c.conflict = opts
 	return &OauthClientUpsertBulk{
-		create: occb,
+		create: _c,
 	}
 }
 
@@ -848,10 +848,10 @@ func (occb *OauthClientCreateBulk) OnConflict(opts ...sql.ConflictOption) *Oauth
 //	client.OauthClient.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (occb *OauthClientCreateBulk) OnConflictColumns(columns ...string) *OauthClientUpsertBulk {
-	occb.conflict = append(occb.conflict, sql.ConflictColumns(columns...))
+func (_c *OauthClientCreateBulk) OnConflictColumns(columns ...string) *OauthClientUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OauthClientUpsertBulk{
-		create: occb,
+		create: _c,
 	}
 }
 

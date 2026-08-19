@@ -24,145 +24,145 @@ type UserIdentityUpdate struct {
 }
 
 // Where appends a list predicates to the UserIdentityUpdate builder.
-func (uiu *UserIdentityUpdate) Where(ps ...predicate.UserIdentity) *UserIdentityUpdate {
-	uiu.mutation.Where(ps...)
-	return uiu
+func (_u *UserIdentityUpdate) Where(ps ...predicate.UserIdentity) *UserIdentityUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uiu *UserIdentityUpdate) SetUpdatedBy(i int) *UserIdentityUpdate {
-	uiu.mutation.ResetUpdatedBy()
-	uiu.mutation.SetUpdatedBy(i)
-	return uiu
+func (_u *UserIdentityUpdate) SetUpdatedBy(v int) *UserIdentityUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableUpdatedBy(i *int) *UserIdentityUpdate {
-	if i != nil {
-		uiu.SetUpdatedBy(*i)
+func (_u *UserIdentityUpdate) SetNillableUpdatedBy(v *int) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uiu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uiu *UserIdentityUpdate) AddUpdatedBy(i int) *UserIdentityUpdate {
-	uiu.mutation.AddUpdatedBy(i)
-	return uiu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserIdentityUpdate) AddUpdatedBy(v int) *UserIdentityUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uiu *UserIdentityUpdate) ClearUpdatedBy() *UserIdentityUpdate {
-	uiu.mutation.ClearUpdatedBy()
-	return uiu
+func (_u *UserIdentityUpdate) ClearUpdatedBy() *UserIdentityUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uiu *UserIdentityUpdate) SetUpdatedAt(t time.Time) *UserIdentityUpdate {
-	uiu.mutation.SetUpdatedAt(t)
-	return uiu
+func (_u *UserIdentityUpdate) SetUpdatedAt(v time.Time) *UserIdentityUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableUpdatedAt(t *time.Time) *UserIdentityUpdate {
-	if t != nil {
-		uiu.SetUpdatedAt(*t)
+func (_u *UserIdentityUpdate) SetNillableUpdatedAt(v *time.Time) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uiu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uiu *UserIdentityUpdate) ClearUpdatedAt() *UserIdentityUpdate {
-	uiu.mutation.ClearUpdatedAt()
-	return uiu
+func (_u *UserIdentityUpdate) ClearUpdatedAt() *UserIdentityUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (uiu *UserIdentityUpdate) SetKind(u useridentity.Kind) *UserIdentityUpdate {
-	uiu.mutation.SetKind(u)
-	return uiu
+func (_u *UserIdentityUpdate) SetKind(v useridentity.Kind) *UserIdentityUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableKind(u *useridentity.Kind) *UserIdentityUpdate {
-	if u != nil {
-		uiu.SetKind(*u)
+func (_u *UserIdentityUpdate) SetNillableKind(v *useridentity.Kind) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return uiu
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (uiu *UserIdentityUpdate) SetCode(s string) *UserIdentityUpdate {
-	uiu.mutation.SetCode(s)
-	return uiu
+func (_u *UserIdentityUpdate) SetCode(v string) *UserIdentityUpdate {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableCode(s *string) *UserIdentityUpdate {
-	if s != nil {
-		uiu.SetCode(*s)
+func (_u *UserIdentityUpdate) SetNillableCode(v *string) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return uiu
+	return _u
 }
 
 // ClearCode clears the value of the "code" field.
-func (uiu *UserIdentityUpdate) ClearCode() *UserIdentityUpdate {
-	uiu.mutation.ClearCode()
-	return uiu
+func (_u *UserIdentityUpdate) ClearCode() *UserIdentityUpdate {
+	_u.mutation.ClearCode()
+	return _u
 }
 
 // SetCodeExtend sets the "code_extend" field.
-func (uiu *UserIdentityUpdate) SetCodeExtend(s string) *UserIdentityUpdate {
-	uiu.mutation.SetCodeExtend(s)
-	return uiu
+func (_u *UserIdentityUpdate) SetCodeExtend(v string) *UserIdentityUpdate {
+	_u.mutation.SetCodeExtend(v)
+	return _u
 }
 
 // SetNillableCodeExtend sets the "code_extend" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableCodeExtend(s *string) *UserIdentityUpdate {
-	if s != nil {
-		uiu.SetCodeExtend(*s)
+func (_u *UserIdentityUpdate) SetNillableCodeExtend(v *string) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetCodeExtend(*v)
 	}
-	return uiu
+	return _u
 }
 
 // ClearCodeExtend clears the value of the "code_extend" field.
-func (uiu *UserIdentityUpdate) ClearCodeExtend() *UserIdentityUpdate {
-	uiu.mutation.ClearCodeExtend()
-	return uiu
+func (_u *UserIdentityUpdate) ClearCodeExtend() *UserIdentityUpdate {
+	_u.mutation.ClearCodeExtend()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (uiu *UserIdentityUpdate) SetStatus(ts typex.SimpleStatus) *UserIdentityUpdate {
-	uiu.mutation.SetStatus(ts)
-	return uiu
+func (_u *UserIdentityUpdate) SetStatus(v typex.SimpleStatus) *UserIdentityUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uiu *UserIdentityUpdate) SetNillableStatus(ts *typex.SimpleStatus) *UserIdentityUpdate {
-	if ts != nil {
-		uiu.SetStatus(*ts)
+func (_u *UserIdentityUpdate) SetNillableStatus(v *typex.SimpleStatus) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return uiu
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (uiu *UserIdentityUpdate) ClearStatus() *UserIdentityUpdate {
-	uiu.mutation.ClearStatus()
-	return uiu
+func (_u *UserIdentityUpdate) ClearStatus() *UserIdentityUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // Mutation returns the UserIdentityMutation object of the builder.
-func (uiu *UserIdentityUpdate) Mutation() *UserIdentityMutation {
-	return uiu.mutation
+func (_u *UserIdentityUpdate) Mutation() *UserIdentityMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (uiu *UserIdentityUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, uiu.sqlSave, uiu.mutation, uiu.hooks)
+func (_u *UserIdentityUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uiu *UserIdentityUpdate) SaveX(ctx context.Context) int {
-	affected, err := uiu.Save(ctx)
+func (_u *UserIdentityUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -170,26 +170,26 @@ func (uiu *UserIdentityUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (uiu *UserIdentityUpdate) Exec(ctx context.Context) error {
-	_, err := uiu.Save(ctx)
+func (_u *UserIdentityUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uiu *UserIdentityUpdate) ExecX(ctx context.Context) {
-	if err := uiu.Exec(ctx); err != nil {
+func (_u *UserIdentityUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uiu *UserIdentityUpdate) check() error {
-	if v, ok := uiu.mutation.Kind(); ok {
+func (_u *UserIdentityUpdate) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := useridentity.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.kind": %w`, err)}
 		}
 	}
-	if v, ok := uiu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := useridentity.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.status": %w`, err)}
 		}
@@ -197,55 +197,55 @@ func (uiu *UserIdentityUpdate) check() error {
 	return nil
 }
 
-func (uiu *UserIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := uiu.check(); err != nil {
-		return n, err
+func (_u *UserIdentityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(useridentity.Table, useridentity.Columns, sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt))
-	if ps := uiu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uiu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(useridentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uiu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(useridentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uiu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(useridentity.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uiu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(useridentity.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uiu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(useridentity.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uiu.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(useridentity.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := uiu.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(useridentity.FieldCode, field.TypeString, value)
 	}
-	if uiu.mutation.CodeCleared() {
+	if _u.mutation.CodeCleared() {
 		_spec.ClearField(useridentity.FieldCode, field.TypeString)
 	}
-	if value, ok := uiu.mutation.CodeExtend(); ok {
+	if value, ok := _u.mutation.CodeExtend(); ok {
 		_spec.SetField(useridentity.FieldCodeExtend, field.TypeString, value)
 	}
-	if uiu.mutation.CodeExtendCleared() {
+	if _u.mutation.CodeExtendCleared() {
 		_spec.ClearField(useridentity.FieldCodeExtend, field.TypeString)
 	}
-	if value, ok := uiu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(useridentity.FieldStatus, field.TypeEnum, value)
 	}
-	if uiu.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(useridentity.FieldStatus, field.TypeEnum)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, uiu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{useridentity.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -253,8 +253,8 @@ func (uiu *UserIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	uiu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserIdentityUpdateOne is the builder for updating a single UserIdentity entity.
@@ -266,152 +266,152 @@ type UserIdentityUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uiuo *UserIdentityUpdateOne) SetUpdatedBy(i int) *UserIdentityUpdateOne {
-	uiuo.mutation.ResetUpdatedBy()
-	uiuo.mutation.SetUpdatedBy(i)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetUpdatedBy(v int) *UserIdentityUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableUpdatedBy(i *int) *UserIdentityUpdateOne {
-	if i != nil {
-		uiuo.SetUpdatedBy(*i)
+func (_u *UserIdentityUpdateOne) SetNillableUpdatedBy(v *int) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uiuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uiuo *UserIdentityUpdateOne) AddUpdatedBy(i int) *UserIdentityUpdateOne {
-	uiuo.mutation.AddUpdatedBy(i)
-	return uiuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserIdentityUpdateOne) AddUpdatedBy(v int) *UserIdentityUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uiuo *UserIdentityUpdateOne) ClearUpdatedBy() *UserIdentityUpdateOne {
-	uiuo.mutation.ClearUpdatedBy()
-	return uiuo
+func (_u *UserIdentityUpdateOne) ClearUpdatedBy() *UserIdentityUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uiuo *UserIdentityUpdateOne) SetUpdatedAt(t time.Time) *UserIdentityUpdateOne {
-	uiuo.mutation.SetUpdatedAt(t)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetUpdatedAt(v time.Time) *UserIdentityUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserIdentityUpdateOne {
-	if t != nil {
-		uiuo.SetUpdatedAt(*t)
+func (_u *UserIdentityUpdateOne) SetNillableUpdatedAt(v *time.Time) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uiuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uiuo *UserIdentityUpdateOne) ClearUpdatedAt() *UserIdentityUpdateOne {
-	uiuo.mutation.ClearUpdatedAt()
-	return uiuo
+func (_u *UserIdentityUpdateOne) ClearUpdatedAt() *UserIdentityUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (uiuo *UserIdentityUpdateOne) SetKind(u useridentity.Kind) *UserIdentityUpdateOne {
-	uiuo.mutation.SetKind(u)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetKind(v useridentity.Kind) *UserIdentityUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableKind(u *useridentity.Kind) *UserIdentityUpdateOne {
-	if u != nil {
-		uiuo.SetKind(*u)
+func (_u *UserIdentityUpdateOne) SetNillableKind(v *useridentity.Kind) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return uiuo
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (uiuo *UserIdentityUpdateOne) SetCode(s string) *UserIdentityUpdateOne {
-	uiuo.mutation.SetCode(s)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetCode(v string) *UserIdentityUpdateOne {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableCode(s *string) *UserIdentityUpdateOne {
-	if s != nil {
-		uiuo.SetCode(*s)
+func (_u *UserIdentityUpdateOne) SetNillableCode(v *string) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return uiuo
+	return _u
 }
 
 // ClearCode clears the value of the "code" field.
-func (uiuo *UserIdentityUpdateOne) ClearCode() *UserIdentityUpdateOne {
-	uiuo.mutation.ClearCode()
-	return uiuo
+func (_u *UserIdentityUpdateOne) ClearCode() *UserIdentityUpdateOne {
+	_u.mutation.ClearCode()
+	return _u
 }
 
 // SetCodeExtend sets the "code_extend" field.
-func (uiuo *UserIdentityUpdateOne) SetCodeExtend(s string) *UserIdentityUpdateOne {
-	uiuo.mutation.SetCodeExtend(s)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetCodeExtend(v string) *UserIdentityUpdateOne {
+	_u.mutation.SetCodeExtend(v)
+	return _u
 }
 
 // SetNillableCodeExtend sets the "code_extend" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableCodeExtend(s *string) *UserIdentityUpdateOne {
-	if s != nil {
-		uiuo.SetCodeExtend(*s)
+func (_u *UserIdentityUpdateOne) SetNillableCodeExtend(v *string) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetCodeExtend(*v)
 	}
-	return uiuo
+	return _u
 }
 
 // ClearCodeExtend clears the value of the "code_extend" field.
-func (uiuo *UserIdentityUpdateOne) ClearCodeExtend() *UserIdentityUpdateOne {
-	uiuo.mutation.ClearCodeExtend()
-	return uiuo
+func (_u *UserIdentityUpdateOne) ClearCodeExtend() *UserIdentityUpdateOne {
+	_u.mutation.ClearCodeExtend()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (uiuo *UserIdentityUpdateOne) SetStatus(ts typex.SimpleStatus) *UserIdentityUpdateOne {
-	uiuo.mutation.SetStatus(ts)
-	return uiuo
+func (_u *UserIdentityUpdateOne) SetStatus(v typex.SimpleStatus) *UserIdentityUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uiuo *UserIdentityUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *UserIdentityUpdateOne {
-	if ts != nil {
-		uiuo.SetStatus(*ts)
+func (_u *UserIdentityUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return uiuo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (uiuo *UserIdentityUpdateOne) ClearStatus() *UserIdentityUpdateOne {
-	uiuo.mutation.ClearStatus()
-	return uiuo
+func (_u *UserIdentityUpdateOne) ClearStatus() *UserIdentityUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // Mutation returns the UserIdentityMutation object of the builder.
-func (uiuo *UserIdentityUpdateOne) Mutation() *UserIdentityMutation {
-	return uiuo.mutation
+func (_u *UserIdentityUpdateOne) Mutation() *UserIdentityMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the UserIdentityUpdate builder.
-func (uiuo *UserIdentityUpdateOne) Where(ps ...predicate.UserIdentity) *UserIdentityUpdateOne {
-	uiuo.mutation.Where(ps...)
-	return uiuo
+func (_u *UserIdentityUpdateOne) Where(ps ...predicate.UserIdentity) *UserIdentityUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (uiuo *UserIdentityUpdateOne) Select(field string, fields ...string) *UserIdentityUpdateOne {
-	uiuo.fields = append([]string{field}, fields...)
-	return uiuo
+func (_u *UserIdentityUpdateOne) Select(field string, fields ...string) *UserIdentityUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserIdentity entity.
-func (uiuo *UserIdentityUpdateOne) Save(ctx context.Context) (*UserIdentity, error) {
-	return withHooks(ctx, uiuo.sqlSave, uiuo.mutation, uiuo.hooks)
+func (_u *UserIdentityUpdateOne) Save(ctx context.Context) (*UserIdentity, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uiuo *UserIdentityUpdateOne) SaveX(ctx context.Context) *UserIdentity {
-	node, err := uiuo.Save(ctx)
+func (_u *UserIdentityUpdateOne) SaveX(ctx context.Context) *UserIdentity {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -419,26 +419,26 @@ func (uiuo *UserIdentityUpdateOne) SaveX(ctx context.Context) *UserIdentity {
 }
 
 // Exec executes the query on the entity.
-func (uiuo *UserIdentityUpdateOne) Exec(ctx context.Context) error {
-	_, err := uiuo.Save(ctx)
+func (_u *UserIdentityUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uiuo *UserIdentityUpdateOne) ExecX(ctx context.Context) {
-	if err := uiuo.Exec(ctx); err != nil {
+func (_u *UserIdentityUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uiuo *UserIdentityUpdateOne) check() error {
-	if v, ok := uiuo.mutation.Kind(); ok {
+func (_u *UserIdentityUpdateOne) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := useridentity.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.kind": %w`, err)}
 		}
 	}
-	if v, ok := uiuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := useridentity.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.status": %w`, err)}
 		}
@@ -446,17 +446,17 @@ func (uiuo *UserIdentityUpdateOne) check() error {
 	return nil
 }
 
-func (uiuo *UserIdentityUpdateOne) sqlSave(ctx context.Context) (_node *UserIdentity, err error) {
-	if err := uiuo.check(); err != nil {
+func (_u *UserIdentityUpdateOne) sqlSave(ctx context.Context) (_node *UserIdentity, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(useridentity.Table, useridentity.Columns, sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt))
-	id, ok := uiuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserIdentity.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := uiuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, useridentity.FieldID)
 		for _, f := range fields {
@@ -468,53 +468,53 @@ func (uiuo *UserIdentityUpdateOne) sqlSave(ctx context.Context) (_node *UserIden
 			}
 		}
 	}
-	if ps := uiuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uiuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(useridentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uiuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(useridentity.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uiuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(useridentity.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uiuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(useridentity.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uiuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(useridentity.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uiuo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(useridentity.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := uiuo.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(useridentity.FieldCode, field.TypeString, value)
 	}
-	if uiuo.mutation.CodeCleared() {
+	if _u.mutation.CodeCleared() {
 		_spec.ClearField(useridentity.FieldCode, field.TypeString)
 	}
-	if value, ok := uiuo.mutation.CodeExtend(); ok {
+	if value, ok := _u.mutation.CodeExtend(); ok {
 		_spec.SetField(useridentity.FieldCodeExtend, field.TypeString, value)
 	}
-	if uiuo.mutation.CodeExtendCleared() {
+	if _u.mutation.CodeExtendCleared() {
 		_spec.ClearField(useridentity.FieldCodeExtend, field.TypeString)
 	}
-	if value, ok := uiuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(useridentity.FieldStatus, field.TypeEnum, value)
 	}
-	if uiuo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(useridentity.FieldStatus, field.TypeEnum)
 	}
-	_node = &UserIdentity{config: uiuo.config}
+	_node = &UserIdentity{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, uiuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{useridentity.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -522,6 +522,6 @@ func (uiuo *UserIdentityUpdateOne) sqlSave(ctx context.Context) (_node *UserIden
 		}
 		return nil, err
 	}
-	uiuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

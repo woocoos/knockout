@@ -100,7 +100,7 @@ func (*OrgUserPreference) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the OrgUserPreference fields.
-func (oup *OrgUserPreference) assignValues(columns []string, values []any) error {
+func (_m *OrgUserPreference) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -111,48 +111,48 @@ func (oup *OrgUserPreference) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			oup.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case orguserpreference.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				oup.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case orguserpreference.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				oup.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case orguserpreference.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				oup.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case orguserpreference.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				oup.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case orguserpreference.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				oup.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case orguserpreference.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
 			} else if value.Valid {
-				oup.OrgID = int(value.Int64)
+				_m.OrgID = int(value.Int64)
 			}
 		case orguserpreference.FieldMenuFavorite:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field menu_favorite", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &oup.MenuFavorite); err != nil {
+				if err := json.Unmarshal(*value, &_m.MenuFavorite); err != nil {
 					return fmt.Errorf("unmarshal field menu_favorite: %w", err)
 				}
 			}
@@ -160,7 +160,7 @@ func (oup *OrgUserPreference) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field menu_recent", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &oup.MenuRecent); err != nil {
+				if err := json.Unmarshal(*value, &_m.MenuRecent); err != nil {
 					return fmt.Errorf("unmarshal field menu_recent: %w", err)
 				}
 			}
@@ -168,12 +168,12 @@ func (oup *OrgUserPreference) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field client_preferences", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &oup.ClientPreferences); err != nil {
+				if err := json.Unmarshal(*value, &_m.ClientPreferences); err != nil {
 					return fmt.Errorf("unmarshal field client_preferences: %w", err)
 				}
 			}
 		default:
-			oup.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -181,69 +181,69 @@ func (oup *OrgUserPreference) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the OrgUserPreference.
 // This includes values selected through modifiers, order, etc.
-func (oup *OrgUserPreference) Value(name string) (ent.Value, error) {
-	return oup.selectValues.Get(name)
+func (_m *OrgUserPreference) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the OrgUserPreference entity.
-func (oup *OrgUserPreference) QueryUser() *UserQuery {
-	return NewOrgUserPreferenceClient(oup.config).QueryUser(oup)
+func (_m *OrgUserPreference) QueryUser() *UserQuery {
+	return NewOrgUserPreferenceClient(_m.config).QueryUser(_m)
 }
 
 // QueryOrg queries the "org" edge of the OrgUserPreference entity.
-func (oup *OrgUserPreference) QueryOrg() *OrgQuery {
-	return NewOrgUserPreferenceClient(oup.config).QueryOrg(oup)
+func (_m *OrgUserPreference) QueryOrg() *OrgQuery {
+	return NewOrgUserPreferenceClient(_m.config).QueryOrg(_m)
 }
 
 // Update returns a builder for updating this OrgUserPreference.
 // Note that you need to call OrgUserPreference.Unwrap() before calling this method if this OrgUserPreference
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (oup *OrgUserPreference) Update() *OrgUserPreferenceUpdateOne {
-	return NewOrgUserPreferenceClient(oup.config).UpdateOne(oup)
+func (_m *OrgUserPreference) Update() *OrgUserPreferenceUpdateOne {
+	return NewOrgUserPreferenceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the OrgUserPreference entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (oup *OrgUserPreference) Unwrap() *OrgUserPreference {
-	_tx, ok := oup.config.driver.(*txDriver)
+func (_m *OrgUserPreference) Unwrap() *OrgUserPreference {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: OrgUserPreference is not a transactional entity")
 	}
-	oup.config.driver = _tx.drv
-	return oup
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (oup *OrgUserPreference) String() string {
+func (_m *OrgUserPreference) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgUserPreference(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", oup.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", oup.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(oup.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", oup.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(oup.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", oup.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", oup.OrgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("menu_favorite=")
-	builder.WriteString(fmt.Sprintf("%v", oup.MenuFavorite))
+	builder.WriteString(fmt.Sprintf("%v", _m.MenuFavorite))
 	builder.WriteString(", ")
 	builder.WriteString("menu_recent=")
-	builder.WriteString(fmt.Sprintf("%v", oup.MenuRecent))
+	builder.WriteString(fmt.Sprintf("%v", _m.MenuRecent))
 	builder.WriteString(", ")
 	builder.WriteString("client_preferences=")
-	builder.WriteString(fmt.Sprintf("%v", oup.ClientPreferences))
+	builder.WriteString(fmt.Sprintf("%v", _m.ClientPreferences))
 	builder.WriteByte(')')
 	return builder.String()
 }

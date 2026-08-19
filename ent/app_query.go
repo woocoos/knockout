@@ -58,44 +58,44 @@ type AppQuery struct {
 }
 
 // Where adds a new predicate for the AppQuery builder.
-func (aq *AppQuery) Where(ps ...predicate.App) *AppQuery {
-	aq.predicates = append(aq.predicates, ps...)
-	return aq
+func (_q *AppQuery) Where(ps ...predicate.App) *AppQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (aq *AppQuery) Limit(limit int) *AppQuery {
-	aq.ctx.Limit = &limit
-	return aq
+func (_q *AppQuery) Limit(limit int) *AppQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (aq *AppQuery) Offset(offset int) *AppQuery {
-	aq.ctx.Offset = &offset
-	return aq
+func (_q *AppQuery) Offset(offset int) *AppQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (aq *AppQuery) Unique(unique bool) *AppQuery {
-	aq.ctx.Unique = &unique
-	return aq
+func (_q *AppQuery) Unique(unique bool) *AppQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (aq *AppQuery) Order(o ...app.OrderOption) *AppQuery {
-	aq.order = append(aq.order, o...)
-	return aq
+func (_q *AppQuery) Order(o ...app.OrderOption) *AppQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMenus chains the current query on the "menus" edge.
-func (aq *AppQuery) QueryMenus() *AppMenuQuery {
-	query := (&AppMenuClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryMenus() *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -104,20 +104,20 @@ func (aq *AppQuery) QueryMenus() *AppMenuQuery {
 			sqlgraph.To(appmenu.Table, appmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.MenusTable, app.MenusColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryActions chains the current query on the "actions" edge.
-func (aq *AppQuery) QueryActions() *AppActionQuery {
-	query := (&AppActionClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryActions() *AppActionQuery {
+	query := (&AppActionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -126,20 +126,20 @@ func (aq *AppQuery) QueryActions() *AppActionQuery {
 			sqlgraph.To(appaction.Table, appaction.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.ActionsTable, app.ActionsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryResources chains the current query on the "resources" edge.
-func (aq *AppQuery) QueryResources() *AppResQuery {
-	query := (&AppResClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryResources() *AppResQuery {
+	query := (&AppResClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -148,20 +148,20 @@ func (aq *AppQuery) QueryResources() *AppResQuery {
 			sqlgraph.To(appres.Table, appres.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.ResourcesTable, app.ResourcesColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryRoles chains the current query on the "roles" edge.
-func (aq *AppQuery) QueryRoles() *AppRoleQuery {
-	query := (&AppRoleClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryRoles() *AppRoleQuery {
+	query := (&AppRoleClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -170,20 +170,20 @@ func (aq *AppQuery) QueryRoles() *AppRoleQuery {
 			sqlgraph.To(approle.Table, approle.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.RolesTable, app.RolesColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryPolicies chains the current query on the "policies" edge.
-func (aq *AppQuery) QueryPolicies() *AppPolicyQuery {
-	query := (&AppPolicyClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryPolicies() *AppPolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -192,20 +192,20 @@ func (aq *AppQuery) QueryPolicies() *AppPolicyQuery {
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.PoliciesTable, app.PoliciesColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryPolicyViews chains the current query on the "policy_views" edge.
-func (aq *AppQuery) QueryPolicyViews() *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryPolicyViews() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -214,20 +214,20 @@ func (aq *AppQuery) QueryPolicyViews() *AppPolicyViewQuery {
 			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.PolicyViewsTable, app.PolicyViewsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrgs chains the current query on the "orgs" edge.
-func (aq *AppQuery) QueryOrgs() *OrgQuery {
-	query := (&OrgClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryOrgs() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -236,20 +236,20 @@ func (aq *AppQuery) QueryOrgs() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, app.OrgsTable, app.OrgsPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryDicts chains the current query on the "dicts" edge.
-func (aq *AppQuery) QueryDicts() *AppDictQuery {
-	query := (&AppDictClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryDicts() *AppDictQuery {
+	query := (&AppDictClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -258,20 +258,20 @@ func (aq *AppQuery) QueryDicts() *AppDictQuery {
 			sqlgraph.To(appdict.Table, appdict.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.DictsTable, app.DictsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrgApp chains the current query on the "org_app" edge.
-func (aq *AppQuery) QueryOrgApp() *OrgAppQuery {
-	query := (&OrgAppClient{config: aq.config}).Query()
+func (_q *AppQuery) QueryOrgApp() *OrgAppQuery {
+	query := (&OrgAppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -280,7 +280,7 @@ func (aq *AppQuery) QueryOrgApp() *OrgAppQuery {
 			sqlgraph.To(orgapp.Table, orgapp.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, app.OrgAppTable, app.OrgAppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -288,8 +288,8 @@ func (aq *AppQuery) QueryOrgApp() *OrgAppQuery {
 
 // First returns the first App entity from the query.
 // Returns a *NotFoundError when no App was found.
-func (aq *AppQuery) First(ctx context.Context) (*App, error) {
-	nodes, err := aq.Limit(1).All(setContextOp(ctx, aq.ctx, ent.OpQueryFirst))
+func (_q *AppQuery) First(ctx context.Context) (*App, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -300,8 +300,8 @@ func (aq *AppQuery) First(ctx context.Context) (*App, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (aq *AppQuery) FirstX(ctx context.Context) *App {
-	node, err := aq.First(ctx)
+func (_q *AppQuery) FirstX(ctx context.Context) *App {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -310,9 +310,9 @@ func (aq *AppQuery) FirstX(ctx context.Context) *App {
 
 // FirstID returns the first App ID from the query.
 // Returns a *NotFoundError when no App ID was found.
-func (aq *AppQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -323,8 +323,8 @@ func (aq *AppQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AppQuery) FirstIDX(ctx context.Context) int {
-	id, err := aq.FirstID(ctx)
+func (_q *AppQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -334,8 +334,8 @@ func (aq *AppQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single App entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one App entity is found.
 // Returns a *NotFoundError when no App entities are found.
-func (aq *AppQuery) Only(ctx context.Context) (*App, error) {
-	nodes, err := aq.Limit(2).All(setContextOp(ctx, aq.ctx, ent.OpQueryOnly))
+func (_q *AppQuery) Only(ctx context.Context) (*App, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -350,8 +350,8 @@ func (aq *AppQuery) Only(ctx context.Context) (*App, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (aq *AppQuery) OnlyX(ctx context.Context) *App {
-	node, err := aq.Only(ctx)
+func (_q *AppQuery) OnlyX(ctx context.Context) *App {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -361,9 +361,9 @@ func (aq *AppQuery) OnlyX(ctx context.Context) *App {
 // OnlyID is like Only, but returns the only App ID in the query.
 // Returns a *NotSingularError when more than one App ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AppQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -378,8 +378,8 @@ func (aq *AppQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AppQuery) OnlyIDX(ctx context.Context) int {
-	id, err := aq.OnlyID(ctx)
+func (_q *AppQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -387,18 +387,18 @@ func (aq *AppQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of Apps.
-func (aq *AppQuery) All(ctx context.Context) ([]*App, error) {
-	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryAll)
-	if err := aq.prepareQuery(ctx); err != nil {
+func (_q *AppQuery) All(ctx context.Context) ([]*App, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*App, *AppQuery]()
-	return withInterceptors[[]*App](ctx, aq, qr, aq.inters)
+	return withInterceptors[[]*App](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (aq *AppQuery) AllX(ctx context.Context) []*App {
-	nodes, err := aq.All(ctx)
+func (_q *AppQuery) AllX(ctx context.Context) []*App {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -406,20 +406,20 @@ func (aq *AppQuery) AllX(ctx context.Context) []*App {
 }
 
 // IDs executes the query and returns a list of App IDs.
-func (aq *AppQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if aq.ctx.Unique == nil && aq.path != nil {
-		aq.Unique(true)
+func (_q *AppQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryIDs)
-	if err = aq.Select(app.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(app.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AppQuery) IDsX(ctx context.Context) []int {
-	ids, err := aq.IDs(ctx)
+func (_q *AppQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -427,17 +427,17 @@ func (aq *AppQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (aq *AppQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryCount)
-	if err := aq.prepareQuery(ctx); err != nil {
+func (_q *AppQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, aq, querierCount[*AppQuery](), aq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (aq *AppQuery) CountX(ctx context.Context) int {
-	count, err := aq.Count(ctx)
+func (_q *AppQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -445,9 +445,9 @@ func (aq *AppQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (aq *AppQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryExist)
-	switch _, err := aq.FirstID(ctx); {
+func (_q *AppQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -458,8 +458,8 @@ func (aq *AppQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (aq *AppQuery) ExistX(ctx context.Context) bool {
-	exist, err := aq.Exist(ctx)
+func (_q *AppQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -468,128 +468,128 @@ func (aq *AppQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (aq *AppQuery) Clone() *AppQuery {
-	if aq == nil {
+func (_q *AppQuery) Clone() *AppQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppQuery{
-		config:          aq.config,
-		ctx:             aq.ctx.Clone(),
-		order:           append([]app.OrderOption{}, aq.order...),
-		inters:          append([]Interceptor{}, aq.inters...),
-		predicates:      append([]predicate.App{}, aq.predicates...),
-		withMenus:       aq.withMenus.Clone(),
-		withActions:     aq.withActions.Clone(),
-		withResources:   aq.withResources.Clone(),
-		withRoles:       aq.withRoles.Clone(),
-		withPolicies:    aq.withPolicies.Clone(),
-		withPolicyViews: aq.withPolicyViews.Clone(),
-		withOrgs:        aq.withOrgs.Clone(),
-		withDicts:       aq.withDicts.Clone(),
-		withOrgApp:      aq.withOrgApp.Clone(),
+		config:          _q.config,
+		ctx:             _q.ctx.Clone(),
+		order:           append([]app.OrderOption{}, _q.order...),
+		inters:          append([]Interceptor{}, _q.inters...),
+		predicates:      append([]predicate.App{}, _q.predicates...),
+		withMenus:       _q.withMenus.Clone(),
+		withActions:     _q.withActions.Clone(),
+		withResources:   _q.withResources.Clone(),
+		withRoles:       _q.withRoles.Clone(),
+		withPolicies:    _q.withPolicies.Clone(),
+		withPolicyViews: _q.withPolicyViews.Clone(),
+		withOrgs:        _q.withOrgs.Clone(),
+		withDicts:       _q.withDicts.Clone(),
+		withOrgApp:      _q.withOrgApp.Clone(),
 		// clone intermediate query.
-		sql:  aq.sql.Clone(),
-		path: aq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMenus tells the query-builder to eager-load the nodes that are connected to
 // the "menus" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithMenus(opts ...func(*AppMenuQuery)) *AppQuery {
-	query := (&AppMenuClient{config: aq.config}).Query()
+func (_q *AppQuery) WithMenus(opts ...func(*AppMenuQuery)) *AppQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withMenus = query
-	return aq
+	_q.withMenus = query
+	return _q
 }
 
 // WithActions tells the query-builder to eager-load the nodes that are connected to
 // the "actions" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithActions(opts ...func(*AppActionQuery)) *AppQuery {
-	query := (&AppActionClient{config: aq.config}).Query()
+func (_q *AppQuery) WithActions(opts ...func(*AppActionQuery)) *AppQuery {
+	query := (&AppActionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withActions = query
-	return aq
+	_q.withActions = query
+	return _q
 }
 
 // WithResources tells the query-builder to eager-load the nodes that are connected to
 // the "resources" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithResources(opts ...func(*AppResQuery)) *AppQuery {
-	query := (&AppResClient{config: aq.config}).Query()
+func (_q *AppQuery) WithResources(opts ...func(*AppResQuery)) *AppQuery {
+	query := (&AppResClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withResources = query
-	return aq
+	_q.withResources = query
+	return _q
 }
 
 // WithRoles tells the query-builder to eager-load the nodes that are connected to
 // the "roles" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithRoles(opts ...func(*AppRoleQuery)) *AppQuery {
-	query := (&AppRoleClient{config: aq.config}).Query()
+func (_q *AppQuery) WithRoles(opts ...func(*AppRoleQuery)) *AppQuery {
+	query := (&AppRoleClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withRoles = query
-	return aq
+	_q.withRoles = query
+	return _q
 }
 
 // WithPolicies tells the query-builder to eager-load the nodes that are connected to
 // the "policies" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithPolicies(opts ...func(*AppPolicyQuery)) *AppQuery {
-	query := (&AppPolicyClient{config: aq.config}).Query()
+func (_q *AppQuery) WithPolicies(opts ...func(*AppPolicyQuery)) *AppQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withPolicies = query
-	return aq
+	_q.withPolicies = query
+	return _q
 }
 
 // WithPolicyViews tells the query-builder to eager-load the nodes that are connected to
 // the "policy_views" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithPolicyViews(opts ...func(*AppPolicyViewQuery)) *AppQuery {
-	query := (&AppPolicyViewClient{config: aq.config}).Query()
+func (_q *AppQuery) WithPolicyViews(opts ...func(*AppPolicyViewQuery)) *AppQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withPolicyViews = query
-	return aq
+	_q.withPolicyViews = query
+	return _q
 }
 
 // WithOrgs tells the query-builder to eager-load the nodes that are connected to
 // the "orgs" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithOrgs(opts ...func(*OrgQuery)) *AppQuery {
-	query := (&OrgClient{config: aq.config}).Query()
+func (_q *AppQuery) WithOrgs(opts ...func(*OrgQuery)) *AppQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withOrgs = query
-	return aq
+	_q.withOrgs = query
+	return _q
 }
 
 // WithDicts tells the query-builder to eager-load the nodes that are connected to
 // the "dicts" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithDicts(opts ...func(*AppDictQuery)) *AppQuery {
-	query := (&AppDictClient{config: aq.config}).Query()
+func (_q *AppQuery) WithDicts(opts ...func(*AppDictQuery)) *AppQuery {
+	query := (&AppDictClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withDicts = query
-	return aq
+	_q.withDicts = query
+	return _q
 }
 
 // WithOrgApp tells the query-builder to eager-load the nodes that are connected to
 // the "org_app" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithOrgApp(opts ...func(*OrgAppQuery)) *AppQuery {
-	query := (&OrgAppClient{config: aq.config}).Query()
+func (_q *AppQuery) WithOrgApp(opts ...func(*OrgAppQuery)) *AppQuery {
+	query := (&OrgAppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withOrgApp = query
-	return aq
+	_q.withOrgApp = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -606,10 +606,10 @@ func (aq *AppQuery) WithOrgApp(opts ...func(*OrgAppQuery)) *AppQuery {
 //		GroupBy(app.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
-	aq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppGroupBy{build: aq}
-	grbuild.flds = &aq.ctx.Fields
+func (_q *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = app.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -627,217 +627,217 @@ func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 //	client.App.Query().
 //		Select(app.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (aq *AppQuery) Select(fields ...string) *AppSelect {
-	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
-	sbuild := &AppSelect{AppQuery: aq}
+func (_q *AppQuery) Select(fields ...string) *AppSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppSelect{AppQuery: _q}
 	sbuild.label = app.Label
-	sbuild.flds, sbuild.scan = &aq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppSelect configured with the given aggregations.
-func (aq *AppQuery) Aggregate(fns ...AggregateFunc) *AppSelect {
-	return aq.Select().Aggregate(fns...)
+func (_q *AppQuery) Aggregate(fns ...AggregateFunc) *AppSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (aq *AppQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range aq.inters {
+func (_q *AppQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, aq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range aq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !app.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if aq.path != nil {
-		prev, err := aq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		aq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, error) {
+func (_q *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, error) {
 	var (
 		nodes       = []*App{}
-		_spec       = aq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [9]bool{
-			aq.withMenus != nil,
-			aq.withActions != nil,
-			aq.withResources != nil,
-			aq.withRoles != nil,
-			aq.withPolicies != nil,
-			aq.withPolicyViews != nil,
-			aq.withOrgs != nil,
-			aq.withDicts != nil,
-			aq.withOrgApp != nil,
+			_q.withMenus != nil,
+			_q.withActions != nil,
+			_q.withResources != nil,
+			_q.withRoles != nil,
+			_q.withPolicies != nil,
+			_q.withPolicyViews != nil,
+			_q.withOrgs != nil,
+			_q.withDicts != nil,
+			_q.withOrgApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*App).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &App{config: aq.config}
+		node := &App{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(aq.modifiers) > 0 {
-		_spec.Modifiers = aq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, aq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aq.withMenus; query != nil {
-		if err := aq.loadMenus(ctx, query, nodes,
+	if query := _q.withMenus; query != nil {
+		if err := _q.loadMenus(ctx, query, nodes,
 			func(n *App) { n.Edges.Menus = []*AppMenu{} },
 			func(n *App, e *AppMenu) { n.Edges.Menus = append(n.Edges.Menus, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withActions; query != nil {
-		if err := aq.loadActions(ctx, query, nodes,
+	if query := _q.withActions; query != nil {
+		if err := _q.loadActions(ctx, query, nodes,
 			func(n *App) { n.Edges.Actions = []*AppAction{} },
 			func(n *App, e *AppAction) { n.Edges.Actions = append(n.Edges.Actions, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withResources; query != nil {
-		if err := aq.loadResources(ctx, query, nodes,
+	if query := _q.withResources; query != nil {
+		if err := _q.loadResources(ctx, query, nodes,
 			func(n *App) { n.Edges.Resources = []*AppRes{} },
 			func(n *App, e *AppRes) { n.Edges.Resources = append(n.Edges.Resources, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withRoles; query != nil {
-		if err := aq.loadRoles(ctx, query, nodes,
+	if query := _q.withRoles; query != nil {
+		if err := _q.loadRoles(ctx, query, nodes,
 			func(n *App) { n.Edges.Roles = []*AppRole{} },
 			func(n *App, e *AppRole) { n.Edges.Roles = append(n.Edges.Roles, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withPolicies; query != nil {
-		if err := aq.loadPolicies(ctx, query, nodes,
+	if query := _q.withPolicies; query != nil {
+		if err := _q.loadPolicies(ctx, query, nodes,
 			func(n *App) { n.Edges.Policies = []*AppPolicy{} },
 			func(n *App, e *AppPolicy) { n.Edges.Policies = append(n.Edges.Policies, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withPolicyViews; query != nil {
-		if err := aq.loadPolicyViews(ctx, query, nodes,
+	if query := _q.withPolicyViews; query != nil {
+		if err := _q.loadPolicyViews(ctx, query, nodes,
 			func(n *App) { n.Edges.PolicyViews = []*AppPolicyView{} },
 			func(n *App, e *AppPolicyView) { n.Edges.PolicyViews = append(n.Edges.PolicyViews, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withOrgs; query != nil {
-		if err := aq.loadOrgs(ctx, query, nodes,
+	if query := _q.withOrgs; query != nil {
+		if err := _q.loadOrgs(ctx, query, nodes,
 			func(n *App) { n.Edges.Orgs = []*Org{} },
 			func(n *App, e *Org) { n.Edges.Orgs = append(n.Edges.Orgs, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withDicts; query != nil {
-		if err := aq.loadDicts(ctx, query, nodes,
+	if query := _q.withDicts; query != nil {
+		if err := _q.loadDicts(ctx, query, nodes,
 			func(n *App) { n.Edges.Dicts = []*AppDict{} },
 			func(n *App, e *AppDict) { n.Edges.Dicts = append(n.Edges.Dicts, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withOrgApp; query != nil {
-		if err := aq.loadOrgApp(ctx, query, nodes,
+	if query := _q.withOrgApp; query != nil {
+		if err := _q.loadOrgApp(ctx, query, nodes,
 			func(n *App) { n.Edges.OrgApp = []*OrgApp{} },
 			func(n *App, e *OrgApp) { n.Edges.OrgApp = append(n.Edges.OrgApp, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedMenus {
-		if err := aq.loadMenus(ctx, query, nodes,
+	for name, query := range _q.withNamedMenus {
+		if err := _q.loadMenus(ctx, query, nodes,
 			func(n *App) { n.appendNamedMenus(name) },
 			func(n *App, e *AppMenu) { n.appendNamedMenus(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedActions {
-		if err := aq.loadActions(ctx, query, nodes,
+	for name, query := range _q.withNamedActions {
+		if err := _q.loadActions(ctx, query, nodes,
 			func(n *App) { n.appendNamedActions(name) },
 			func(n *App, e *AppAction) { n.appendNamedActions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedResources {
-		if err := aq.loadResources(ctx, query, nodes,
+	for name, query := range _q.withNamedResources {
+		if err := _q.loadResources(ctx, query, nodes,
 			func(n *App) { n.appendNamedResources(name) },
 			func(n *App, e *AppRes) { n.appendNamedResources(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedRoles {
-		if err := aq.loadRoles(ctx, query, nodes,
+	for name, query := range _q.withNamedRoles {
+		if err := _q.loadRoles(ctx, query, nodes,
 			func(n *App) { n.appendNamedRoles(name) },
 			func(n *App, e *AppRole) { n.appendNamedRoles(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedPolicies {
-		if err := aq.loadPolicies(ctx, query, nodes,
+	for name, query := range _q.withNamedPolicies {
+		if err := _q.loadPolicies(ctx, query, nodes,
 			func(n *App) { n.appendNamedPolicies(name) },
 			func(n *App, e *AppPolicy) { n.appendNamedPolicies(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedPolicyViews {
-		if err := aq.loadPolicyViews(ctx, query, nodes,
+	for name, query := range _q.withNamedPolicyViews {
+		if err := _q.loadPolicyViews(ctx, query, nodes,
 			func(n *App) { n.appendNamedPolicyViews(name) },
 			func(n *App, e *AppPolicyView) { n.appendNamedPolicyViews(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedOrgs {
-		if err := aq.loadOrgs(ctx, query, nodes,
+	for name, query := range _q.withNamedOrgs {
+		if err := _q.loadOrgs(ctx, query, nodes,
 			func(n *App) { n.appendNamedOrgs(name) },
 			func(n *App, e *Org) { n.appendNamedOrgs(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedDicts {
-		if err := aq.loadDicts(ctx, query, nodes,
+	for name, query := range _q.withNamedDicts {
+		if err := _q.loadDicts(ctx, query, nodes,
 			func(n *App) { n.appendNamedDicts(name) },
 			func(n *App, e *AppDict) { n.appendNamedDicts(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedOrgApp {
-		if err := aq.loadOrgApp(ctx, query, nodes,
+	for name, query := range _q.withNamedOrgApp {
+		if err := _q.loadOrgApp(ctx, query, nodes,
 			func(n *App) { n.appendNamedOrgApp(name) },
 			func(n *App, e *OrgApp) { n.appendNamedOrgApp(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range aq.loadTotal {
-		if err := aq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (aq *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []*App, init func(*App), assign func(*App, *AppMenu)) error {
+func (_q *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []*App, init func(*App), assign func(*App, *AppMenu)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -867,7 +867,7 @@ func (aq *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []
 	}
 	return nil
 }
-func (aq *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, nodes []*App, init func(*App), assign func(*App, *AppAction)) error {
+func (_q *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, nodes []*App, init func(*App), assign func(*App, *AppAction)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -897,7 +897,7 @@ func (aq *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, node
 	}
 	return nil
 }
-func (aq *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes []*App, init func(*App), assign func(*App, *AppRes)) error {
+func (_q *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes []*App, init func(*App), assign func(*App, *AppRes)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -927,7 +927,7 @@ func (aq *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes
 	}
 	return nil
 }
-func (aq *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []*App, init func(*App), assign func(*App, *AppRole)) error {
+func (_q *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []*App, init func(*App), assign func(*App, *AppRole)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -957,7 +957,7 @@ func (aq *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []
 	}
 	return nil
 }
-func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nodes []*App, init func(*App), assign func(*App, *AppPolicy)) error {
+func (_q *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nodes []*App, init func(*App), assign func(*App, *AppPolicy)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -987,7 +987,7 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 	}
 	return nil
 }
-func (aq *AppQuery) loadPolicyViews(ctx context.Context, query *AppPolicyViewQuery, nodes []*App, init func(*App), assign func(*App, *AppPolicyView)) error {
+func (_q *AppQuery) loadPolicyViews(ctx context.Context, query *AppPolicyViewQuery, nodes []*App, init func(*App), assign func(*App, *AppPolicyView)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -1017,7 +1017,7 @@ func (aq *AppQuery) loadPolicyViews(ctx context.Context, query *AppPolicyViewQue
 	}
 	return nil
 }
-func (aq *AppQuery) loadOrgs(ctx context.Context, query *OrgQuery, nodes []*App, init func(*App), assign func(*App, *Org)) error {
+func (_q *AppQuery) loadOrgs(ctx context.Context, query *OrgQuery, nodes []*App, init func(*App), assign func(*App, *Org)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int]*App)
 	nids := make(map[int]map[*App]struct{})
@@ -1078,7 +1078,7 @@ func (aq *AppQuery) loadOrgs(ctx context.Context, query *OrgQuery, nodes []*App,
 	}
 	return nil
 }
-func (aq *AppQuery) loadDicts(ctx context.Context, query *AppDictQuery, nodes []*App, init func(*App), assign func(*App, *AppDict)) error {
+func (_q *AppQuery) loadDicts(ctx context.Context, query *AppDictQuery, nodes []*App, init func(*App), assign func(*App, *AppDict)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -1108,7 +1108,7 @@ func (aq *AppQuery) loadDicts(ctx context.Context, query *AppDictQuery, nodes []
 	}
 	return nil
 }
-func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []*App, init func(*App), assign func(*App, *OrgApp)) error {
+func (_q *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []*App, init func(*App), assign func(*App, *OrgApp)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -1139,27 +1139,27 @@ func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 	return nil
 }
 
-func (aq *AppQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := aq.querySpec()
-	if len(aq.modifiers) > 0 {
-		_spec.Modifiers = aq.modifiers
+func (_q *AppQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = aq.ctx.Fields
-	if len(aq.ctx.Fields) > 0 {
-		_spec.Unique = aq.ctx.Unique != nil && *aq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, aq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
-	_spec.From = aq.sql
-	if unique := aq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if aq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := aq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, app.FieldID)
 		for i := range fields {
@@ -1168,20 +1168,20 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := aq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := aq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := aq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := aq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -1191,33 +1191,33 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(aq.driver.Dialect())
+func (_q *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(app.Table)
-	columns := aq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = app.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if aq.sql != nil {
-		selector = aq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if aq.ctx.Unique != nil && *aq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range aq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range aq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := aq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := aq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -1225,128 +1225,128 @@ func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedMenus tells the query-builder to eager-load the nodes that are connected to the "menus"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedMenus(name string, opts ...func(*AppMenuQuery)) *AppQuery {
-	query := (&AppMenuClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedMenus(name string, opts ...func(*AppMenuQuery)) *AppQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedMenus == nil {
-		aq.withNamedMenus = make(map[string]*AppMenuQuery)
+	if _q.withNamedMenus == nil {
+		_q.withNamedMenus = make(map[string]*AppMenuQuery)
 	}
-	aq.withNamedMenus[name] = query
-	return aq
+	_q.withNamedMenus[name] = query
+	return _q
 }
 
 // WithNamedActions tells the query-builder to eager-load the nodes that are connected to the "actions"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedActions(name string, opts ...func(*AppActionQuery)) *AppQuery {
-	query := (&AppActionClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedActions(name string, opts ...func(*AppActionQuery)) *AppQuery {
+	query := (&AppActionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedActions == nil {
-		aq.withNamedActions = make(map[string]*AppActionQuery)
+	if _q.withNamedActions == nil {
+		_q.withNamedActions = make(map[string]*AppActionQuery)
 	}
-	aq.withNamedActions[name] = query
-	return aq
+	_q.withNamedActions[name] = query
+	return _q
 }
 
 // WithNamedResources tells the query-builder to eager-load the nodes that are connected to the "resources"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedResources(name string, opts ...func(*AppResQuery)) *AppQuery {
-	query := (&AppResClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedResources(name string, opts ...func(*AppResQuery)) *AppQuery {
+	query := (&AppResClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedResources == nil {
-		aq.withNamedResources = make(map[string]*AppResQuery)
+	if _q.withNamedResources == nil {
+		_q.withNamedResources = make(map[string]*AppResQuery)
 	}
-	aq.withNamedResources[name] = query
-	return aq
+	_q.withNamedResources[name] = query
+	return _q
 }
 
 // WithNamedRoles tells the query-builder to eager-load the nodes that are connected to the "roles"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedRoles(name string, opts ...func(*AppRoleQuery)) *AppQuery {
-	query := (&AppRoleClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedRoles(name string, opts ...func(*AppRoleQuery)) *AppQuery {
+	query := (&AppRoleClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedRoles == nil {
-		aq.withNamedRoles = make(map[string]*AppRoleQuery)
+	if _q.withNamedRoles == nil {
+		_q.withNamedRoles = make(map[string]*AppRoleQuery)
 	}
-	aq.withNamedRoles[name] = query
-	return aq
+	_q.withNamedRoles[name] = query
+	return _q
 }
 
 // WithNamedPolicies tells the query-builder to eager-load the nodes that are connected to the "policies"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedPolicies(name string, opts ...func(*AppPolicyQuery)) *AppQuery {
-	query := (&AppPolicyClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedPolicies(name string, opts ...func(*AppPolicyQuery)) *AppQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedPolicies == nil {
-		aq.withNamedPolicies = make(map[string]*AppPolicyQuery)
+	if _q.withNamedPolicies == nil {
+		_q.withNamedPolicies = make(map[string]*AppPolicyQuery)
 	}
-	aq.withNamedPolicies[name] = query
-	return aq
+	_q.withNamedPolicies[name] = query
+	return _q
 }
 
 // WithNamedPolicyViews tells the query-builder to eager-load the nodes that are connected to the "policy_views"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedPolicyViews(name string, opts ...func(*AppPolicyViewQuery)) *AppQuery {
-	query := (&AppPolicyViewClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedPolicyViews(name string, opts ...func(*AppPolicyViewQuery)) *AppQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedPolicyViews == nil {
-		aq.withNamedPolicyViews = make(map[string]*AppPolicyViewQuery)
+	if _q.withNamedPolicyViews == nil {
+		_q.withNamedPolicyViews = make(map[string]*AppPolicyViewQuery)
 	}
-	aq.withNamedPolicyViews[name] = query
-	return aq
+	_q.withNamedPolicyViews[name] = query
+	return _q
 }
 
 // WithNamedOrgs tells the query-builder to eager-load the nodes that are connected to the "orgs"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedOrgs(name string, opts ...func(*OrgQuery)) *AppQuery {
-	query := (&OrgClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedOrgs(name string, opts ...func(*OrgQuery)) *AppQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedOrgs == nil {
-		aq.withNamedOrgs = make(map[string]*OrgQuery)
+	if _q.withNamedOrgs == nil {
+		_q.withNamedOrgs = make(map[string]*OrgQuery)
 	}
-	aq.withNamedOrgs[name] = query
-	return aq
+	_q.withNamedOrgs[name] = query
+	return _q
 }
 
 // WithNamedDicts tells the query-builder to eager-load the nodes that are connected to the "dicts"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedDicts(name string, opts ...func(*AppDictQuery)) *AppQuery {
-	query := (&AppDictClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedDicts(name string, opts ...func(*AppDictQuery)) *AppQuery {
+	query := (&AppDictClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedDicts == nil {
-		aq.withNamedDicts = make(map[string]*AppDictQuery)
+	if _q.withNamedDicts == nil {
+		_q.withNamedDicts = make(map[string]*AppDictQuery)
 	}
-	aq.withNamedDicts[name] = query
-	return aq
+	_q.withNamedDicts[name] = query
+	return _q
 }
 
 // WithNamedOrgApp tells the query-builder to eager-load the nodes that are connected to the "org_app"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedOrgApp(name string, opts ...func(*OrgAppQuery)) *AppQuery {
-	query := (&OrgAppClient{config: aq.config}).Query()
+func (_q *AppQuery) WithNamedOrgApp(name string, opts ...func(*OrgAppQuery)) *AppQuery {
+	query := (&OrgAppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedOrgApp == nil {
-		aq.withNamedOrgApp = make(map[string]*OrgAppQuery)
+	if _q.withNamedOrgApp == nil {
+		_q.withNamedOrgApp = make(map[string]*OrgAppQuery)
 	}
-	aq.withNamedOrgApp[name] = query
-	return aq
+	_q.withNamedOrgApp[name] = query
+	return _q
 }
 
 // AppGroupBy is the group-by builder for App entities.
@@ -1356,41 +1356,41 @@ type AppGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (agb *AppGroupBy) Aggregate(fns ...AggregateFunc) *AppGroupBy {
-	agb.fns = append(agb.fns, fns...)
-	return agb
+func (_g *AppGroupBy) Aggregate(fns ...AggregateFunc) *AppGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (agb *AppGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, agb.build.ctx, ent.OpQueryGroupBy)
-	if err := agb.build.prepareQuery(ctx); err != nil {
+func (_g *AppGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppQuery, *AppGroupBy](ctx, agb.build, agb, agb.build.inters, v)
+	return scanWithInterceptors[*AppQuery, *AppGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (agb *AppGroupBy) sqlScan(ctx context.Context, root *AppQuery, v any) error {
+func (_g *AppGroupBy) sqlScan(ctx context.Context, root *AppQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(agb.fns))
-	for _, fn := range agb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*agb.flds)+len(agb.fns))
-		for _, f := range *agb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*agb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := agb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -1404,27 +1404,27 @@ type AppSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (as *AppSelect) Aggregate(fns ...AggregateFunc) *AppSelect {
-	as.fns = append(as.fns, fns...)
-	return as
+func (_s *AppSelect) Aggregate(fns ...AggregateFunc) *AppSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (as *AppSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, as.ctx, ent.OpQuerySelect)
-	if err := as.prepareQuery(ctx); err != nil {
+func (_s *AppSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppQuery, *AppSelect](ctx, as.AppQuery, as, as.inters, v)
+	return scanWithInterceptors[*AppQuery, *AppSelect](ctx, _s.AppQuery, _s, _s.inters, v)
 }
 
-func (as *AppSelect) sqlScan(ctx context.Context, root *AppQuery, v any) error {
+func (_s *AppSelect) sqlScan(ctx context.Context, root *AppQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(as.fns))
-	for _, fn := range as.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*as.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -1432,7 +1432,7 @@ func (as *AppSelect) sqlScan(ctx context.Context, root *AppQuery, v any) error {
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := as.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

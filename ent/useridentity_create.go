@@ -25,142 +25,142 @@ type UserIdentityCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (uic *UserIdentityCreate) SetCreatedBy(i int) *UserIdentityCreate {
-	uic.mutation.SetCreatedBy(i)
-	return uic
+func (_c *UserIdentityCreate) SetCreatedBy(v int) *UserIdentityCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (uic *UserIdentityCreate) SetCreatedAt(t time.Time) *UserIdentityCreate {
-	uic.mutation.SetCreatedAt(t)
-	return uic
+func (_c *UserIdentityCreate) SetCreatedAt(v time.Time) *UserIdentityCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableCreatedAt(t *time.Time) *UserIdentityCreate {
-	if t != nil {
-		uic.SetCreatedAt(*t)
+func (_c *UserIdentityCreate) SetNillableCreatedAt(v *time.Time) *UserIdentityCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uic *UserIdentityCreate) SetUpdatedBy(i int) *UserIdentityCreate {
-	uic.mutation.SetUpdatedBy(i)
-	return uic
+func (_c *UserIdentityCreate) SetUpdatedBy(v int) *UserIdentityCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableUpdatedBy(i *int) *UserIdentityCreate {
-	if i != nil {
-		uic.SetUpdatedBy(*i)
+func (_c *UserIdentityCreate) SetNillableUpdatedBy(v *int) *UserIdentityCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uic *UserIdentityCreate) SetUpdatedAt(t time.Time) *UserIdentityCreate {
-	uic.mutation.SetUpdatedAt(t)
-	return uic
+func (_c *UserIdentityCreate) SetUpdatedAt(v time.Time) *UserIdentityCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableUpdatedAt(t *time.Time) *UserIdentityCreate {
-	if t != nil {
-		uic.SetUpdatedAt(*t)
+func (_c *UserIdentityCreate) SetNillableUpdatedAt(v *time.Time) *UserIdentityCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (uic *UserIdentityCreate) SetUserID(i int) *UserIdentityCreate {
-	uic.mutation.SetUserID(i)
-	return uic
+func (_c *UserIdentityCreate) SetUserID(v int) *UserIdentityCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableUserID(i *int) *UserIdentityCreate {
-	if i != nil {
-		uic.SetUserID(*i)
+func (_c *UserIdentityCreate) SetNillableUserID(v *int) *UserIdentityCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetKind sets the "kind" field.
-func (uic *UserIdentityCreate) SetKind(u useridentity.Kind) *UserIdentityCreate {
-	uic.mutation.SetKind(u)
-	return uic
+func (_c *UserIdentityCreate) SetKind(v useridentity.Kind) *UserIdentityCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (uic *UserIdentityCreate) SetCode(s string) *UserIdentityCreate {
-	uic.mutation.SetCode(s)
-	return uic
+func (_c *UserIdentityCreate) SetCode(v string) *UserIdentityCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableCode(s *string) *UserIdentityCreate {
-	if s != nil {
-		uic.SetCode(*s)
+func (_c *UserIdentityCreate) SetNillableCode(v *string) *UserIdentityCreate {
+	if v != nil {
+		_c.SetCode(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetCodeExtend sets the "code_extend" field.
-func (uic *UserIdentityCreate) SetCodeExtend(s string) *UserIdentityCreate {
-	uic.mutation.SetCodeExtend(s)
-	return uic
+func (_c *UserIdentityCreate) SetCodeExtend(v string) *UserIdentityCreate {
+	_c.mutation.SetCodeExtend(v)
+	return _c
 }
 
 // SetNillableCodeExtend sets the "code_extend" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableCodeExtend(s *string) *UserIdentityCreate {
-	if s != nil {
-		uic.SetCodeExtend(*s)
+func (_c *UserIdentityCreate) SetNillableCodeExtend(v *string) *UserIdentityCreate {
+	if v != nil {
+		_c.SetCodeExtend(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (uic *UserIdentityCreate) SetStatus(ts typex.SimpleStatus) *UserIdentityCreate {
-	uic.mutation.SetStatus(ts)
-	return uic
+func (_c *UserIdentityCreate) SetStatus(v typex.SimpleStatus) *UserIdentityCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uic *UserIdentityCreate) SetNillableStatus(ts *typex.SimpleStatus) *UserIdentityCreate {
-	if ts != nil {
-		uic.SetStatus(*ts)
+func (_c *UserIdentityCreate) SetNillableStatus(v *typex.SimpleStatus) *UserIdentityCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return uic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (uic *UserIdentityCreate) SetID(i int) *UserIdentityCreate {
-	uic.mutation.SetID(i)
-	return uic
+func (_c *UserIdentityCreate) SetID(v int) *UserIdentityCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (uic *UserIdentityCreate) SetUser(u *User) *UserIdentityCreate {
-	return uic.SetUserID(u.ID)
+func (_c *UserIdentityCreate) SetUser(v *User) *UserIdentityCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the UserIdentityMutation object of the builder.
-func (uic *UserIdentityCreate) Mutation() *UserIdentityMutation {
-	return uic.mutation
+func (_c *UserIdentityCreate) Mutation() *UserIdentityMutation {
+	return _c.mutation
 }
 
 // Save creates the UserIdentity in the database.
-func (uic *UserIdentityCreate) Save(ctx context.Context) (*UserIdentity, error) {
-	if err := uic.defaults(); err != nil {
+func (_c *UserIdentityCreate) Save(ctx context.Context) (*UserIdentity, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, uic.sqlSave, uic.mutation, uic.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (uic *UserIdentityCreate) SaveX(ctx context.Context) *UserIdentity {
-	v, err := uic.Save(ctx)
+func (_c *UserIdentityCreate) SaveX(ctx context.Context) *UserIdentity {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -168,47 +168,47 @@ func (uic *UserIdentityCreate) SaveX(ctx context.Context) *UserIdentity {
 }
 
 // Exec executes the query.
-func (uic *UserIdentityCreate) Exec(ctx context.Context) error {
-	_, err := uic.Save(ctx)
+func (_c *UserIdentityCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uic *UserIdentityCreate) ExecX(ctx context.Context) {
-	if err := uic.Exec(ctx); err != nil {
+func (_c *UserIdentityCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (uic *UserIdentityCreate) defaults() error {
-	if _, ok := uic.mutation.CreatedAt(); !ok {
+func (_c *UserIdentityCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if useridentity.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized useridentity.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := useridentity.DefaultCreatedAt()
-		uic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uic *UserIdentityCreate) check() error {
-	if _, ok := uic.mutation.CreatedBy(); !ok {
+func (_c *UserIdentityCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "UserIdentity.created_by"`)}
 	}
-	if _, ok := uic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserIdentity.created_at"`)}
 	}
-	if _, ok := uic.mutation.Kind(); !ok {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "UserIdentity.kind"`)}
 	}
-	if v, ok := uic.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := useridentity.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.kind": %w`, err)}
 		}
 	}
-	if v, ok := uic.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := useridentity.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserIdentity.status": %w`, err)}
 		}
@@ -216,12 +216,12 @@ func (uic *UserIdentityCreate) check() error {
 	return nil
 }
 
-func (uic *UserIdentityCreate) sqlSave(ctx context.Context) (*UserIdentity, error) {
-	if err := uic.check(); err != nil {
+func (_c *UserIdentityCreate) sqlSave(ctx context.Context) (*UserIdentity, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := uic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, uic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -231,54 +231,54 @@ func (uic *UserIdentityCreate) sqlSave(ctx context.Context) (*UserIdentity, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	uic.mutation.id = &_node.ID
-	uic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (uic *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec) {
+func (_c *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserIdentity{config: uic.config}
+		_node = &UserIdentity{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(useridentity.Table, sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = uic.conflict
-	if id, ok := uic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := uic.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(useridentity.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := uic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(useridentity.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := uic.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(useridentity.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := uic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(useridentity.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := uic.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(useridentity.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := uic.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(useridentity.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := uic.mutation.CodeExtend(); ok {
+	if value, ok := _c.mutation.CodeExtend(); ok {
 		_spec.SetField(useridentity.FieldCodeExtend, field.TypeString, value)
 		_node.CodeExtend = value
 	}
-	if value, ok := uic.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(useridentity.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := uic.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -314,10 +314,10 @@ func (uic *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uic *UserIdentityCreate) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertOne {
-	uic.conflict = opts
+func (_c *UserIdentityCreate) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertOne {
+	_c.conflict = opts
 	return &UserIdentityUpsertOne{
-		create: uic,
+		create: _c,
 	}
 }
 
@@ -327,10 +327,10 @@ func (uic *UserIdentityCreate) OnConflict(opts ...sql.ConflictOption) *UserIdent
 //	client.UserIdentity.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uic *UserIdentityCreate) OnConflictColumns(columns ...string) *UserIdentityUpsertOne {
-	uic.conflict = append(uic.conflict, sql.ConflictColumns(columns...))
+func (_c *UserIdentityCreate) OnConflictColumns(columns ...string) *UserIdentityUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserIdentityUpsertOne{
-		create: uic,
+		create: _c,
 	}
 }
 
@@ -680,16 +680,16 @@ type UserIdentityCreateBulk struct {
 }
 
 // Save creates the UserIdentity entities in the database.
-func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, error) {
-	if uicb.err != nil {
-		return nil, uicb.err
+func (_c *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(uicb.builders))
-	nodes := make([]*UserIdentity, len(uicb.builders))
-	mutators := make([]Mutator, len(uicb.builders))
-	for i := range uicb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserIdentity, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := uicb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserIdentityMutation)
@@ -703,12 +703,12 @@ func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, uicb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = uicb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, uicb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -732,7 +732,7 @@ func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, uicb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -740,8 +740,8 @@ func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uicb *UserIdentityCreateBulk) SaveX(ctx context.Context) []*UserIdentity {
-	v, err := uicb.Save(ctx)
+func (_c *UserIdentityCreateBulk) SaveX(ctx context.Context) []*UserIdentity {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -749,14 +749,14 @@ func (uicb *UserIdentityCreateBulk) SaveX(ctx context.Context) []*UserIdentity {
 }
 
 // Exec executes the query.
-func (uicb *UserIdentityCreateBulk) Exec(ctx context.Context) error {
-	_, err := uicb.Save(ctx)
+func (_c *UserIdentityCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uicb *UserIdentityCreateBulk) ExecX(ctx context.Context) {
-	if err := uicb.Exec(ctx); err != nil {
+func (_c *UserIdentityCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -776,10 +776,10 @@ func (uicb *UserIdentityCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uicb *UserIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertBulk {
-	uicb.conflict = opts
+func (_c *UserIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertBulk {
+	_c.conflict = opts
 	return &UserIdentityUpsertBulk{
-		create: uicb,
+		create: _c,
 	}
 }
 
@@ -789,10 +789,10 @@ func (uicb *UserIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *User
 //	client.UserIdentity.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uicb *UserIdentityCreateBulk) OnConflictColumns(columns ...string) *UserIdentityUpsertBulk {
-	uicb.conflict = append(uicb.conflict, sql.ConflictColumns(columns...))
+func (_c *UserIdentityCreateBulk) OnConflictColumns(columns ...string) *UserIdentityUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserIdentityUpsertBulk{
-		create: uicb,
+		create: _c,
 	}
 }
 

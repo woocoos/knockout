@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	schemahook "github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/enttest"
@@ -40,6 +41,7 @@ func (t *passwordExpiredJobSuite) SetupSuite() {
 	t.Require().NoError(err)
 	t.db = enttest.Open(t.T(), "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1",
 		enttest.WithOptions(ent.Debug()), enttest.WithMigrateOptions(schema.WithForeignKeys(false)))
+	schemahook.RegisterAllHooks(t.db)
 	t.initDbData(t.newTestCtx(t.db), t.db)
 	// 初始化job
 	var pej *PasswordExpiredJob

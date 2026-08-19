@@ -25,296 +25,296 @@ type RegionUpdate struct {
 }
 
 // Where appends a list predicates to the RegionUpdate builder.
-func (ru *RegionUpdate) Where(ps ...predicate.Region) *RegionUpdate {
-	ru.mutation.Where(ps...)
-	return ru
+func (_u *RegionUpdate) Where(ps ...predicate.Region) *RegionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ru *RegionUpdate) SetUpdatedBy(i int) *RegionUpdate {
-	ru.mutation.ResetUpdatedBy()
-	ru.mutation.SetUpdatedBy(i)
-	return ru
+func (_u *RegionUpdate) SetUpdatedBy(v int) *RegionUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableUpdatedBy(i *int) *RegionUpdate {
-	if i != nil {
-		ru.SetUpdatedBy(*i)
+func (_u *RegionUpdate) SetNillableUpdatedBy(v *int) *RegionUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ru
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ru *RegionUpdate) AddUpdatedBy(i int) *RegionUpdate {
-	ru.mutation.AddUpdatedBy(i)
-	return ru
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *RegionUpdate) AddUpdatedBy(v int) *RegionUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ru *RegionUpdate) ClearUpdatedBy() *RegionUpdate {
-	ru.mutation.ClearUpdatedBy()
-	return ru
+func (_u *RegionUpdate) ClearUpdatedBy() *RegionUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ru *RegionUpdate) SetUpdatedAt(t time.Time) *RegionUpdate {
-	ru.mutation.SetUpdatedAt(t)
-	return ru
+func (_u *RegionUpdate) SetUpdatedAt(v time.Time) *RegionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableUpdatedAt(t *time.Time) *RegionUpdate {
-	if t != nil {
-		ru.SetUpdatedAt(*t)
+func (_u *RegionUpdate) SetNillableUpdatedAt(v *time.Time) *RegionUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ru *RegionUpdate) ClearUpdatedAt() *RegionUpdate {
-	ru.mutation.ClearUpdatedAt()
-	return ru
+func (_u *RegionUpdate) ClearUpdatedAt() *RegionUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (ru *RegionUpdate) SetParentID(i int) *RegionUpdate {
-	ru.mutation.SetParentID(i)
-	return ru
+func (_u *RegionUpdate) SetParentID(v int) *RegionUpdate {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableParentID(i *int) *RegionUpdate {
-	if i != nil {
-		ru.SetParentID(*i)
+func (_u *RegionUpdate) SetNillableParentID(v *int) *RegionUpdate {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearParentID clears the value of the "parent_id" field.
-func (ru *RegionUpdate) ClearParentID() *RegionUpdate {
-	ru.mutation.ClearParentID()
-	return ru
+func (_u *RegionUpdate) ClearParentID() *RegionUpdate {
+	_u.mutation.ClearParentID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ru *RegionUpdate) SetName(s string) *RegionUpdate {
-	ru.mutation.SetName(s)
-	return ru
+func (_u *RegionUpdate) SetName(v string) *RegionUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableName(s *string) *RegionUpdate {
-	if s != nil {
-		ru.SetName(*s)
+func (_u *RegionUpdate) SetNillableName(v *string) *RegionUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (ru *RegionUpdate) ClearName() *RegionUpdate {
-	ru.mutation.ClearName()
-	return ru
+func (_u *RegionUpdate) ClearName() *RegionUpdate {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetNameEn sets the "name_en" field.
-func (ru *RegionUpdate) SetNameEn(s string) *RegionUpdate {
-	ru.mutation.SetNameEn(s)
-	return ru
+func (_u *RegionUpdate) SetNameEn(v string) *RegionUpdate {
+	_u.mutation.SetNameEn(v)
+	return _u
 }
 
 // SetNillableNameEn sets the "name_en" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableNameEn(s *string) *RegionUpdate {
-	if s != nil {
-		ru.SetNameEn(*s)
+func (_u *RegionUpdate) SetNillableNameEn(v *string) *RegionUpdate {
+	if v != nil {
+		_u.SetNameEn(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearNameEn clears the value of the "name_en" field.
-func (ru *RegionUpdate) ClearNameEn() *RegionUpdate {
-	ru.mutation.ClearNameEn()
-	return ru
+func (_u *RegionUpdate) ClearNameEn() *RegionUpdate {
+	_u.mutation.ClearNameEn()
+	return _u
 }
 
 // SetShortCode sets the "short_code" field.
-func (ru *RegionUpdate) SetShortCode(s string) *RegionUpdate {
-	ru.mutation.SetShortCode(s)
-	return ru
+func (_u *RegionUpdate) SetShortCode(v string) *RegionUpdate {
+	_u.mutation.SetShortCode(v)
+	return _u
 }
 
 // SetNillableShortCode sets the "short_code" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableShortCode(s *string) *RegionUpdate {
-	if s != nil {
-		ru.SetShortCode(*s)
+func (_u *RegionUpdate) SetNillableShortCode(v *string) *RegionUpdate {
+	if v != nil {
+		_u.SetShortCode(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearShortCode clears the value of the "short_code" field.
-func (ru *RegionUpdate) ClearShortCode() *RegionUpdate {
-	ru.mutation.ClearShortCode()
-	return ru
+func (_u *RegionUpdate) ClearShortCode() *RegionUpdate {
+	_u.mutation.ClearShortCode()
+	return _u
 }
 
 // SetZipCode sets the "zip_code" field.
-func (ru *RegionUpdate) SetZipCode(s string) *RegionUpdate {
-	ru.mutation.SetZipCode(s)
-	return ru
+func (_u *RegionUpdate) SetZipCode(v string) *RegionUpdate {
+	_u.mutation.SetZipCode(v)
+	return _u
 }
 
 // SetNillableZipCode sets the "zip_code" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableZipCode(s *string) *RegionUpdate {
-	if s != nil {
-		ru.SetZipCode(*s)
+func (_u *RegionUpdate) SetNillableZipCode(v *string) *RegionUpdate {
+	if v != nil {
+		_u.SetZipCode(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearZipCode clears the value of the "zip_code" field.
-func (ru *RegionUpdate) ClearZipCode() *RegionUpdate {
-	ru.mutation.ClearZipCode()
-	return ru
+func (_u *RegionUpdate) ClearZipCode() *RegionUpdate {
+	_u.mutation.ClearZipCode()
+	return _u
 }
 
 // SetCountryID sets the "country_id" field.
-func (ru *RegionUpdate) SetCountryID(i int) *RegionUpdate {
-	ru.mutation.SetCountryID(i)
-	return ru
+func (_u *RegionUpdate) SetCountryID(v int) *RegionUpdate {
+	_u.mutation.SetCountryID(v)
+	return _u
 }
 
 // SetNillableCountryID sets the "country_id" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableCountryID(i *int) *RegionUpdate {
-	if i != nil {
-		ru.SetCountryID(*i)
+func (_u *RegionUpdate) SetNillableCountryID(v *int) *RegionUpdate {
+	if v != nil {
+		_u.SetCountryID(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearCountryID clears the value of the "country_id" field.
-func (ru *RegionUpdate) ClearCountryID() *RegionUpdate {
-	ru.mutation.ClearCountryID()
-	return ru
+func (_u *RegionUpdate) ClearCountryID() *RegionUpdate {
+	_u.mutation.ClearCountryID()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (ru *RegionUpdate) SetDisplaySort(i int32) *RegionUpdate {
-	ru.mutation.ResetDisplaySort()
-	ru.mutation.SetDisplaySort(i)
-	return ru
+func (_u *RegionUpdate) SetDisplaySort(v int32) *RegionUpdate {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableDisplaySort(i *int32) *RegionUpdate {
-	if i != nil {
-		ru.SetDisplaySort(*i)
+func (_u *RegionUpdate) SetNillableDisplaySort(v *int32) *RegionUpdate {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return ru
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (ru *RegionUpdate) AddDisplaySort(i int32) *RegionUpdate {
-	ru.mutation.AddDisplaySort(i)
-	return ru
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *RegionUpdate) AddDisplaySort(v int32) *RegionUpdate {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (ru *RegionUpdate) ClearDisplaySort() *RegionUpdate {
-	ru.mutation.ClearDisplaySort()
-	return ru
+func (_u *RegionUpdate) ClearDisplaySort() *RegionUpdate {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ru *RegionUpdate) SetStatus(ts typex.SimpleStatus) *RegionUpdate {
-	ru.mutation.SetStatus(ts)
-	return ru
+func (_u *RegionUpdate) SetStatus(v typex.SimpleStatus) *RegionUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ru *RegionUpdate) SetNillableStatus(ts *typex.SimpleStatus) *RegionUpdate {
-	if ts != nil {
-		ru.SetStatus(*ts)
+func (_u *RegionUpdate) SetNillableStatus(v *typex.SimpleStatus) *RegionUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (ru *RegionUpdate) ClearStatus() *RegionUpdate {
-	ru.mutation.ClearStatus()
-	return ru
+func (_u *RegionUpdate) ClearStatus() *RegionUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetParent sets the "parent" edge to the Region entity.
-func (ru *RegionUpdate) SetParent(r *Region) *RegionUpdate {
-	return ru.SetParentID(r.ID)
+func (_u *RegionUpdate) SetParent(v *Region) *RegionUpdate {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the Region entity by IDs.
-func (ru *RegionUpdate) AddChildIDs(ids ...int) *RegionUpdate {
-	ru.mutation.AddChildIDs(ids...)
-	return ru
+func (_u *RegionUpdate) AddChildIDs(ids ...int) *RegionUpdate {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the Region entity.
-func (ru *RegionUpdate) AddChildren(r ...*Region) *RegionUpdate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *RegionUpdate) AddChildren(v ...*Region) *RegionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ru.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // SetCountry sets the "country" edge to the Country entity.
-func (ru *RegionUpdate) SetCountry(c *Country) *RegionUpdate {
-	return ru.SetCountryID(c.ID)
+func (_u *RegionUpdate) SetCountry(v *Country) *RegionUpdate {
+	return _u.SetCountryID(v.ID)
 }
 
 // Mutation returns the RegionMutation object of the builder.
-func (ru *RegionUpdate) Mutation() *RegionMutation {
-	return ru.mutation
+func (_u *RegionUpdate) Mutation() *RegionMutation {
+	return _u.mutation
 }
 
 // ClearParent clears the "parent" edge to the Region entity.
-func (ru *RegionUpdate) ClearParent() *RegionUpdate {
-	ru.mutation.ClearParent()
-	return ru
+func (_u *RegionUpdate) ClearParent() *RegionUpdate {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the Region entity.
-func (ru *RegionUpdate) ClearChildren() *RegionUpdate {
-	ru.mutation.ClearChildren()
-	return ru
+func (_u *RegionUpdate) ClearChildren() *RegionUpdate {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to Region entities by IDs.
-func (ru *RegionUpdate) RemoveChildIDs(ids ...int) *RegionUpdate {
-	ru.mutation.RemoveChildIDs(ids...)
-	return ru
+func (_u *RegionUpdate) RemoveChildIDs(ids ...int) *RegionUpdate {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to Region entities.
-func (ru *RegionUpdate) RemoveChildren(r ...*Region) *RegionUpdate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *RegionUpdate) RemoveChildren(v ...*Region) *RegionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ru.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // ClearCountry clears the "country" edge to the Country entity.
-func (ru *RegionUpdate) ClearCountry() *RegionUpdate {
-	ru.mutation.ClearCountry()
-	return ru
+func (_u *RegionUpdate) ClearCountry() *RegionUpdate {
+	_u.mutation.ClearCountry()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ru *RegionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
+func (_u *RegionUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ru *RegionUpdate) SaveX(ctx context.Context) int {
-	affected, err := ru.Save(ctx)
+func (_u *RegionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -322,41 +322,41 @@ func (ru *RegionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ru *RegionUpdate) Exec(ctx context.Context) error {
-	_, err := ru.Save(ctx)
+func (_u *RegionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ru *RegionUpdate) ExecX(ctx context.Context) {
-	if err := ru.Exec(ctx); err != nil {
+func (_u *RegionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ru *RegionUpdate) check() error {
-	if v, ok := ru.mutation.Name(); ok {
+func (_u *RegionUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := region.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Region.name": %w`, err)}
 		}
 	}
-	if v, ok := ru.mutation.NameEn(); ok {
+	if v, ok := _u.mutation.NameEn(); ok {
 		if err := region.NameEnValidator(v); err != nil {
 			return &ValidationError{Name: "name_en", err: fmt.Errorf(`ent: validator failed for field "Region.name_en": %w`, err)}
 		}
 	}
-	if v, ok := ru.mutation.ShortCode(); ok {
+	if v, ok := _u.mutation.ShortCode(); ok {
 		if err := region.ShortCodeValidator(v); err != nil {
 			return &ValidationError{Name: "short_code", err: fmt.Errorf(`ent: validator failed for field "Region.short_code": %w`, err)}
 		}
 	}
-	if v, ok := ru.mutation.ZipCode(); ok {
+	if v, ok := _u.mutation.ZipCode(); ok {
 		if err := region.ZipCodeValidator(v); err != nil {
 			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "Region.zip_code": %w`, err)}
 		}
 	}
-	if v, ok := ru.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := region.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Region.status": %w`, err)}
 		}
@@ -364,73 +364,73 @@ func (ru *RegionUpdate) check() error {
 	return nil
 }
 
-func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ru.check(); err != nil {
-		return n, err
+func (_u *RegionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(region.Table, region.Columns, sqlgraph.NewFieldSpec(region.FieldID, field.TypeInt))
-	if ps := ru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ru.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(region.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ru.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(region.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ru.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(region.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ru.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(region.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ru.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(region.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ru.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(region.FieldName, field.TypeString, value)
 	}
-	if ru.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(region.FieldName, field.TypeString)
 	}
-	if value, ok := ru.mutation.NameEn(); ok {
+	if value, ok := _u.mutation.NameEn(); ok {
 		_spec.SetField(region.FieldNameEn, field.TypeString, value)
 	}
-	if ru.mutation.NameEnCleared() {
+	if _u.mutation.NameEnCleared() {
 		_spec.ClearField(region.FieldNameEn, field.TypeString)
 	}
-	if value, ok := ru.mutation.ShortCode(); ok {
+	if value, ok := _u.mutation.ShortCode(); ok {
 		_spec.SetField(region.FieldShortCode, field.TypeString, value)
 	}
-	if ru.mutation.ShortCodeCleared() {
+	if _u.mutation.ShortCodeCleared() {
 		_spec.ClearField(region.FieldShortCode, field.TypeString)
 	}
-	if value, ok := ru.mutation.ZipCode(); ok {
+	if value, ok := _u.mutation.ZipCode(); ok {
 		_spec.SetField(region.FieldZipCode, field.TypeString, value)
 	}
-	if ru.mutation.ZipCodeCleared() {
+	if _u.mutation.ZipCodeCleared() {
 		_spec.ClearField(region.FieldZipCode, field.TypeString)
 	}
-	if value, ok := ru.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(region.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := ru.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(region.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if ru.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(region.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := ru.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(region.FieldStatus, field.TypeEnum, value)
 	}
-	if ru.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(region.FieldStatus, field.TypeEnum)
 	}
-	if ru.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -443,7 +443,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -459,7 +459,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ru.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -472,7 +472,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !ru.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -488,7 +488,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -504,7 +504,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ru.mutation.CountryCleared() {
+	if _u.mutation.CountryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -517,7 +517,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.CountryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CountryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -533,7 +533,7 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{region.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -541,8 +541,8 @@ func (ru *RegionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // RegionUpdateOne is the builder for updating a single Region entity.
@@ -554,303 +554,303 @@ type RegionUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ruo *RegionUpdateOne) SetUpdatedBy(i int) *RegionUpdateOne {
-	ruo.mutation.ResetUpdatedBy()
-	ruo.mutation.SetUpdatedBy(i)
-	return ruo
+func (_u *RegionUpdateOne) SetUpdatedBy(v int) *RegionUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableUpdatedBy(i *int) *RegionUpdateOne {
-	if i != nil {
-		ruo.SetUpdatedBy(*i)
+func (_u *RegionUpdateOne) SetNillableUpdatedBy(v *int) *RegionUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ruo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ruo *RegionUpdateOne) AddUpdatedBy(i int) *RegionUpdateOne {
-	ruo.mutation.AddUpdatedBy(i)
-	return ruo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *RegionUpdateOne) AddUpdatedBy(v int) *RegionUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ruo *RegionUpdateOne) ClearUpdatedBy() *RegionUpdateOne {
-	ruo.mutation.ClearUpdatedBy()
-	return ruo
+func (_u *RegionUpdateOne) ClearUpdatedBy() *RegionUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ruo *RegionUpdateOne) SetUpdatedAt(t time.Time) *RegionUpdateOne {
-	ruo.mutation.SetUpdatedAt(t)
-	return ruo
+func (_u *RegionUpdateOne) SetUpdatedAt(v time.Time) *RegionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableUpdatedAt(t *time.Time) *RegionUpdateOne {
-	if t != nil {
-		ruo.SetUpdatedAt(*t)
+func (_u *RegionUpdateOne) SetNillableUpdatedAt(v *time.Time) *RegionUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ruo *RegionUpdateOne) ClearUpdatedAt() *RegionUpdateOne {
-	ruo.mutation.ClearUpdatedAt()
-	return ruo
+func (_u *RegionUpdateOne) ClearUpdatedAt() *RegionUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetParentID sets the "parent_id" field.
-func (ruo *RegionUpdateOne) SetParentID(i int) *RegionUpdateOne {
-	ruo.mutation.SetParentID(i)
-	return ruo
+func (_u *RegionUpdateOne) SetParentID(v int) *RegionUpdateOne {
+	_u.mutation.SetParentID(v)
+	return _u
 }
 
 // SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableParentID(i *int) *RegionUpdateOne {
-	if i != nil {
-		ruo.SetParentID(*i)
+func (_u *RegionUpdateOne) SetNillableParentID(v *int) *RegionUpdateOne {
+	if v != nil {
+		_u.SetParentID(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearParentID clears the value of the "parent_id" field.
-func (ruo *RegionUpdateOne) ClearParentID() *RegionUpdateOne {
-	ruo.mutation.ClearParentID()
-	return ruo
+func (_u *RegionUpdateOne) ClearParentID() *RegionUpdateOne {
+	_u.mutation.ClearParentID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ruo *RegionUpdateOne) SetName(s string) *RegionUpdateOne {
-	ruo.mutation.SetName(s)
-	return ruo
+func (_u *RegionUpdateOne) SetName(v string) *RegionUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableName(s *string) *RegionUpdateOne {
-	if s != nil {
-		ruo.SetName(*s)
+func (_u *RegionUpdateOne) SetNillableName(v *string) *RegionUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (ruo *RegionUpdateOne) ClearName() *RegionUpdateOne {
-	ruo.mutation.ClearName()
-	return ruo
+func (_u *RegionUpdateOne) ClearName() *RegionUpdateOne {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetNameEn sets the "name_en" field.
-func (ruo *RegionUpdateOne) SetNameEn(s string) *RegionUpdateOne {
-	ruo.mutation.SetNameEn(s)
-	return ruo
+func (_u *RegionUpdateOne) SetNameEn(v string) *RegionUpdateOne {
+	_u.mutation.SetNameEn(v)
+	return _u
 }
 
 // SetNillableNameEn sets the "name_en" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableNameEn(s *string) *RegionUpdateOne {
-	if s != nil {
-		ruo.SetNameEn(*s)
+func (_u *RegionUpdateOne) SetNillableNameEn(v *string) *RegionUpdateOne {
+	if v != nil {
+		_u.SetNameEn(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearNameEn clears the value of the "name_en" field.
-func (ruo *RegionUpdateOne) ClearNameEn() *RegionUpdateOne {
-	ruo.mutation.ClearNameEn()
-	return ruo
+func (_u *RegionUpdateOne) ClearNameEn() *RegionUpdateOne {
+	_u.mutation.ClearNameEn()
+	return _u
 }
 
 // SetShortCode sets the "short_code" field.
-func (ruo *RegionUpdateOne) SetShortCode(s string) *RegionUpdateOne {
-	ruo.mutation.SetShortCode(s)
-	return ruo
+func (_u *RegionUpdateOne) SetShortCode(v string) *RegionUpdateOne {
+	_u.mutation.SetShortCode(v)
+	return _u
 }
 
 // SetNillableShortCode sets the "short_code" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableShortCode(s *string) *RegionUpdateOne {
-	if s != nil {
-		ruo.SetShortCode(*s)
+func (_u *RegionUpdateOne) SetNillableShortCode(v *string) *RegionUpdateOne {
+	if v != nil {
+		_u.SetShortCode(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearShortCode clears the value of the "short_code" field.
-func (ruo *RegionUpdateOne) ClearShortCode() *RegionUpdateOne {
-	ruo.mutation.ClearShortCode()
-	return ruo
+func (_u *RegionUpdateOne) ClearShortCode() *RegionUpdateOne {
+	_u.mutation.ClearShortCode()
+	return _u
 }
 
 // SetZipCode sets the "zip_code" field.
-func (ruo *RegionUpdateOne) SetZipCode(s string) *RegionUpdateOne {
-	ruo.mutation.SetZipCode(s)
-	return ruo
+func (_u *RegionUpdateOne) SetZipCode(v string) *RegionUpdateOne {
+	_u.mutation.SetZipCode(v)
+	return _u
 }
 
 // SetNillableZipCode sets the "zip_code" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableZipCode(s *string) *RegionUpdateOne {
-	if s != nil {
-		ruo.SetZipCode(*s)
+func (_u *RegionUpdateOne) SetNillableZipCode(v *string) *RegionUpdateOne {
+	if v != nil {
+		_u.SetZipCode(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearZipCode clears the value of the "zip_code" field.
-func (ruo *RegionUpdateOne) ClearZipCode() *RegionUpdateOne {
-	ruo.mutation.ClearZipCode()
-	return ruo
+func (_u *RegionUpdateOne) ClearZipCode() *RegionUpdateOne {
+	_u.mutation.ClearZipCode()
+	return _u
 }
 
 // SetCountryID sets the "country_id" field.
-func (ruo *RegionUpdateOne) SetCountryID(i int) *RegionUpdateOne {
-	ruo.mutation.SetCountryID(i)
-	return ruo
+func (_u *RegionUpdateOne) SetCountryID(v int) *RegionUpdateOne {
+	_u.mutation.SetCountryID(v)
+	return _u
 }
 
 // SetNillableCountryID sets the "country_id" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableCountryID(i *int) *RegionUpdateOne {
-	if i != nil {
-		ruo.SetCountryID(*i)
+func (_u *RegionUpdateOne) SetNillableCountryID(v *int) *RegionUpdateOne {
+	if v != nil {
+		_u.SetCountryID(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearCountryID clears the value of the "country_id" field.
-func (ruo *RegionUpdateOne) ClearCountryID() *RegionUpdateOne {
-	ruo.mutation.ClearCountryID()
-	return ruo
+func (_u *RegionUpdateOne) ClearCountryID() *RegionUpdateOne {
+	_u.mutation.ClearCountryID()
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (ruo *RegionUpdateOne) SetDisplaySort(i int32) *RegionUpdateOne {
-	ruo.mutation.ResetDisplaySort()
-	ruo.mutation.SetDisplaySort(i)
-	return ruo
+func (_u *RegionUpdateOne) SetDisplaySort(v int32) *RegionUpdateOne {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableDisplaySort(i *int32) *RegionUpdateOne {
-	if i != nil {
-		ruo.SetDisplaySort(*i)
+func (_u *RegionUpdateOne) SetNillableDisplaySort(v *int32) *RegionUpdateOne {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return ruo
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (ruo *RegionUpdateOne) AddDisplaySort(i int32) *RegionUpdateOne {
-	ruo.mutation.AddDisplaySort(i)
-	return ruo
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *RegionUpdateOne) AddDisplaySort(v int32) *RegionUpdateOne {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (ruo *RegionUpdateOne) ClearDisplaySort() *RegionUpdateOne {
-	ruo.mutation.ClearDisplaySort()
-	return ruo
+func (_u *RegionUpdateOne) ClearDisplaySort() *RegionUpdateOne {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ruo *RegionUpdateOne) SetStatus(ts typex.SimpleStatus) *RegionUpdateOne {
-	ruo.mutation.SetStatus(ts)
-	return ruo
+func (_u *RegionUpdateOne) SetStatus(v typex.SimpleStatus) *RegionUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ruo *RegionUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *RegionUpdateOne {
-	if ts != nil {
-		ruo.SetStatus(*ts)
+func (_u *RegionUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *RegionUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (ruo *RegionUpdateOne) ClearStatus() *RegionUpdateOne {
-	ruo.mutation.ClearStatus()
-	return ruo
+func (_u *RegionUpdateOne) ClearStatus() *RegionUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetParent sets the "parent" edge to the Region entity.
-func (ruo *RegionUpdateOne) SetParent(r *Region) *RegionUpdateOne {
-	return ruo.SetParentID(r.ID)
+func (_u *RegionUpdateOne) SetParent(v *Region) *RegionUpdateOne {
+	return _u.SetParentID(v.ID)
 }
 
 // AddChildIDs adds the "children" edge to the Region entity by IDs.
-func (ruo *RegionUpdateOne) AddChildIDs(ids ...int) *RegionUpdateOne {
-	ruo.mutation.AddChildIDs(ids...)
-	return ruo
+func (_u *RegionUpdateOne) AddChildIDs(ids ...int) *RegionUpdateOne {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
 }
 
 // AddChildren adds the "children" edges to the Region entity.
-func (ruo *RegionUpdateOne) AddChildren(r ...*Region) *RegionUpdateOne {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *RegionUpdateOne) AddChildren(v ...*Region) *RegionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ruo.AddChildIDs(ids...)
+	return _u.AddChildIDs(ids...)
 }
 
 // SetCountry sets the "country" edge to the Country entity.
-func (ruo *RegionUpdateOne) SetCountry(c *Country) *RegionUpdateOne {
-	return ruo.SetCountryID(c.ID)
+func (_u *RegionUpdateOne) SetCountry(v *Country) *RegionUpdateOne {
+	return _u.SetCountryID(v.ID)
 }
 
 // Mutation returns the RegionMutation object of the builder.
-func (ruo *RegionUpdateOne) Mutation() *RegionMutation {
-	return ruo.mutation
+func (_u *RegionUpdateOne) Mutation() *RegionMutation {
+	return _u.mutation
 }
 
 // ClearParent clears the "parent" edge to the Region entity.
-func (ruo *RegionUpdateOne) ClearParent() *RegionUpdateOne {
-	ruo.mutation.ClearParent()
-	return ruo
+func (_u *RegionUpdateOne) ClearParent() *RegionUpdateOne {
+	_u.mutation.ClearParent()
+	return _u
 }
 
 // ClearChildren clears all "children" edges to the Region entity.
-func (ruo *RegionUpdateOne) ClearChildren() *RegionUpdateOne {
-	ruo.mutation.ClearChildren()
-	return ruo
+func (_u *RegionUpdateOne) ClearChildren() *RegionUpdateOne {
+	_u.mutation.ClearChildren()
+	return _u
 }
 
 // RemoveChildIDs removes the "children" edge to Region entities by IDs.
-func (ruo *RegionUpdateOne) RemoveChildIDs(ids ...int) *RegionUpdateOne {
-	ruo.mutation.RemoveChildIDs(ids...)
-	return ruo
+func (_u *RegionUpdateOne) RemoveChildIDs(ids ...int) *RegionUpdateOne {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
 }
 
 // RemoveChildren removes "children" edges to Region entities.
-func (ruo *RegionUpdateOne) RemoveChildren(r ...*Region) *RegionUpdateOne {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *RegionUpdateOne) RemoveChildren(v ...*Region) *RegionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ruo.RemoveChildIDs(ids...)
+	return _u.RemoveChildIDs(ids...)
 }
 
 // ClearCountry clears the "country" edge to the Country entity.
-func (ruo *RegionUpdateOne) ClearCountry() *RegionUpdateOne {
-	ruo.mutation.ClearCountry()
-	return ruo
+func (_u *RegionUpdateOne) ClearCountry() *RegionUpdateOne {
+	_u.mutation.ClearCountry()
+	return _u
 }
 
 // Where appends a list predicates to the RegionUpdate builder.
-func (ruo *RegionUpdateOne) Where(ps ...predicate.Region) *RegionUpdateOne {
-	ruo.mutation.Where(ps...)
-	return ruo
+func (_u *RegionUpdateOne) Where(ps ...predicate.Region) *RegionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ruo *RegionUpdateOne) Select(field string, fields ...string) *RegionUpdateOne {
-	ruo.fields = append([]string{field}, fields...)
-	return ruo
+func (_u *RegionUpdateOne) Select(field string, fields ...string) *RegionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Region entity.
-func (ruo *RegionUpdateOne) Save(ctx context.Context) (*Region, error) {
-	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+func (_u *RegionUpdateOne) Save(ctx context.Context) (*Region, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ruo *RegionUpdateOne) SaveX(ctx context.Context) *Region {
-	node, err := ruo.Save(ctx)
+func (_u *RegionUpdateOne) SaveX(ctx context.Context) *Region {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -858,41 +858,41 @@ func (ruo *RegionUpdateOne) SaveX(ctx context.Context) *Region {
 }
 
 // Exec executes the query on the entity.
-func (ruo *RegionUpdateOne) Exec(ctx context.Context) error {
-	_, err := ruo.Save(ctx)
+func (_u *RegionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ruo *RegionUpdateOne) ExecX(ctx context.Context) {
-	if err := ruo.Exec(ctx); err != nil {
+func (_u *RegionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ruo *RegionUpdateOne) check() error {
-	if v, ok := ruo.mutation.Name(); ok {
+func (_u *RegionUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := region.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Region.name": %w`, err)}
 		}
 	}
-	if v, ok := ruo.mutation.NameEn(); ok {
+	if v, ok := _u.mutation.NameEn(); ok {
 		if err := region.NameEnValidator(v); err != nil {
 			return &ValidationError{Name: "name_en", err: fmt.Errorf(`ent: validator failed for field "Region.name_en": %w`, err)}
 		}
 	}
-	if v, ok := ruo.mutation.ShortCode(); ok {
+	if v, ok := _u.mutation.ShortCode(); ok {
 		if err := region.ShortCodeValidator(v); err != nil {
 			return &ValidationError{Name: "short_code", err: fmt.Errorf(`ent: validator failed for field "Region.short_code": %w`, err)}
 		}
 	}
-	if v, ok := ruo.mutation.ZipCode(); ok {
+	if v, ok := _u.mutation.ZipCode(); ok {
 		if err := region.ZipCodeValidator(v); err != nil {
 			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "Region.zip_code": %w`, err)}
 		}
 	}
-	if v, ok := ruo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := region.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Region.status": %w`, err)}
 		}
@@ -900,17 +900,17 @@ func (ruo *RegionUpdateOne) check() error {
 	return nil
 }
 
-func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err error) {
-	if err := ruo.check(); err != nil {
+func (_u *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(region.Table, region.Columns, sqlgraph.NewFieldSpec(region.FieldID, field.TypeInt))
-	id, ok := ruo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Region.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ruo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, region.FieldID)
 		for _, f := range fields {
@@ -922,68 +922,68 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 			}
 		}
 	}
-	if ps := ruo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ruo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(region.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ruo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(region.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ruo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(region.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ruo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(region.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ruo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(region.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ruo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(region.FieldName, field.TypeString, value)
 	}
-	if ruo.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(region.FieldName, field.TypeString)
 	}
-	if value, ok := ruo.mutation.NameEn(); ok {
+	if value, ok := _u.mutation.NameEn(); ok {
 		_spec.SetField(region.FieldNameEn, field.TypeString, value)
 	}
-	if ruo.mutation.NameEnCleared() {
+	if _u.mutation.NameEnCleared() {
 		_spec.ClearField(region.FieldNameEn, field.TypeString)
 	}
-	if value, ok := ruo.mutation.ShortCode(); ok {
+	if value, ok := _u.mutation.ShortCode(); ok {
 		_spec.SetField(region.FieldShortCode, field.TypeString, value)
 	}
-	if ruo.mutation.ShortCodeCleared() {
+	if _u.mutation.ShortCodeCleared() {
 		_spec.ClearField(region.FieldShortCode, field.TypeString)
 	}
-	if value, ok := ruo.mutation.ZipCode(); ok {
+	if value, ok := _u.mutation.ZipCode(); ok {
 		_spec.SetField(region.FieldZipCode, field.TypeString, value)
 	}
-	if ruo.mutation.ZipCodeCleared() {
+	if _u.mutation.ZipCodeCleared() {
 		_spec.ClearField(region.FieldZipCode, field.TypeString)
 	}
-	if value, ok := ruo.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(region.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := ruo.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(region.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if ruo.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(region.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := ruo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(region.FieldStatus, field.TypeEnum, value)
 	}
-	if ruo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(region.FieldStatus, field.TypeEnum)
 	}
-	if ruo.mutation.ParentCleared() {
+	if _u.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -996,7 +996,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.ParentIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1012,7 +1012,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ruo.mutation.ChildrenCleared() {
+	if _u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1025,7 +1025,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !ruo.mutation.ChildrenCleared() {
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1041,7 +1041,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.ChildrenIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1057,7 +1057,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ruo.mutation.CountryCleared() {
+	if _u.mutation.CountryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1070,7 +1070,7 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.CountryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CountryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1086,10 +1086,10 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Region{config: ruo.config}
+	_node = &Region{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ruo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{region.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1097,6 +1097,6 @@ func (ruo *RegionUpdateOne) sqlSave(ctx context.Context) (_node *Region, err err
 		}
 		return nil, err
 	}
-	ruo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

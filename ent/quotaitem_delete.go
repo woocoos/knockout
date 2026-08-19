@@ -20,56 +20,56 @@ type QuotaItemDelete struct {
 }
 
 // Where appends a list predicates to the QuotaItemDelete builder.
-func (qid *QuotaItemDelete) Where(ps ...predicate.QuotaItem) *QuotaItemDelete {
-	qid.mutation.Where(ps...)
-	return qid
+func (_d *QuotaItemDelete) Where(ps ...predicate.QuotaItem) *QuotaItemDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (qid *QuotaItemDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, qid.sqlExec, qid.mutation, qid.hooks)
+func (_d *QuotaItemDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qid *QuotaItemDelete) ExecX(ctx context.Context) int {
-	n, err := qid.Exec(ctx)
+func (_d *QuotaItemDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (qid *QuotaItemDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *QuotaItemDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(quotaitem.Table, sqlgraph.NewFieldSpec(quotaitem.FieldID, field.TypeInt))
-	if ps := qid.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, qid.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	qid.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // QuotaItemDeleteOne is the builder for deleting a single QuotaItem entity.
 type QuotaItemDeleteOne struct {
-	qid *QuotaItemDelete
+	_d *QuotaItemDelete
 }
 
 // Where appends a list predicates to the QuotaItemDelete builder.
-func (qido *QuotaItemDeleteOne) Where(ps ...predicate.QuotaItem) *QuotaItemDeleteOne {
-	qido.qid.mutation.Where(ps...)
-	return qido
+func (_d *QuotaItemDeleteOne) Where(ps ...predicate.QuotaItem) *QuotaItemDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (qido *QuotaItemDeleteOne) Exec(ctx context.Context) error {
-	n, err := qido.qid.Exec(ctx)
+func (_d *QuotaItemDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (qido *QuotaItemDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qido *QuotaItemDeleteOne) ExecX(ctx context.Context) {
-	if err := qido.Exec(ctx); err != nil {
+func (_d *QuotaItemDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

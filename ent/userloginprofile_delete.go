@@ -20,56 +20,56 @@ type UserLoginProfileDelete struct {
 }
 
 // Where appends a list predicates to the UserLoginProfileDelete builder.
-func (ulpd *UserLoginProfileDelete) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileDelete {
-	ulpd.mutation.Where(ps...)
-	return ulpd
+func (_d *UserLoginProfileDelete) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ulpd *UserLoginProfileDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, ulpd.sqlExec, ulpd.mutation, ulpd.hooks)
+func (_d *UserLoginProfileDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ulpd *UserLoginProfileDelete) ExecX(ctx context.Context) int {
-	n, err := ulpd.Exec(ctx)
+func (_d *UserLoginProfileDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (ulpd *UserLoginProfileDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *UserLoginProfileDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(userloginprofile.Table, sqlgraph.NewFieldSpec(userloginprofile.FieldID, field.TypeInt))
-	if ps := ulpd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, ulpd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	ulpd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // UserLoginProfileDeleteOne is the builder for deleting a single UserLoginProfile entity.
 type UserLoginProfileDeleteOne struct {
-	ulpd *UserLoginProfileDelete
+	_d *UserLoginProfileDelete
 }
 
 // Where appends a list predicates to the UserLoginProfileDelete builder.
-func (ulpdo *UserLoginProfileDeleteOne) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileDeleteOne {
-	ulpdo.ulpd.mutation.Where(ps...)
-	return ulpdo
+func (_d *UserLoginProfileDeleteOne) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (ulpdo *UserLoginProfileDeleteOne) Exec(ctx context.Context) error {
-	n, err := ulpdo.ulpd.Exec(ctx)
+func (_d *UserLoginProfileDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (ulpdo *UserLoginProfileDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ulpdo *UserLoginProfileDeleteOne) ExecX(ctx context.Context) {
-	if err := ulpdo.Exec(ctx); err != nil {
+func (_d *UserLoginProfileDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

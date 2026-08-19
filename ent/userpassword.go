@@ -85,7 +85,7 @@ func (*UserPassword) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserPassword fields.
-func (up *UserPassword) assignValues(columns []string, values []any) error {
+func (_m *UserPassword) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -96,63 +96,63 @@ func (up *UserPassword) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			up.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case userpassword.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				up.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case userpassword.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				up.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case userpassword.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				up.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case userpassword.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				up.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case userpassword.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				up.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case userpassword.FieldScene:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field scene", values[i])
 			} else if value.Valid {
-				up.Scene = userpassword.Scene(value.String)
+				_m.Scene = userpassword.Scene(value.String)
 			}
 		case userpassword.FieldPassword:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field password", values[i])
 			} else if value.Valid {
-				up.Password = value.String
+				_m.Password = value.String
 			}
 		case userpassword.FieldSalt:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field salt", values[i])
 			} else if value.Valid {
-				up.Salt = value.String
+				_m.Salt = value.String
 			}
 		case userpassword.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				up.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			up.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -160,62 +160,62 @@ func (up *UserPassword) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserPassword.
 // This includes values selected through modifiers, order, etc.
-func (up *UserPassword) Value(name string) (ent.Value, error) {
-	return up.selectValues.Get(name)
+func (_m *UserPassword) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserPassword entity.
-func (up *UserPassword) QueryUser() *UserQuery {
-	return NewUserPasswordClient(up.config).QueryUser(up)
+func (_m *UserPassword) QueryUser() *UserQuery {
+	return NewUserPasswordClient(_m.config).QueryUser(_m)
 }
 
 // Update returns a builder for updating this UserPassword.
 // Note that you need to call UserPassword.Unwrap() before calling this method if this UserPassword
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (up *UserPassword) Update() *UserPasswordUpdateOne {
-	return NewUserPasswordClient(up.config).UpdateOne(up)
+func (_m *UserPassword) Update() *UserPasswordUpdateOne {
+	return NewUserPasswordClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserPassword entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (up *UserPassword) Unwrap() *UserPassword {
-	_tx, ok := up.config.driver.(*txDriver)
+func (_m *UserPassword) Unwrap() *UserPassword {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserPassword is not a transactional entity")
 	}
-	up.config.driver = _tx.drv
-	return up
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (up *UserPassword) String() string {
+func (_m *UserPassword) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserPassword(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", up.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", up.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(up.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", up.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(up.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", up.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("scene=")
-	builder.WriteString(fmt.Sprintf("%v", up.Scene))
+	builder.WriteString(fmt.Sprintf("%v", _m.Scene))
 	builder.WriteString(", ")
 	builder.WriteString("password=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("salt=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", up.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }

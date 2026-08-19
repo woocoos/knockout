@@ -25,121 +25,121 @@ type OrgAppUpdate struct {
 }
 
 // Where appends a list predicates to the OrgAppUpdate builder.
-func (oau *OrgAppUpdate) Where(ps ...predicate.OrgApp) *OrgAppUpdate {
-	oau.mutation.Where(ps...)
-	return oau
+func (_u *OrgAppUpdate) Where(ps ...predicate.OrgApp) *OrgAppUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oau *OrgAppUpdate) SetUpdatedBy(i int) *OrgAppUpdate {
-	oau.mutation.ResetUpdatedBy()
-	oau.mutation.SetUpdatedBy(i)
-	return oau
+func (_u *OrgAppUpdate) SetUpdatedBy(v int) *OrgAppUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oau *OrgAppUpdate) SetNillableUpdatedBy(i *int) *OrgAppUpdate {
-	if i != nil {
-		oau.SetUpdatedBy(*i)
+func (_u *OrgAppUpdate) SetNillableUpdatedBy(v *int) *OrgAppUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return oau
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (oau *OrgAppUpdate) AddUpdatedBy(i int) *OrgAppUpdate {
-	oau.mutation.AddUpdatedBy(i)
-	return oau
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgAppUpdate) AddUpdatedBy(v int) *OrgAppUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (oau *OrgAppUpdate) ClearUpdatedBy() *OrgAppUpdate {
-	oau.mutation.ClearUpdatedBy()
-	return oau
+func (_u *OrgAppUpdate) ClearUpdatedBy() *OrgAppUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oau *OrgAppUpdate) SetUpdatedAt(t time.Time) *OrgAppUpdate {
-	oau.mutation.SetUpdatedAt(t)
-	return oau
+func (_u *OrgAppUpdate) SetUpdatedAt(v time.Time) *OrgAppUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oau *OrgAppUpdate) SetNillableUpdatedAt(t *time.Time) *OrgAppUpdate {
-	if t != nil {
-		oau.SetUpdatedAt(*t)
+func (_u *OrgAppUpdate) SetNillableUpdatedAt(v *time.Time) *OrgAppUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return oau
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (oau *OrgAppUpdate) ClearUpdatedAt() *OrgAppUpdate {
-	oau.mutation.ClearUpdatedAt()
-	return oau
+func (_u *OrgAppUpdate) ClearUpdatedAt() *OrgAppUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetOrgID sets the "org_id" field.
-func (oau *OrgAppUpdate) SetOrgID(i int) *OrgAppUpdate {
-	oau.mutation.SetOrgID(i)
-	return oau
+func (_u *OrgAppUpdate) SetOrgID(v int) *OrgAppUpdate {
+	_u.mutation.SetOrgID(v)
+	return _u
 }
 
 // SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (oau *OrgAppUpdate) SetNillableOrgID(i *int) *OrgAppUpdate {
-	if i != nil {
-		oau.SetOrgID(*i)
+func (_u *OrgAppUpdate) SetNillableOrgID(v *int) *OrgAppUpdate {
+	if v != nil {
+		_u.SetOrgID(*v)
 	}
-	return oau
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (oau *OrgAppUpdate) SetAppID(i int) *OrgAppUpdate {
-	oau.mutation.SetAppID(i)
-	return oau
+func (_u *OrgAppUpdate) SetAppID(v int) *OrgAppUpdate {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (oau *OrgAppUpdate) SetNillableAppID(i *int) *OrgAppUpdate {
-	if i != nil {
-		oau.SetAppID(*i)
+func (_u *OrgAppUpdate) SetNillableAppID(v *int) *OrgAppUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return oau
+	return _u
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (oau *OrgAppUpdate) SetApp(a *App) *OrgAppUpdate {
-	return oau.SetAppID(a.ID)
+func (_u *OrgAppUpdate) SetApp(v *App) *OrgAppUpdate {
+	return _u.SetAppID(v.ID)
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (oau *OrgAppUpdate) SetOrg(o *Org) *OrgAppUpdate {
-	return oau.SetOrgID(o.ID)
+func (_u *OrgAppUpdate) SetOrg(v *Org) *OrgAppUpdate {
+	return _u.SetOrgID(v.ID)
 }
 
 // Mutation returns the OrgAppMutation object of the builder.
-func (oau *OrgAppUpdate) Mutation() *OrgAppMutation {
-	return oau.mutation
+func (_u *OrgAppUpdate) Mutation() *OrgAppMutation {
+	return _u.mutation
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (oau *OrgAppUpdate) ClearApp() *OrgAppUpdate {
-	oau.mutation.ClearApp()
-	return oau
+func (_u *OrgAppUpdate) ClearApp() *OrgAppUpdate {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // ClearOrg clears the "org" edge to the Org entity.
-func (oau *OrgAppUpdate) ClearOrg() *OrgAppUpdate {
-	oau.mutation.ClearOrg()
-	return oau
+func (_u *OrgAppUpdate) ClearOrg() *OrgAppUpdate {
+	_u.mutation.ClearOrg()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (oau *OrgAppUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, oau.sqlSave, oau.mutation, oau.hooks)
+func (_u *OrgAppUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oau *OrgAppUpdate) SaveX(ctx context.Context) int {
-	affected, err := oau.Save(ctx)
+func (_u *OrgAppUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -147,57 +147,57 @@ func (oau *OrgAppUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (oau *OrgAppUpdate) Exec(ctx context.Context) error {
-	_, err := oau.Save(ctx)
+func (_u *OrgAppUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oau *OrgAppUpdate) ExecX(ctx context.Context) {
-	if err := oau.Exec(ctx); err != nil {
+func (_u *OrgAppUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oau *OrgAppUpdate) check() error {
-	if oau.mutation.AppCleared() && len(oau.mutation.AppIDs()) > 0 {
+func (_u *OrgAppUpdate) check() error {
+	if _u.mutation.AppCleared() && len(_u.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.app"`)
 	}
-	if oau.mutation.OrgCleared() && len(oau.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.org"`)
 	}
 	return nil
 }
 
-func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := oau.check(); err != nil {
-		return n, err
+func (_u *OrgAppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orgapp.Table, orgapp.Columns, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
-	if ps := oau.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := oau.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orgapp.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := oau.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orgapp.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if oau.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orgapp.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := oau.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orgapp.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if oau.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orgapp.FieldUpdatedAt, field.TypeTime)
 	}
-	if oau.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -210,7 +210,7 @@ func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oau.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -226,7 +226,7 @@ func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if oau.mutation.OrgCleared() {
+	if _u.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -239,7 +239,7 @@ func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oau.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -255,7 +255,7 @@ func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, oau.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orgapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -263,8 +263,8 @@ func (oau *OrgAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	oau.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrgAppUpdateOne is the builder for updating a single OrgApp entity.
@@ -276,128 +276,128 @@ type OrgAppUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oauo *OrgAppUpdateOne) SetUpdatedBy(i int) *OrgAppUpdateOne {
-	oauo.mutation.ResetUpdatedBy()
-	oauo.mutation.SetUpdatedBy(i)
-	return oauo
+func (_u *OrgAppUpdateOne) SetUpdatedBy(v int) *OrgAppUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oauo *OrgAppUpdateOne) SetNillableUpdatedBy(i *int) *OrgAppUpdateOne {
-	if i != nil {
-		oauo.SetUpdatedBy(*i)
+func (_u *OrgAppUpdateOne) SetNillableUpdatedBy(v *int) *OrgAppUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return oauo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (oauo *OrgAppUpdateOne) AddUpdatedBy(i int) *OrgAppUpdateOne {
-	oauo.mutation.AddUpdatedBy(i)
-	return oauo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgAppUpdateOne) AddUpdatedBy(v int) *OrgAppUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (oauo *OrgAppUpdateOne) ClearUpdatedBy() *OrgAppUpdateOne {
-	oauo.mutation.ClearUpdatedBy()
-	return oauo
+func (_u *OrgAppUpdateOne) ClearUpdatedBy() *OrgAppUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oauo *OrgAppUpdateOne) SetUpdatedAt(t time.Time) *OrgAppUpdateOne {
-	oauo.mutation.SetUpdatedAt(t)
-	return oauo
+func (_u *OrgAppUpdateOne) SetUpdatedAt(v time.Time) *OrgAppUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oauo *OrgAppUpdateOne) SetNillableUpdatedAt(t *time.Time) *OrgAppUpdateOne {
-	if t != nil {
-		oauo.SetUpdatedAt(*t)
+func (_u *OrgAppUpdateOne) SetNillableUpdatedAt(v *time.Time) *OrgAppUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return oauo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (oauo *OrgAppUpdateOne) ClearUpdatedAt() *OrgAppUpdateOne {
-	oauo.mutation.ClearUpdatedAt()
-	return oauo
+func (_u *OrgAppUpdateOne) ClearUpdatedAt() *OrgAppUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetOrgID sets the "org_id" field.
-func (oauo *OrgAppUpdateOne) SetOrgID(i int) *OrgAppUpdateOne {
-	oauo.mutation.SetOrgID(i)
-	return oauo
+func (_u *OrgAppUpdateOne) SetOrgID(v int) *OrgAppUpdateOne {
+	_u.mutation.SetOrgID(v)
+	return _u
 }
 
 // SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (oauo *OrgAppUpdateOne) SetNillableOrgID(i *int) *OrgAppUpdateOne {
-	if i != nil {
-		oauo.SetOrgID(*i)
+func (_u *OrgAppUpdateOne) SetNillableOrgID(v *int) *OrgAppUpdateOne {
+	if v != nil {
+		_u.SetOrgID(*v)
 	}
-	return oauo
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (oauo *OrgAppUpdateOne) SetAppID(i int) *OrgAppUpdateOne {
-	oauo.mutation.SetAppID(i)
-	return oauo
+func (_u *OrgAppUpdateOne) SetAppID(v int) *OrgAppUpdateOne {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (oauo *OrgAppUpdateOne) SetNillableAppID(i *int) *OrgAppUpdateOne {
-	if i != nil {
-		oauo.SetAppID(*i)
+func (_u *OrgAppUpdateOne) SetNillableAppID(v *int) *OrgAppUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return oauo
+	return _u
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (oauo *OrgAppUpdateOne) SetApp(a *App) *OrgAppUpdateOne {
-	return oauo.SetAppID(a.ID)
+func (_u *OrgAppUpdateOne) SetApp(v *App) *OrgAppUpdateOne {
+	return _u.SetAppID(v.ID)
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (oauo *OrgAppUpdateOne) SetOrg(o *Org) *OrgAppUpdateOne {
-	return oauo.SetOrgID(o.ID)
+func (_u *OrgAppUpdateOne) SetOrg(v *Org) *OrgAppUpdateOne {
+	return _u.SetOrgID(v.ID)
 }
 
 // Mutation returns the OrgAppMutation object of the builder.
-func (oauo *OrgAppUpdateOne) Mutation() *OrgAppMutation {
-	return oauo.mutation
+func (_u *OrgAppUpdateOne) Mutation() *OrgAppMutation {
+	return _u.mutation
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (oauo *OrgAppUpdateOne) ClearApp() *OrgAppUpdateOne {
-	oauo.mutation.ClearApp()
-	return oauo
+func (_u *OrgAppUpdateOne) ClearApp() *OrgAppUpdateOne {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // ClearOrg clears the "org" edge to the Org entity.
-func (oauo *OrgAppUpdateOne) ClearOrg() *OrgAppUpdateOne {
-	oauo.mutation.ClearOrg()
-	return oauo
+func (_u *OrgAppUpdateOne) ClearOrg() *OrgAppUpdateOne {
+	_u.mutation.ClearOrg()
+	return _u
 }
 
 // Where appends a list predicates to the OrgAppUpdate builder.
-func (oauo *OrgAppUpdateOne) Where(ps ...predicate.OrgApp) *OrgAppUpdateOne {
-	oauo.mutation.Where(ps...)
-	return oauo
+func (_u *OrgAppUpdateOne) Where(ps ...predicate.OrgApp) *OrgAppUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (oauo *OrgAppUpdateOne) Select(field string, fields ...string) *OrgAppUpdateOne {
-	oauo.fields = append([]string{field}, fields...)
-	return oauo
+func (_u *OrgAppUpdateOne) Select(field string, fields ...string) *OrgAppUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated OrgApp entity.
-func (oauo *OrgAppUpdateOne) Save(ctx context.Context) (*OrgApp, error) {
-	return withHooks(ctx, oauo.sqlSave, oauo.mutation, oauo.hooks)
+func (_u *OrgAppUpdateOne) Save(ctx context.Context) (*OrgApp, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oauo *OrgAppUpdateOne) SaveX(ctx context.Context) *OrgApp {
-	node, err := oauo.Save(ctx)
+func (_u *OrgAppUpdateOne) SaveX(ctx context.Context) *OrgApp {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -405,40 +405,40 @@ func (oauo *OrgAppUpdateOne) SaveX(ctx context.Context) *OrgApp {
 }
 
 // Exec executes the query on the entity.
-func (oauo *OrgAppUpdateOne) Exec(ctx context.Context) error {
-	_, err := oauo.Save(ctx)
+func (_u *OrgAppUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oauo *OrgAppUpdateOne) ExecX(ctx context.Context) {
-	if err := oauo.Exec(ctx); err != nil {
+func (_u *OrgAppUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oauo *OrgAppUpdateOne) check() error {
-	if oauo.mutation.AppCleared() && len(oauo.mutation.AppIDs()) > 0 {
+func (_u *OrgAppUpdateOne) check() error {
+	if _u.mutation.AppCleared() && len(_u.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.app"`)
 	}
-	if oauo.mutation.OrgCleared() && len(oauo.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.org"`)
 	}
 	return nil
 }
 
-func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err error) {
-	if err := oauo.check(); err != nil {
+func (_u *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orgapp.Table, orgapp.Columns, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
-	id, ok := oauo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OrgApp.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := oauo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orgapp.FieldID)
 		for _, f := range fields {
@@ -450,29 +450,29 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 			}
 		}
 	}
-	if ps := oauo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := oauo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orgapp.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := oauo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orgapp.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if oauo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orgapp.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := oauo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orgapp.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if oauo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orgapp.FieldUpdatedAt, field.TypeTime)
 	}
-	if oauo.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -485,7 +485,7 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oauo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -501,7 +501,7 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if oauo.mutation.OrgCleared() {
+	if _u.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -514,7 +514,7 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := oauo.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -530,10 +530,10 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &OrgApp{config: oauo.config}
+	_node = &OrgApp{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, oauo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orgapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -541,6 +541,6 @@ func (oauo *OrgAppUpdateOne) sqlSave(ctx context.Context) (_node *OrgApp, err er
 		}
 		return nil, err
 	}
-	oauo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -26,200 +26,200 @@ type QuotaCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (qc *QuotaCreate) SetCreatedBy(i int) *QuotaCreate {
-	qc.mutation.SetCreatedBy(i)
-	return qc
+func (_c *QuotaCreate) SetCreatedBy(v int) *QuotaCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (qc *QuotaCreate) SetCreatedAt(t time.Time) *QuotaCreate {
-	qc.mutation.SetCreatedAt(t)
-	return qc
+func (_c *QuotaCreate) SetCreatedAt(v time.Time) *QuotaCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableCreatedAt(t *time.Time) *QuotaCreate {
-	if t != nil {
-		qc.SetCreatedAt(*t)
+func (_c *QuotaCreate) SetNillableCreatedAt(v *time.Time) *QuotaCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (qc *QuotaCreate) SetUpdatedBy(i int) *QuotaCreate {
-	qc.mutation.SetUpdatedBy(i)
-	return qc
+func (_c *QuotaCreate) SetUpdatedBy(v int) *QuotaCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableUpdatedBy(i *int) *QuotaCreate {
-	if i != nil {
-		qc.SetUpdatedBy(*i)
+func (_c *QuotaCreate) SetNillableUpdatedBy(v *int) *QuotaCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (qc *QuotaCreate) SetUpdatedAt(t time.Time) *QuotaCreate {
-	qc.mutation.SetUpdatedAt(t)
-	return qc
+func (_c *QuotaCreate) SetUpdatedAt(v time.Time) *QuotaCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableUpdatedAt(t *time.Time) *QuotaCreate {
-	if t != nil {
-		qc.SetUpdatedAt(*t)
+func (_c *QuotaCreate) SetNillableUpdatedAt(v *time.Time) *QuotaCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (qc *QuotaCreate) SetTenantID(i int) *QuotaCreate {
-	qc.mutation.SetTenantID(i)
-	return qc
+func (_c *QuotaCreate) SetTenantID(v int) *QuotaCreate {
+	_c.mutation.SetTenantID(v)
+	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableTenantID(i *int) *QuotaCreate {
-	if i != nil {
-		qc.SetTenantID(*i)
+func (_c *QuotaCreate) SetNillableTenantID(v *int) *QuotaCreate {
+	if v != nil {
+		_c.SetTenantID(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (qc *QuotaCreate) SetUserID(i int) *QuotaCreate {
-	qc.mutation.SetUserID(i)
-	return qc
+func (_c *QuotaCreate) SetUserID(v int) *QuotaCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableUserID(i *int) *QuotaCreate {
-	if i != nil {
-		qc.SetUserID(*i)
+func (_c *QuotaCreate) SetNillableUserID(v *int) *QuotaCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetQuotaItemID sets the "quota_item_id" field.
-func (qc *QuotaCreate) SetQuotaItemID(i int) *QuotaCreate {
-	qc.mutation.SetQuotaItemID(i)
-	return qc
+func (_c *QuotaCreate) SetQuotaItemID(v int) *QuotaCreate {
+	_c.mutation.SetQuotaItemID(v)
+	return _c
 }
 
 // SetLimit sets the "limit" field.
-func (qc *QuotaCreate) SetLimit(i int64) *QuotaCreate {
-	qc.mutation.SetLimit(i)
-	return qc
+func (_c *QuotaCreate) SetLimit(v int64) *QuotaCreate {
+	_c.mutation.SetLimit(v)
+	return _c
 }
 
 // SetUsed sets the "used" field.
-func (qc *QuotaCreate) SetUsed(i int64) *QuotaCreate {
-	qc.mutation.SetUsed(i)
-	return qc
+func (_c *QuotaCreate) SetUsed(v int64) *QuotaCreate {
+	_c.mutation.SetUsed(v)
+	return _c
 }
 
 // SetNillableUsed sets the "used" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableUsed(i *int64) *QuotaCreate {
-	if i != nil {
-		qc.SetUsed(*i)
+func (_c *QuotaCreate) SetNillableUsed(v *int64) *QuotaCreate {
+	if v != nil {
+		_c.SetUsed(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetStartAt sets the "start_at" field.
-func (qc *QuotaCreate) SetStartAt(t time.Time) *QuotaCreate {
-	qc.mutation.SetStartAt(t)
-	return qc
+func (_c *QuotaCreate) SetStartAt(v time.Time) *QuotaCreate {
+	_c.mutation.SetStartAt(v)
+	return _c
 }
 
 // SetNillableStartAt sets the "start_at" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableStartAt(t *time.Time) *QuotaCreate {
-	if t != nil {
-		qc.SetStartAt(*t)
+func (_c *QuotaCreate) SetNillableStartAt(v *time.Time) *QuotaCreate {
+	if v != nil {
+		_c.SetStartAt(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetEndAt sets the "end_at" field.
-func (qc *QuotaCreate) SetEndAt(t time.Time) *QuotaCreate {
-	qc.mutation.SetEndAt(t)
-	return qc
+func (_c *QuotaCreate) SetEndAt(v time.Time) *QuotaCreate {
+	_c.mutation.SetEndAt(v)
+	return _c
 }
 
 // SetNillableEndAt sets the "end_at" field if the given value is not nil.
-func (qc *QuotaCreate) SetNillableEndAt(t *time.Time) *QuotaCreate {
-	if t != nil {
-		qc.SetEndAt(*t)
+func (_c *QuotaCreate) SetNillableEndAt(v *time.Time) *QuotaCreate {
+	if v != nil {
+		_c.SetEndAt(*v)
 	}
-	return qc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (qc *QuotaCreate) SetID(i int) *QuotaCreate {
-	qc.mutation.SetID(i)
-	return qc
+func (_c *QuotaCreate) SetID(v int) *QuotaCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetQuotaItem sets the "quota_item" edge to the QuotaItem entity.
-func (qc *QuotaCreate) SetQuotaItem(q *QuotaItem) *QuotaCreate {
-	return qc.SetQuotaItemID(q.ID)
+func (_c *QuotaCreate) SetQuotaItem(v *QuotaItem) *QuotaCreate {
+	return _c.SetQuotaItemID(v.ID)
 }
 
 // SetQuotaOrgID sets the "quota_org" edge to the Org entity by ID.
-func (qc *QuotaCreate) SetQuotaOrgID(id int) *QuotaCreate {
-	qc.mutation.SetQuotaOrgID(id)
-	return qc
+func (_c *QuotaCreate) SetQuotaOrgID(id int) *QuotaCreate {
+	_c.mutation.SetQuotaOrgID(id)
+	return _c
 }
 
 // SetNillableQuotaOrgID sets the "quota_org" edge to the Org entity by ID if the given value is not nil.
-func (qc *QuotaCreate) SetNillableQuotaOrgID(id *int) *QuotaCreate {
+func (_c *QuotaCreate) SetNillableQuotaOrgID(id *int) *QuotaCreate {
 	if id != nil {
-		qc = qc.SetQuotaOrgID(*id)
+		_c = _c.SetQuotaOrgID(*id)
 	}
-	return qc
+	return _c
 }
 
 // SetQuotaOrg sets the "quota_org" edge to the Org entity.
-func (qc *QuotaCreate) SetQuotaOrg(o *Org) *QuotaCreate {
-	return qc.SetQuotaOrgID(o.ID)
+func (_c *QuotaCreate) SetQuotaOrg(v *Org) *QuotaCreate {
+	return _c.SetQuotaOrgID(v.ID)
 }
 
 // SetQuotaUserID sets the "quota_user" edge to the User entity by ID.
-func (qc *QuotaCreate) SetQuotaUserID(id int) *QuotaCreate {
-	qc.mutation.SetQuotaUserID(id)
-	return qc
+func (_c *QuotaCreate) SetQuotaUserID(id int) *QuotaCreate {
+	_c.mutation.SetQuotaUserID(id)
+	return _c
 }
 
 // SetNillableQuotaUserID sets the "quota_user" edge to the User entity by ID if the given value is not nil.
-func (qc *QuotaCreate) SetNillableQuotaUserID(id *int) *QuotaCreate {
+func (_c *QuotaCreate) SetNillableQuotaUserID(id *int) *QuotaCreate {
 	if id != nil {
-		qc = qc.SetQuotaUserID(*id)
+		_c = _c.SetQuotaUserID(*id)
 	}
-	return qc
+	return _c
 }
 
 // SetQuotaUser sets the "quota_user" edge to the User entity.
-func (qc *QuotaCreate) SetQuotaUser(u *User) *QuotaCreate {
-	return qc.SetQuotaUserID(u.ID)
+func (_c *QuotaCreate) SetQuotaUser(v *User) *QuotaCreate {
+	return _c.SetQuotaUserID(v.ID)
 }
 
 // Mutation returns the QuotaMutation object of the builder.
-func (qc *QuotaCreate) Mutation() *QuotaMutation {
-	return qc.mutation
+func (_c *QuotaCreate) Mutation() *QuotaMutation {
+	return _c.mutation
 }
 
 // Save creates the Quota in the database.
-func (qc *QuotaCreate) Save(ctx context.Context) (*Quota, error) {
-	if err := qc.defaults(); err != nil {
+func (_c *QuotaCreate) Save(ctx context.Context) (*Quota, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, qc.sqlSave, qc.mutation, qc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (qc *QuotaCreate) SaveX(ctx context.Context) *Quota {
-	v, err := qc.Save(ctx)
+func (_c *QuotaCreate) SaveX(ctx context.Context) *Quota {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -227,68 +227,68 @@ func (qc *QuotaCreate) SaveX(ctx context.Context) *Quota {
 }
 
 // Exec executes the query.
-func (qc *QuotaCreate) Exec(ctx context.Context) error {
-	_, err := qc.Save(ctx)
+func (_c *QuotaCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qc *QuotaCreate) ExecX(ctx context.Context) {
-	if err := qc.Exec(ctx); err != nil {
+func (_c *QuotaCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (qc *QuotaCreate) defaults() error {
-	if _, ok := qc.mutation.CreatedAt(); !ok {
+func (_c *QuotaCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if quota.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized quota.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := quota.DefaultCreatedAt()
-		qc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := qc.mutation.Used(); !ok {
+	if _, ok := _c.mutation.Used(); !ok {
 		v := quota.DefaultUsed
-		qc.mutation.SetUsed(v)
+		_c.mutation.SetUsed(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (qc *QuotaCreate) check() error {
-	if _, ok := qc.mutation.CreatedBy(); !ok {
+func (_c *QuotaCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Quota.created_by"`)}
 	}
-	if _, ok := qc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Quota.created_at"`)}
 	}
-	if _, ok := qc.mutation.QuotaItemID(); !ok {
+	if _, ok := _c.mutation.QuotaItemID(); !ok {
 		return &ValidationError{Name: "quota_item_id", err: errors.New(`ent: missing required field "Quota.quota_item_id"`)}
 	}
-	if _, ok := qc.mutation.Limit(); !ok {
+	if _, ok := _c.mutation.Limit(); !ok {
 		return &ValidationError{Name: "limit", err: errors.New(`ent: missing required field "Quota.limit"`)}
 	}
-	if v, ok := qc.mutation.Limit(); ok {
+	if v, ok := _c.mutation.Limit(); ok {
 		if err := quota.LimitValidator(v); err != nil {
 			return &ValidationError{Name: "limit", err: fmt.Errorf(`ent: validator failed for field "Quota.limit": %w`, err)}
 		}
 	}
-	if _, ok := qc.mutation.Used(); !ok {
+	if _, ok := _c.mutation.Used(); !ok {
 		return &ValidationError{Name: "used", err: errors.New(`ent: missing required field "Quota.used"`)}
 	}
-	if len(qc.mutation.QuotaItemIDs()) == 0 {
+	if len(_c.mutation.QuotaItemIDs()) == 0 {
 		return &ValidationError{Name: "quota_item", err: errors.New(`ent: missing required edge "Quota.quota_item"`)}
 	}
 	return nil
 }
 
-func (qc *QuotaCreate) sqlSave(ctx context.Context) (*Quota, error) {
-	if err := qc.check(); err != nil {
+func (_c *QuotaCreate) sqlSave(ctx context.Context) (*Quota, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := qc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, qc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -298,54 +298,54 @@ func (qc *QuotaCreate) sqlSave(ctx context.Context) (*Quota, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	qc.mutation.id = &_node.ID
-	qc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
+func (_c *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Quota{config: qc.config}
+		_node = &Quota{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(quota.Table, sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = qc.conflict
-	if id, ok := qc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := qc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(quota.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := qc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(quota.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := qc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(quota.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := qc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(quota.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := qc.mutation.Limit(); ok {
+	if value, ok := _c.mutation.Limit(); ok {
 		_spec.SetField(quota.FieldLimit, field.TypeInt64, value)
 		_node.Limit = value
 	}
-	if value, ok := qc.mutation.Used(); ok {
+	if value, ok := _c.mutation.Used(); ok {
 		_spec.SetField(quota.FieldUsed, field.TypeInt64, value)
 		_node.Used = value
 	}
-	if value, ok := qc.mutation.StartAt(); ok {
+	if value, ok := _c.mutation.StartAt(); ok {
 		_spec.SetField(quota.FieldStartAt, field.TypeTime, value)
 		_node.StartAt = value
 	}
-	if value, ok := qc.mutation.EndAt(); ok {
+	if value, ok := _c.mutation.EndAt(); ok {
 		_spec.SetField(quota.FieldEndAt, field.TypeTime, value)
 		_node.EndAt = value
 	}
-	if nodes := qc.mutation.QuotaItemIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.QuotaItemIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -362,7 +362,7 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 		_node.QuotaItemID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := qc.mutation.QuotaOrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.QuotaOrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -379,7 +379,7 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 		_node.TenantID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := qc.mutation.QuotaUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.QuotaUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -415,10 +415,10 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (qc *QuotaCreate) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertOne {
-	qc.conflict = opts
+func (_c *QuotaCreate) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertOne {
+	_c.conflict = opts
 	return &QuotaUpsertOne{
-		create: qc,
+		create: _c,
 	}
 }
 
@@ -428,10 +428,10 @@ func (qc *QuotaCreate) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertOne {
 //	client.Quota.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (qc *QuotaCreate) OnConflictColumns(columns ...string) *QuotaUpsertOne {
-	qc.conflict = append(qc.conflict, sql.ConflictColumns(columns...))
+func (_c *QuotaCreate) OnConflictColumns(columns ...string) *QuotaUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &QuotaUpsertOne{
-		create: qc,
+		create: _c,
 	}
 }
 
@@ -895,16 +895,16 @@ type QuotaCreateBulk struct {
 }
 
 // Save creates the Quota entities in the database.
-func (qcb *QuotaCreateBulk) Save(ctx context.Context) ([]*Quota, error) {
-	if qcb.err != nil {
-		return nil, qcb.err
+func (_c *QuotaCreateBulk) Save(ctx context.Context) ([]*Quota, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(qcb.builders))
-	nodes := make([]*Quota, len(qcb.builders))
-	mutators := make([]Mutator, len(qcb.builders))
-	for i := range qcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Quota, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := qcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*QuotaMutation)
@@ -918,12 +918,12 @@ func (qcb *QuotaCreateBulk) Save(ctx context.Context) ([]*Quota, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, qcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = qcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, qcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -947,7 +947,7 @@ func (qcb *QuotaCreateBulk) Save(ctx context.Context) ([]*Quota, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, qcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -955,8 +955,8 @@ func (qcb *QuotaCreateBulk) Save(ctx context.Context) ([]*Quota, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (qcb *QuotaCreateBulk) SaveX(ctx context.Context) []*Quota {
-	v, err := qcb.Save(ctx)
+func (_c *QuotaCreateBulk) SaveX(ctx context.Context) []*Quota {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -964,14 +964,14 @@ func (qcb *QuotaCreateBulk) SaveX(ctx context.Context) []*Quota {
 }
 
 // Exec executes the query.
-func (qcb *QuotaCreateBulk) Exec(ctx context.Context) error {
-	_, err := qcb.Save(ctx)
+func (_c *QuotaCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (qcb *QuotaCreateBulk) ExecX(ctx context.Context) {
-	if err := qcb.Exec(ctx); err != nil {
+func (_c *QuotaCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -991,10 +991,10 @@ func (qcb *QuotaCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (qcb *QuotaCreateBulk) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertBulk {
-	qcb.conflict = opts
+func (_c *QuotaCreateBulk) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertBulk {
+	_c.conflict = opts
 	return &QuotaUpsertBulk{
-		create: qcb,
+		create: _c,
 	}
 }
 
@@ -1004,10 +1004,10 @@ func (qcb *QuotaCreateBulk) OnConflict(opts ...sql.ConflictOption) *QuotaUpsertB
 //	client.Quota.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (qcb *QuotaCreateBulk) OnConflictColumns(columns ...string) *QuotaUpsertBulk {
-	qcb.conflict = append(qcb.conflict, sql.ConflictColumns(columns...))
+func (_c *QuotaCreateBulk) OnConflictColumns(columns ...string) *QuotaUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &QuotaUpsertBulk{
-		create: qcb,
+		create: _c,
 	}
 }
 

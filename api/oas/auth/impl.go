@@ -5,7 +5,15 @@ import (
 	"context"
 	"encoding/base32"
 	"encoding/base64"
+	goerrors "errors"
 	"fmt"
+	"image/png"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -50,12 +58,6 @@ import (
 	"github.com/woocoos/knockout/security"
 	quotaService "github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
-	"image/png"
-	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
-	"time"
 )
 
 const (
@@ -301,7 +303,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID int, upp *ent.UserPasswordPolicy, err error) (*LoginResponse, error) {
 	ctx.Status(http.StatusBadRequest)
 	var parsedError *gin.Error
-	has := errors.As(err, &parsedError)
+	has := goerrors.As(err, &parsedError)
 	if has && err.(*gin.Error).Type == errors.ErrPasswordNotMatch {
 		var errL error
 		failCount, errL := s.logFailHandler(ctx, req.Username, false)

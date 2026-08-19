@@ -1,20 +1,14 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/hook"
-	"github.com/woocoos/knockout/ent/useridentity"
 )
 
 // UserIdentity 用户登陆身份
@@ -60,31 +54,3 @@ func (UserIdentity) Edges() []ent.Edge {
 	}
 }
 
-// Hooks of the UserIdentity.
-func (UserIdentity) Hooks() []ent.Hook {
-	return []ent.Hook{
-		codeUnique(),
-	}
-}
-
-func codeUnique() ent.Hook {
-	return hook.On(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.UserIdentityFunc(func(ctx context.Context, m *gen.UserIdentityMutation) (ent.Value, error) {
-				nc, ok := m.Code()
-				if !ok {
-					return next.Mutate(ctx, m)
-				}
-				// 检查code是否唯一
-				has, err := m.Client().UserIdentity.Query().Where(useridentity.Code(nc), useridentity.UserIDNotNil()).
-					Exist(ctx)
-				if err != nil {
-					return nil, err
-				}
-				if has {
-					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "code %s already exists", nc)
-				}
-				return next.Mutate(ctx, m)
-			})
-		}, ent.OpCreate|ent.OpUpdateOne)
-}

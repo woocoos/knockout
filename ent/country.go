@@ -84,7 +84,7 @@ func (*Country) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Country fields.
-func (c *Country) assignValues(columns []string, values []any) error {
+func (_m *Country) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -95,63 +95,63 @@ func (c *Country) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case country.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				c.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case country.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				c.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case country.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				c.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case country.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				c.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case country.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				c.Name = value.String
+				_m.Name = value.String
 			}
 		case country.FieldNameEn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name_en", values[i])
 			} else if value.Valid {
-				c.NameEn = value.String
+				_m.NameEn = value.String
 			}
 		case country.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				c.Code = value.String
+				_m.Code = value.String
 			}
 		case country.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
-				c.DisplaySort = int32(value.Int64)
+				_m.DisplaySort = int32(value.Int64)
 			}
 		case country.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				c.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			c.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -159,89 +159,89 @@ func (c *Country) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Country.
 // This includes values selected through modifiers, order, etc.
-func (c *Country) Value(name string) (ent.Value, error) {
-	return c.selectValues.Get(name)
+func (_m *Country) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryRegions queries the "regions" edge of the Country entity.
-func (c *Country) QueryRegions() *RegionQuery {
-	return NewCountryClient(c.config).QueryRegions(c)
+func (_m *Country) QueryRegions() *RegionQuery {
+	return NewCountryClient(_m.config).QueryRegions(_m)
 }
 
 // Update returns a builder for updating this Country.
 // Note that you need to call Country.Unwrap() before calling this method if this Country
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (c *Country) Update() *CountryUpdateOne {
-	return NewCountryClient(c.config).UpdateOne(c)
+func (_m *Country) Update() *CountryUpdateOne {
+	return NewCountryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Country entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (c *Country) Unwrap() *Country {
-	_tx, ok := c.config.driver.(*txDriver)
+func (_m *Country) Unwrap() *Country {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Country is not a transactional entity")
 	}
-	c.config.driver = _tx.drv
-	return c
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (c *Country) String() string {
+func (_m *Country) String() string {
 	var builder strings.Builder
 	builder.WriteString("Country(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", c.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(c.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", c.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(c.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(c.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("name_en=")
-	builder.WriteString(c.NameEn)
+	builder.WriteString(_m.NameEn)
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(c.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
-	builder.WriteString(fmt.Sprintf("%v", c.DisplaySort))
+	builder.WriteString(fmt.Sprintf("%v", _m.DisplaySort))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", c.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedRegions returns the Regions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (c *Country) NamedRegions(name string) ([]*Region, error) {
-	if c.Edges.namedRegions == nil {
+func (_m *Country) NamedRegions(name string) ([]*Region, error) {
+	if _m.Edges.namedRegions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := c.Edges.namedRegions[name]
+	nodes, ok := _m.Edges.namedRegions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (c *Country) appendNamedRegions(name string, edges ...*Region) {
-	if c.Edges.namedRegions == nil {
-		c.Edges.namedRegions = make(map[string][]*Region)
+func (_m *Country) appendNamedRegions(name string, edges ...*Region) {
+	if _m.Edges.namedRegions == nil {
+		_m.Edges.namedRegions = make(map[string][]*Region)
 	}
 	if len(edges) == 0 {
-		c.Edges.namedRegions[name] = []*Region{}
+		_m.Edges.namedRegions[name] = []*Region{}
 	} else {
-		c.Edges.namedRegions[name] = append(c.Edges.namedRegions[name], edges...)
+		_m.Edges.namedRegions[name] = append(_m.Edges.namedRegions[name], edges...)
 	}
 }
 

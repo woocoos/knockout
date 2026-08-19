@@ -38,44 +38,44 @@ type AppPolicyViewQuery struct {
 }
 
 // Where adds a new predicate for the AppPolicyViewQuery builder.
-func (apvq *AppPolicyViewQuery) Where(ps ...predicate.AppPolicyView) *AppPolicyViewQuery {
-	apvq.predicates = append(apvq.predicates, ps...)
-	return apvq
+func (_q *AppPolicyViewQuery) Where(ps ...predicate.AppPolicyView) *AppPolicyViewQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (apvq *AppPolicyViewQuery) Limit(limit int) *AppPolicyViewQuery {
-	apvq.ctx.Limit = &limit
-	return apvq
+func (_q *AppPolicyViewQuery) Limit(limit int) *AppPolicyViewQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (apvq *AppPolicyViewQuery) Offset(offset int) *AppPolicyViewQuery {
-	apvq.ctx.Offset = &offset
-	return apvq
+func (_q *AppPolicyViewQuery) Offset(offset int) *AppPolicyViewQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (apvq *AppPolicyViewQuery) Unique(unique bool) *AppPolicyViewQuery {
-	apvq.ctx.Unique = &unique
-	return apvq
+func (_q *AppPolicyViewQuery) Unique(unique bool) *AppPolicyViewQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (apvq *AppPolicyViewQuery) Order(o ...apppolicyview.OrderOption) *AppPolicyViewQuery {
-	apvq.order = append(apvq.order, o...)
-	return apvq
+func (_q *AppPolicyViewQuery) Order(o ...apppolicyview.OrderOption) *AppPolicyViewQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (apvq *AppPolicyViewQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := apvq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := apvq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -84,20 +84,20 @@ func (apvq *AppPolicyViewQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppTable, apppolicyview.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryAppPolicy chains the current query on the "app_policy" edge.
-func (apvq *AppPolicyViewQuery) QueryAppPolicy() *AppPolicyQuery {
-	query := (&AppPolicyClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) QueryAppPolicy() *AppPolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := apvq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := apvq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -106,20 +106,20 @@ func (apvq *AppPolicyViewQuery) QueryAppPolicy() *AppPolicyQuery {
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppPolicyTable, apppolicyview.AppPolicyColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryParent chains the current query on the "parent" edge.
-func (apvq *AppPolicyViewQuery) QueryParent() *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) QueryParent() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := apvq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := apvq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -128,20 +128,20 @@ func (apvq *AppPolicyViewQuery) QueryParent() *AppPolicyViewQuery {
 			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.ParentTable, apppolicyview.ParentColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryChildren chains the current query on the "children" edge.
-func (apvq *AppPolicyViewQuery) QueryChildren() *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) QueryChildren() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := apvq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := apvq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -150,7 +150,7 @@ func (apvq *AppPolicyViewQuery) QueryChildren() *AppPolicyViewQuery {
 			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, apppolicyview.ChildrenTable, apppolicyview.ChildrenColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -158,8 +158,8 @@ func (apvq *AppPolicyViewQuery) QueryChildren() *AppPolicyViewQuery {
 
 // First returns the first AppPolicyView entity from the query.
 // Returns a *NotFoundError when no AppPolicyView was found.
-func (apvq *AppPolicyViewQuery) First(ctx context.Context) (*AppPolicyView, error) {
-	nodes, err := apvq.Limit(1).All(setContextOp(ctx, apvq.ctx, ent.OpQueryFirst))
+func (_q *AppPolicyViewQuery) First(ctx context.Context) (*AppPolicyView, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -170,8 +170,8 @@ func (apvq *AppPolicyViewQuery) First(ctx context.Context) (*AppPolicyView, erro
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) FirstX(ctx context.Context) *AppPolicyView {
-	node, err := apvq.First(ctx)
+func (_q *AppPolicyViewQuery) FirstX(ctx context.Context) *AppPolicyView {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -180,9 +180,9 @@ func (apvq *AppPolicyViewQuery) FirstX(ctx context.Context) *AppPolicyView {
 
 // FirstID returns the first AppPolicyView ID from the query.
 // Returns a *NotFoundError when no AppPolicyView ID was found.
-func (apvq *AppPolicyViewQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppPolicyViewQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apvq.Limit(1).IDs(setContextOp(ctx, apvq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -193,8 +193,8 @@ func (apvq *AppPolicyViewQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) FirstIDX(ctx context.Context) int {
-	id, err := apvq.FirstID(ctx)
+func (_q *AppPolicyViewQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -204,8 +204,8 @@ func (apvq *AppPolicyViewQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single AppPolicyView entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppPolicyView entity is found.
 // Returns a *NotFoundError when no AppPolicyView entities are found.
-func (apvq *AppPolicyViewQuery) Only(ctx context.Context) (*AppPolicyView, error) {
-	nodes, err := apvq.Limit(2).All(setContextOp(ctx, apvq.ctx, ent.OpQueryOnly))
+func (_q *AppPolicyViewQuery) Only(ctx context.Context) (*AppPolicyView, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -220,8 +220,8 @@ func (apvq *AppPolicyViewQuery) Only(ctx context.Context) (*AppPolicyView, error
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) OnlyX(ctx context.Context) *AppPolicyView {
-	node, err := apvq.Only(ctx)
+func (_q *AppPolicyViewQuery) OnlyX(ctx context.Context) *AppPolicyView {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,9 +231,9 @@ func (apvq *AppPolicyViewQuery) OnlyX(ctx context.Context) *AppPolicyView {
 // OnlyID is like Only, but returns the only AppPolicyView ID in the query.
 // Returns a *NotSingularError when more than one AppPolicyView ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (apvq *AppPolicyViewQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppPolicyViewQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apvq.Limit(2).IDs(setContextOp(ctx, apvq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -248,8 +248,8 @@ func (apvq *AppPolicyViewQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) OnlyIDX(ctx context.Context) int {
-	id, err := apvq.OnlyID(ctx)
+func (_q *AppPolicyViewQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -257,18 +257,18 @@ func (apvq *AppPolicyViewQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of AppPolicyViews.
-func (apvq *AppPolicyViewQuery) All(ctx context.Context) ([]*AppPolicyView, error) {
-	ctx = setContextOp(ctx, apvq.ctx, ent.OpQueryAll)
-	if err := apvq.prepareQuery(ctx); err != nil {
+func (_q *AppPolicyViewQuery) All(ctx context.Context) ([]*AppPolicyView, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppPolicyView, *AppPolicyViewQuery]()
-	return withInterceptors[[]*AppPolicyView](ctx, apvq, qr, apvq.inters)
+	return withInterceptors[[]*AppPolicyView](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) AllX(ctx context.Context) []*AppPolicyView {
-	nodes, err := apvq.All(ctx)
+func (_q *AppPolicyViewQuery) AllX(ctx context.Context) []*AppPolicyView {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -276,20 +276,20 @@ func (apvq *AppPolicyViewQuery) AllX(ctx context.Context) []*AppPolicyView {
 }
 
 // IDs executes the query and returns a list of AppPolicyView IDs.
-func (apvq *AppPolicyViewQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if apvq.ctx.Unique == nil && apvq.path != nil {
-		apvq.Unique(true)
+func (_q *AppPolicyViewQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, apvq.ctx, ent.OpQueryIDs)
-	if err = apvq.Select(apppolicyview.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(apppolicyview.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) IDsX(ctx context.Context) []int {
-	ids, err := apvq.IDs(ctx)
+func (_q *AppPolicyViewQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -297,17 +297,17 @@ func (apvq *AppPolicyViewQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (apvq *AppPolicyViewQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, apvq.ctx, ent.OpQueryCount)
-	if err := apvq.prepareQuery(ctx); err != nil {
+func (_q *AppPolicyViewQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, apvq, querierCount[*AppPolicyViewQuery](), apvq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppPolicyViewQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) CountX(ctx context.Context) int {
-	count, err := apvq.Count(ctx)
+func (_q *AppPolicyViewQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -315,9 +315,9 @@ func (apvq *AppPolicyViewQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (apvq *AppPolicyViewQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, apvq.ctx, ent.OpQueryExist)
-	switch _, err := apvq.FirstID(ctx); {
+func (_q *AppPolicyViewQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -328,8 +328,8 @@ func (apvq *AppPolicyViewQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (apvq *AppPolicyViewQuery) ExistX(ctx context.Context) bool {
-	exist, err := apvq.Exist(ctx)
+func (_q *AppPolicyViewQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -338,68 +338,68 @@ func (apvq *AppPolicyViewQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppPolicyViewQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (apvq *AppPolicyViewQuery) Clone() *AppPolicyViewQuery {
-	if apvq == nil {
+func (_q *AppPolicyViewQuery) Clone() *AppPolicyViewQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppPolicyViewQuery{
-		config:        apvq.config,
-		ctx:           apvq.ctx.Clone(),
-		order:         append([]apppolicyview.OrderOption{}, apvq.order...),
-		inters:        append([]Interceptor{}, apvq.inters...),
-		predicates:    append([]predicate.AppPolicyView{}, apvq.predicates...),
-		withApp:       apvq.withApp.Clone(),
-		withAppPolicy: apvq.withAppPolicy.Clone(),
-		withParent:    apvq.withParent.Clone(),
-		withChildren:  apvq.withChildren.Clone(),
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]apppolicyview.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.AppPolicyView{}, _q.predicates...),
+		withApp:       _q.withApp.Clone(),
+		withAppPolicy: _q.withAppPolicy.Clone(),
+		withParent:    _q.withParent.Clone(),
+		withChildren:  _q.withChildren.Clone(),
 		// clone intermediate query.
-		sql:  apvq.sql.Clone(),
-		path: apvq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (apvq *AppPolicyViewQuery) WithApp(opts ...func(*AppQuery)) *AppPolicyViewQuery {
-	query := (&AppClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) WithApp(opts ...func(*AppQuery)) *AppPolicyViewQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	apvq.withApp = query
-	return apvq
+	_q.withApp = query
+	return _q
 }
 
 // WithAppPolicy tells the query-builder to eager-load the nodes that are connected to
 // the "app_policy" edge. The optional arguments are used to configure the query builder of the edge.
-func (apvq *AppPolicyViewQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *AppPolicyViewQuery {
-	query := (&AppPolicyClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	apvq.withAppPolicy = query
-	return apvq
+	_q.withAppPolicy = query
+	return _q
 }
 
 // WithParent tells the query-builder to eager-load the nodes that are connected to
 // the "parent" edge. The optional arguments are used to configure the query builder of the edge.
-func (apvq *AppPolicyViewQuery) WithParent(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) WithParent(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	apvq.withParent = query
-	return apvq
+	_q.withParent = query
+	return _q
 }
 
 // WithChildren tells the query-builder to eager-load the nodes that are connected to
 // the "children" edge. The optional arguments are used to configure the query builder of the edge.
-func (apvq *AppPolicyViewQuery) WithChildren(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) WithChildren(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	apvq.withChildren = query
-	return apvq
+	_q.withChildren = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -416,10 +416,10 @@ func (apvq *AppPolicyViewQuery) WithChildren(opts ...func(*AppPolicyViewQuery)) 
 //		GroupBy(apppolicyview.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (apvq *AppPolicyViewQuery) GroupBy(field string, fields ...string) *AppPolicyViewGroupBy {
-	apvq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppPolicyViewGroupBy{build: apvq}
-	grbuild.flds = &apvq.ctx.Fields
+func (_q *AppPolicyViewQuery) GroupBy(field string, fields ...string) *AppPolicyViewGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppPolicyViewGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = apppolicyview.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -437,118 +437,118 @@ func (apvq *AppPolicyViewQuery) GroupBy(field string, fields ...string) *AppPoli
 //	client.AppPolicyView.Query().
 //		Select(apppolicyview.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (apvq *AppPolicyViewQuery) Select(fields ...string) *AppPolicyViewSelect {
-	apvq.ctx.Fields = append(apvq.ctx.Fields, fields...)
-	sbuild := &AppPolicyViewSelect{AppPolicyViewQuery: apvq}
+func (_q *AppPolicyViewQuery) Select(fields ...string) *AppPolicyViewSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppPolicyViewSelect{AppPolicyViewQuery: _q}
 	sbuild.label = apppolicyview.Label
-	sbuild.flds, sbuild.scan = &apvq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppPolicyViewSelect configured with the given aggregations.
-func (apvq *AppPolicyViewQuery) Aggregate(fns ...AggregateFunc) *AppPolicyViewSelect {
-	return apvq.Select().Aggregate(fns...)
+func (_q *AppPolicyViewQuery) Aggregate(fns ...AggregateFunc) *AppPolicyViewSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (apvq *AppPolicyViewQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range apvq.inters {
+func (_q *AppPolicyViewQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, apvq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range apvq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !apppolicyview.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if apvq.path != nil {
-		prev, err := apvq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		apvq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (apvq *AppPolicyViewQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppPolicyView, error) {
+func (_q *AppPolicyViewQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppPolicyView, error) {
 	var (
 		nodes       = []*AppPolicyView{}
-		_spec       = apvq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			apvq.withApp != nil,
-			apvq.withAppPolicy != nil,
-			apvq.withParent != nil,
-			apvq.withChildren != nil,
+			_q.withApp != nil,
+			_q.withAppPolicy != nil,
+			_q.withParent != nil,
+			_q.withChildren != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppPolicyView).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppPolicyView{config: apvq.config}
+		node := &AppPolicyView{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(apvq.modifiers) > 0 {
-		_spec.Modifiers = apvq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, apvq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := apvq.withApp; query != nil {
-		if err := apvq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *AppPolicyView, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := apvq.withAppPolicy; query != nil {
-		if err := apvq.loadAppPolicy(ctx, query, nodes, nil,
+	if query := _q.withAppPolicy; query != nil {
+		if err := _q.loadAppPolicy(ctx, query, nodes, nil,
 			func(n *AppPolicyView, e *AppPolicy) { n.Edges.AppPolicy = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := apvq.withParent; query != nil {
-		if err := apvq.loadParent(ctx, query, nodes, nil,
+	if query := _q.withParent; query != nil {
+		if err := _q.loadParent(ctx, query, nodes, nil,
 			func(n *AppPolicyView, e *AppPolicyView) { n.Edges.Parent = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := apvq.withChildren; query != nil {
-		if err := apvq.loadChildren(ctx, query, nodes,
+	if query := _q.withChildren; query != nil {
+		if err := _q.loadChildren(ctx, query, nodes,
 			func(n *AppPolicyView) { n.Edges.Children = []*AppPolicyView{} },
 			func(n *AppPolicyView, e *AppPolicyView) { n.Edges.Children = append(n.Edges.Children, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range apvq.withNamedChildren {
-		if err := apvq.loadChildren(ctx, query, nodes,
+	for name, query := range _q.withNamedChildren {
+		if err := _q.loadChildren(ctx, query, nodes,
 			func(n *AppPolicyView) { n.appendNamedChildren(name) },
 			func(n *AppPolicyView, e *AppPolicyView) { n.appendNamedChildren(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range apvq.loadTotal {
-		if err := apvq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (apvq *AppPolicyViewQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *App)) error {
+func (_q *AppPolicyViewQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *App)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppPolicyView)
 	for i := range nodes {
@@ -577,7 +577,7 @@ func (apvq *AppPolicyViewQuery) loadApp(ctx context.Context, query *AppQuery, no
 	}
 	return nil
 }
-func (apvq *AppPolicyViewQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicy)) error {
+func (_q *AppPolicyViewQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicy)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppPolicyView)
 	for i := range nodes {
@@ -609,7 +609,7 @@ func (apvq *AppPolicyViewQuery) loadAppPolicy(ctx context.Context, query *AppPol
 	}
 	return nil
 }
-func (apvq *AppPolicyViewQuery) loadParent(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
+func (_q *AppPolicyViewQuery) loadParent(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppPolicyView)
 	for i := range nodes {
@@ -638,7 +638,7 @@ func (apvq *AppPolicyViewQuery) loadParent(ctx context.Context, query *AppPolicy
 	}
 	return nil
 }
-func (apvq *AppPolicyViewQuery) loadChildren(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
+func (_q *AppPolicyViewQuery) loadChildren(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*AppPolicyView)
 	for i := range nodes {
@@ -669,27 +669,27 @@ func (apvq *AppPolicyViewQuery) loadChildren(ctx context.Context, query *AppPoli
 	return nil
 }
 
-func (apvq *AppPolicyViewQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := apvq.querySpec()
-	if len(apvq.modifiers) > 0 {
-		_spec.Modifiers = apvq.modifiers
+func (_q *AppPolicyViewQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = apvq.ctx.Fields
-	if len(apvq.ctx.Fields) > 0 {
-		_spec.Unique = apvq.ctx.Unique != nil && *apvq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, apvq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (apvq *AppPolicyViewQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppPolicyViewQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(apppolicyview.Table, apppolicyview.Columns, sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt))
-	_spec.From = apvq.sql
-	if unique := apvq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if apvq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := apvq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, apppolicyview.FieldID)
 		for i := range fields {
@@ -697,30 +697,30 @@ func (apvq *AppPolicyViewQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if apvq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(apppolicyview.FieldAppID)
 		}
-		if apvq.withAppPolicy != nil {
+		if _q.withAppPolicy != nil {
 			_spec.Node.AddColumnOnce(apppolicyview.FieldPolicyID)
 		}
-		if apvq.withParent != nil {
+		if _q.withParent != nil {
 			_spec.Node.AddColumnOnce(apppolicyview.FieldParentID)
 		}
 	}
-	if ps := apvq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := apvq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := apvq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := apvq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -730,33 +730,33 @@ func (apvq *AppPolicyViewQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (apvq *AppPolicyViewQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(apvq.driver.Dialect())
+func (_q *AppPolicyViewQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(apppolicyview.Table)
-	columns := apvq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = apppolicyview.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if apvq.sql != nil {
-		selector = apvq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if apvq.ctx.Unique != nil && *apvq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range apvq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range apvq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := apvq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := apvq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -764,16 +764,16 @@ func (apvq *AppPolicyViewQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedChildren tells the query-builder to eager-load the nodes that are connected to the "children"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (apvq *AppPolicyViewQuery) WithNamedChildren(name string, opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
-	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+func (_q *AppPolicyViewQuery) WithNamedChildren(name string, opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if apvq.withNamedChildren == nil {
-		apvq.withNamedChildren = make(map[string]*AppPolicyViewQuery)
+	if _q.withNamedChildren == nil {
+		_q.withNamedChildren = make(map[string]*AppPolicyViewQuery)
 	}
-	apvq.withNamedChildren[name] = query
-	return apvq
+	_q.withNamedChildren[name] = query
+	return _q
 }
 
 // AppPolicyViewGroupBy is the group-by builder for AppPolicyView entities.
@@ -783,41 +783,41 @@ type AppPolicyViewGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (apvgb *AppPolicyViewGroupBy) Aggregate(fns ...AggregateFunc) *AppPolicyViewGroupBy {
-	apvgb.fns = append(apvgb.fns, fns...)
-	return apvgb
+func (_g *AppPolicyViewGroupBy) Aggregate(fns ...AggregateFunc) *AppPolicyViewGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (apvgb *AppPolicyViewGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, apvgb.build.ctx, ent.OpQueryGroupBy)
-	if err := apvgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppPolicyViewGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppPolicyViewQuery, *AppPolicyViewGroupBy](ctx, apvgb.build, apvgb, apvgb.build.inters, v)
+	return scanWithInterceptors[*AppPolicyViewQuery, *AppPolicyViewGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (apvgb *AppPolicyViewGroupBy) sqlScan(ctx context.Context, root *AppPolicyViewQuery, v any) error {
+func (_g *AppPolicyViewGroupBy) sqlScan(ctx context.Context, root *AppPolicyViewQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(apvgb.fns))
-	for _, fn := range apvgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*apvgb.flds)+len(apvgb.fns))
-		for _, f := range *apvgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*apvgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := apvgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -831,27 +831,27 @@ type AppPolicyViewSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (apvs *AppPolicyViewSelect) Aggregate(fns ...AggregateFunc) *AppPolicyViewSelect {
-	apvs.fns = append(apvs.fns, fns...)
-	return apvs
+func (_s *AppPolicyViewSelect) Aggregate(fns ...AggregateFunc) *AppPolicyViewSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (apvs *AppPolicyViewSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, apvs.ctx, ent.OpQuerySelect)
-	if err := apvs.prepareQuery(ctx); err != nil {
+func (_s *AppPolicyViewSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppPolicyViewQuery, *AppPolicyViewSelect](ctx, apvs.AppPolicyViewQuery, apvs, apvs.inters, v)
+	return scanWithInterceptors[*AppPolicyViewQuery, *AppPolicyViewSelect](ctx, _s.AppPolicyViewQuery, _s, _s.inters, v)
 }
 
-func (apvs *AppPolicyViewSelect) sqlScan(ctx context.Context, root *AppPolicyViewQuery, v any) error {
+func (_s *AppPolicyViewSelect) sqlScan(ctx context.Context, root *AppPolicyViewQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(apvs.fns))
-	for _, fn := range apvs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*apvs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -859,7 +859,7 @@ func (apvs *AppPolicyViewSelect) sqlScan(ctx context.Context, root *AppPolicyVie
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := apvs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

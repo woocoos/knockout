@@ -1080,7 +1080,7 @@ func (e *executableSchema) Schema() *ast.Schema {
 	return parsedSchema
 }
 
-func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
+func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]any) (int, bool) {
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
@@ -11810,7 +11810,7 @@ input FileSourceWhereInput {
 """
 An object with a Global ID,for using in Noder interface.
 """
-scalar GID
+scalar GID @goModel(model: "github.com/99designs/gqlgen/graphql.ID")
 """
 An object with an ID.
 Follows the [Relay Global Object Identification Specification](https://relay.dev/graphql/objectidentification.htm)

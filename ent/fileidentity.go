@@ -108,7 +108,7 @@ func (*FileIdentity) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the FileIdentity fields.
-func (fi *FileIdentity) assignValues(columns []string, values []any) error {
+func (_m *FileIdentity) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -119,87 +119,87 @@ func (fi *FileIdentity) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			fi.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case fileidentity.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				fi.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case fileidentity.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				fi.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case fileidentity.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				fi.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case fileidentity.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				fi.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case fileidentity.FieldTenantID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				fi.TenantID = int(value.Int64)
+				_m.TenantID = int(value.Int64)
 			}
 		case fileidentity.FieldAccessKeyID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field access_key_id", values[i])
 			} else if value.Valid {
-				fi.AccessKeyID = value.String
+				_m.AccessKeyID = value.String
 			}
 		case fileidentity.FieldAccessKeySecret:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field access_key_secret", values[i])
 			} else if value.Valid {
-				fi.AccessKeySecret = value.String
+				_m.AccessKeySecret = value.String
 			}
 		case fileidentity.FieldFileSourceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field file_source_id", values[i])
 			} else if value.Valid {
-				fi.FileSourceID = int(value.Int64)
+				_m.FileSourceID = int(value.Int64)
 			}
 		case fileidentity.FieldRoleArn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field role_arn", values[i])
 			} else if value.Valid {
-				fi.RoleArn = value.String
+				_m.RoleArn = value.String
 			}
 		case fileidentity.FieldPolicy:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field policy", values[i])
 			} else if value.Valid {
-				fi.Policy = value.String
+				_m.Policy = value.String
 			}
 		case fileidentity.FieldDurationSeconds:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field duration_seconds", values[i])
 			} else if value.Valid {
-				fi.DurationSeconds = int(value.Int64)
+				_m.DurationSeconds = int(value.Int64)
 			}
 		case fileidentity.FieldIsDefault:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_default", values[i])
 			} else if value.Valid {
-				fi.IsDefault = value.Bool
+				_m.IsDefault = value.Bool
 			}
 		case fileidentity.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				fi.Comments = value.String
+				_m.Comments = value.String
 			}
 		default:
-			fi.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -207,80 +207,80 @@ func (fi *FileIdentity) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the FileIdentity.
 // This includes values selected through modifiers, order, etc.
-func (fi *FileIdentity) Value(name string) (ent.Value, error) {
-	return fi.selectValues.Get(name)
+func (_m *FileIdentity) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySource queries the "source" edge of the FileIdentity entity.
-func (fi *FileIdentity) QuerySource() *FileSourceQuery {
-	return NewFileIdentityClient(fi.config).QuerySource(fi)
+func (_m *FileIdentity) QuerySource() *FileSourceQuery {
+	return NewFileIdentityClient(_m.config).QuerySource(_m)
 }
 
 // QueryOrg queries the "org" edge of the FileIdentity entity.
-func (fi *FileIdentity) QueryOrg() *OrgQuery {
-	return NewFileIdentityClient(fi.config).QueryOrg(fi)
+func (_m *FileIdentity) QueryOrg() *OrgQuery {
+	return NewFileIdentityClient(_m.config).QueryOrg(_m)
 }
 
 // Update returns a builder for updating this FileIdentity.
 // Note that you need to call FileIdentity.Unwrap() before calling this method if this FileIdentity
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fi *FileIdentity) Update() *FileIdentityUpdateOne {
-	return NewFileIdentityClient(fi.config).UpdateOne(fi)
+func (_m *FileIdentity) Update() *FileIdentityUpdateOne {
+	return NewFileIdentityClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the FileIdentity entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fi *FileIdentity) Unwrap() *FileIdentity {
-	_tx, ok := fi.config.driver.(*txDriver)
+func (_m *FileIdentity) Unwrap() *FileIdentity {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: FileIdentity is not a transactional entity")
 	}
-	fi.config.driver = _tx.drv
-	return fi
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (fi *FileIdentity) String() string {
+func (_m *FileIdentity) String() string {
 	var builder strings.Builder
 	builder.WriteString("FileIdentity(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", fi.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", fi.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(fi.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", fi.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fi.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", fi.TenantID))
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
 	builder.WriteString(", ")
 	builder.WriteString("access_key_id=")
-	builder.WriteString(fi.AccessKeyID)
+	builder.WriteString(_m.AccessKeyID)
 	builder.WriteString(", ")
 	builder.WriteString("access_key_secret=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("file_source_id=")
-	builder.WriteString(fmt.Sprintf("%v", fi.FileSourceID))
+	builder.WriteString(fmt.Sprintf("%v", _m.FileSourceID))
 	builder.WriteString(", ")
 	builder.WriteString("role_arn=")
-	builder.WriteString(fi.RoleArn)
+	builder.WriteString(_m.RoleArn)
 	builder.WriteString(", ")
 	builder.WriteString("policy=")
-	builder.WriteString(fi.Policy)
+	builder.WriteString(_m.Policy)
 	builder.WriteString(", ")
 	builder.WriteString("duration_seconds=")
-	builder.WriteString(fmt.Sprintf("%v", fi.DurationSeconds))
+	builder.WriteString(fmt.Sprintf("%v", _m.DurationSeconds))
 	builder.WriteString(", ")
 	builder.WriteString("is_default=")
-	builder.WriteString(fmt.Sprintf("%v", fi.IsDefault))
+	builder.WriteString(fmt.Sprintf("%v", _m.IsDefault))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(fi.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteByte(')')
 	return builder.String()
 }

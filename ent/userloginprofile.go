@@ -97,7 +97,7 @@ func (*UserLoginProfile) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserLoginProfile fields.
-func (ulp *UserLoginProfile) assignValues(columns []string, values []any) error {
+func (_m *UserLoginProfile) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -108,93 +108,93 @@ func (ulp *UserLoginProfile) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ulp.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case userloginprofile.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ulp.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case userloginprofile.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ulp.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case userloginprofile.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ulp.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case userloginprofile.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ulp.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case userloginprofile.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				ulp.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case userloginprofile.FieldLastLoginIP:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field last_login_ip", values[i])
 			} else if value.Valid {
-				ulp.LastLoginIP = value.String
+				_m.LastLoginIP = value.String
 			}
 		case userloginprofile.FieldLastLoginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_login_at", values[i])
 			} else if value.Valid {
-				ulp.LastLoginAt = value.Time
+				_m.LastLoginAt = value.Time
 			}
 		case userloginprofile.FieldCanLogin:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field can_login", values[i])
 			} else if value.Valid {
-				ulp.CanLogin = value.Bool
+				_m.CanLogin = value.Bool
 			}
 		case userloginprofile.FieldSetKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field set_kind", values[i])
 			} else if value.Valid {
-				ulp.SetKind = userloginprofile.SetKind(value.String)
+				_m.SetKind = userloginprofile.SetKind(value.String)
 			}
 		case userloginprofile.FieldPasswordReset:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field password_reset", values[i])
 			} else if value.Valid {
-				ulp.PasswordReset = value.Bool
+				_m.PasswordReset = value.Bool
 			}
 		case userloginprofile.FieldVerifyDevice:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field verify_device", values[i])
 			} else if value.Valid {
-				ulp.VerifyDevice = value.Bool
+				_m.VerifyDevice = value.Bool
 			}
 		case userloginprofile.FieldMfaEnabled:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field mfa_enabled", values[i])
 			} else if value.Valid {
-				ulp.MfaEnabled = value.Bool
+				_m.MfaEnabled = value.Bool
 			}
 		case userloginprofile.FieldMfaSecret:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mfa_secret", values[i])
 			} else if value.Valid {
-				ulp.MfaSecret = value.String
+				_m.MfaSecret = value.String
 			}
 		case userloginprofile.FieldMfaStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mfa_status", values[i])
 			} else if value.Valid {
-				ulp.MfaStatus = typex.SimpleStatus(value.String)
+				_m.MfaStatus = typex.SimpleStatus(value.String)
 			}
 		default:
-			ulp.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -202,78 +202,78 @@ func (ulp *UserLoginProfile) assignValues(columns []string, values []any) error 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserLoginProfile.
 // This includes values selected through modifiers, order, etc.
-func (ulp *UserLoginProfile) Value(name string) (ent.Value, error) {
-	return ulp.selectValues.Get(name)
+func (_m *UserLoginProfile) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserLoginProfile entity.
-func (ulp *UserLoginProfile) QueryUser() *UserQuery {
-	return NewUserLoginProfileClient(ulp.config).QueryUser(ulp)
+func (_m *UserLoginProfile) QueryUser() *UserQuery {
+	return NewUserLoginProfileClient(_m.config).QueryUser(_m)
 }
 
 // Update returns a builder for updating this UserLoginProfile.
 // Note that you need to call UserLoginProfile.Unwrap() before calling this method if this UserLoginProfile
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ulp *UserLoginProfile) Update() *UserLoginProfileUpdateOne {
-	return NewUserLoginProfileClient(ulp.config).UpdateOne(ulp)
+func (_m *UserLoginProfile) Update() *UserLoginProfileUpdateOne {
+	return NewUserLoginProfileClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserLoginProfile entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ulp *UserLoginProfile) Unwrap() *UserLoginProfile {
-	_tx, ok := ulp.config.driver.(*txDriver)
+func (_m *UserLoginProfile) Unwrap() *UserLoginProfile {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserLoginProfile is not a transactional entity")
 	}
-	ulp.config.driver = _tx.drv
-	return ulp
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ulp *UserLoginProfile) String() string {
+func (_m *UserLoginProfile) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserLoginProfile(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ulp.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ulp.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ulp.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("last_login_ip=")
-	builder.WriteString(ulp.LastLoginIP)
+	builder.WriteString(_m.LastLoginIP)
 	builder.WriteString(", ")
 	builder.WriteString("last_login_at=")
-	builder.WriteString(ulp.LastLoginAt.Format(time.ANSIC))
+	builder.WriteString(_m.LastLoginAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("can_login=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.CanLogin))
+	builder.WriteString(fmt.Sprintf("%v", _m.CanLogin))
 	builder.WriteString(", ")
 	builder.WriteString("set_kind=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.SetKind))
+	builder.WriteString(fmt.Sprintf("%v", _m.SetKind))
 	builder.WriteString(", ")
 	builder.WriteString("password_reset=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.PasswordReset))
+	builder.WriteString(fmt.Sprintf("%v", _m.PasswordReset))
 	builder.WriteString(", ")
 	builder.WriteString("verify_device=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.VerifyDevice))
+	builder.WriteString(fmt.Sprintf("%v", _m.VerifyDevice))
 	builder.WriteString(", ")
 	builder.WriteString("mfa_enabled=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.MfaEnabled))
+	builder.WriteString(fmt.Sprintf("%v", _m.MfaEnabled))
 	builder.WriteString(", ")
 	builder.WriteString("mfa_secret=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("mfa_status=")
-	builder.WriteString(fmt.Sprintf("%v", ulp.MfaStatus))
+	builder.WriteString(fmt.Sprintf("%v", _m.MfaStatus))
 	builder.WriteByte(')')
 	return builder.String()
 }

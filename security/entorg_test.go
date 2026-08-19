@@ -2,8 +2,11 @@ package security
 
 import (
 	"github.com/stretchr/testify/suite"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/security"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
@@ -33,7 +36,16 @@ func TestSuite(t *testing.T) {
 
 func (t *testSuite) SetupSuite() {
 	t.Require().NoError(t.BaseSuite.Setup())
-	err := casbin.SetAuthorizer(t.App.AppConfiguration().Sub("authz"), t.AuthDbClient)
+	// 确保所有 Redis 配置都指向 miniredis
+	t.Cnf.Parser().Set("cache.redis.addrs", []string{t.Redis.Addr()})
+	t.Cnf.Parser().Set("authz.watcherOptions.options.addr", t.Redis.Addr())
+	// 重新注册 cache 组件以使用 miniredis 地址
+	cache.UnRegisterCache("redis")
+	koapp.BuildCacheComponents(t.Cnf)
+
+	adapter, err := entadapter.NewAdapterWithClient(t.AuthDbClient)
+	t.Require().NoError(err)
+	err = casbin.SetAuthorizer(t.App.AppConfiguration().Sub("authz"), casbin.WithAdapter(adapter))
 	if err != nil {
 		panic(err)
 	}

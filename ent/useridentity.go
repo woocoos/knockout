@@ -85,7 +85,7 @@ func (*UserIdentity) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserIdentity fields.
-func (ui *UserIdentity) assignValues(columns []string, values []any) error {
+func (_m *UserIdentity) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -96,63 +96,63 @@ func (ui *UserIdentity) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ui.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case useridentity.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				ui.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case useridentity.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ui.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case useridentity.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				ui.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case useridentity.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ui.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case useridentity.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				ui.UserID = int(value.Int64)
+				_m.UserID = int(value.Int64)
 			}
 		case useridentity.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				ui.Kind = useridentity.Kind(value.String)
+				_m.Kind = useridentity.Kind(value.String)
 			}
 		case useridentity.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				ui.Code = value.String
+				_m.Code = value.String
 			}
 		case useridentity.FieldCodeExtend:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code_extend", values[i])
 			} else if value.Valid {
-				ui.CodeExtend = value.String
+				_m.CodeExtend = value.String
 			}
 		case useridentity.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				ui.Status = typex.SimpleStatus(value.String)
+				_m.Status = typex.SimpleStatus(value.String)
 			}
 		default:
-			ui.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -160,64 +160,64 @@ func (ui *UserIdentity) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserIdentity.
 // This includes values selected through modifiers, order, etc.
-func (ui *UserIdentity) Value(name string) (ent.Value, error) {
-	return ui.selectValues.Get(name)
+func (_m *UserIdentity) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserIdentity entity.
-func (ui *UserIdentity) QueryUser() *UserQuery {
-	return NewUserIdentityClient(ui.config).QueryUser(ui)
+func (_m *UserIdentity) QueryUser() *UserQuery {
+	return NewUserIdentityClient(_m.config).QueryUser(_m)
 }
 
 // Update returns a builder for updating this UserIdentity.
 // Note that you need to call UserIdentity.Unwrap() before calling this method if this UserIdentity
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ui *UserIdentity) Update() *UserIdentityUpdateOne {
-	return NewUserIdentityClient(ui.config).UpdateOne(ui)
+func (_m *UserIdentity) Update() *UserIdentityUpdateOne {
+	return NewUserIdentityClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserIdentity entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ui *UserIdentity) Unwrap() *UserIdentity {
-	_tx, ok := ui.config.driver.(*txDriver)
+func (_m *UserIdentity) Unwrap() *UserIdentity {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserIdentity is not a transactional entity")
 	}
-	ui.config.driver = _tx.drv
-	return ui
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ui *UserIdentity) String() string {
+func (_m *UserIdentity) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserIdentity(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ui.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", ui.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ui.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", ui.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ui.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", ui.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", ui.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(ui.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("code_extend=")
-	builder.WriteString(ui.CodeExtend)
+	builder.WriteString(_m.CodeExtend)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", ui.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -27,235 +27,235 @@ type OrgUserUpdate struct {
 }
 
 // Where appends a list predicates to the OrgUserUpdate builder.
-func (ouu *OrgUserUpdate) Where(ps ...predicate.OrgUser) *OrgUserUpdate {
-	ouu.mutation.Where(ps...)
-	return ouu
+func (_u *OrgUserUpdate) Where(ps ...predicate.OrgUser) *OrgUserUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ouu *OrgUserUpdate) SetUpdatedBy(i int) *OrgUserUpdate {
-	ouu.mutation.ResetUpdatedBy()
-	ouu.mutation.SetUpdatedBy(i)
-	return ouu
+func (_u *OrgUserUpdate) SetUpdatedBy(v int) *OrgUserUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableUpdatedBy(i *int) *OrgUserUpdate {
-	if i != nil {
-		ouu.SetUpdatedBy(*i)
+func (_u *OrgUserUpdate) SetNillableUpdatedBy(v *int) *OrgUserUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ouu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ouu *OrgUserUpdate) AddUpdatedBy(i int) *OrgUserUpdate {
-	ouu.mutation.AddUpdatedBy(i)
-	return ouu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUserUpdate) AddUpdatedBy(v int) *OrgUserUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ouu *OrgUserUpdate) ClearUpdatedBy() *OrgUserUpdate {
-	ouu.mutation.ClearUpdatedBy()
-	return ouu
+func (_u *OrgUserUpdate) ClearUpdatedBy() *OrgUserUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ouu *OrgUserUpdate) SetUpdatedAt(t time.Time) *OrgUserUpdate {
-	ouu.mutation.SetUpdatedAt(t)
-	return ouu
+func (_u *OrgUserUpdate) SetUpdatedAt(v time.Time) *OrgUserUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableUpdatedAt(t *time.Time) *OrgUserUpdate {
-	if t != nil {
-		ouu.SetUpdatedAt(*t)
+func (_u *OrgUserUpdate) SetNillableUpdatedAt(v *time.Time) *OrgUserUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ouu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ouu *OrgUserUpdate) ClearUpdatedAt() *OrgUserUpdate {
-	ouu.mutation.ClearUpdatedAt()
-	return ouu
+func (_u *OrgUserUpdate) ClearUpdatedAt() *OrgUserUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetOrgID sets the "org_id" field.
-func (ouu *OrgUserUpdate) SetOrgID(i int) *OrgUserUpdate {
-	ouu.mutation.SetOrgID(i)
-	return ouu
+func (_u *OrgUserUpdate) SetOrgID(v int) *OrgUserUpdate {
+	_u.mutation.SetOrgID(v)
+	return _u
 }
 
 // SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableOrgID(i *int) *OrgUserUpdate {
-	if i != nil {
-		ouu.SetOrgID(*i)
+func (_u *OrgUserUpdate) SetNillableOrgID(v *int) *OrgUserUpdate {
+	if v != nil {
+		_u.SetOrgID(*v)
 	}
-	return ouu
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (ouu *OrgUserUpdate) SetUserID(i int) *OrgUserUpdate {
-	ouu.mutation.SetUserID(i)
-	return ouu
+func (_u *OrgUserUpdate) SetUserID(v int) *OrgUserUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableUserID(i *int) *OrgUserUpdate {
-	if i != nil {
-		ouu.SetUserID(*i)
+func (_u *OrgUserUpdate) SetNillableUserID(v *int) *OrgUserUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return ouu
+	return _u
 }
 
 // SetJoinedAt sets the "joined_at" field.
-func (ouu *OrgUserUpdate) SetJoinedAt(t time.Time) *OrgUserUpdate {
-	ouu.mutation.SetJoinedAt(t)
-	return ouu
+func (_u *OrgUserUpdate) SetJoinedAt(v time.Time) *OrgUserUpdate {
+	_u.mutation.SetJoinedAt(v)
+	return _u
 }
 
 // SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableJoinedAt(t *time.Time) *OrgUserUpdate {
-	if t != nil {
-		ouu.SetJoinedAt(*t)
+func (_u *OrgUserUpdate) SetNillableJoinedAt(v *time.Time) *OrgUserUpdate {
+	if v != nil {
+		_u.SetJoinedAt(*v)
 	}
-	return ouu
+	return _u
 }
 
 // SetDisplayName sets the "display_name" field.
-func (ouu *OrgUserUpdate) SetDisplayName(s string) *OrgUserUpdate {
-	ouu.mutation.SetDisplayName(s)
-	return ouu
+func (_u *OrgUserUpdate) SetDisplayName(v string) *OrgUserUpdate {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableDisplayName(s *string) *OrgUserUpdate {
-	if s != nil {
-		ouu.SetDisplayName(*s)
+func (_u *OrgUserUpdate) SetNillableDisplayName(v *string) *OrgUserUpdate {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return ouu
+	return _u
 }
 
 // SetUserType sets the "user_type" field.
-func (ouu *OrgUserUpdate) SetUserType(ot orguser.UserType) *OrgUserUpdate {
-	ouu.mutation.SetUserType(ot)
-	return ouu
+func (_u *OrgUserUpdate) SetUserType(v orguser.UserType) *OrgUserUpdate {
+	_u.mutation.SetUserType(v)
+	return _u
 }
 
 // SetNillableUserType sets the "user_type" field if the given value is not nil.
-func (ouu *OrgUserUpdate) SetNillableUserType(ot *orguser.UserType) *OrgUserUpdate {
-	if ot != nil {
-		ouu.SetUserType(*ot)
+func (_u *OrgUserUpdate) SetNillableUserType(v *orguser.UserType) *OrgUserUpdate {
+	if v != nil {
+		_u.SetUserType(*v)
 	}
-	return ouu
+	return _u
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (ouu *OrgUserUpdate) SetOrg(o *Org) *OrgUserUpdate {
-	return ouu.SetOrgID(o.ID)
+func (_u *OrgUserUpdate) SetOrg(v *Org) *OrgUserUpdate {
+	return _u.SetOrgID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ouu *OrgUserUpdate) SetUser(u *User) *OrgUserUpdate {
-	return ouu.SetUserID(u.ID)
+func (_u *OrgUserUpdate) SetUser(v *User) *OrgUserUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // AddOrgRoleIDs adds the "org_roles" edge to the OrgRole entity by IDs.
-func (ouu *OrgUserUpdate) AddOrgRoleIDs(ids ...int) *OrgUserUpdate {
-	ouu.mutation.AddOrgRoleIDs(ids...)
-	return ouu
+func (_u *OrgUserUpdate) AddOrgRoleIDs(ids ...int) *OrgUserUpdate {
+	_u.mutation.AddOrgRoleIDs(ids...)
+	return _u
 }
 
 // AddOrgRoles adds the "org_roles" edges to the OrgRole entity.
-func (ouu *OrgUserUpdate) AddOrgRoles(o ...*OrgRole) *OrgUserUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdate) AddOrgRoles(v ...*OrgRole) *OrgUserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouu.AddOrgRoleIDs(ids...)
+	return _u.AddOrgRoleIDs(ids...)
 }
 
 // AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
-func (ouu *OrgUserUpdate) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
-	ouu.mutation.AddOrgRoleUserIDs(ids...)
-	return ouu
+func (_u *OrgUserUpdate) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
+	_u.mutation.AddOrgRoleUserIDs(ids...)
+	return _u
 }
 
 // AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
-func (ouu *OrgUserUpdate) AddOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdate) AddOrgRoleUser(v ...*OrgRoleUser) *OrgUserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouu.AddOrgRoleUserIDs(ids...)
+	return _u.AddOrgRoleUserIDs(ids...)
 }
 
 // Mutation returns the OrgUserMutation object of the builder.
-func (ouu *OrgUserUpdate) Mutation() *OrgUserMutation {
-	return ouu.mutation
+func (_u *OrgUserUpdate) Mutation() *OrgUserMutation {
+	return _u.mutation
 }
 
 // ClearOrg clears the "org" edge to the Org entity.
-func (ouu *OrgUserUpdate) ClearOrg() *OrgUserUpdate {
-	ouu.mutation.ClearOrg()
-	return ouu
+func (_u *OrgUserUpdate) ClearOrg() *OrgUserUpdate {
+	_u.mutation.ClearOrg()
+	return _u
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (ouu *OrgUserUpdate) ClearUser() *OrgUserUpdate {
-	ouu.mutation.ClearUser()
-	return ouu
+func (_u *OrgUserUpdate) ClearUser() *OrgUserUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearOrgRoles clears all "org_roles" edges to the OrgRole entity.
-func (ouu *OrgUserUpdate) ClearOrgRoles() *OrgUserUpdate {
-	ouu.mutation.ClearOrgRoles()
-	return ouu
+func (_u *OrgUserUpdate) ClearOrgRoles() *OrgUserUpdate {
+	_u.mutation.ClearOrgRoles()
+	return _u
 }
 
 // RemoveOrgRoleIDs removes the "org_roles" edge to OrgRole entities by IDs.
-func (ouu *OrgUserUpdate) RemoveOrgRoleIDs(ids ...int) *OrgUserUpdate {
-	ouu.mutation.RemoveOrgRoleIDs(ids...)
-	return ouu
+func (_u *OrgUserUpdate) RemoveOrgRoleIDs(ids ...int) *OrgUserUpdate {
+	_u.mutation.RemoveOrgRoleIDs(ids...)
+	return _u
 }
 
 // RemoveOrgRoles removes "org_roles" edges to OrgRole entities.
-func (ouu *OrgUserUpdate) RemoveOrgRoles(o ...*OrgRole) *OrgUserUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdate) RemoveOrgRoles(v ...*OrgRole) *OrgUserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouu.RemoveOrgRoleIDs(ids...)
+	return _u.RemoveOrgRoleIDs(ids...)
 }
 
 // ClearOrgRoleUser clears all "org_role_user" edges to the OrgRoleUser entity.
-func (ouu *OrgUserUpdate) ClearOrgRoleUser() *OrgUserUpdate {
-	ouu.mutation.ClearOrgRoleUser()
-	return ouu
+func (_u *OrgUserUpdate) ClearOrgRoleUser() *OrgUserUpdate {
+	_u.mutation.ClearOrgRoleUser()
+	return _u
 }
 
 // RemoveOrgRoleUserIDs removes the "org_role_user" edge to OrgRoleUser entities by IDs.
-func (ouu *OrgUserUpdate) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
-	ouu.mutation.RemoveOrgRoleUserIDs(ids...)
-	return ouu
+func (_u *OrgUserUpdate) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
+	_u.mutation.RemoveOrgRoleUserIDs(ids...)
+	return _u
 }
 
 // RemoveOrgRoleUser removes "org_role_user" edges to OrgRoleUser entities.
-func (ouu *OrgUserUpdate) RemoveOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdate) RemoveOrgRoleUser(v ...*OrgRoleUser) *OrgUserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouu.RemoveOrgRoleUserIDs(ids...)
+	return _u.RemoveOrgRoleUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ouu *OrgUserUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ouu.sqlSave, ouu.mutation, ouu.hooks)
+func (_u *OrgUserUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ouu *OrgUserUpdate) SaveX(ctx context.Context) int {
-	affected, err := ouu.Save(ctx)
+func (_u *OrgUserUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -263,71 +263,71 @@ func (ouu *OrgUserUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ouu *OrgUserUpdate) Exec(ctx context.Context) error {
-	_, err := ouu.Save(ctx)
+func (_u *OrgUserUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ouu *OrgUserUpdate) ExecX(ctx context.Context) {
-	if err := ouu.Exec(ctx); err != nil {
+func (_u *OrgUserUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ouu *OrgUserUpdate) check() error {
-	if v, ok := ouu.mutation.UserType(); ok {
+func (_u *OrgUserUpdate) check() error {
+	if v, ok := _u.mutation.UserType(); ok {
 		if err := orguser.UserTypeValidator(v); err != nil {
 			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
 		}
 	}
-	if ouu.mutation.OrgCleared() && len(ouu.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
-	if ouu.mutation.UserCleared() && len(ouu.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.user"`)
 	}
 	return nil
 }
 
-func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ouu.check(); err != nil {
-		return n, err
+func (_u *OrgUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orguser.Table, orguser.Columns, sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt))
-	if ps := ouu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ouu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguser.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ouu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orguser.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ouu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orguser.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ouu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguser.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ouu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguser.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ouu.mutation.JoinedAt(); ok {
+	if value, ok := _u.mutation.JoinedAt(); ok {
 		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
 	}
-	if value, ok := ouu.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := ouu.mutation.UserType(); ok {
+	if value, ok := _u.mutation.UserType(); ok {
 		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
 	}
-	if ouu.mutation.OrgCleared() {
+	if _u.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -340,7 +340,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -356,7 +356,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -369,7 +369,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -385,7 +385,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouu.mutation.OrgRolesCleared() {
+	if _u.mutation.OrgRolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -396,13 +396,13 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !ouu.mutation.OrgRolesCleared() {
+	if nodes := _u.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !_u.mutation.OrgRolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -416,13 +416,13 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.OrgRolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgRolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -436,13 +436,13 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouu.mutation.OrgRoleUserCleared() {
+	if _u.mutation.OrgRoleUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -455,7 +455,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !ouu.mutation.OrgRoleUserCleared() {
+	if nodes := _u.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !_u.mutation.OrgRoleUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -471,7 +471,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouu.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -487,7 +487,7 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ouu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orguser.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -495,8 +495,8 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ouu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrgUserUpdateOne is the builder for updating a single OrgUser entity.
@@ -508,242 +508,242 @@ type OrgUserUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ouuo *OrgUserUpdateOne) SetUpdatedBy(i int) *OrgUserUpdateOne {
-	ouuo.mutation.ResetUpdatedBy()
-	ouuo.mutation.SetUpdatedBy(i)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetUpdatedBy(v int) *OrgUserUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableUpdatedBy(i *int) *OrgUserUpdateOne {
-	if i != nil {
-		ouuo.SetUpdatedBy(*i)
+func (_u *OrgUserUpdateOne) SetNillableUpdatedBy(v *int) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ouuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ouuo *OrgUserUpdateOne) AddUpdatedBy(i int) *OrgUserUpdateOne {
-	ouuo.mutation.AddUpdatedBy(i)
-	return ouuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *OrgUserUpdateOne) AddUpdatedBy(v int) *OrgUserUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ouuo *OrgUserUpdateOne) ClearUpdatedBy() *OrgUserUpdateOne {
-	ouuo.mutation.ClearUpdatedBy()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearUpdatedBy() *OrgUserUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ouuo *OrgUserUpdateOne) SetUpdatedAt(t time.Time) *OrgUserUpdateOne {
-	ouuo.mutation.SetUpdatedAt(t)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetUpdatedAt(v time.Time) *OrgUserUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableUpdatedAt(t *time.Time) *OrgUserUpdateOne {
-	if t != nil {
-		ouuo.SetUpdatedAt(*t)
+func (_u *OrgUserUpdateOne) SetNillableUpdatedAt(v *time.Time) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ouuo *OrgUserUpdateOne) ClearUpdatedAt() *OrgUserUpdateOne {
-	ouuo.mutation.ClearUpdatedAt()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearUpdatedAt() *OrgUserUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetOrgID sets the "org_id" field.
-func (ouuo *OrgUserUpdateOne) SetOrgID(i int) *OrgUserUpdateOne {
-	ouuo.mutation.SetOrgID(i)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetOrgID(v int) *OrgUserUpdateOne {
+	_u.mutation.SetOrgID(v)
+	return _u
 }
 
 // SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableOrgID(i *int) *OrgUserUpdateOne {
-	if i != nil {
-		ouuo.SetOrgID(*i)
+func (_u *OrgUserUpdateOne) SetNillableOrgID(v *int) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetOrgID(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (ouuo *OrgUserUpdateOne) SetUserID(i int) *OrgUserUpdateOne {
-	ouuo.mutation.SetUserID(i)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetUserID(v int) *OrgUserUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableUserID(i *int) *OrgUserUpdateOne {
-	if i != nil {
-		ouuo.SetUserID(*i)
+func (_u *OrgUserUpdateOne) SetNillableUserID(v *int) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // SetJoinedAt sets the "joined_at" field.
-func (ouuo *OrgUserUpdateOne) SetJoinedAt(t time.Time) *OrgUserUpdateOne {
-	ouuo.mutation.SetJoinedAt(t)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetJoinedAt(v time.Time) *OrgUserUpdateOne {
+	_u.mutation.SetJoinedAt(v)
+	return _u
 }
 
 // SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableJoinedAt(t *time.Time) *OrgUserUpdateOne {
-	if t != nil {
-		ouuo.SetJoinedAt(*t)
+func (_u *OrgUserUpdateOne) SetNillableJoinedAt(v *time.Time) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetJoinedAt(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // SetDisplayName sets the "display_name" field.
-func (ouuo *OrgUserUpdateOne) SetDisplayName(s string) *OrgUserUpdateOne {
-	ouuo.mutation.SetDisplayName(s)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetDisplayName(v string) *OrgUserUpdateOne {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableDisplayName(s *string) *OrgUserUpdateOne {
-	if s != nil {
-		ouuo.SetDisplayName(*s)
+func (_u *OrgUserUpdateOne) SetNillableDisplayName(v *string) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // SetUserType sets the "user_type" field.
-func (ouuo *OrgUserUpdateOne) SetUserType(ot orguser.UserType) *OrgUserUpdateOne {
-	ouuo.mutation.SetUserType(ot)
-	return ouuo
+func (_u *OrgUserUpdateOne) SetUserType(v orguser.UserType) *OrgUserUpdateOne {
+	_u.mutation.SetUserType(v)
+	return _u
 }
 
 // SetNillableUserType sets the "user_type" field if the given value is not nil.
-func (ouuo *OrgUserUpdateOne) SetNillableUserType(ot *orguser.UserType) *OrgUserUpdateOne {
-	if ot != nil {
-		ouuo.SetUserType(*ot)
+func (_u *OrgUserUpdateOne) SetNillableUserType(v *orguser.UserType) *OrgUserUpdateOne {
+	if v != nil {
+		_u.SetUserType(*v)
 	}
-	return ouuo
+	return _u
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (ouuo *OrgUserUpdateOne) SetOrg(o *Org) *OrgUserUpdateOne {
-	return ouuo.SetOrgID(o.ID)
+func (_u *OrgUserUpdateOne) SetOrg(v *Org) *OrgUserUpdateOne {
+	return _u.SetOrgID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ouuo *OrgUserUpdateOne) SetUser(u *User) *OrgUserUpdateOne {
-	return ouuo.SetUserID(u.ID)
+func (_u *OrgUserUpdateOne) SetUser(v *User) *OrgUserUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // AddOrgRoleIDs adds the "org_roles" edge to the OrgRole entity by IDs.
-func (ouuo *OrgUserUpdateOne) AddOrgRoleIDs(ids ...int) *OrgUserUpdateOne {
-	ouuo.mutation.AddOrgRoleIDs(ids...)
-	return ouuo
+func (_u *OrgUserUpdateOne) AddOrgRoleIDs(ids ...int) *OrgUserUpdateOne {
+	_u.mutation.AddOrgRoleIDs(ids...)
+	return _u
 }
 
 // AddOrgRoles adds the "org_roles" edges to the OrgRole entity.
-func (ouuo *OrgUserUpdateOne) AddOrgRoles(o ...*OrgRole) *OrgUserUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdateOne) AddOrgRoles(v ...*OrgRole) *OrgUserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouuo.AddOrgRoleIDs(ids...)
+	return _u.AddOrgRoleIDs(ids...)
 }
 
 // AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
-func (ouuo *OrgUserUpdateOne) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
-	ouuo.mutation.AddOrgRoleUserIDs(ids...)
-	return ouuo
+func (_u *OrgUserUpdateOne) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
+	_u.mutation.AddOrgRoleUserIDs(ids...)
+	return _u
 }
 
 // AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
-func (ouuo *OrgUserUpdateOne) AddOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdateOne) AddOrgRoleUser(v ...*OrgRoleUser) *OrgUserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouuo.AddOrgRoleUserIDs(ids...)
+	return _u.AddOrgRoleUserIDs(ids...)
 }
 
 // Mutation returns the OrgUserMutation object of the builder.
-func (ouuo *OrgUserUpdateOne) Mutation() *OrgUserMutation {
-	return ouuo.mutation
+func (_u *OrgUserUpdateOne) Mutation() *OrgUserMutation {
+	return _u.mutation
 }
 
 // ClearOrg clears the "org" edge to the Org entity.
-func (ouuo *OrgUserUpdateOne) ClearOrg() *OrgUserUpdateOne {
-	ouuo.mutation.ClearOrg()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearOrg() *OrgUserUpdateOne {
+	_u.mutation.ClearOrg()
+	return _u
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (ouuo *OrgUserUpdateOne) ClearUser() *OrgUserUpdateOne {
-	ouuo.mutation.ClearUser()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearUser() *OrgUserUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearOrgRoles clears all "org_roles" edges to the OrgRole entity.
-func (ouuo *OrgUserUpdateOne) ClearOrgRoles() *OrgUserUpdateOne {
-	ouuo.mutation.ClearOrgRoles()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearOrgRoles() *OrgUserUpdateOne {
+	_u.mutation.ClearOrgRoles()
+	return _u
 }
 
 // RemoveOrgRoleIDs removes the "org_roles" edge to OrgRole entities by IDs.
-func (ouuo *OrgUserUpdateOne) RemoveOrgRoleIDs(ids ...int) *OrgUserUpdateOne {
-	ouuo.mutation.RemoveOrgRoleIDs(ids...)
-	return ouuo
+func (_u *OrgUserUpdateOne) RemoveOrgRoleIDs(ids ...int) *OrgUserUpdateOne {
+	_u.mutation.RemoveOrgRoleIDs(ids...)
+	return _u
 }
 
 // RemoveOrgRoles removes "org_roles" edges to OrgRole entities.
-func (ouuo *OrgUserUpdateOne) RemoveOrgRoles(o ...*OrgRole) *OrgUserUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdateOne) RemoveOrgRoles(v ...*OrgRole) *OrgUserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouuo.RemoveOrgRoleIDs(ids...)
+	return _u.RemoveOrgRoleIDs(ids...)
 }
 
 // ClearOrgRoleUser clears all "org_role_user" edges to the OrgRoleUser entity.
-func (ouuo *OrgUserUpdateOne) ClearOrgRoleUser() *OrgUserUpdateOne {
-	ouuo.mutation.ClearOrgRoleUser()
-	return ouuo
+func (_u *OrgUserUpdateOne) ClearOrgRoleUser() *OrgUserUpdateOne {
+	_u.mutation.ClearOrgRoleUser()
+	return _u
 }
 
 // RemoveOrgRoleUserIDs removes the "org_role_user" edge to OrgRoleUser entities by IDs.
-func (ouuo *OrgUserUpdateOne) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
-	ouuo.mutation.RemoveOrgRoleUserIDs(ids...)
-	return ouuo
+func (_u *OrgUserUpdateOne) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
+	_u.mutation.RemoveOrgRoleUserIDs(ids...)
+	return _u
 }
 
 // RemoveOrgRoleUser removes "org_role_user" edges to OrgRoleUser entities.
-func (ouuo *OrgUserUpdateOne) RemoveOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *OrgUserUpdateOne) RemoveOrgRoleUser(v ...*OrgRoleUser) *OrgUserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouuo.RemoveOrgRoleUserIDs(ids...)
+	return _u.RemoveOrgRoleUserIDs(ids...)
 }
 
 // Where appends a list predicates to the OrgUserUpdate builder.
-func (ouuo *OrgUserUpdateOne) Where(ps ...predicate.OrgUser) *OrgUserUpdateOne {
-	ouuo.mutation.Where(ps...)
-	return ouuo
+func (_u *OrgUserUpdateOne) Where(ps ...predicate.OrgUser) *OrgUserUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ouuo *OrgUserUpdateOne) Select(field string, fields ...string) *OrgUserUpdateOne {
-	ouuo.fields = append([]string{field}, fields...)
-	return ouuo
+func (_u *OrgUserUpdateOne) Select(field string, fields ...string) *OrgUserUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated OrgUser entity.
-func (ouuo *OrgUserUpdateOne) Save(ctx context.Context) (*OrgUser, error) {
-	return withHooks(ctx, ouuo.sqlSave, ouuo.mutation, ouuo.hooks)
+func (_u *OrgUserUpdateOne) Save(ctx context.Context) (*OrgUser, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ouuo *OrgUserUpdateOne) SaveX(ctx context.Context) *OrgUser {
-	node, err := ouuo.Save(ctx)
+func (_u *OrgUserUpdateOne) SaveX(ctx context.Context) *OrgUser {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -751,45 +751,45 @@ func (ouuo *OrgUserUpdateOne) SaveX(ctx context.Context) *OrgUser {
 }
 
 // Exec executes the query on the entity.
-func (ouuo *OrgUserUpdateOne) Exec(ctx context.Context) error {
-	_, err := ouuo.Save(ctx)
+func (_u *OrgUserUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ouuo *OrgUserUpdateOne) ExecX(ctx context.Context) {
-	if err := ouuo.Exec(ctx); err != nil {
+func (_u *OrgUserUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ouuo *OrgUserUpdateOne) check() error {
-	if v, ok := ouuo.mutation.UserType(); ok {
+func (_u *OrgUserUpdateOne) check() error {
+	if v, ok := _u.mutation.UserType(); ok {
 		if err := orguser.UserTypeValidator(v); err != nil {
 			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
 		}
 	}
-	if ouuo.mutation.OrgCleared() && len(ouuo.mutation.OrgIDs()) > 0 {
+	if _u.mutation.OrgCleared() && len(_u.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
-	if ouuo.mutation.UserCleared() && len(ouuo.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.user"`)
 	}
 	return nil
 }
 
-func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err error) {
-	if err := ouuo.check(); err != nil {
+func (_u *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(orguser.Table, orguser.Columns, sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt))
-	id, ok := ouuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OrgUser.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ouuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orguser.FieldID)
 		for _, f := range fields {
@@ -801,38 +801,38 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 			}
 		}
 	}
-	if ps := ouuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ouuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguser.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ouuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(orguser.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ouuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(orguser.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ouuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguser.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ouuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguser.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ouuo.mutation.JoinedAt(); ok {
+	if value, ok := _u.mutation.JoinedAt(); ok {
 		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
 	}
-	if value, ok := ouuo.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := ouuo.mutation.UserType(); ok {
+	if value, ok := _u.mutation.UserType(); ok {
 		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
 	}
-	if ouuo.mutation.OrgCleared() {
+	if _u.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -845,7 +845,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -861,7 +861,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -874,7 +874,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -890,7 +890,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouuo.mutation.OrgRolesCleared() {
+	if _u.mutation.OrgRolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -901,13 +901,13 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !ouuo.mutation.OrgRolesCleared() {
+	if nodes := _u.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !_u.mutation.OrgRolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -921,13 +921,13 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.OrgRolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgRolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -941,13 +941,13 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		createE := &OrgRoleUserCreate{config: _u.config, mutation: newOrgRoleUserMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ouuo.mutation.OrgRoleUserCleared() {
+	if _u.mutation.OrgRoleUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -960,7 +960,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !ouuo.mutation.OrgRoleUserCleared() {
+	if nodes := _u.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !_u.mutation.OrgRoleUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -976,7 +976,7 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouuo.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -992,10 +992,10 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &OrgUser{config: ouuo.config}
+	_node = &OrgUser{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ouuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orguser.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1003,6 +1003,6 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		}
 		return nil, err
 	}
-	ouuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

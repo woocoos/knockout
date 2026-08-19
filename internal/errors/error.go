@@ -2,17 +2,13 @@ package errors
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 )
 
 // Join wrapper errors.join
 func Join(errs ...error) error {
 	return errors.Join(errs...)
-}
-
-// As wrapper errors.As
-func As(err error, target any) bool {
-	return errors.As(err, &target)
 }
 
 var (

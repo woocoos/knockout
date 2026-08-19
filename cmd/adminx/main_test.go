@@ -22,7 +22,7 @@ func TestGlobalID(t *testing.T) {
 	user.ID = 100
 	s, err := user.GlobalID(context.Background())
 	assert.NoError(t, err)
-	assert.Equal(t, "dXNlcjoxMDA=", s)
+	assert.Equal(t, "VXNlcjoxMDA=", s) // "User:100" in base64
 
 	c := ent.Cursor{ID: 198555049289472}
 	bs := bytes.NewBuffer([]byte{})

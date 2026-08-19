@@ -25,135 +25,135 @@ type AppDictCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (adc *AppDictCreate) SetCreatedBy(i int) *AppDictCreate {
-	adc.mutation.SetCreatedBy(i)
-	return adc
+func (_c *AppDictCreate) SetCreatedBy(v int) *AppDictCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (adc *AppDictCreate) SetCreatedAt(t time.Time) *AppDictCreate {
-	adc.mutation.SetCreatedAt(t)
-	return adc
+func (_c *AppDictCreate) SetCreatedAt(v time.Time) *AppDictCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (adc *AppDictCreate) SetNillableCreatedAt(t *time.Time) *AppDictCreate {
-	if t != nil {
-		adc.SetCreatedAt(*t)
+func (_c *AppDictCreate) SetNillableCreatedAt(v *time.Time) *AppDictCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (adc *AppDictCreate) SetUpdatedBy(i int) *AppDictCreate {
-	adc.mutation.SetUpdatedBy(i)
-	return adc
+func (_c *AppDictCreate) SetUpdatedBy(v int) *AppDictCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (adc *AppDictCreate) SetNillableUpdatedBy(i *int) *AppDictCreate {
-	if i != nil {
-		adc.SetUpdatedBy(*i)
+func (_c *AppDictCreate) SetNillableUpdatedBy(v *int) *AppDictCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (adc *AppDictCreate) SetUpdatedAt(t time.Time) *AppDictCreate {
-	adc.mutation.SetUpdatedAt(t)
-	return adc
+func (_c *AppDictCreate) SetUpdatedAt(v time.Time) *AppDictCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (adc *AppDictCreate) SetNillableUpdatedAt(t *time.Time) *AppDictCreate {
-	if t != nil {
-		adc.SetUpdatedAt(*t)
+func (_c *AppDictCreate) SetNillableUpdatedAt(v *time.Time) *AppDictCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (adc *AppDictCreate) SetAppID(i int) *AppDictCreate {
-	adc.mutation.SetAppID(i)
-	return adc
+func (_c *AppDictCreate) SetAppID(v int) *AppDictCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (adc *AppDictCreate) SetNillableAppID(i *int) *AppDictCreate {
-	if i != nil {
-		adc.SetAppID(*i)
+func (_c *AppDictCreate) SetNillableAppID(v *int) *AppDictCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetCode sets the "code" field.
-func (adc *AppDictCreate) SetCode(s string) *AppDictCreate {
-	adc.mutation.SetCode(s)
-	return adc
+func (_c *AppDictCreate) SetCode(v string) *AppDictCreate {
+	_c.mutation.SetCode(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (adc *AppDictCreate) SetName(s string) *AppDictCreate {
-	adc.mutation.SetName(s)
-	return adc
+func (_c *AppDictCreate) SetName(v string) *AppDictCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (adc *AppDictCreate) SetComments(s string) *AppDictCreate {
-	adc.mutation.SetComments(s)
-	return adc
+func (_c *AppDictCreate) SetComments(v string) *AppDictCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (adc *AppDictCreate) SetNillableComments(s *string) *AppDictCreate {
-	if s != nil {
-		adc.SetComments(*s)
+func (_c *AppDictCreate) SetNillableComments(v *string) *AppDictCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (adc *AppDictCreate) SetID(i int) *AppDictCreate {
-	adc.mutation.SetID(i)
-	return adc
+func (_c *AppDictCreate) SetID(v int) *AppDictCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (adc *AppDictCreate) SetApp(a *App) *AppDictCreate {
-	return adc.SetAppID(a.ID)
+func (_c *AppDictCreate) SetApp(v *App) *AppDictCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // AddItemIDs adds the "items" edge to the AppDictItem entity by IDs.
-func (adc *AppDictCreate) AddItemIDs(ids ...int) *AppDictCreate {
-	adc.mutation.AddItemIDs(ids...)
-	return adc
+func (_c *AppDictCreate) AddItemIDs(ids ...int) *AppDictCreate {
+	_c.mutation.AddItemIDs(ids...)
+	return _c
 }
 
 // AddItems adds the "items" edges to the AppDictItem entity.
-func (adc *AppDictCreate) AddItems(a ...*AppDictItem) *AppDictCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppDictCreate) AddItems(v ...*AppDictItem) *AppDictCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return adc.AddItemIDs(ids...)
+	return _c.AddItemIDs(ids...)
 }
 
 // Mutation returns the AppDictMutation object of the builder.
-func (adc *AppDictCreate) Mutation() *AppDictMutation {
-	return adc.mutation
+func (_c *AppDictCreate) Mutation() *AppDictMutation {
+	return _c.mutation
 }
 
 // Save creates the AppDict in the database.
-func (adc *AppDictCreate) Save(ctx context.Context) (*AppDict, error) {
-	if err := adc.defaults(); err != nil {
+func (_c *AppDictCreate) Save(ctx context.Context) (*AppDict, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, adc.sqlSave, adc.mutation, adc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (adc *AppDictCreate) SaveX(ctx context.Context) *AppDict {
-	v, err := adc.Save(ctx)
+func (_c *AppDictCreate) SaveX(ctx context.Context) *AppDict {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -161,50 +161,50 @@ func (adc *AppDictCreate) SaveX(ctx context.Context) *AppDict {
 }
 
 // Exec executes the query.
-func (adc *AppDictCreate) Exec(ctx context.Context) error {
-	_, err := adc.Save(ctx)
+func (_c *AppDictCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adc *AppDictCreate) ExecX(ctx context.Context) {
-	if err := adc.Exec(ctx); err != nil {
+func (_c *AppDictCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (adc *AppDictCreate) defaults() error {
-	if _, ok := adc.mutation.CreatedAt(); !ok {
+func (_c *AppDictCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if appdict.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized appdict.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := appdict.DefaultCreatedAt()
-		adc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (adc *AppDictCreate) check() error {
-	if _, ok := adc.mutation.CreatedBy(); !ok {
+func (_c *AppDictCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppDict.created_by"`)}
 	}
-	if _, ok := adc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppDict.created_at"`)}
 	}
-	if _, ok := adc.mutation.Code(); !ok {
+	if _, ok := _c.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "AppDict.code"`)}
 	}
-	if v, ok := adc.mutation.Code(); ok {
+	if v, ok := _c.mutation.Code(); ok {
 		if err := appdict.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AppDict.code": %w`, err)}
 		}
 	}
-	if _, ok := adc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppDict.name"`)}
 	}
-	if v, ok := adc.mutation.Name(); ok {
+	if v, ok := _c.mutation.Name(); ok {
 		if err := appdict.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDict.name": %w`, err)}
 		}
@@ -212,12 +212,12 @@ func (adc *AppDictCreate) check() error {
 	return nil
 }
 
-func (adc *AppDictCreate) sqlSave(ctx context.Context) (*AppDict, error) {
-	if err := adc.check(); err != nil {
+func (_c *AppDictCreate) sqlSave(ctx context.Context) (*AppDict, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := adc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, adc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -227,50 +227,50 @@ func (adc *AppDictCreate) sqlSave(ctx context.Context) (*AppDict, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	adc.mutation.id = &_node.ID
-	adc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (adc *AppDictCreate) createSpec() (*AppDict, *sqlgraph.CreateSpec) {
+func (_c *AppDictCreate) createSpec() (*AppDict, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppDict{config: adc.config}
+		_node = &AppDict{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appdict.Table, sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = adc.conflict
-	if id, ok := adc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := adc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(appdict.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := adc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appdict.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := adc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(appdict.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := adc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appdict.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := adc.mutation.Code(); ok {
+	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(appdict.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := adc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(appdict.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := adc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(appdict.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if nodes := adc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -287,7 +287,7 @@ func (adc *AppDictCreate) createSpec() (*AppDict, *sqlgraph.CreateSpec) {
 		_node.AppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := adc.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ItemsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -322,10 +322,10 @@ func (adc *AppDictCreate) createSpec() (*AppDict, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (adc *AppDictCreate) OnConflict(opts ...sql.ConflictOption) *AppDictUpsertOne {
-	adc.conflict = opts
+func (_c *AppDictCreate) OnConflict(opts ...sql.ConflictOption) *AppDictUpsertOne {
+	_c.conflict = opts
 	return &AppDictUpsertOne{
-		create: adc,
+		create: _c,
 	}
 }
 
@@ -335,10 +335,10 @@ func (adc *AppDictCreate) OnConflict(opts ...sql.ConflictOption) *AppDictUpsertO
 //	client.AppDict.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (adc *AppDictCreate) OnConflictColumns(columns ...string) *AppDictUpsertOne {
-	adc.conflict = append(adc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppDictCreate) OnConflictColumns(columns ...string) *AppDictUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppDictUpsertOne{
-		create: adc,
+		create: _c,
 	}
 }
 
@@ -613,16 +613,16 @@ type AppDictCreateBulk struct {
 }
 
 // Save creates the AppDict entities in the database.
-func (adcb *AppDictCreateBulk) Save(ctx context.Context) ([]*AppDict, error) {
-	if adcb.err != nil {
-		return nil, adcb.err
+func (_c *AppDictCreateBulk) Save(ctx context.Context) ([]*AppDict, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(adcb.builders))
-	nodes := make([]*AppDict, len(adcb.builders))
-	mutators := make([]Mutator, len(adcb.builders))
-	for i := range adcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppDict, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := adcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppDictMutation)
@@ -636,12 +636,12 @@ func (adcb *AppDictCreateBulk) Save(ctx context.Context) ([]*AppDict, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, adcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = adcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, adcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -665,7 +665,7 @@ func (adcb *AppDictCreateBulk) Save(ctx context.Context) ([]*AppDict, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, adcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -673,8 +673,8 @@ func (adcb *AppDictCreateBulk) Save(ctx context.Context) ([]*AppDict, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adcb *AppDictCreateBulk) SaveX(ctx context.Context) []*AppDict {
-	v, err := adcb.Save(ctx)
+func (_c *AppDictCreateBulk) SaveX(ctx context.Context) []*AppDict {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -682,14 +682,14 @@ func (adcb *AppDictCreateBulk) SaveX(ctx context.Context) []*AppDict {
 }
 
 // Exec executes the query.
-func (adcb *AppDictCreateBulk) Exec(ctx context.Context) error {
-	_, err := adcb.Save(ctx)
+func (_c *AppDictCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adcb *AppDictCreateBulk) ExecX(ctx context.Context) {
-	if err := adcb.Exec(ctx); err != nil {
+func (_c *AppDictCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -709,10 +709,10 @@ func (adcb *AppDictCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (adcb *AppDictCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppDictUpsertBulk {
-	adcb.conflict = opts
+func (_c *AppDictCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppDictUpsertBulk {
+	_c.conflict = opts
 	return &AppDictUpsertBulk{
-		create: adcb,
+		create: _c,
 	}
 }
 
@@ -722,10 +722,10 @@ func (adcb *AppDictCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppDictUp
 //	client.AppDict.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (adcb *AppDictCreateBulk) OnConflictColumns(columns ...string) *AppDictUpsertBulk {
-	adcb.conflict = append(adcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppDictCreateBulk) OnConflictColumns(columns ...string) *AppDictUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppDictUpsertBulk{
-		create: adcb,
+		create: _c,
 	}
 }
 

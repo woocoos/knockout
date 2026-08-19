@@ -33,664 +33,664 @@ type AppUpdate struct {
 }
 
 // Where appends a list predicates to the AppUpdate builder.
-func (au *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
-	au.mutation.Where(ps...)
-	return au
+func (_u *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (au *AppUpdate) SetUpdatedBy(i int) *AppUpdate {
-	au.mutation.ResetUpdatedBy()
-	au.mutation.SetUpdatedBy(i)
-	return au
+func (_u *AppUpdate) SetUpdatedBy(v int) *AppUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (au *AppUpdate) SetNillableUpdatedBy(i *int) *AppUpdate {
-	if i != nil {
-		au.SetUpdatedBy(*i)
+func (_u *AppUpdate) SetNillableUpdatedBy(v *int) *AppUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return au
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (au *AppUpdate) AddUpdatedBy(i int) *AppUpdate {
-	au.mutation.AddUpdatedBy(i)
-	return au
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppUpdate) AddUpdatedBy(v int) *AppUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (au *AppUpdate) ClearUpdatedBy() *AppUpdate {
-	au.mutation.ClearUpdatedBy()
-	return au
+func (_u *AppUpdate) ClearUpdatedBy() *AppUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (au *AppUpdate) SetUpdatedAt(t time.Time) *AppUpdate {
-	au.mutation.SetUpdatedAt(t)
-	return au
+func (_u *AppUpdate) SetUpdatedAt(v time.Time) *AppUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (au *AppUpdate) SetNillableUpdatedAt(t *time.Time) *AppUpdate {
-	if t != nil {
-		au.SetUpdatedAt(*t)
+func (_u *AppUpdate) SetNillableUpdatedAt(v *time.Time) *AppUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (au *AppUpdate) ClearUpdatedAt() *AppUpdate {
-	au.mutation.ClearUpdatedAt()
-	return au
+func (_u *AppUpdate) ClearUpdatedAt() *AppUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (au *AppUpdate) SetName(s string) *AppUpdate {
-	au.mutation.SetName(s)
-	return au
+func (_u *AppUpdate) SetName(v string) *AppUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (au *AppUpdate) SetNillableName(s *string) *AppUpdate {
-	if s != nil {
-		au.SetName(*s)
+func (_u *AppUpdate) SetNillableName(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return au
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (au *AppUpdate) SetKind(a app.Kind) *AppUpdate {
-	au.mutation.SetKind(a)
-	return au
+func (_u *AppUpdate) SetKind(v app.Kind) *AppUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (au *AppUpdate) SetNillableKind(a *app.Kind) *AppUpdate {
-	if a != nil {
-		au.SetKind(*a)
+func (_u *AppUpdate) SetNillableKind(v *app.Kind) *AppUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return au
+	return _u
 }
 
 // SetRedirectURI sets the "redirect_uri" field.
-func (au *AppUpdate) SetRedirectURI(s string) *AppUpdate {
-	au.mutation.SetRedirectURI(s)
-	return au
+func (_u *AppUpdate) SetRedirectURI(v string) *AppUpdate {
+	_u.mutation.SetRedirectURI(v)
+	return _u
 }
 
 // SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
-func (au *AppUpdate) SetNillableRedirectURI(s *string) *AppUpdate {
-	if s != nil {
-		au.SetRedirectURI(*s)
+func (_u *AppUpdate) SetNillableRedirectURI(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetRedirectURI(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearRedirectURI clears the value of the "redirect_uri" field.
-func (au *AppUpdate) ClearRedirectURI() *AppUpdate {
-	au.mutation.ClearRedirectURI()
-	return au
+func (_u *AppUpdate) ClearRedirectURI() *AppUpdate {
+	_u.mutation.ClearRedirectURI()
+	return _u
 }
 
 // SetAppKey sets the "app_key" field.
-func (au *AppUpdate) SetAppKey(s string) *AppUpdate {
-	au.mutation.SetAppKey(s)
-	return au
+func (_u *AppUpdate) SetAppKey(v string) *AppUpdate {
+	_u.mutation.SetAppKey(v)
+	return _u
 }
 
 // SetNillableAppKey sets the "app_key" field if the given value is not nil.
-func (au *AppUpdate) SetNillableAppKey(s *string) *AppUpdate {
-	if s != nil {
-		au.SetAppKey(*s)
+func (_u *AppUpdate) SetNillableAppKey(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetAppKey(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearAppKey clears the value of the "app_key" field.
-func (au *AppUpdate) ClearAppKey() *AppUpdate {
-	au.mutation.ClearAppKey()
-	return au
+func (_u *AppUpdate) ClearAppKey() *AppUpdate {
+	_u.mutation.ClearAppKey()
+	return _u
 }
 
 // SetAppSecret sets the "app_secret" field.
-func (au *AppUpdate) SetAppSecret(s string) *AppUpdate {
-	au.mutation.SetAppSecret(s)
-	return au
+func (_u *AppUpdate) SetAppSecret(v string) *AppUpdate {
+	_u.mutation.SetAppSecret(v)
+	return _u
 }
 
 // SetNillableAppSecret sets the "app_secret" field if the given value is not nil.
-func (au *AppUpdate) SetNillableAppSecret(s *string) *AppUpdate {
-	if s != nil {
-		au.SetAppSecret(*s)
+func (_u *AppUpdate) SetNillableAppSecret(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetAppSecret(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearAppSecret clears the value of the "app_secret" field.
-func (au *AppUpdate) ClearAppSecret() *AppUpdate {
-	au.mutation.ClearAppSecret()
-	return au
+func (_u *AppUpdate) ClearAppSecret() *AppUpdate {
+	_u.mutation.ClearAppSecret()
+	return _u
 }
 
 // SetScopes sets the "scopes" field.
-func (au *AppUpdate) SetScopes(s string) *AppUpdate {
-	au.mutation.SetScopes(s)
-	return au
+func (_u *AppUpdate) SetScopes(v string) *AppUpdate {
+	_u.mutation.SetScopes(v)
+	return _u
 }
 
 // SetNillableScopes sets the "scopes" field if the given value is not nil.
-func (au *AppUpdate) SetNillableScopes(s *string) *AppUpdate {
-	if s != nil {
-		au.SetScopes(*s)
+func (_u *AppUpdate) SetNillableScopes(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetScopes(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearScopes clears the value of the "scopes" field.
-func (au *AppUpdate) ClearScopes() *AppUpdate {
-	au.mutation.ClearScopes()
-	return au
+func (_u *AppUpdate) ClearScopes() *AppUpdate {
+	_u.mutation.ClearScopes()
+	return _u
 }
 
 // SetTokenValidity sets the "token_validity" field.
-func (au *AppUpdate) SetTokenValidity(i int32) *AppUpdate {
-	au.mutation.ResetTokenValidity()
-	au.mutation.SetTokenValidity(i)
-	return au
+func (_u *AppUpdate) SetTokenValidity(v int32) *AppUpdate {
+	_u.mutation.ResetTokenValidity()
+	_u.mutation.SetTokenValidity(v)
+	return _u
 }
 
 // SetNillableTokenValidity sets the "token_validity" field if the given value is not nil.
-func (au *AppUpdate) SetNillableTokenValidity(i *int32) *AppUpdate {
-	if i != nil {
-		au.SetTokenValidity(*i)
+func (_u *AppUpdate) SetNillableTokenValidity(v *int32) *AppUpdate {
+	if v != nil {
+		_u.SetTokenValidity(*v)
 	}
-	return au
+	return _u
 }
 
-// AddTokenValidity adds i to the "token_validity" field.
-func (au *AppUpdate) AddTokenValidity(i int32) *AppUpdate {
-	au.mutation.AddTokenValidity(i)
-	return au
+// AddTokenValidity adds value to the "token_validity" field.
+func (_u *AppUpdate) AddTokenValidity(v int32) *AppUpdate {
+	_u.mutation.AddTokenValidity(v)
+	return _u
 }
 
 // ClearTokenValidity clears the value of the "token_validity" field.
-func (au *AppUpdate) ClearTokenValidity() *AppUpdate {
-	au.mutation.ClearTokenValidity()
-	return au
+func (_u *AppUpdate) ClearTokenValidity() *AppUpdate {
+	_u.mutation.ClearTokenValidity()
+	return _u
 }
 
 // SetRefreshTokenValidity sets the "refresh_token_validity" field.
-func (au *AppUpdate) SetRefreshTokenValidity(i int32) *AppUpdate {
-	au.mutation.ResetRefreshTokenValidity()
-	au.mutation.SetRefreshTokenValidity(i)
-	return au
+func (_u *AppUpdate) SetRefreshTokenValidity(v int32) *AppUpdate {
+	_u.mutation.ResetRefreshTokenValidity()
+	_u.mutation.SetRefreshTokenValidity(v)
+	return _u
 }
 
 // SetNillableRefreshTokenValidity sets the "refresh_token_validity" field if the given value is not nil.
-func (au *AppUpdate) SetNillableRefreshTokenValidity(i *int32) *AppUpdate {
-	if i != nil {
-		au.SetRefreshTokenValidity(*i)
+func (_u *AppUpdate) SetNillableRefreshTokenValidity(v *int32) *AppUpdate {
+	if v != nil {
+		_u.SetRefreshTokenValidity(*v)
 	}
-	return au
+	return _u
 }
 
-// AddRefreshTokenValidity adds i to the "refresh_token_validity" field.
-func (au *AppUpdate) AddRefreshTokenValidity(i int32) *AppUpdate {
-	au.mutation.AddRefreshTokenValidity(i)
-	return au
+// AddRefreshTokenValidity adds value to the "refresh_token_validity" field.
+func (_u *AppUpdate) AddRefreshTokenValidity(v int32) *AppUpdate {
+	_u.mutation.AddRefreshTokenValidity(v)
+	return _u
 }
 
 // ClearRefreshTokenValidity clears the value of the "refresh_token_validity" field.
-func (au *AppUpdate) ClearRefreshTokenValidity() *AppUpdate {
-	au.mutation.ClearRefreshTokenValidity()
-	return au
+func (_u *AppUpdate) ClearRefreshTokenValidity() *AppUpdate {
+	_u.mutation.ClearRefreshTokenValidity()
+	return _u
 }
 
 // SetLogo sets the "logo" field.
-func (au *AppUpdate) SetLogo(s string) *AppUpdate {
-	au.mutation.SetLogo(s)
-	return au
+func (_u *AppUpdate) SetLogo(v string) *AppUpdate {
+	_u.mutation.SetLogo(v)
+	return _u
 }
 
 // SetNillableLogo sets the "logo" field if the given value is not nil.
-func (au *AppUpdate) SetNillableLogo(s *string) *AppUpdate {
-	if s != nil {
-		au.SetLogo(*s)
+func (_u *AppUpdate) SetNillableLogo(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetLogo(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearLogo clears the value of the "logo" field.
-func (au *AppUpdate) ClearLogo() *AppUpdate {
-	au.mutation.ClearLogo()
-	return au
+func (_u *AppUpdate) ClearLogo() *AppUpdate {
+	_u.mutation.ClearLogo()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (au *AppUpdate) SetComments(s string) *AppUpdate {
-	au.mutation.SetComments(s)
-	return au
+func (_u *AppUpdate) SetComments(v string) *AppUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (au *AppUpdate) SetNillableComments(s *string) *AppUpdate {
-	if s != nil {
-		au.SetComments(*s)
+func (_u *AppUpdate) SetNillableComments(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (au *AppUpdate) ClearComments() *AppUpdate {
-	au.mutation.ClearComments()
-	return au
+func (_u *AppUpdate) ClearComments() *AppUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (au *AppUpdate) SetStatus(ts typex.SimpleStatus) *AppUpdate {
-	au.mutation.SetStatus(ts)
-	return au
+func (_u *AppUpdate) SetStatus(v typex.SimpleStatus) *AppUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (au *AppUpdate) SetNillableStatus(ts *typex.SimpleStatus) *AppUpdate {
-	if ts != nil {
-		au.SetStatus(*ts)
+func (_u *AppUpdate) SetNillableStatus(v *typex.SimpleStatus) *AppUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (au *AppUpdate) ClearStatus() *AppUpdate {
-	au.mutation.ClearStatus()
-	return au
+func (_u *AppUpdate) ClearStatus() *AppUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetOrgPrivate sets the "org_private" field.
-func (au *AppUpdate) SetOrgPrivate(b bool) *AppUpdate {
-	au.mutation.SetOrgPrivate(b)
-	return au
+func (_u *AppUpdate) SetOrgPrivate(v bool) *AppUpdate {
+	_u.mutation.SetOrgPrivate(v)
+	return _u
 }
 
 // SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
-func (au *AppUpdate) SetNillableOrgPrivate(b *bool) *AppUpdate {
-	if b != nil {
-		au.SetOrgPrivate(*b)
+func (_u *AppUpdate) SetNillableOrgPrivate(v *bool) *AppUpdate {
+	if v != nil {
+		_u.SetOrgPrivate(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearOrgPrivate clears the value of the "org_private" field.
-func (au *AppUpdate) ClearOrgPrivate() *AppUpdate {
-	au.mutation.ClearOrgPrivate()
-	return au
+func (_u *AppUpdate) ClearOrgPrivate() *AppUpdate {
+	_u.mutation.ClearOrgPrivate()
+	return _u
 }
 
 // SetOwnerOrgID sets the "owner_org_id" field.
-func (au *AppUpdate) SetOwnerOrgID(i int) *AppUpdate {
-	au.mutation.ResetOwnerOrgID()
-	au.mutation.SetOwnerOrgID(i)
-	return au
+func (_u *AppUpdate) SetOwnerOrgID(v int) *AppUpdate {
+	_u.mutation.ResetOwnerOrgID()
+	_u.mutation.SetOwnerOrgID(v)
+	return _u
 }
 
 // SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableOwnerOrgID(i *int) *AppUpdate {
-	if i != nil {
-		au.SetOwnerOrgID(*i)
+func (_u *AppUpdate) SetNillableOwnerOrgID(v *int) *AppUpdate {
+	if v != nil {
+		_u.SetOwnerOrgID(*v)
 	}
-	return au
+	return _u
 }
 
-// AddOwnerOrgID adds i to the "owner_org_id" field.
-func (au *AppUpdate) AddOwnerOrgID(i int) *AppUpdate {
-	au.mutation.AddOwnerOrgID(i)
-	return au
+// AddOwnerOrgID adds value to the "owner_org_id" field.
+func (_u *AppUpdate) AddOwnerOrgID(v int) *AppUpdate {
+	_u.mutation.AddOwnerOrgID(v)
+	return _u
 }
 
 // ClearOwnerOrgID clears the value of the "owner_org_id" field.
-func (au *AppUpdate) ClearOwnerOrgID() *AppUpdate {
-	au.mutation.ClearOwnerOrgID()
-	return au
+func (_u *AppUpdate) ClearOwnerOrgID() *AppUpdate {
+	_u.mutation.ClearOwnerOrgID()
+	return _u
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (au *AppUpdate) AddMenuIDs(ids ...int) *AppUpdate {
-	au.mutation.AddMenuIDs(ids...)
-	return au
+func (_u *AppUpdate) AddMenuIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddMenuIDs(ids...)
+	return _u
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (au *AppUpdate) AddMenus(a ...*AppMenu) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddMenus(v ...*AppMenu) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddMenuIDs(ids...)
+	return _u.AddMenuIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the AppAction entity by IDs.
-func (au *AppUpdate) AddActionIDs(ids ...int) *AppUpdate {
-	au.mutation.AddActionIDs(ids...)
-	return au
+func (_u *AppUpdate) AddActionIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
 }
 
 // AddActions adds the "actions" edges to the AppAction entity.
-func (au *AppUpdate) AddActions(a ...*AppAction) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddActions(v ...*AppAction) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddActionIDs(ids...)
+	return _u.AddActionIDs(ids...)
 }
 
 // AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (au *AppUpdate) AddResourceIDs(ids ...int) *AppUpdate {
-	au.mutation.AddResourceIDs(ids...)
-	return au
+func (_u *AppUpdate) AddResourceIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddResourceIDs(ids...)
+	return _u
 }
 
 // AddResources adds the "resources" edges to the AppRes entity.
-func (au *AppUpdate) AddResources(a ...*AppRes) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddResources(v ...*AppRes) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddResourceIDs(ids...)
+	return _u.AddResourceIDs(ids...)
 }
 
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
-func (au *AppUpdate) AddRoleIDs(ids ...int) *AppUpdate {
-	au.mutation.AddRoleIDs(ids...)
-	return au
+func (_u *AppUpdate) AddRoleIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
 }
 
 // AddRoles adds the "roles" edges to the AppRole entity.
-func (au *AppUpdate) AddRoles(a ...*AppRole) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddRoles(v ...*AppRole) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddRoleIDs(ids...)
+	return _u.AddRoleIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (au *AppUpdate) AddPolicyIDs(ids ...int) *AppUpdate {
-	au.mutation.AddPolicyIDs(ids...)
-	return au
+func (_u *AppUpdate) AddPolicyIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (au *AppUpdate) AddPolicies(a ...*AppPolicy) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddPolicies(v ...*AppPolicy) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
-func (au *AppUpdate) AddPolicyViewIDs(ids ...int) *AppUpdate {
-	au.mutation.AddPolicyViewIDs(ids...)
-	return au
+func (_u *AppUpdate) AddPolicyViewIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddPolicyViewIDs(ids...)
+	return _u
 }
 
 // AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
-func (au *AppUpdate) AddPolicyViews(a ...*AppPolicyView) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddPolicyViews(v ...*AppPolicyView) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddPolicyViewIDs(ids...)
+	return _u.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
-func (au *AppUpdate) AddOrgIDs(ids ...int) *AppUpdate {
-	au.mutation.AddOrgIDs(ids...)
-	return au
+func (_u *AppUpdate) AddOrgIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddOrgIDs(ids...)
+	return _u
 }
 
 // AddOrgs adds the "orgs" edges to the Org entity.
-func (au *AppUpdate) AddOrgs(o ...*Org) *AppUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdate) AddOrgs(v ...*Org) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddOrgIDs(ids...)
+	return _u.AddOrgIDs(ids...)
 }
 
 // AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
-func (au *AppUpdate) AddDictIDs(ids ...int) *AppUpdate {
-	au.mutation.AddDictIDs(ids...)
-	return au
+func (_u *AppUpdate) AddDictIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddDictIDs(ids...)
+	return _u
 }
 
 // AddDicts adds the "dicts" edges to the AppDict entity.
-func (au *AppUpdate) AddDicts(a ...*AppDict) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddDicts(v ...*AppDict) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddDictIDs(ids...)
+	return _u.AddDictIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (au *AppUpdate) AddOrgAppIDs(ids ...int) *AppUpdate {
-	au.mutation.AddOrgAppIDs(ids...)
-	return au
+func (_u *AppUpdate) AddOrgAppIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddOrgAppIDs(ids...)
+	return _u
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (au *AppUpdate) AddOrgApp(o ...*OrgApp) *AppUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdate) AddOrgApp(v ...*OrgApp) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddOrgAppIDs(ids...)
+	return _u.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (au *AppUpdate) Mutation() *AppMutation {
-	return au.mutation
+func (_u *AppUpdate) Mutation() *AppMutation {
+	return _u.mutation
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
-func (au *AppUpdate) ClearMenus() *AppUpdate {
-	au.mutation.ClearMenus()
-	return au
+func (_u *AppUpdate) ClearMenus() *AppUpdate {
+	_u.mutation.ClearMenus()
+	return _u
 }
 
 // RemoveMenuIDs removes the "menus" edge to AppMenu entities by IDs.
-func (au *AppUpdate) RemoveMenuIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveMenuIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveMenuIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
 }
 
 // RemoveMenus removes "menus" edges to AppMenu entities.
-func (au *AppUpdate) RemoveMenus(a ...*AppMenu) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveMenus(v ...*AppMenu) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveMenuIDs(ids...)
+	return _u.RemoveMenuIDs(ids...)
 }
 
 // ClearActions clears all "actions" edges to the AppAction entity.
-func (au *AppUpdate) ClearActions() *AppUpdate {
-	au.mutation.ClearActions()
-	return au
+func (_u *AppUpdate) ClearActions() *AppUpdate {
+	_u.mutation.ClearActions()
+	return _u
 }
 
 // RemoveActionIDs removes the "actions" edge to AppAction entities by IDs.
-func (au *AppUpdate) RemoveActionIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveActionIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveActionIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
 }
 
 // RemoveActions removes "actions" edges to AppAction entities.
-func (au *AppUpdate) RemoveActions(a ...*AppAction) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveActions(v ...*AppAction) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveActionIDs(ids...)
+	return _u.RemoveActionIDs(ids...)
 }
 
 // ClearResources clears all "resources" edges to the AppRes entity.
-func (au *AppUpdate) ClearResources() *AppUpdate {
-	au.mutation.ClearResources()
-	return au
+func (_u *AppUpdate) ClearResources() *AppUpdate {
+	_u.mutation.ClearResources()
+	return _u
 }
 
 // RemoveResourceIDs removes the "resources" edge to AppRes entities by IDs.
-func (au *AppUpdate) RemoveResourceIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveResourceIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveResourceIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveResourceIDs(ids...)
+	return _u
 }
 
 // RemoveResources removes "resources" edges to AppRes entities.
-func (au *AppUpdate) RemoveResources(a ...*AppRes) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveResources(v ...*AppRes) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveResourceIDs(ids...)
+	return _u.RemoveResourceIDs(ids...)
 }
 
 // ClearRoles clears all "roles" edges to the AppRole entity.
-func (au *AppUpdate) ClearRoles() *AppUpdate {
-	au.mutation.ClearRoles()
-	return au
+func (_u *AppUpdate) ClearRoles() *AppUpdate {
+	_u.mutation.ClearRoles()
+	return _u
 }
 
 // RemoveRoleIDs removes the "roles" edge to AppRole entities by IDs.
-func (au *AppUpdate) RemoveRoleIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveRoleIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveRoleIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
 }
 
 // RemoveRoles removes "roles" edges to AppRole entities.
-func (au *AppUpdate) RemoveRoles(a ...*AppRole) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveRoles(v ...*AppRole) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveRoleIDs(ids...)
+	return _u.RemoveRoleIDs(ids...)
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
-func (au *AppUpdate) ClearPolicies() *AppUpdate {
-	au.mutation.ClearPolicies()
-	return au
+func (_u *AppUpdate) ClearPolicies() *AppUpdate {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to AppPolicy entities by IDs.
-func (au *AppUpdate) RemovePolicyIDs(ids ...int) *AppUpdate {
-	au.mutation.RemovePolicyIDs(ids...)
-	return au
+func (_u *AppUpdate) RemovePolicyIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to AppPolicy entities.
-func (au *AppUpdate) RemovePolicies(a ...*AppPolicy) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemovePolicies(v ...*AppPolicy) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
-func (au *AppUpdate) ClearPolicyViews() *AppUpdate {
-	au.mutation.ClearPolicyViews()
-	return au
+func (_u *AppUpdate) ClearPolicyViews() *AppUpdate {
+	_u.mutation.ClearPolicyViews()
+	return _u
 }
 
 // RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
-func (au *AppUpdate) RemovePolicyViewIDs(ids ...int) *AppUpdate {
-	au.mutation.RemovePolicyViewIDs(ids...)
-	return au
+func (_u *AppUpdate) RemovePolicyViewIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemovePolicyViewIDs(ids...)
+	return _u
 }
 
 // RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
-func (au *AppUpdate) RemovePolicyViews(a ...*AppPolicyView) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemovePolicyViews(v ...*AppPolicyView) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemovePolicyViewIDs(ids...)
+	return _u.RemovePolicyViewIDs(ids...)
 }
 
 // ClearOrgs clears all "orgs" edges to the Org entity.
-func (au *AppUpdate) ClearOrgs() *AppUpdate {
-	au.mutation.ClearOrgs()
-	return au
+func (_u *AppUpdate) ClearOrgs() *AppUpdate {
+	_u.mutation.ClearOrgs()
+	return _u
 }
 
 // RemoveOrgIDs removes the "orgs" edge to Org entities by IDs.
-func (au *AppUpdate) RemoveOrgIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveOrgIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveOrgIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveOrgIDs(ids...)
+	return _u
 }
 
 // RemoveOrgs removes "orgs" edges to Org entities.
-func (au *AppUpdate) RemoveOrgs(o ...*Org) *AppUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdate) RemoveOrgs(v ...*Org) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveOrgIDs(ids...)
+	return _u.RemoveOrgIDs(ids...)
 }
 
 // ClearDicts clears all "dicts" edges to the AppDict entity.
-func (au *AppUpdate) ClearDicts() *AppUpdate {
-	au.mutation.ClearDicts()
-	return au
+func (_u *AppUpdate) ClearDicts() *AppUpdate {
+	_u.mutation.ClearDicts()
+	return _u
 }
 
 // RemoveDictIDs removes the "dicts" edge to AppDict entities by IDs.
-func (au *AppUpdate) RemoveDictIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveDictIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveDictIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveDictIDs(ids...)
+	return _u
 }
 
 // RemoveDicts removes "dicts" edges to AppDict entities.
-func (au *AppUpdate) RemoveDicts(a ...*AppDict) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveDicts(v ...*AppDict) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveDictIDs(ids...)
+	return _u.RemoveDictIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
-func (au *AppUpdate) ClearOrgApp() *AppUpdate {
-	au.mutation.ClearOrgApp()
-	return au
+func (_u *AppUpdate) ClearOrgApp() *AppUpdate {
+	_u.mutation.ClearOrgApp()
+	return _u
 }
 
 // RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
-func (au *AppUpdate) RemoveOrgAppIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveOrgAppIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveOrgAppIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveOrgAppIDs(ids...)
+	return _u
 }
 
 // RemoveOrgApp removes "org_app" edges to OrgApp entities.
-func (au *AppUpdate) RemoveOrgApp(o ...*OrgApp) *AppUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdate) RemoveOrgApp(v ...*OrgApp) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveOrgAppIDs(ids...)
+	return _u.RemoveOrgAppIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *AppUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
+func (_u *AppUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *AppUpdate) SaveX(ctx context.Context) int {
-	affected, err := au.Save(ctx)
+func (_u *AppUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -698,51 +698,51 @@ func (au *AppUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *AppUpdate) Exec(ctx context.Context) error {
-	_, err := au.Save(ctx)
+func (_u *AppUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *AppUpdate) ExecX(ctx context.Context) {
-	if err := au.Exec(ctx); err != nil {
+func (_u *AppUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (au *AppUpdate) check() error {
-	if v, ok := au.mutation.Name(); ok {
+func (_u *AppUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := app.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "App.name": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.Kind(); ok {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := app.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "App.kind": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.RedirectURI(); ok {
+	if v, ok := _u.mutation.RedirectURI(); ok {
 		if err := app.RedirectURIValidator(v); err != nil {
 			return &ValidationError{Name: "redirect_uri", err: fmt.Errorf(`ent: validator failed for field "App.redirect_uri": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.AppSecret(); ok {
+	if v, ok := _u.mutation.AppSecret(); ok {
 		if err := app.AppSecretValidator(v); err != nil {
 			return &ValidationError{Name: "app_secret", err: fmt.Errorf(`ent: validator failed for field "App.app_secret": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.Scopes(); ok {
+	if v, ok := _u.mutation.Scopes(); ok {
 		if err := app.ScopesValidator(v); err != nil {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.Logo(); ok {
+	if v, ok := _u.mutation.Logo(); ok {
 		if err := app.LogoValidator(v); err != nil {
 			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
 		}
 	}
-	if v, ok := au.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
 		}
@@ -750,115 +750,115 @@ func (au *AppUpdate) check() error {
 	return nil
 }
 
-func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := au.check(); err != nil {
-		return n, err
+func (_u *AppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
-	if ps := au.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := au.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(app.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := au.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(app.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if au.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(app.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := au.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if au.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(app.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := au.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
-	if value, ok := au.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(app.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := au.mutation.RedirectURI(); ok {
+	if value, ok := _u.mutation.RedirectURI(); ok {
 		_spec.SetField(app.FieldRedirectURI, field.TypeString, value)
 	}
-	if au.mutation.RedirectURICleared() {
+	if _u.mutation.RedirectURICleared() {
 		_spec.ClearField(app.FieldRedirectURI, field.TypeString)
 	}
-	if value, ok := au.mutation.AppKey(); ok {
+	if value, ok := _u.mutation.AppKey(); ok {
 		_spec.SetField(app.FieldAppKey, field.TypeString, value)
 	}
-	if au.mutation.AppKeyCleared() {
+	if _u.mutation.AppKeyCleared() {
 		_spec.ClearField(app.FieldAppKey, field.TypeString)
 	}
-	if value, ok := au.mutation.AppSecret(); ok {
+	if value, ok := _u.mutation.AppSecret(); ok {
 		_spec.SetField(app.FieldAppSecret, field.TypeString, value)
 	}
-	if au.mutation.AppSecretCleared() {
+	if _u.mutation.AppSecretCleared() {
 		_spec.ClearField(app.FieldAppSecret, field.TypeString)
 	}
-	if value, ok := au.mutation.Scopes(); ok {
+	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(app.FieldScopes, field.TypeString, value)
 	}
-	if au.mutation.ScopesCleared() {
+	if _u.mutation.ScopesCleared() {
 		_spec.ClearField(app.FieldScopes, field.TypeString)
 	}
-	if value, ok := au.mutation.TokenValidity(); ok {
+	if value, ok := _u.mutation.TokenValidity(); ok {
 		_spec.SetField(app.FieldTokenValidity, field.TypeInt32, value)
 	}
-	if value, ok := au.mutation.AddedTokenValidity(); ok {
+	if value, ok := _u.mutation.AddedTokenValidity(); ok {
 		_spec.AddField(app.FieldTokenValidity, field.TypeInt32, value)
 	}
-	if au.mutation.TokenValidityCleared() {
+	if _u.mutation.TokenValidityCleared() {
 		_spec.ClearField(app.FieldTokenValidity, field.TypeInt32)
 	}
-	if value, ok := au.mutation.RefreshTokenValidity(); ok {
+	if value, ok := _u.mutation.RefreshTokenValidity(); ok {
 		_spec.SetField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 	}
-	if value, ok := au.mutation.AddedRefreshTokenValidity(); ok {
+	if value, ok := _u.mutation.AddedRefreshTokenValidity(); ok {
 		_spec.AddField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 	}
-	if au.mutation.RefreshTokenValidityCleared() {
+	if _u.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
 	}
-	if value, ok := au.mutation.Logo(); ok {
+	if value, ok := _u.mutation.Logo(); ok {
 		_spec.SetField(app.FieldLogo, field.TypeString, value)
 	}
-	if au.mutation.LogoCleared() {
+	if _u.mutation.LogoCleared() {
 		_spec.ClearField(app.FieldLogo, field.TypeString)
 	}
-	if value, ok := au.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
 	}
-	if au.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(app.FieldComments, field.TypeString)
 	}
-	if value, ok := au.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 	}
-	if au.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := au.mutation.OrgPrivate(); ok {
+	if value, ok := _u.mutation.OrgPrivate(); ok {
 		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if au.mutation.OrgPrivateCleared() {
+	if _u.mutation.OrgPrivateCleared() {
 		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
-	if value, ok := au.mutation.OwnerOrgID(); ok {
+	if value, ok := _u.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if value, ok := au.mutation.AddedOwnerOrgID(); ok {
+	if value, ok := _u.mutation.AddedOwnerOrgID(); ok {
 		_spec.AddField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if au.mutation.OwnerOrgIDCleared() {
+	if _u.mutation.OwnerOrgIDCleared() {
 		_spec.ClearField(app.FieldOwnerOrgID, field.TypeInt)
 	}
-	if au.mutation.MenusCleared() {
+	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -871,23 +871,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedMenusIDs(); len(nodes) > 0 && !au.mutation.MenusCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.MenusTable,
-			Columns: []string{app.MenusColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -901,9 +885,25 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.MenusTable,
+			Columns: []string{app.MenusColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.ActionsCleared() {
+	if _u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -916,7 +916,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedActionsIDs(); len(nodes) > 0 && !au.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -932,7 +932,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -948,7 +948,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.ResourcesCleared() {
+	if _u.mutation.ResourcesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -961,23 +961,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !au.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.ResourcesTable,
-			Columns: []string{app.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.ResourcesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !_u.mutation.ResourcesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -991,9 +975,25 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ResourcesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.ResourcesTable,
+			Columns: []string{app.ResourcesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.RolesCleared() {
+	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1006,7 +1006,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedRolesIDs(); len(nodes) > 0 && !au.mutation.RolesCleared() {
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1022,7 +1022,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1038,7 +1038,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1051,23 +1051,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !au.mutation.PoliciesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.PoliciesTable,
-			Columns: []string{app.PoliciesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1081,9 +1065,25 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PoliciesTable,
+			Columns: []string{app.PoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.PolicyViewsCleared() {
+	if _u.mutation.PolicyViewsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1096,7 +1096,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !au.mutation.PolicyViewsCleared() {
+	if nodes := _u.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !_u.mutation.PolicyViewsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1112,7 +1112,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PolicyViewsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1128,7 +1128,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.OrgsCleared() {
+	if _u.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1139,33 +1139,13 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !au.mutation.OrgsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   app.OrgsTable,
-			Columns: app.OrgsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
-		_ = createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.OrgsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !_u.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1179,13 +1159,33 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.OrgsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.DictsCleared() {
+	if _u.mutation.DictsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1198,7 +1198,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedDictsIDs(); len(nodes) > 0 && !au.mutation.DictsCleared() {
+	if nodes := _u.mutation.RemovedDictsIDs(); len(nodes) > 0 && !_u.mutation.DictsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1214,7 +1214,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.DictsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.DictsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1230,7 +1230,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.OrgAppCleared() {
+	if _u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1243,7 +1243,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !au.mutation.OrgAppCleared() {
+	if nodes := _u.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !_u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1259,7 +1259,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1275,7 +1275,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1283,8 +1283,8 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	au.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppUpdateOne is the builder for updating a single App entity.
@@ -1296,671 +1296,671 @@ type AppUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (auo *AppUpdateOne) SetUpdatedBy(i int) *AppUpdateOne {
-	auo.mutation.ResetUpdatedBy()
-	auo.mutation.SetUpdatedBy(i)
-	return auo
+func (_u *AppUpdateOne) SetUpdatedBy(v int) *AppUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableUpdatedBy(i *int) *AppUpdateOne {
-	if i != nil {
-		auo.SetUpdatedBy(*i)
+func (_u *AppUpdateOne) SetNillableUpdatedBy(v *int) *AppUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (auo *AppUpdateOne) AddUpdatedBy(i int) *AppUpdateOne {
-	auo.mutation.AddUpdatedBy(i)
-	return auo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppUpdateOne) AddUpdatedBy(v int) *AppUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (auo *AppUpdateOne) ClearUpdatedBy() *AppUpdateOne {
-	auo.mutation.ClearUpdatedBy()
-	return auo
+func (_u *AppUpdateOne) ClearUpdatedBy() *AppUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (auo *AppUpdateOne) SetUpdatedAt(t time.Time) *AppUpdateOne {
-	auo.mutation.SetUpdatedAt(t)
-	return auo
+func (_u *AppUpdateOne) SetUpdatedAt(v time.Time) *AppUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppUpdateOne {
-	if t != nil {
-		auo.SetUpdatedAt(*t)
+func (_u *AppUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (auo *AppUpdateOne) ClearUpdatedAt() *AppUpdateOne {
-	auo.mutation.ClearUpdatedAt()
-	return auo
+func (_u *AppUpdateOne) ClearUpdatedAt() *AppUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
-	auo.mutation.SetName(s)
-	return auo
+func (_u *AppUpdateOne) SetName(v string) *AppUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableName(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetName(*s)
+func (_u *AppUpdateOne) SetNillableName(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (auo *AppUpdateOne) SetKind(a app.Kind) *AppUpdateOne {
-	auo.mutation.SetKind(a)
-	return auo
+func (_u *AppUpdateOne) SetKind(v app.Kind) *AppUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableKind(a *app.Kind) *AppUpdateOne {
-	if a != nil {
-		auo.SetKind(*a)
+func (_u *AppUpdateOne) SetNillableKind(v *app.Kind) *AppUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetRedirectURI sets the "redirect_uri" field.
-func (auo *AppUpdateOne) SetRedirectURI(s string) *AppUpdateOne {
-	auo.mutation.SetRedirectURI(s)
-	return auo
+func (_u *AppUpdateOne) SetRedirectURI(v string) *AppUpdateOne {
+	_u.mutation.SetRedirectURI(v)
+	return _u
 }
 
 // SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableRedirectURI(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetRedirectURI(*s)
+func (_u *AppUpdateOne) SetNillableRedirectURI(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetRedirectURI(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearRedirectURI clears the value of the "redirect_uri" field.
-func (auo *AppUpdateOne) ClearRedirectURI() *AppUpdateOne {
-	auo.mutation.ClearRedirectURI()
-	return auo
+func (_u *AppUpdateOne) ClearRedirectURI() *AppUpdateOne {
+	_u.mutation.ClearRedirectURI()
+	return _u
 }
 
 // SetAppKey sets the "app_key" field.
-func (auo *AppUpdateOne) SetAppKey(s string) *AppUpdateOne {
-	auo.mutation.SetAppKey(s)
-	return auo
+func (_u *AppUpdateOne) SetAppKey(v string) *AppUpdateOne {
+	_u.mutation.SetAppKey(v)
+	return _u
 }
 
 // SetNillableAppKey sets the "app_key" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableAppKey(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetAppKey(*s)
+func (_u *AppUpdateOne) SetNillableAppKey(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetAppKey(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearAppKey clears the value of the "app_key" field.
-func (auo *AppUpdateOne) ClearAppKey() *AppUpdateOne {
-	auo.mutation.ClearAppKey()
-	return auo
+func (_u *AppUpdateOne) ClearAppKey() *AppUpdateOne {
+	_u.mutation.ClearAppKey()
+	return _u
 }
 
 // SetAppSecret sets the "app_secret" field.
-func (auo *AppUpdateOne) SetAppSecret(s string) *AppUpdateOne {
-	auo.mutation.SetAppSecret(s)
-	return auo
+func (_u *AppUpdateOne) SetAppSecret(v string) *AppUpdateOne {
+	_u.mutation.SetAppSecret(v)
+	return _u
 }
 
 // SetNillableAppSecret sets the "app_secret" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableAppSecret(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetAppSecret(*s)
+func (_u *AppUpdateOne) SetNillableAppSecret(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetAppSecret(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearAppSecret clears the value of the "app_secret" field.
-func (auo *AppUpdateOne) ClearAppSecret() *AppUpdateOne {
-	auo.mutation.ClearAppSecret()
-	return auo
+func (_u *AppUpdateOne) ClearAppSecret() *AppUpdateOne {
+	_u.mutation.ClearAppSecret()
+	return _u
 }
 
 // SetScopes sets the "scopes" field.
-func (auo *AppUpdateOne) SetScopes(s string) *AppUpdateOne {
-	auo.mutation.SetScopes(s)
-	return auo
+func (_u *AppUpdateOne) SetScopes(v string) *AppUpdateOne {
+	_u.mutation.SetScopes(v)
+	return _u
 }
 
 // SetNillableScopes sets the "scopes" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableScopes(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetScopes(*s)
+func (_u *AppUpdateOne) SetNillableScopes(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetScopes(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearScopes clears the value of the "scopes" field.
-func (auo *AppUpdateOne) ClearScopes() *AppUpdateOne {
-	auo.mutation.ClearScopes()
-	return auo
+func (_u *AppUpdateOne) ClearScopes() *AppUpdateOne {
+	_u.mutation.ClearScopes()
+	return _u
 }
 
 // SetTokenValidity sets the "token_validity" field.
-func (auo *AppUpdateOne) SetTokenValidity(i int32) *AppUpdateOne {
-	auo.mutation.ResetTokenValidity()
-	auo.mutation.SetTokenValidity(i)
-	return auo
+func (_u *AppUpdateOne) SetTokenValidity(v int32) *AppUpdateOne {
+	_u.mutation.ResetTokenValidity()
+	_u.mutation.SetTokenValidity(v)
+	return _u
 }
 
 // SetNillableTokenValidity sets the "token_validity" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableTokenValidity(i *int32) *AppUpdateOne {
-	if i != nil {
-		auo.SetTokenValidity(*i)
+func (_u *AppUpdateOne) SetNillableTokenValidity(v *int32) *AppUpdateOne {
+	if v != nil {
+		_u.SetTokenValidity(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddTokenValidity adds i to the "token_validity" field.
-func (auo *AppUpdateOne) AddTokenValidity(i int32) *AppUpdateOne {
-	auo.mutation.AddTokenValidity(i)
-	return auo
+// AddTokenValidity adds value to the "token_validity" field.
+func (_u *AppUpdateOne) AddTokenValidity(v int32) *AppUpdateOne {
+	_u.mutation.AddTokenValidity(v)
+	return _u
 }
 
 // ClearTokenValidity clears the value of the "token_validity" field.
-func (auo *AppUpdateOne) ClearTokenValidity() *AppUpdateOne {
-	auo.mutation.ClearTokenValidity()
-	return auo
+func (_u *AppUpdateOne) ClearTokenValidity() *AppUpdateOne {
+	_u.mutation.ClearTokenValidity()
+	return _u
 }
 
 // SetRefreshTokenValidity sets the "refresh_token_validity" field.
-func (auo *AppUpdateOne) SetRefreshTokenValidity(i int32) *AppUpdateOne {
-	auo.mutation.ResetRefreshTokenValidity()
-	auo.mutation.SetRefreshTokenValidity(i)
-	return auo
+func (_u *AppUpdateOne) SetRefreshTokenValidity(v int32) *AppUpdateOne {
+	_u.mutation.ResetRefreshTokenValidity()
+	_u.mutation.SetRefreshTokenValidity(v)
+	return _u
 }
 
 // SetNillableRefreshTokenValidity sets the "refresh_token_validity" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableRefreshTokenValidity(i *int32) *AppUpdateOne {
-	if i != nil {
-		auo.SetRefreshTokenValidity(*i)
+func (_u *AppUpdateOne) SetNillableRefreshTokenValidity(v *int32) *AppUpdateOne {
+	if v != nil {
+		_u.SetRefreshTokenValidity(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddRefreshTokenValidity adds i to the "refresh_token_validity" field.
-func (auo *AppUpdateOne) AddRefreshTokenValidity(i int32) *AppUpdateOne {
-	auo.mutation.AddRefreshTokenValidity(i)
-	return auo
+// AddRefreshTokenValidity adds value to the "refresh_token_validity" field.
+func (_u *AppUpdateOne) AddRefreshTokenValidity(v int32) *AppUpdateOne {
+	_u.mutation.AddRefreshTokenValidity(v)
+	return _u
 }
 
 // ClearRefreshTokenValidity clears the value of the "refresh_token_validity" field.
-func (auo *AppUpdateOne) ClearRefreshTokenValidity() *AppUpdateOne {
-	auo.mutation.ClearRefreshTokenValidity()
-	return auo
+func (_u *AppUpdateOne) ClearRefreshTokenValidity() *AppUpdateOne {
+	_u.mutation.ClearRefreshTokenValidity()
+	return _u
 }
 
 // SetLogo sets the "logo" field.
-func (auo *AppUpdateOne) SetLogo(s string) *AppUpdateOne {
-	auo.mutation.SetLogo(s)
-	return auo
+func (_u *AppUpdateOne) SetLogo(v string) *AppUpdateOne {
+	_u.mutation.SetLogo(v)
+	return _u
 }
 
 // SetNillableLogo sets the "logo" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableLogo(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetLogo(*s)
+func (_u *AppUpdateOne) SetNillableLogo(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetLogo(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearLogo clears the value of the "logo" field.
-func (auo *AppUpdateOne) ClearLogo() *AppUpdateOne {
-	auo.mutation.ClearLogo()
-	return auo
+func (_u *AppUpdateOne) ClearLogo() *AppUpdateOne {
+	_u.mutation.ClearLogo()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (auo *AppUpdateOne) SetComments(s string) *AppUpdateOne {
-	auo.mutation.SetComments(s)
-	return auo
+func (_u *AppUpdateOne) SetComments(v string) *AppUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableComments(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetComments(*s)
+func (_u *AppUpdateOne) SetNillableComments(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (auo *AppUpdateOne) ClearComments() *AppUpdateOne {
-	auo.mutation.ClearComments()
-	return auo
+func (_u *AppUpdateOne) ClearComments() *AppUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (auo *AppUpdateOne) SetStatus(ts typex.SimpleStatus) *AppUpdateOne {
-	auo.mutation.SetStatus(ts)
-	return auo
+func (_u *AppUpdateOne) SetStatus(v typex.SimpleStatus) *AppUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *AppUpdateOne {
-	if ts != nil {
-		auo.SetStatus(*ts)
+func (_u *AppUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *AppUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (auo *AppUpdateOne) ClearStatus() *AppUpdateOne {
-	auo.mutation.ClearStatus()
-	return auo
+func (_u *AppUpdateOne) ClearStatus() *AppUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetOrgPrivate sets the "org_private" field.
-func (auo *AppUpdateOne) SetOrgPrivate(b bool) *AppUpdateOne {
-	auo.mutation.SetOrgPrivate(b)
-	return auo
+func (_u *AppUpdateOne) SetOrgPrivate(v bool) *AppUpdateOne {
+	_u.mutation.SetOrgPrivate(v)
+	return _u
 }
 
 // SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableOrgPrivate(b *bool) *AppUpdateOne {
-	if b != nil {
-		auo.SetOrgPrivate(*b)
+func (_u *AppUpdateOne) SetNillableOrgPrivate(v *bool) *AppUpdateOne {
+	if v != nil {
+		_u.SetOrgPrivate(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearOrgPrivate clears the value of the "org_private" field.
-func (auo *AppUpdateOne) ClearOrgPrivate() *AppUpdateOne {
-	auo.mutation.ClearOrgPrivate()
-	return auo
+func (_u *AppUpdateOne) ClearOrgPrivate() *AppUpdateOne {
+	_u.mutation.ClearOrgPrivate()
+	return _u
 }
 
 // SetOwnerOrgID sets the "owner_org_id" field.
-func (auo *AppUpdateOne) SetOwnerOrgID(i int) *AppUpdateOne {
-	auo.mutation.ResetOwnerOrgID()
-	auo.mutation.SetOwnerOrgID(i)
-	return auo
+func (_u *AppUpdateOne) SetOwnerOrgID(v int) *AppUpdateOne {
+	_u.mutation.ResetOwnerOrgID()
+	_u.mutation.SetOwnerOrgID(v)
+	return _u
 }
 
 // SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableOwnerOrgID(i *int) *AppUpdateOne {
-	if i != nil {
-		auo.SetOwnerOrgID(*i)
+func (_u *AppUpdateOne) SetNillableOwnerOrgID(v *int) *AppUpdateOne {
+	if v != nil {
+		_u.SetOwnerOrgID(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddOwnerOrgID adds i to the "owner_org_id" field.
-func (auo *AppUpdateOne) AddOwnerOrgID(i int) *AppUpdateOne {
-	auo.mutation.AddOwnerOrgID(i)
-	return auo
+// AddOwnerOrgID adds value to the "owner_org_id" field.
+func (_u *AppUpdateOne) AddOwnerOrgID(v int) *AppUpdateOne {
+	_u.mutation.AddOwnerOrgID(v)
+	return _u
 }
 
 // ClearOwnerOrgID clears the value of the "owner_org_id" field.
-func (auo *AppUpdateOne) ClearOwnerOrgID() *AppUpdateOne {
-	auo.mutation.ClearOwnerOrgID()
-	return auo
+func (_u *AppUpdateOne) ClearOwnerOrgID() *AppUpdateOne {
+	_u.mutation.ClearOwnerOrgID()
+	return _u
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
-func (auo *AppUpdateOne) AddMenuIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddMenuIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddMenuIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddMenuIDs(ids...)
+	return _u
 }
 
 // AddMenus adds the "menus" edges to the AppMenu entity.
-func (auo *AppUpdateOne) AddMenus(a ...*AppMenu) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddMenus(v ...*AppMenu) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddMenuIDs(ids...)
+	return _u.AddMenuIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the AppAction entity by IDs.
-func (auo *AppUpdateOne) AddActionIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddActionIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddActionIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
 }
 
 // AddActions adds the "actions" edges to the AppAction entity.
-func (auo *AppUpdateOne) AddActions(a ...*AppAction) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddActions(v ...*AppAction) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddActionIDs(ids...)
+	return _u.AddActionIDs(ids...)
 }
 
 // AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (auo *AppUpdateOne) AddResourceIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddResourceIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddResourceIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddResourceIDs(ids...)
+	return _u
 }
 
 // AddResources adds the "resources" edges to the AppRes entity.
-func (auo *AppUpdateOne) AddResources(a ...*AppRes) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddResources(v ...*AppRes) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddResourceIDs(ids...)
+	return _u.AddResourceIDs(ids...)
 }
 
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
-func (auo *AppUpdateOne) AddRoleIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddRoleIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddRoleIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
 }
 
 // AddRoles adds the "roles" edges to the AppRole entity.
-func (auo *AppUpdateOne) AddRoles(a ...*AppRole) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddRoles(v ...*AppRole) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddRoleIDs(ids...)
+	return _u.AddRoleIDs(ids...)
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (auo *AppUpdateOne) AddPolicyIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddPolicyIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddPolicyIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddPolicyIDs(ids...)
+	return _u
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (auo *AppUpdateOne) AddPolicies(a ...*AppPolicy) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddPolicies(v ...*AppPolicy) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddPolicyIDs(ids...)
+	return _u.AddPolicyIDs(ids...)
 }
 
 // AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
-func (auo *AppUpdateOne) AddPolicyViewIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddPolicyViewIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddPolicyViewIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddPolicyViewIDs(ids...)
+	return _u
 }
 
 // AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
-func (auo *AppUpdateOne) AddPolicyViews(a ...*AppPolicyView) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddPolicyViews(v ...*AppPolicyView) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddPolicyViewIDs(ids...)
+	return _u.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
-func (auo *AppUpdateOne) AddOrgIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddOrgIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddOrgIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddOrgIDs(ids...)
+	return _u
 }
 
 // AddOrgs adds the "orgs" edges to the Org entity.
-func (auo *AppUpdateOne) AddOrgs(o ...*Org) *AppUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdateOne) AddOrgs(v ...*Org) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddOrgIDs(ids...)
+	return _u.AddOrgIDs(ids...)
 }
 
 // AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
-func (auo *AppUpdateOne) AddDictIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddDictIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddDictIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddDictIDs(ids...)
+	return _u
 }
 
 // AddDicts adds the "dicts" edges to the AppDict entity.
-func (auo *AppUpdateOne) AddDicts(a ...*AppDict) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddDicts(v ...*AppDict) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddDictIDs(ids...)
+	return _u.AddDictIDs(ids...)
 }
 
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
-func (auo *AppUpdateOne) AddOrgAppIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddOrgAppIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddOrgAppIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddOrgAppIDs(ids...)
+	return _u
 }
 
 // AddOrgApp adds the "org_app" edges to the OrgApp entity.
-func (auo *AppUpdateOne) AddOrgApp(o ...*OrgApp) *AppUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdateOne) AddOrgApp(v ...*OrgApp) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddOrgAppIDs(ids...)
+	return _u.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (auo *AppUpdateOne) Mutation() *AppMutation {
-	return auo.mutation
+func (_u *AppUpdateOne) Mutation() *AppMutation {
+	return _u.mutation
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
-func (auo *AppUpdateOne) ClearMenus() *AppUpdateOne {
-	auo.mutation.ClearMenus()
-	return auo
+func (_u *AppUpdateOne) ClearMenus() *AppUpdateOne {
+	_u.mutation.ClearMenus()
+	return _u
 }
 
 // RemoveMenuIDs removes the "menus" edge to AppMenu entities by IDs.
-func (auo *AppUpdateOne) RemoveMenuIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveMenuIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveMenuIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
 }
 
 // RemoveMenus removes "menus" edges to AppMenu entities.
-func (auo *AppUpdateOne) RemoveMenus(a ...*AppMenu) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveMenus(v ...*AppMenu) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveMenuIDs(ids...)
+	return _u.RemoveMenuIDs(ids...)
 }
 
 // ClearActions clears all "actions" edges to the AppAction entity.
-func (auo *AppUpdateOne) ClearActions() *AppUpdateOne {
-	auo.mutation.ClearActions()
-	return auo
+func (_u *AppUpdateOne) ClearActions() *AppUpdateOne {
+	_u.mutation.ClearActions()
+	return _u
 }
 
 // RemoveActionIDs removes the "actions" edge to AppAction entities by IDs.
-func (auo *AppUpdateOne) RemoveActionIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveActionIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveActionIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
 }
 
 // RemoveActions removes "actions" edges to AppAction entities.
-func (auo *AppUpdateOne) RemoveActions(a ...*AppAction) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveActions(v ...*AppAction) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveActionIDs(ids...)
+	return _u.RemoveActionIDs(ids...)
 }
 
 // ClearResources clears all "resources" edges to the AppRes entity.
-func (auo *AppUpdateOne) ClearResources() *AppUpdateOne {
-	auo.mutation.ClearResources()
-	return auo
+func (_u *AppUpdateOne) ClearResources() *AppUpdateOne {
+	_u.mutation.ClearResources()
+	return _u
 }
 
 // RemoveResourceIDs removes the "resources" edge to AppRes entities by IDs.
-func (auo *AppUpdateOne) RemoveResourceIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveResourceIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveResourceIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveResourceIDs(ids...)
+	return _u
 }
 
 // RemoveResources removes "resources" edges to AppRes entities.
-func (auo *AppUpdateOne) RemoveResources(a ...*AppRes) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveResources(v ...*AppRes) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveResourceIDs(ids...)
+	return _u.RemoveResourceIDs(ids...)
 }
 
 // ClearRoles clears all "roles" edges to the AppRole entity.
-func (auo *AppUpdateOne) ClearRoles() *AppUpdateOne {
-	auo.mutation.ClearRoles()
-	return auo
+func (_u *AppUpdateOne) ClearRoles() *AppUpdateOne {
+	_u.mutation.ClearRoles()
+	return _u
 }
 
 // RemoveRoleIDs removes the "roles" edge to AppRole entities by IDs.
-func (auo *AppUpdateOne) RemoveRoleIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveRoleIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveRoleIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
 }
 
 // RemoveRoles removes "roles" edges to AppRole entities.
-func (auo *AppUpdateOne) RemoveRoles(a ...*AppRole) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveRoles(v ...*AppRole) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveRoleIDs(ids...)
+	return _u.RemoveRoleIDs(ids...)
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
-func (auo *AppUpdateOne) ClearPolicies() *AppUpdateOne {
-	auo.mutation.ClearPolicies()
-	return auo
+func (_u *AppUpdateOne) ClearPolicies() *AppUpdateOne {
+	_u.mutation.ClearPolicies()
+	return _u
 }
 
 // RemovePolicyIDs removes the "policies" edge to AppPolicy entities by IDs.
-func (auo *AppUpdateOne) RemovePolicyIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemovePolicyIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemovePolicyIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemovePolicyIDs(ids...)
+	return _u
 }
 
 // RemovePolicies removes "policies" edges to AppPolicy entities.
-func (auo *AppUpdateOne) RemovePolicies(a ...*AppPolicy) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemovePolicies(v ...*AppPolicy) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemovePolicyIDs(ids...)
+	return _u.RemovePolicyIDs(ids...)
 }
 
 // ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
-func (auo *AppUpdateOne) ClearPolicyViews() *AppUpdateOne {
-	auo.mutation.ClearPolicyViews()
-	return auo
+func (_u *AppUpdateOne) ClearPolicyViews() *AppUpdateOne {
+	_u.mutation.ClearPolicyViews()
+	return _u
 }
 
 // RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
-func (auo *AppUpdateOne) RemovePolicyViewIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemovePolicyViewIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemovePolicyViewIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemovePolicyViewIDs(ids...)
+	return _u
 }
 
 // RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
-func (auo *AppUpdateOne) RemovePolicyViews(a ...*AppPolicyView) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemovePolicyViews(v ...*AppPolicyView) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemovePolicyViewIDs(ids...)
+	return _u.RemovePolicyViewIDs(ids...)
 }
 
 // ClearOrgs clears all "orgs" edges to the Org entity.
-func (auo *AppUpdateOne) ClearOrgs() *AppUpdateOne {
-	auo.mutation.ClearOrgs()
-	return auo
+func (_u *AppUpdateOne) ClearOrgs() *AppUpdateOne {
+	_u.mutation.ClearOrgs()
+	return _u
 }
 
 // RemoveOrgIDs removes the "orgs" edge to Org entities by IDs.
-func (auo *AppUpdateOne) RemoveOrgIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveOrgIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveOrgIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveOrgIDs(ids...)
+	return _u
 }
 
 // RemoveOrgs removes "orgs" edges to Org entities.
-func (auo *AppUpdateOne) RemoveOrgs(o ...*Org) *AppUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdateOne) RemoveOrgs(v ...*Org) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveOrgIDs(ids...)
+	return _u.RemoveOrgIDs(ids...)
 }
 
 // ClearDicts clears all "dicts" edges to the AppDict entity.
-func (auo *AppUpdateOne) ClearDicts() *AppUpdateOne {
-	auo.mutation.ClearDicts()
-	return auo
+func (_u *AppUpdateOne) ClearDicts() *AppUpdateOne {
+	_u.mutation.ClearDicts()
+	return _u
 }
 
 // RemoveDictIDs removes the "dicts" edge to AppDict entities by IDs.
-func (auo *AppUpdateOne) RemoveDictIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveDictIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveDictIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveDictIDs(ids...)
+	return _u
 }
 
 // RemoveDicts removes "dicts" edges to AppDict entities.
-func (auo *AppUpdateOne) RemoveDicts(a ...*AppDict) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveDicts(v ...*AppDict) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveDictIDs(ids...)
+	return _u.RemoveDictIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
-func (auo *AppUpdateOne) ClearOrgApp() *AppUpdateOne {
-	auo.mutation.ClearOrgApp()
-	return auo
+func (_u *AppUpdateOne) ClearOrgApp() *AppUpdateOne {
+	_u.mutation.ClearOrgApp()
+	return _u
 }
 
 // RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
-func (auo *AppUpdateOne) RemoveOrgAppIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveOrgAppIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveOrgAppIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveOrgAppIDs(ids...)
+	return _u
 }
 
 // RemoveOrgApp removes "org_app" edges to OrgApp entities.
-func (auo *AppUpdateOne) RemoveOrgApp(o ...*OrgApp) *AppUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+func (_u *AppUpdateOne) RemoveOrgApp(v ...*OrgApp) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveOrgAppIDs(ids...)
+	return _u.RemoveOrgAppIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
-func (auo *AppUpdateOne) Where(ps ...predicate.App) *AppUpdateOne {
-	auo.mutation.Where(ps...)
-	return auo
+func (_u *AppUpdateOne) Where(ps ...predicate.App) *AppUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
-	auo.fields = append([]string{field}, fields...)
-	return auo
+func (_u *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated App entity.
-func (auo *AppUpdateOne) Save(ctx context.Context) (*App, error) {
-	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
+func (_u *AppUpdateOne) Save(ctx context.Context) (*App, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *AppUpdateOne) SaveX(ctx context.Context) *App {
-	node, err := auo.Save(ctx)
+func (_u *AppUpdateOne) SaveX(ctx context.Context) *App {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1968,51 +1968,51 @@ func (auo *AppUpdateOne) SaveX(ctx context.Context) *App {
 }
 
 // Exec executes the query on the entity.
-func (auo *AppUpdateOne) Exec(ctx context.Context) error {
-	_, err := auo.Save(ctx)
+func (_u *AppUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *AppUpdateOne) ExecX(ctx context.Context) {
-	if err := auo.Exec(ctx); err != nil {
+func (_u *AppUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (auo *AppUpdateOne) check() error {
-	if v, ok := auo.mutation.Name(); ok {
+func (_u *AppUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
 		if err := app.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "App.name": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.Kind(); ok {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := app.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "App.kind": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.RedirectURI(); ok {
+	if v, ok := _u.mutation.RedirectURI(); ok {
 		if err := app.RedirectURIValidator(v); err != nil {
 			return &ValidationError{Name: "redirect_uri", err: fmt.Errorf(`ent: validator failed for field "App.redirect_uri": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.AppSecret(); ok {
+	if v, ok := _u.mutation.AppSecret(); ok {
 		if err := app.AppSecretValidator(v); err != nil {
 			return &ValidationError{Name: "app_secret", err: fmt.Errorf(`ent: validator failed for field "App.app_secret": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.Scopes(); ok {
+	if v, ok := _u.mutation.Scopes(); ok {
 		if err := app.ScopesValidator(v); err != nil {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.Logo(); ok {
+	if v, ok := _u.mutation.Logo(); ok {
 		if err := app.LogoValidator(v); err != nil {
 			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
 		}
 	}
-	if v, ok := auo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
 		}
@@ -2020,17 +2020,17 @@ func (auo *AppUpdateOne) check() error {
 	return nil
 }
 
-func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
-	if err := auo.check(); err != nil {
+func (_u *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
-	id, ok := auo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "App.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := auo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, app.FieldID)
 		for _, f := range fields {
@@ -2042,110 +2042,110 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			}
 		}
 	}
-	if ps := auo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(app.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := auo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(app.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if auo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(app.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := auo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(app.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := auo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(app.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := auo.mutation.RedirectURI(); ok {
+	if value, ok := _u.mutation.RedirectURI(); ok {
 		_spec.SetField(app.FieldRedirectURI, field.TypeString, value)
 	}
-	if auo.mutation.RedirectURICleared() {
+	if _u.mutation.RedirectURICleared() {
 		_spec.ClearField(app.FieldRedirectURI, field.TypeString)
 	}
-	if value, ok := auo.mutation.AppKey(); ok {
+	if value, ok := _u.mutation.AppKey(); ok {
 		_spec.SetField(app.FieldAppKey, field.TypeString, value)
 	}
-	if auo.mutation.AppKeyCleared() {
+	if _u.mutation.AppKeyCleared() {
 		_spec.ClearField(app.FieldAppKey, field.TypeString)
 	}
-	if value, ok := auo.mutation.AppSecret(); ok {
+	if value, ok := _u.mutation.AppSecret(); ok {
 		_spec.SetField(app.FieldAppSecret, field.TypeString, value)
 	}
-	if auo.mutation.AppSecretCleared() {
+	if _u.mutation.AppSecretCleared() {
 		_spec.ClearField(app.FieldAppSecret, field.TypeString)
 	}
-	if value, ok := auo.mutation.Scopes(); ok {
+	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(app.FieldScopes, field.TypeString, value)
 	}
-	if auo.mutation.ScopesCleared() {
+	if _u.mutation.ScopesCleared() {
 		_spec.ClearField(app.FieldScopes, field.TypeString)
 	}
-	if value, ok := auo.mutation.TokenValidity(); ok {
+	if value, ok := _u.mutation.TokenValidity(); ok {
 		_spec.SetField(app.FieldTokenValidity, field.TypeInt32, value)
 	}
-	if value, ok := auo.mutation.AddedTokenValidity(); ok {
+	if value, ok := _u.mutation.AddedTokenValidity(); ok {
 		_spec.AddField(app.FieldTokenValidity, field.TypeInt32, value)
 	}
-	if auo.mutation.TokenValidityCleared() {
+	if _u.mutation.TokenValidityCleared() {
 		_spec.ClearField(app.FieldTokenValidity, field.TypeInt32)
 	}
-	if value, ok := auo.mutation.RefreshTokenValidity(); ok {
+	if value, ok := _u.mutation.RefreshTokenValidity(); ok {
 		_spec.SetField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 	}
-	if value, ok := auo.mutation.AddedRefreshTokenValidity(); ok {
+	if value, ok := _u.mutation.AddedRefreshTokenValidity(); ok {
 		_spec.AddField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 	}
-	if auo.mutation.RefreshTokenValidityCleared() {
+	if _u.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
 	}
-	if value, ok := auo.mutation.Logo(); ok {
+	if value, ok := _u.mutation.Logo(); ok {
 		_spec.SetField(app.FieldLogo, field.TypeString, value)
 	}
-	if auo.mutation.LogoCleared() {
+	if _u.mutation.LogoCleared() {
 		_spec.ClearField(app.FieldLogo, field.TypeString)
 	}
-	if value, ok := auo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
 	}
-	if auo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(app.FieldComments, field.TypeString)
 	}
-	if value, ok := auo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 	}
-	if auo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := auo.mutation.OrgPrivate(); ok {
+	if value, ok := _u.mutation.OrgPrivate(); ok {
 		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if auo.mutation.OrgPrivateCleared() {
+	if _u.mutation.OrgPrivateCleared() {
 		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
-	if value, ok := auo.mutation.OwnerOrgID(); ok {
+	if value, ok := _u.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if value, ok := auo.mutation.AddedOwnerOrgID(); ok {
+	if value, ok := _u.mutation.AddedOwnerOrgID(); ok {
 		_spec.AddField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if auo.mutation.OwnerOrgIDCleared() {
+	if _u.mutation.OwnerOrgIDCleared() {
 		_spec.ClearField(app.FieldOwnerOrgID, field.TypeInt)
 	}
-	if auo.mutation.MenusCleared() {
+	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2158,23 +2158,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedMenusIDs(); len(nodes) > 0 && !auo.mutation.MenusCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.MenusTable,
-			Columns: []string{app.MenusColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.MenusIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2188,9 +2172,25 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.MenusTable,
+			Columns: []string{app.MenusColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.ActionsCleared() {
+	if _u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2203,7 +2203,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedActionsIDs(); len(nodes) > 0 && !auo.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2219,7 +2219,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2235,7 +2235,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.ResourcesCleared() {
+	if _u.mutation.ResourcesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2248,23 +2248,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !auo.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.ResourcesTable,
-			Columns: []string{app.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.ResourcesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !_u.mutation.ResourcesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2278,9 +2262,25 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ResourcesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.ResourcesTable,
+			Columns: []string{app.ResourcesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.RolesCleared() {
+	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2293,7 +2293,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !auo.mutation.RolesCleared() {
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2309,7 +2309,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2325,7 +2325,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.PoliciesCleared() {
+	if _u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2338,23 +2338,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !auo.mutation.PoliciesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   app.PoliciesTable,
-			Columns: []string{app.PoliciesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedPoliciesIDs(); len(nodes) > 0 && !_u.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2368,9 +2352,25 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PoliciesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PoliciesTable,
+			Columns: []string{app.PoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.PolicyViewsCleared() {
+	if _u.mutation.PolicyViewsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2383,7 +2383,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !auo.mutation.PolicyViewsCleared() {
+	if nodes := _u.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !_u.mutation.PolicyViewsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2399,7 +2399,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PolicyViewsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2415,7 +2415,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.OrgsCleared() {
+	if _u.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -2426,33 +2426,13 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
-		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !auo.mutation.OrgsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   app.OrgsTable,
-			Columns: app.OrgsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
-		_ = createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.OrgsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !_u.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -2466,13 +2446,33 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.OrgsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgAppCreate{config: _u.config, mutation: newOrgAppMutation(_u.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.DictsCleared() {
+	if _u.mutation.DictsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2485,7 +2485,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedDictsIDs(); len(nodes) > 0 && !auo.mutation.DictsCleared() {
+	if nodes := _u.mutation.RemovedDictsIDs(); len(nodes) > 0 && !_u.mutation.DictsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2501,7 +2501,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.DictsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.DictsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -2517,7 +2517,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.OrgAppCleared() {
+	if _u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -2530,7 +2530,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !auo.mutation.OrgAppCleared() {
+	if nodes := _u.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !_u.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -2546,7 +2546,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.OrgAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrgAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -2562,10 +2562,10 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &App{config: auo.config}
+	_node = &App{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -2573,6 +2573,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		return nil, err
 	}
-	auo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

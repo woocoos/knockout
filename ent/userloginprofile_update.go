@@ -24,239 +24,239 @@ type UserLoginProfileUpdate struct {
 }
 
 // Where appends a list predicates to the UserLoginProfileUpdate builder.
-func (ulpu *UserLoginProfileUpdate) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileUpdate {
-	ulpu.mutation.Where(ps...)
-	return ulpu
+func (_u *UserLoginProfileUpdate) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ulpu *UserLoginProfileUpdate) SetUpdatedBy(i int) *UserLoginProfileUpdate {
-	ulpu.mutation.ResetUpdatedBy()
-	ulpu.mutation.SetUpdatedBy(i)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetUpdatedBy(v int) *UserLoginProfileUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableUpdatedBy(i *int) *UserLoginProfileUpdate {
-	if i != nil {
-		ulpu.SetUpdatedBy(*i)
+func (_u *UserLoginProfileUpdate) SetNillableUpdatedBy(v *int) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ulpu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ulpu *UserLoginProfileUpdate) AddUpdatedBy(i int) *UserLoginProfileUpdate {
-	ulpu.mutation.AddUpdatedBy(i)
-	return ulpu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserLoginProfileUpdate) AddUpdatedBy(v int) *UserLoginProfileUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ulpu *UserLoginProfileUpdate) ClearUpdatedBy() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearUpdatedBy()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearUpdatedBy() *UserLoginProfileUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ulpu *UserLoginProfileUpdate) SetUpdatedAt(t time.Time) *UserLoginProfileUpdate {
-	ulpu.mutation.SetUpdatedAt(t)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetUpdatedAt(v time.Time) *UserLoginProfileUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableUpdatedAt(t *time.Time) *UserLoginProfileUpdate {
-	if t != nil {
-		ulpu.SetUpdatedAt(*t)
+func (_u *UserLoginProfileUpdate) SetNillableUpdatedAt(v *time.Time) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ulpu *UserLoginProfileUpdate) ClearUpdatedAt() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearUpdatedAt()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearUpdatedAt() *UserLoginProfileUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetLastLoginIP sets the "last_login_ip" field.
-func (ulpu *UserLoginProfileUpdate) SetLastLoginIP(s string) *UserLoginProfileUpdate {
-	ulpu.mutation.SetLastLoginIP(s)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetLastLoginIP(v string) *UserLoginProfileUpdate {
+	_u.mutation.SetLastLoginIP(v)
+	return _u
 }
 
 // SetNillableLastLoginIP sets the "last_login_ip" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableLastLoginIP(s *string) *UserLoginProfileUpdate {
-	if s != nil {
-		ulpu.SetLastLoginIP(*s)
+func (_u *UserLoginProfileUpdate) SetNillableLastLoginIP(v *string) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetLastLoginIP(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearLastLoginIP clears the value of the "last_login_ip" field.
-func (ulpu *UserLoginProfileUpdate) ClearLastLoginIP() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearLastLoginIP()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearLastLoginIP() *UserLoginProfileUpdate {
+	_u.mutation.ClearLastLoginIP()
+	return _u
 }
 
 // SetLastLoginAt sets the "last_login_at" field.
-func (ulpu *UserLoginProfileUpdate) SetLastLoginAt(t time.Time) *UserLoginProfileUpdate {
-	ulpu.mutation.SetLastLoginAt(t)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetLastLoginAt(v time.Time) *UserLoginProfileUpdate {
+	_u.mutation.SetLastLoginAt(v)
+	return _u
 }
 
 // SetNillableLastLoginAt sets the "last_login_at" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableLastLoginAt(t *time.Time) *UserLoginProfileUpdate {
-	if t != nil {
-		ulpu.SetLastLoginAt(*t)
+func (_u *UserLoginProfileUpdate) SetNillableLastLoginAt(v *time.Time) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetLastLoginAt(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearLastLoginAt clears the value of the "last_login_at" field.
-func (ulpu *UserLoginProfileUpdate) ClearLastLoginAt() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearLastLoginAt()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearLastLoginAt() *UserLoginProfileUpdate {
+	_u.mutation.ClearLastLoginAt()
+	return _u
 }
 
 // SetCanLogin sets the "can_login" field.
-func (ulpu *UserLoginProfileUpdate) SetCanLogin(b bool) *UserLoginProfileUpdate {
-	ulpu.mutation.SetCanLogin(b)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetCanLogin(v bool) *UserLoginProfileUpdate {
+	_u.mutation.SetCanLogin(v)
+	return _u
 }
 
 // SetNillableCanLogin sets the "can_login" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableCanLogin(b *bool) *UserLoginProfileUpdate {
-	if b != nil {
-		ulpu.SetCanLogin(*b)
+func (_u *UserLoginProfileUpdate) SetNillableCanLogin(v *bool) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetCanLogin(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearCanLogin clears the value of the "can_login" field.
-func (ulpu *UserLoginProfileUpdate) ClearCanLogin() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearCanLogin()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearCanLogin() *UserLoginProfileUpdate {
+	_u.mutation.ClearCanLogin()
+	return _u
 }
 
 // SetSetKind sets the "set_kind" field.
-func (ulpu *UserLoginProfileUpdate) SetSetKind(uk userloginprofile.SetKind) *UserLoginProfileUpdate {
-	ulpu.mutation.SetSetKind(uk)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetSetKind(v userloginprofile.SetKind) *UserLoginProfileUpdate {
+	_u.mutation.SetSetKind(v)
+	return _u
 }
 
 // SetNillableSetKind sets the "set_kind" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableSetKind(uk *userloginprofile.SetKind) *UserLoginProfileUpdate {
-	if uk != nil {
-		ulpu.SetSetKind(*uk)
+func (_u *UserLoginProfileUpdate) SetNillableSetKind(v *userloginprofile.SetKind) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetSetKind(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // SetPasswordReset sets the "password_reset" field.
-func (ulpu *UserLoginProfileUpdate) SetPasswordReset(b bool) *UserLoginProfileUpdate {
-	ulpu.mutation.SetPasswordReset(b)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetPasswordReset(v bool) *UserLoginProfileUpdate {
+	_u.mutation.SetPasswordReset(v)
+	return _u
 }
 
 // SetNillablePasswordReset sets the "password_reset" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillablePasswordReset(b *bool) *UserLoginProfileUpdate {
-	if b != nil {
-		ulpu.SetPasswordReset(*b)
+func (_u *UserLoginProfileUpdate) SetNillablePasswordReset(v *bool) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetPasswordReset(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearPasswordReset clears the value of the "password_reset" field.
-func (ulpu *UserLoginProfileUpdate) ClearPasswordReset() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearPasswordReset()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearPasswordReset() *UserLoginProfileUpdate {
+	_u.mutation.ClearPasswordReset()
+	return _u
 }
 
 // SetVerifyDevice sets the "verify_device" field.
-func (ulpu *UserLoginProfileUpdate) SetVerifyDevice(b bool) *UserLoginProfileUpdate {
-	ulpu.mutation.SetVerifyDevice(b)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetVerifyDevice(v bool) *UserLoginProfileUpdate {
+	_u.mutation.SetVerifyDevice(v)
+	return _u
 }
 
 // SetNillableVerifyDevice sets the "verify_device" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableVerifyDevice(b *bool) *UserLoginProfileUpdate {
-	if b != nil {
-		ulpu.SetVerifyDevice(*b)
+func (_u *UserLoginProfileUpdate) SetNillableVerifyDevice(v *bool) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetVerifyDevice(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // SetMfaEnabled sets the "mfa_enabled" field.
-func (ulpu *UserLoginProfileUpdate) SetMfaEnabled(b bool) *UserLoginProfileUpdate {
-	ulpu.mutation.SetMfaEnabled(b)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetMfaEnabled(v bool) *UserLoginProfileUpdate {
+	_u.mutation.SetMfaEnabled(v)
+	return _u
 }
 
 // SetNillableMfaEnabled sets the "mfa_enabled" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableMfaEnabled(b *bool) *UserLoginProfileUpdate {
-	if b != nil {
-		ulpu.SetMfaEnabled(*b)
+func (_u *UserLoginProfileUpdate) SetNillableMfaEnabled(v *bool) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetMfaEnabled(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearMfaEnabled clears the value of the "mfa_enabled" field.
-func (ulpu *UserLoginProfileUpdate) ClearMfaEnabled() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearMfaEnabled()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearMfaEnabled() *UserLoginProfileUpdate {
+	_u.mutation.ClearMfaEnabled()
+	return _u
 }
 
 // SetMfaSecret sets the "mfa_secret" field.
-func (ulpu *UserLoginProfileUpdate) SetMfaSecret(s string) *UserLoginProfileUpdate {
-	ulpu.mutation.SetMfaSecret(s)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetMfaSecret(v string) *UserLoginProfileUpdate {
+	_u.mutation.SetMfaSecret(v)
+	return _u
 }
 
 // SetNillableMfaSecret sets the "mfa_secret" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableMfaSecret(s *string) *UserLoginProfileUpdate {
-	if s != nil {
-		ulpu.SetMfaSecret(*s)
+func (_u *UserLoginProfileUpdate) SetNillableMfaSecret(v *string) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetMfaSecret(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearMfaSecret clears the value of the "mfa_secret" field.
-func (ulpu *UserLoginProfileUpdate) ClearMfaSecret() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearMfaSecret()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearMfaSecret() *UserLoginProfileUpdate {
+	_u.mutation.ClearMfaSecret()
+	return _u
 }
 
 // SetMfaStatus sets the "mfa_status" field.
-func (ulpu *UserLoginProfileUpdate) SetMfaStatus(ts typex.SimpleStatus) *UserLoginProfileUpdate {
-	ulpu.mutation.SetMfaStatus(ts)
-	return ulpu
+func (_u *UserLoginProfileUpdate) SetMfaStatus(v typex.SimpleStatus) *UserLoginProfileUpdate {
+	_u.mutation.SetMfaStatus(v)
+	return _u
 }
 
 // SetNillableMfaStatus sets the "mfa_status" field if the given value is not nil.
-func (ulpu *UserLoginProfileUpdate) SetNillableMfaStatus(ts *typex.SimpleStatus) *UserLoginProfileUpdate {
-	if ts != nil {
-		ulpu.SetMfaStatus(*ts)
+func (_u *UserLoginProfileUpdate) SetNillableMfaStatus(v *typex.SimpleStatus) *UserLoginProfileUpdate {
+	if v != nil {
+		_u.SetMfaStatus(*v)
 	}
-	return ulpu
+	return _u
 }
 
 // ClearMfaStatus clears the value of the "mfa_status" field.
-func (ulpu *UserLoginProfileUpdate) ClearMfaStatus() *UserLoginProfileUpdate {
-	ulpu.mutation.ClearMfaStatus()
-	return ulpu
+func (_u *UserLoginProfileUpdate) ClearMfaStatus() *UserLoginProfileUpdate {
+	_u.mutation.ClearMfaStatus()
+	return _u
 }
 
 // Mutation returns the UserLoginProfileMutation object of the builder.
-func (ulpu *UserLoginProfileUpdate) Mutation() *UserLoginProfileMutation {
-	return ulpu.mutation
+func (_u *UserLoginProfileUpdate) Mutation() *UserLoginProfileMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ulpu *UserLoginProfileUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ulpu.sqlSave, ulpu.mutation, ulpu.hooks)
+func (_u *UserLoginProfileUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ulpu *UserLoginProfileUpdate) SaveX(ctx context.Context) int {
-	affected, err := ulpu.Save(ctx)
+func (_u *UserLoginProfileUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -264,31 +264,31 @@ func (ulpu *UserLoginProfileUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ulpu *UserLoginProfileUpdate) Exec(ctx context.Context) error {
-	_, err := ulpu.Save(ctx)
+func (_u *UserLoginProfileUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ulpu *UserLoginProfileUpdate) ExecX(ctx context.Context) {
-	if err := ulpu.Exec(ctx); err != nil {
+func (_u *UserLoginProfileUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ulpu *UserLoginProfileUpdate) check() error {
-	if v, ok := ulpu.mutation.SetKind(); ok {
+func (_u *UserLoginProfileUpdate) check() error {
+	if v, ok := _u.mutation.SetKind(); ok {
 		if err := userloginprofile.SetKindValidator(v); err != nil {
 			return &ValidationError{Name: "set_kind", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.set_kind": %w`, err)}
 		}
 	}
-	if v, ok := ulpu.mutation.MfaSecret(); ok {
+	if v, ok := _u.mutation.MfaSecret(); ok {
 		if err := userloginprofile.MfaSecretValidator(v); err != nil {
 			return &ValidationError{Name: "mfa_secret", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.mfa_secret": %w`, err)}
 		}
 	}
-	if v, ok := ulpu.mutation.MfaStatus(); ok {
+	if v, ok := _u.mutation.MfaStatus(); ok {
 		if err := userloginprofile.MfaStatusValidator(v); err != nil {
 			return &ValidationError{Name: "mfa_status", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.mfa_status": %w`, err)}
 		}
@@ -296,82 +296,82 @@ func (ulpu *UserLoginProfileUpdate) check() error {
 	return nil
 }
 
-func (ulpu *UserLoginProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ulpu.check(); err != nil {
-		return n, err
+func (_u *UserLoginProfileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userloginprofile.Table, userloginprofile.Columns, sqlgraph.NewFieldSpec(userloginprofile.FieldID, field.TypeInt))
-	if ps := ulpu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ulpu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userloginprofile.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ulpu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userloginprofile.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ulpu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userloginprofile.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ulpu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userloginprofile.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ulpu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userloginprofile.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ulpu.mutation.LastLoginIP(); ok {
+	if value, ok := _u.mutation.LastLoginIP(); ok {
 		_spec.SetField(userloginprofile.FieldLastLoginIP, field.TypeString, value)
 	}
-	if ulpu.mutation.LastLoginIPCleared() {
+	if _u.mutation.LastLoginIPCleared() {
 		_spec.ClearField(userloginprofile.FieldLastLoginIP, field.TypeString)
 	}
-	if value, ok := ulpu.mutation.LastLoginAt(); ok {
+	if value, ok := _u.mutation.LastLoginAt(); ok {
 		_spec.SetField(userloginprofile.FieldLastLoginAt, field.TypeTime, value)
 	}
-	if ulpu.mutation.LastLoginAtCleared() {
+	if _u.mutation.LastLoginAtCleared() {
 		_spec.ClearField(userloginprofile.FieldLastLoginAt, field.TypeTime)
 	}
-	if value, ok := ulpu.mutation.CanLogin(); ok {
+	if value, ok := _u.mutation.CanLogin(); ok {
 		_spec.SetField(userloginprofile.FieldCanLogin, field.TypeBool, value)
 	}
-	if ulpu.mutation.CanLoginCleared() {
+	if _u.mutation.CanLoginCleared() {
 		_spec.ClearField(userloginprofile.FieldCanLogin, field.TypeBool)
 	}
-	if value, ok := ulpu.mutation.SetKind(); ok {
+	if value, ok := _u.mutation.SetKind(); ok {
 		_spec.SetField(userloginprofile.FieldSetKind, field.TypeEnum, value)
 	}
-	if value, ok := ulpu.mutation.PasswordReset(); ok {
+	if value, ok := _u.mutation.PasswordReset(); ok {
 		_spec.SetField(userloginprofile.FieldPasswordReset, field.TypeBool, value)
 	}
-	if ulpu.mutation.PasswordResetCleared() {
+	if _u.mutation.PasswordResetCleared() {
 		_spec.ClearField(userloginprofile.FieldPasswordReset, field.TypeBool)
 	}
-	if value, ok := ulpu.mutation.VerifyDevice(); ok {
+	if value, ok := _u.mutation.VerifyDevice(); ok {
 		_spec.SetField(userloginprofile.FieldVerifyDevice, field.TypeBool, value)
 	}
-	if value, ok := ulpu.mutation.MfaEnabled(); ok {
+	if value, ok := _u.mutation.MfaEnabled(); ok {
 		_spec.SetField(userloginprofile.FieldMfaEnabled, field.TypeBool, value)
 	}
-	if ulpu.mutation.MfaEnabledCleared() {
+	if _u.mutation.MfaEnabledCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaEnabled, field.TypeBool)
 	}
-	if value, ok := ulpu.mutation.MfaSecret(); ok {
+	if value, ok := _u.mutation.MfaSecret(); ok {
 		_spec.SetField(userloginprofile.FieldMfaSecret, field.TypeString, value)
 	}
-	if ulpu.mutation.MfaSecretCleared() {
+	if _u.mutation.MfaSecretCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaSecret, field.TypeString)
 	}
-	if value, ok := ulpu.mutation.MfaStatus(); ok {
+	if value, ok := _u.mutation.MfaStatus(); ok {
 		_spec.SetField(userloginprofile.FieldMfaStatus, field.TypeEnum, value)
 	}
-	if ulpu.mutation.MfaStatusCleared() {
+	if _u.mutation.MfaStatusCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaStatus, field.TypeEnum)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ulpu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userloginprofile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -379,8 +379,8 @@ func (ulpu *UserLoginProfileUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		return 0, err
 	}
-	ulpu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserLoginProfileUpdateOne is the builder for updating a single UserLoginProfile entity.
@@ -392,246 +392,246 @@ type UserLoginProfileUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetUpdatedBy(i int) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ResetUpdatedBy()
-	ulpuo.mutation.SetUpdatedBy(i)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetUpdatedBy(v int) *UserLoginProfileUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableUpdatedBy(i *int) *UserLoginProfileUpdateOne {
-	if i != nil {
-		ulpuo.SetUpdatedBy(*i)
+func (_u *UserLoginProfileUpdateOne) SetNillableUpdatedBy(v *int) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return ulpuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (ulpuo *UserLoginProfileUpdateOne) AddUpdatedBy(i int) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.AddUpdatedBy(i)
-	return ulpuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserLoginProfileUpdateOne) AddUpdatedBy(v int) *UserLoginProfileUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearUpdatedBy() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearUpdatedBy()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearUpdatedBy() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetUpdatedAt(t time.Time) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetUpdatedAt(t)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetUpdatedAt(v time.Time) *UserLoginProfileUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserLoginProfileUpdateOne {
-	if t != nil {
-		ulpuo.SetUpdatedAt(*t)
+func (_u *UserLoginProfileUpdateOne) SetNillableUpdatedAt(v *time.Time) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearUpdatedAt() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearUpdatedAt()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearUpdatedAt() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetLastLoginIP sets the "last_login_ip" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetLastLoginIP(s string) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetLastLoginIP(s)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetLastLoginIP(v string) *UserLoginProfileUpdateOne {
+	_u.mutation.SetLastLoginIP(v)
+	return _u
 }
 
 // SetNillableLastLoginIP sets the "last_login_ip" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableLastLoginIP(s *string) *UserLoginProfileUpdateOne {
-	if s != nil {
-		ulpuo.SetLastLoginIP(*s)
+func (_u *UserLoginProfileUpdateOne) SetNillableLastLoginIP(v *string) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetLastLoginIP(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearLastLoginIP clears the value of the "last_login_ip" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearLastLoginIP() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearLastLoginIP()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearLastLoginIP() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearLastLoginIP()
+	return _u
 }
 
 // SetLastLoginAt sets the "last_login_at" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetLastLoginAt(t time.Time) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetLastLoginAt(t)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetLastLoginAt(v time.Time) *UserLoginProfileUpdateOne {
+	_u.mutation.SetLastLoginAt(v)
+	return _u
 }
 
 // SetNillableLastLoginAt sets the "last_login_at" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableLastLoginAt(t *time.Time) *UserLoginProfileUpdateOne {
-	if t != nil {
-		ulpuo.SetLastLoginAt(*t)
+func (_u *UserLoginProfileUpdateOne) SetNillableLastLoginAt(v *time.Time) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetLastLoginAt(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearLastLoginAt clears the value of the "last_login_at" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearLastLoginAt() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearLastLoginAt()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearLastLoginAt() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearLastLoginAt()
+	return _u
 }
 
 // SetCanLogin sets the "can_login" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetCanLogin(b bool) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetCanLogin(b)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetCanLogin(v bool) *UserLoginProfileUpdateOne {
+	_u.mutation.SetCanLogin(v)
+	return _u
 }
 
 // SetNillableCanLogin sets the "can_login" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableCanLogin(b *bool) *UserLoginProfileUpdateOne {
-	if b != nil {
-		ulpuo.SetCanLogin(*b)
+func (_u *UserLoginProfileUpdateOne) SetNillableCanLogin(v *bool) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetCanLogin(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearCanLogin clears the value of the "can_login" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearCanLogin() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearCanLogin()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearCanLogin() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearCanLogin()
+	return _u
 }
 
 // SetSetKind sets the "set_kind" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetSetKind(uk userloginprofile.SetKind) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetSetKind(uk)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetSetKind(v userloginprofile.SetKind) *UserLoginProfileUpdateOne {
+	_u.mutation.SetSetKind(v)
+	return _u
 }
 
 // SetNillableSetKind sets the "set_kind" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableSetKind(uk *userloginprofile.SetKind) *UserLoginProfileUpdateOne {
-	if uk != nil {
-		ulpuo.SetSetKind(*uk)
+func (_u *UserLoginProfileUpdateOne) SetNillableSetKind(v *userloginprofile.SetKind) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetSetKind(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // SetPasswordReset sets the "password_reset" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetPasswordReset(b bool) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetPasswordReset(b)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetPasswordReset(v bool) *UserLoginProfileUpdateOne {
+	_u.mutation.SetPasswordReset(v)
+	return _u
 }
 
 // SetNillablePasswordReset sets the "password_reset" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillablePasswordReset(b *bool) *UserLoginProfileUpdateOne {
-	if b != nil {
-		ulpuo.SetPasswordReset(*b)
+func (_u *UserLoginProfileUpdateOne) SetNillablePasswordReset(v *bool) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetPasswordReset(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearPasswordReset clears the value of the "password_reset" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearPasswordReset() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearPasswordReset()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearPasswordReset() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearPasswordReset()
+	return _u
 }
 
 // SetVerifyDevice sets the "verify_device" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetVerifyDevice(b bool) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetVerifyDevice(b)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetVerifyDevice(v bool) *UserLoginProfileUpdateOne {
+	_u.mutation.SetVerifyDevice(v)
+	return _u
 }
 
 // SetNillableVerifyDevice sets the "verify_device" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableVerifyDevice(b *bool) *UserLoginProfileUpdateOne {
-	if b != nil {
-		ulpuo.SetVerifyDevice(*b)
+func (_u *UserLoginProfileUpdateOne) SetNillableVerifyDevice(v *bool) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetVerifyDevice(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // SetMfaEnabled sets the "mfa_enabled" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetMfaEnabled(b bool) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetMfaEnabled(b)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetMfaEnabled(v bool) *UserLoginProfileUpdateOne {
+	_u.mutation.SetMfaEnabled(v)
+	return _u
 }
 
 // SetNillableMfaEnabled sets the "mfa_enabled" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableMfaEnabled(b *bool) *UserLoginProfileUpdateOne {
-	if b != nil {
-		ulpuo.SetMfaEnabled(*b)
+func (_u *UserLoginProfileUpdateOne) SetNillableMfaEnabled(v *bool) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetMfaEnabled(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearMfaEnabled clears the value of the "mfa_enabled" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearMfaEnabled() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearMfaEnabled()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearMfaEnabled() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearMfaEnabled()
+	return _u
 }
 
 // SetMfaSecret sets the "mfa_secret" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetMfaSecret(s string) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetMfaSecret(s)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetMfaSecret(v string) *UserLoginProfileUpdateOne {
+	_u.mutation.SetMfaSecret(v)
+	return _u
 }
 
 // SetNillableMfaSecret sets the "mfa_secret" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableMfaSecret(s *string) *UserLoginProfileUpdateOne {
-	if s != nil {
-		ulpuo.SetMfaSecret(*s)
+func (_u *UserLoginProfileUpdateOne) SetNillableMfaSecret(v *string) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetMfaSecret(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearMfaSecret clears the value of the "mfa_secret" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearMfaSecret() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearMfaSecret()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearMfaSecret() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearMfaSecret()
+	return _u
 }
 
 // SetMfaStatus sets the "mfa_status" field.
-func (ulpuo *UserLoginProfileUpdateOne) SetMfaStatus(ts typex.SimpleStatus) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.SetMfaStatus(ts)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) SetMfaStatus(v typex.SimpleStatus) *UserLoginProfileUpdateOne {
+	_u.mutation.SetMfaStatus(v)
+	return _u
 }
 
 // SetNillableMfaStatus sets the "mfa_status" field if the given value is not nil.
-func (ulpuo *UserLoginProfileUpdateOne) SetNillableMfaStatus(ts *typex.SimpleStatus) *UserLoginProfileUpdateOne {
-	if ts != nil {
-		ulpuo.SetMfaStatus(*ts)
+func (_u *UserLoginProfileUpdateOne) SetNillableMfaStatus(v *typex.SimpleStatus) *UserLoginProfileUpdateOne {
+	if v != nil {
+		_u.SetMfaStatus(*v)
 	}
-	return ulpuo
+	return _u
 }
 
 // ClearMfaStatus clears the value of the "mfa_status" field.
-func (ulpuo *UserLoginProfileUpdateOne) ClearMfaStatus() *UserLoginProfileUpdateOne {
-	ulpuo.mutation.ClearMfaStatus()
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) ClearMfaStatus() *UserLoginProfileUpdateOne {
+	_u.mutation.ClearMfaStatus()
+	return _u
 }
 
 // Mutation returns the UserLoginProfileMutation object of the builder.
-func (ulpuo *UserLoginProfileUpdateOne) Mutation() *UserLoginProfileMutation {
-	return ulpuo.mutation
+func (_u *UserLoginProfileUpdateOne) Mutation() *UserLoginProfileMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the UserLoginProfileUpdate builder.
-func (ulpuo *UserLoginProfileUpdateOne) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileUpdateOne {
-	ulpuo.mutation.Where(ps...)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ulpuo *UserLoginProfileUpdateOne) Select(field string, fields ...string) *UserLoginProfileUpdateOne {
-	ulpuo.fields = append([]string{field}, fields...)
-	return ulpuo
+func (_u *UserLoginProfileUpdateOne) Select(field string, fields ...string) *UserLoginProfileUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserLoginProfile entity.
-func (ulpuo *UserLoginProfileUpdateOne) Save(ctx context.Context) (*UserLoginProfile, error) {
-	return withHooks(ctx, ulpuo.sqlSave, ulpuo.mutation, ulpuo.hooks)
+func (_u *UserLoginProfileUpdateOne) Save(ctx context.Context) (*UserLoginProfile, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ulpuo *UserLoginProfileUpdateOne) SaveX(ctx context.Context) *UserLoginProfile {
-	node, err := ulpuo.Save(ctx)
+func (_u *UserLoginProfileUpdateOne) SaveX(ctx context.Context) *UserLoginProfile {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -639,31 +639,31 @@ func (ulpuo *UserLoginProfileUpdateOne) SaveX(ctx context.Context) *UserLoginPro
 }
 
 // Exec executes the query on the entity.
-func (ulpuo *UserLoginProfileUpdateOne) Exec(ctx context.Context) error {
-	_, err := ulpuo.Save(ctx)
+func (_u *UserLoginProfileUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ulpuo *UserLoginProfileUpdateOne) ExecX(ctx context.Context) {
-	if err := ulpuo.Exec(ctx); err != nil {
+func (_u *UserLoginProfileUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ulpuo *UserLoginProfileUpdateOne) check() error {
-	if v, ok := ulpuo.mutation.SetKind(); ok {
+func (_u *UserLoginProfileUpdateOne) check() error {
+	if v, ok := _u.mutation.SetKind(); ok {
 		if err := userloginprofile.SetKindValidator(v); err != nil {
 			return &ValidationError{Name: "set_kind", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.set_kind": %w`, err)}
 		}
 	}
-	if v, ok := ulpuo.mutation.MfaSecret(); ok {
+	if v, ok := _u.mutation.MfaSecret(); ok {
 		if err := userloginprofile.MfaSecretValidator(v); err != nil {
 			return &ValidationError{Name: "mfa_secret", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.mfa_secret": %w`, err)}
 		}
 	}
-	if v, ok := ulpuo.mutation.MfaStatus(); ok {
+	if v, ok := _u.mutation.MfaStatus(); ok {
 		if err := userloginprofile.MfaStatusValidator(v); err != nil {
 			return &ValidationError{Name: "mfa_status", err: fmt.Errorf(`ent: validator failed for field "UserLoginProfile.mfa_status": %w`, err)}
 		}
@@ -671,17 +671,17 @@ func (ulpuo *UserLoginProfileUpdateOne) check() error {
 	return nil
 }
 
-func (ulpuo *UserLoginProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserLoginProfile, err error) {
-	if err := ulpuo.check(); err != nil {
+func (_u *UserLoginProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserLoginProfile, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userloginprofile.Table, userloginprofile.Columns, sqlgraph.NewFieldSpec(userloginprofile.FieldID, field.TypeInt))
-	id, ok := ulpuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserLoginProfile.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ulpuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userloginprofile.FieldID)
 		for _, f := range fields {
@@ -693,80 +693,80 @@ func (ulpuo *UserLoginProfileUpdateOne) sqlSave(ctx context.Context) (_node *Use
 			}
 		}
 	}
-	if ps := ulpuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ulpuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userloginprofile.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := ulpuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userloginprofile.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if ulpuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userloginprofile.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := ulpuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userloginprofile.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ulpuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userloginprofile.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := ulpuo.mutation.LastLoginIP(); ok {
+	if value, ok := _u.mutation.LastLoginIP(); ok {
 		_spec.SetField(userloginprofile.FieldLastLoginIP, field.TypeString, value)
 	}
-	if ulpuo.mutation.LastLoginIPCleared() {
+	if _u.mutation.LastLoginIPCleared() {
 		_spec.ClearField(userloginprofile.FieldLastLoginIP, field.TypeString)
 	}
-	if value, ok := ulpuo.mutation.LastLoginAt(); ok {
+	if value, ok := _u.mutation.LastLoginAt(); ok {
 		_spec.SetField(userloginprofile.FieldLastLoginAt, field.TypeTime, value)
 	}
-	if ulpuo.mutation.LastLoginAtCleared() {
+	if _u.mutation.LastLoginAtCleared() {
 		_spec.ClearField(userloginprofile.FieldLastLoginAt, field.TypeTime)
 	}
-	if value, ok := ulpuo.mutation.CanLogin(); ok {
+	if value, ok := _u.mutation.CanLogin(); ok {
 		_spec.SetField(userloginprofile.FieldCanLogin, field.TypeBool, value)
 	}
-	if ulpuo.mutation.CanLoginCleared() {
+	if _u.mutation.CanLoginCleared() {
 		_spec.ClearField(userloginprofile.FieldCanLogin, field.TypeBool)
 	}
-	if value, ok := ulpuo.mutation.SetKind(); ok {
+	if value, ok := _u.mutation.SetKind(); ok {
 		_spec.SetField(userloginprofile.FieldSetKind, field.TypeEnum, value)
 	}
-	if value, ok := ulpuo.mutation.PasswordReset(); ok {
+	if value, ok := _u.mutation.PasswordReset(); ok {
 		_spec.SetField(userloginprofile.FieldPasswordReset, field.TypeBool, value)
 	}
-	if ulpuo.mutation.PasswordResetCleared() {
+	if _u.mutation.PasswordResetCleared() {
 		_spec.ClearField(userloginprofile.FieldPasswordReset, field.TypeBool)
 	}
-	if value, ok := ulpuo.mutation.VerifyDevice(); ok {
+	if value, ok := _u.mutation.VerifyDevice(); ok {
 		_spec.SetField(userloginprofile.FieldVerifyDevice, field.TypeBool, value)
 	}
-	if value, ok := ulpuo.mutation.MfaEnabled(); ok {
+	if value, ok := _u.mutation.MfaEnabled(); ok {
 		_spec.SetField(userloginprofile.FieldMfaEnabled, field.TypeBool, value)
 	}
-	if ulpuo.mutation.MfaEnabledCleared() {
+	if _u.mutation.MfaEnabledCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaEnabled, field.TypeBool)
 	}
-	if value, ok := ulpuo.mutation.MfaSecret(); ok {
+	if value, ok := _u.mutation.MfaSecret(); ok {
 		_spec.SetField(userloginprofile.FieldMfaSecret, field.TypeString, value)
 	}
-	if ulpuo.mutation.MfaSecretCleared() {
+	if _u.mutation.MfaSecretCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaSecret, field.TypeString)
 	}
-	if value, ok := ulpuo.mutation.MfaStatus(); ok {
+	if value, ok := _u.mutation.MfaStatus(); ok {
 		_spec.SetField(userloginprofile.FieldMfaStatus, field.TypeEnum, value)
 	}
-	if ulpuo.mutation.MfaStatusCleared() {
+	if _u.mutation.MfaStatusCleared() {
 		_spec.ClearField(userloginprofile.FieldMfaStatus, field.TypeEnum)
 	}
-	_node = &UserLoginProfile{config: ulpuo.config}
+	_node = &UserLoginProfile{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ulpuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userloginprofile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -774,6 +774,6 @@ func (ulpuo *UserLoginProfileUpdateOne) sqlSave(ctx context.Context) (_node *Use
 		}
 		return nil, err
 	}
-	ulpuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

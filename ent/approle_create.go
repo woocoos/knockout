@@ -26,180 +26,180 @@ type AppRoleCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (arc *AppRoleCreate) SetCreatedBy(i int) *AppRoleCreate {
-	arc.mutation.SetCreatedBy(i)
-	return arc
+func (_c *AppRoleCreate) SetCreatedBy(v int) *AppRoleCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (arc *AppRoleCreate) SetCreatedAt(t time.Time) *AppRoleCreate {
-	arc.mutation.SetCreatedAt(t)
-	return arc
+func (_c *AppRoleCreate) SetCreatedAt(v time.Time) *AppRoleCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableCreatedAt(t *time.Time) *AppRoleCreate {
-	if t != nil {
-		arc.SetCreatedAt(*t)
+func (_c *AppRoleCreate) SetNillableCreatedAt(v *time.Time) *AppRoleCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (arc *AppRoleCreate) SetUpdatedBy(i int) *AppRoleCreate {
-	arc.mutation.SetUpdatedBy(i)
-	return arc
+func (_c *AppRoleCreate) SetUpdatedBy(v int) *AppRoleCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableUpdatedBy(i *int) *AppRoleCreate {
-	if i != nil {
-		arc.SetUpdatedBy(*i)
+func (_c *AppRoleCreate) SetNillableUpdatedBy(v *int) *AppRoleCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (arc *AppRoleCreate) SetUpdatedAt(t time.Time) *AppRoleCreate {
-	arc.mutation.SetUpdatedAt(t)
-	return arc
+func (_c *AppRoleCreate) SetUpdatedAt(v time.Time) *AppRoleCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableUpdatedAt(t *time.Time) *AppRoleCreate {
-	if t != nil {
-		arc.SetUpdatedAt(*t)
+func (_c *AppRoleCreate) SetNillableUpdatedAt(v *time.Time) *AppRoleCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (arc *AppRoleCreate) SetAppID(i int) *AppRoleCreate {
-	arc.mutation.SetAppID(i)
-	return arc
+func (_c *AppRoleCreate) SetAppID(v int) *AppRoleCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableAppID(i *int) *AppRoleCreate {
-	if i != nil {
-		arc.SetAppID(*i)
+func (_c *AppRoleCreate) SetNillableAppID(v *int) *AppRoleCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetName sets the "name" field.
-func (arc *AppRoleCreate) SetName(s string) *AppRoleCreate {
-	arc.mutation.SetName(s)
-	return arc
+func (_c *AppRoleCreate) SetName(v string) *AppRoleCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (arc *AppRoleCreate) SetComments(s string) *AppRoleCreate {
-	arc.mutation.SetComments(s)
-	return arc
+func (_c *AppRoleCreate) SetComments(v string) *AppRoleCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableComments(s *string) *AppRoleCreate {
-	if s != nil {
-		arc.SetComments(*s)
+func (_c *AppRoleCreate) SetNillableComments(v *string) *AppRoleCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetAutoGrant sets the "auto_grant" field.
-func (arc *AppRoleCreate) SetAutoGrant(b bool) *AppRoleCreate {
-	arc.mutation.SetAutoGrant(b)
-	return arc
+func (_c *AppRoleCreate) SetAutoGrant(v bool) *AppRoleCreate {
+	_c.mutation.SetAutoGrant(v)
+	return _c
 }
 
 // SetNillableAutoGrant sets the "auto_grant" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableAutoGrant(b *bool) *AppRoleCreate {
-	if b != nil {
-		arc.SetAutoGrant(*b)
+func (_c *AppRoleCreate) SetNillableAutoGrant(v *bool) *AppRoleCreate {
+	if v != nil {
+		_c.SetAutoGrant(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetEditable sets the "editable" field.
-func (arc *AppRoleCreate) SetEditable(b bool) *AppRoleCreate {
-	arc.mutation.SetEditable(b)
-	return arc
+func (_c *AppRoleCreate) SetEditable(v bool) *AppRoleCreate {
+	_c.mutation.SetEditable(v)
+	return _c
 }
 
 // SetNillableEditable sets the "editable" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableEditable(b *bool) *AppRoleCreate {
-	if b != nil {
-		arc.SetEditable(*b)
+func (_c *AppRoleCreate) SetNillableEditable(v *bool) *AppRoleCreate {
+	if v != nil {
+		_c.SetEditable(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (arc *AppRoleCreate) SetID(i int) *AppRoleCreate {
-	arc.mutation.SetID(i)
-	return arc
+func (_c *AppRoleCreate) SetID(v int) *AppRoleCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (arc *AppRoleCreate) SetNillableID(i *int) *AppRoleCreate {
-	if i != nil {
-		arc.SetID(*i)
+func (_c *AppRoleCreate) SetNillableID(v *int) *AppRoleCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return arc
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (arc *AppRoleCreate) SetApp(a *App) *AppRoleCreate {
-	return arc.SetAppID(a.ID)
+func (_c *AppRoleCreate) SetApp(v *App) *AppRoleCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
-func (arc *AppRoleCreate) AddPolicyIDs(ids ...int) *AppRoleCreate {
-	arc.mutation.AddPolicyIDs(ids...)
-	return arc
+func (_c *AppRoleCreate) AddPolicyIDs(ids ...int) *AppRoleCreate {
+	_c.mutation.AddPolicyIDs(ids...)
+	return _c
 }
 
 // AddPolicies adds the "policies" edges to the AppPolicy entity.
-func (arc *AppRoleCreate) AddPolicies(a ...*AppPolicy) *AppRoleCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppRoleCreate) AddPolicies(v ...*AppPolicy) *AppRoleCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return arc.AddPolicyIDs(ids...)
+	return _c.AddPolicyIDs(ids...)
 }
 
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
-func (arc *AppRoleCreate) AddAppRolePolicyIDs(ids ...int) *AppRoleCreate {
-	arc.mutation.AddAppRolePolicyIDs(ids...)
-	return arc
+func (_c *AppRoleCreate) AddAppRolePolicyIDs(ids ...int) *AppRoleCreate {
+	_c.mutation.AddAppRolePolicyIDs(ids...)
+	return _c
 }
 
 // AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
-func (arc *AppRoleCreate) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppRoleCreate) AddAppRolePolicy(v ...*AppRolePolicy) *AppRoleCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return arc.AddAppRolePolicyIDs(ids...)
+	return _c.AddAppRolePolicyIDs(ids...)
 }
 
 // Mutation returns the AppRoleMutation object of the builder.
-func (arc *AppRoleCreate) Mutation() *AppRoleMutation {
-	return arc.mutation
+func (_c *AppRoleCreate) Mutation() *AppRoleMutation {
+	return _c.mutation
 }
 
 // Save creates the AppRole in the database.
-func (arc *AppRoleCreate) Save(ctx context.Context) (*AppRole, error) {
-	if err := arc.defaults(); err != nil {
+func (_c *AppRoleCreate) Save(ctx context.Context) (*AppRole, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, arc.sqlSave, arc.mutation, arc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (arc *AppRoleCreate) SaveX(ctx context.Context) *AppRole {
-	v, err := arc.Save(ctx)
+func (_c *AppRoleCreate) SaveX(ctx context.Context) *AppRole {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -207,71 +207,71 @@ func (arc *AppRoleCreate) SaveX(ctx context.Context) *AppRole {
 }
 
 // Exec executes the query.
-func (arc *AppRoleCreate) Exec(ctx context.Context) error {
-	_, err := arc.Save(ctx)
+func (_c *AppRoleCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arc *AppRoleCreate) ExecX(ctx context.Context) {
-	if err := arc.Exec(ctx); err != nil {
+func (_c *AppRoleCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (arc *AppRoleCreate) defaults() error {
-	if _, ok := arc.mutation.CreatedAt(); !ok {
+func (_c *AppRoleCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if approle.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized approle.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := approle.DefaultCreatedAt()
-		arc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := arc.mutation.AutoGrant(); !ok {
+	if _, ok := _c.mutation.AutoGrant(); !ok {
 		v := approle.DefaultAutoGrant
-		arc.mutation.SetAutoGrant(v)
+		_c.mutation.SetAutoGrant(v)
 	}
-	if _, ok := arc.mutation.Editable(); !ok {
+	if _, ok := _c.mutation.Editable(); !ok {
 		v := approle.DefaultEditable
-		arc.mutation.SetEditable(v)
+		_c.mutation.SetEditable(v)
 	}
-	if _, ok := arc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		if approle.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized approle.DefaultID (forgotten import ent/runtime?)")
 		}
 		v := approle.DefaultID()
-		arc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (arc *AppRoleCreate) check() error {
-	if _, ok := arc.mutation.CreatedBy(); !ok {
+func (_c *AppRoleCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "AppRole.created_by"`)}
 	}
-	if _, ok := arc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRole.created_at"`)}
 	}
-	if _, ok := arc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppRole.name"`)}
 	}
-	if _, ok := arc.mutation.AutoGrant(); !ok {
+	if _, ok := _c.mutation.AutoGrant(); !ok {
 		return &ValidationError{Name: "auto_grant", err: errors.New(`ent: missing required field "AppRole.auto_grant"`)}
 	}
-	if _, ok := arc.mutation.Editable(); !ok {
+	if _, ok := _c.mutation.Editable(); !ok {
 		return &ValidationError{Name: "editable", err: errors.New(`ent: missing required field "AppRole.editable"`)}
 	}
 	return nil
 }
 
-func (arc *AppRoleCreate) sqlSave(ctx context.Context) (*AppRole, error) {
-	if err := arc.check(); err != nil {
+func (_c *AppRoleCreate) sqlSave(ctx context.Context) (*AppRole, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := arc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, arc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -281,54 +281,54 @@ func (arc *AppRoleCreate) sqlSave(ctx context.Context) (*AppRole, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	arc.mutation.id = &_node.ID
-	arc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (arc *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
+func (_c *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppRole{config: arc.config}
+		_node = &AppRole{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(approle.Table, sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = arc.conflict
-	if id, ok := arc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := arc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(approle.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := arc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(approle.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := arc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(approle.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := arc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(approle.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := arc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(approle.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := arc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(approle.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := arc.mutation.AutoGrant(); ok {
+	if value, ok := _c.mutation.AutoGrant(); ok {
 		_spec.SetField(approle.FieldAutoGrant, field.TypeBool, value)
 		_node.AutoGrant = value
 	}
-	if value, ok := arc.mutation.Editable(); ok {
+	if value, ok := _c.mutation.Editable(); ok {
 		_spec.SetField(approle.FieldEditable, field.TypeBool, value)
 		_node.Editable = value
 	}
-	if nodes := arc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -345,7 +345,7 @@ func (arc *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
 		_node.AppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := arc.mutation.PoliciesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PoliciesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -359,13 +359,13 @@ func (arc *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &AppRolePolicyCreate{config: arc.config, mutation: newAppRolePolicyMutation(arc.config, OpCreate)}
+		createE := &AppRolePolicyCreate{config: _c.config, mutation: newAppRolePolicyMutation(_c.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := arc.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -400,10 +400,10 @@ func (arc *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arc *AppRoleCreate) OnConflict(opts ...sql.ConflictOption) *AppRoleUpsertOne {
-	arc.conflict = opts
+func (_c *AppRoleCreate) OnConflict(opts ...sql.ConflictOption) *AppRoleUpsertOne {
+	_c.conflict = opts
 	return &AppRoleUpsertOne{
-		create: arc,
+		create: _c,
 	}
 }
 
@@ -413,10 +413,10 @@ func (arc *AppRoleCreate) OnConflict(opts ...sql.ConflictOption) *AppRoleUpsertO
 //	client.AppRole.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arc *AppRoleCreate) OnConflictColumns(columns ...string) *AppRoleUpsertOne {
-	arc.conflict = append(arc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRoleCreate) OnConflictColumns(columns ...string) *AppRoleUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRoleUpsertOne{
-		create: arc,
+		create: _c,
 	}
 }
 
@@ -740,16 +740,16 @@ type AppRoleCreateBulk struct {
 }
 
 // Save creates the AppRole entities in the database.
-func (arcb *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
-	if arcb.err != nil {
-		return nil, arcb.err
+func (_c *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(arcb.builders))
-	nodes := make([]*AppRole, len(arcb.builders))
-	mutators := make([]Mutator, len(arcb.builders))
-	for i := range arcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppRole, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := arcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppRoleMutation)
@@ -763,12 +763,12 @@ func (arcb *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, arcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = arcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, arcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -792,7 +792,7 @@ func (arcb *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, arcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -800,8 +800,8 @@ func (arcb *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (arcb *AppRoleCreateBulk) SaveX(ctx context.Context) []*AppRole {
-	v, err := arcb.Save(ctx)
+func (_c *AppRoleCreateBulk) SaveX(ctx context.Context) []*AppRole {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -809,14 +809,14 @@ func (arcb *AppRoleCreateBulk) SaveX(ctx context.Context) []*AppRole {
 }
 
 // Exec executes the query.
-func (arcb *AppRoleCreateBulk) Exec(ctx context.Context) error {
-	_, err := arcb.Save(ctx)
+func (_c *AppRoleCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (arcb *AppRoleCreateBulk) ExecX(ctx context.Context) {
-	if err := arcb.Exec(ctx); err != nil {
+func (_c *AppRoleCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -836,10 +836,10 @@ func (arcb *AppRoleCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (arcb *AppRoleCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRoleUpsertBulk {
-	arcb.conflict = opts
+func (_c *AppRoleCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRoleUpsertBulk {
+	_c.conflict = opts
 	return &AppRoleUpsertBulk{
-		create: arcb,
+		create: _c,
 	}
 }
 
@@ -849,10 +849,10 @@ func (arcb *AppRoleCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRoleUp
 //	client.AppRole.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (arcb *AppRoleCreateBulk) OnConflictColumns(columns ...string) *AppRoleUpsertBulk {
-	arcb.conflict = append(arcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRoleCreateBulk) OnConflictColumns(columns ...string) *AppRoleUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRoleUpsertBulk{
-		create: arcb,
+		create: _c,
 	}
 }
 

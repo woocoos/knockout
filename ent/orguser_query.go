@@ -41,44 +41,44 @@ type OrgUserQuery struct {
 }
 
 // Where adds a new predicate for the OrgUserQuery builder.
-func (ouq *OrgUserQuery) Where(ps ...predicate.OrgUser) *OrgUserQuery {
-	ouq.predicates = append(ouq.predicates, ps...)
-	return ouq
+func (_q *OrgUserQuery) Where(ps ...predicate.OrgUser) *OrgUserQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ouq *OrgUserQuery) Limit(limit int) *OrgUserQuery {
-	ouq.ctx.Limit = &limit
-	return ouq
+func (_q *OrgUserQuery) Limit(limit int) *OrgUserQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ouq *OrgUserQuery) Offset(offset int) *OrgUserQuery {
-	ouq.ctx.Offset = &offset
-	return ouq
+func (_q *OrgUserQuery) Offset(offset int) *OrgUserQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ouq *OrgUserQuery) Unique(unique bool) *OrgUserQuery {
-	ouq.ctx.Unique = &unique
-	return ouq
+func (_q *OrgUserQuery) Unique(unique bool) *OrgUserQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ouq *OrgUserQuery) Order(o ...orguser.OrderOption) *OrgUserQuery {
-	ouq.order = append(ouq.order, o...)
-	return ouq
+func (_q *OrgUserQuery) Order(o ...orguser.OrderOption) *OrgUserQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOrg chains the current query on the "org" edge.
-func (ouq *OrgUserQuery) QueryOrg() *OrgQuery {
-	query := (&OrgClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ouq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ouq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -87,20 +87,20 @@ func (ouq *OrgUserQuery) QueryOrg() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orguser.OrgTable, orguser.OrgColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ouq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryUser chains the current query on the "user" edge.
-func (ouq *OrgUserQuery) QueryUser() *UserQuery {
-	query := (&UserClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) QueryUser() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ouq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ouq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -109,20 +109,20 @@ func (ouq *OrgUserQuery) QueryUser() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orguser.UserTable, orguser.UserColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ouq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrgRoles chains the current query on the "org_roles" edge.
-func (ouq *OrgUserQuery) QueryOrgRoles() *OrgRoleQuery {
-	query := (&OrgRoleClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) QueryOrgRoles() *OrgRoleQuery {
+	query := (&OrgRoleClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ouq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ouq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -131,20 +131,20 @@ func (ouq *OrgUserQuery) QueryOrgRoles() *OrgRoleQuery {
 			sqlgraph.To(orgrole.Table, orgrole.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, orguser.OrgRolesTable, orguser.OrgRolesPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(ouq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryOrgRoleUser chains the current query on the "org_role_user" edge.
-func (ouq *OrgUserQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
-	query := (&OrgRoleUserClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
+	query := (&OrgRoleUserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ouq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ouq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -153,7 +153,7 @@ func (ouq *OrgUserQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
 			sqlgraph.To(orgroleuser.Table, orgroleuser.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, orguser.OrgRoleUserTable, orguser.OrgRoleUserColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ouq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -161,8 +161,8 @@ func (ouq *OrgUserQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
 
 // First returns the first OrgUser entity from the query.
 // Returns a *NotFoundError when no OrgUser was found.
-func (ouq *OrgUserQuery) First(ctx context.Context) (*OrgUser, error) {
-	nodes, err := ouq.Limit(1).All(setContextOp(ctx, ouq.ctx, ent.OpQueryFirst))
+func (_q *OrgUserQuery) First(ctx context.Context) (*OrgUser, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +173,8 @@ func (ouq *OrgUserQuery) First(ctx context.Context) (*OrgUser, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ouq *OrgUserQuery) FirstX(ctx context.Context) *OrgUser {
-	node, err := ouq.First(ctx)
+func (_q *OrgUserQuery) FirstX(ctx context.Context) *OrgUser {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (ouq *OrgUserQuery) FirstX(ctx context.Context) *OrgUser {
 
 // FirstID returns the first OrgUser ID from the query.
 // Returns a *NotFoundError when no OrgUser ID was found.
-func (ouq *OrgUserQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *OrgUserQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ouq.Limit(1).IDs(setContextOp(ctx, ouq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -196,8 +196,8 @@ func (ouq *OrgUserQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ouq *OrgUserQuery) FirstIDX(ctx context.Context) int {
-	id, err := ouq.FirstID(ctx)
+func (_q *OrgUserQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -207,8 +207,8 @@ func (ouq *OrgUserQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single OrgUser entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgUser entity is found.
 // Returns a *NotFoundError when no OrgUser entities are found.
-func (ouq *OrgUserQuery) Only(ctx context.Context) (*OrgUser, error) {
-	nodes, err := ouq.Limit(2).All(setContextOp(ctx, ouq.ctx, ent.OpQueryOnly))
+func (_q *OrgUserQuery) Only(ctx context.Context) (*OrgUser, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -223,8 +223,8 @@ func (ouq *OrgUserQuery) Only(ctx context.Context) (*OrgUser, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ouq *OrgUserQuery) OnlyX(ctx context.Context) *OrgUser {
-	node, err := ouq.Only(ctx)
+func (_q *OrgUserQuery) OnlyX(ctx context.Context) *OrgUser {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -234,9 +234,9 @@ func (ouq *OrgUserQuery) OnlyX(ctx context.Context) *OrgUser {
 // OnlyID is like Only, but returns the only OrgUser ID in the query.
 // Returns a *NotSingularError when more than one OrgUser ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ouq *OrgUserQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *OrgUserQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ouq.Limit(2).IDs(setContextOp(ctx, ouq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -251,8 +251,8 @@ func (ouq *OrgUserQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ouq *OrgUserQuery) OnlyIDX(ctx context.Context) int {
-	id, err := ouq.OnlyID(ctx)
+func (_q *OrgUserQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -260,18 +260,18 @@ func (ouq *OrgUserQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of OrgUsers.
-func (ouq *OrgUserQuery) All(ctx context.Context) ([]*OrgUser, error) {
-	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryAll)
-	if err := ouq.prepareQuery(ctx); err != nil {
+func (_q *OrgUserQuery) All(ctx context.Context) ([]*OrgUser, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*OrgUser, *OrgUserQuery]()
-	return withInterceptors[[]*OrgUser](ctx, ouq, qr, ouq.inters)
+	return withInterceptors[[]*OrgUser](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ouq *OrgUserQuery) AllX(ctx context.Context) []*OrgUser {
-	nodes, err := ouq.All(ctx)
+func (_q *OrgUserQuery) AllX(ctx context.Context) []*OrgUser {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -279,20 +279,20 @@ func (ouq *OrgUserQuery) AllX(ctx context.Context) []*OrgUser {
 }
 
 // IDs executes the query and returns a list of OrgUser IDs.
-func (ouq *OrgUserQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if ouq.ctx.Unique == nil && ouq.path != nil {
-		ouq.Unique(true)
+func (_q *OrgUserQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryIDs)
-	if err = ouq.Select(orguser.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(orguser.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ouq *OrgUserQuery) IDsX(ctx context.Context) []int {
-	ids, err := ouq.IDs(ctx)
+func (_q *OrgUserQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -300,17 +300,17 @@ func (ouq *OrgUserQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (ouq *OrgUserQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryCount)
-	if err := ouq.prepareQuery(ctx); err != nil {
+func (_q *OrgUserQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ouq, querierCount[*OrgUserQuery](), ouq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*OrgUserQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ouq *OrgUserQuery) CountX(ctx context.Context) int {
-	count, err := ouq.Count(ctx)
+func (_q *OrgUserQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -318,9 +318,9 @@ func (ouq *OrgUserQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ouq *OrgUserQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryExist)
-	switch _, err := ouq.FirstID(ctx); {
+func (_q *OrgUserQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -331,8 +331,8 @@ func (ouq *OrgUserQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ouq *OrgUserQuery) ExistX(ctx context.Context) bool {
-	exist, err := ouq.Exist(ctx)
+func (_q *OrgUserQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -341,68 +341,68 @@ func (ouq *OrgUserQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the OrgUserQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ouq *OrgUserQuery) Clone() *OrgUserQuery {
-	if ouq == nil {
+func (_q *OrgUserQuery) Clone() *OrgUserQuery {
+	if _q == nil {
 		return nil
 	}
 	return &OrgUserQuery{
-		config:          ouq.config,
-		ctx:             ouq.ctx.Clone(),
-		order:           append([]orguser.OrderOption{}, ouq.order...),
-		inters:          append([]Interceptor{}, ouq.inters...),
-		predicates:      append([]predicate.OrgUser{}, ouq.predicates...),
-		withOrg:         ouq.withOrg.Clone(),
-		withUser:        ouq.withUser.Clone(),
-		withOrgRoles:    ouq.withOrgRoles.Clone(),
-		withOrgRoleUser: ouq.withOrgRoleUser.Clone(),
+		config:          _q.config,
+		ctx:             _q.ctx.Clone(),
+		order:           append([]orguser.OrderOption{}, _q.order...),
+		inters:          append([]Interceptor{}, _q.inters...),
+		predicates:      append([]predicate.OrgUser{}, _q.predicates...),
+		withOrg:         _q.withOrg.Clone(),
+		withUser:        _q.withUser.Clone(),
+		withOrgRoles:    _q.withOrgRoles.Clone(),
+		withOrgRoleUser: _q.withOrgRoleUser.Clone(),
 		// clone intermediate query.
-		sql:  ouq.sql.Clone(),
-		path: ouq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOrg tells the query-builder to eager-load the nodes that are connected to
 // the "org" edge. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithOrg(opts ...func(*OrgQuery)) *OrgUserQuery {
-	query := (&OrgClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithOrg(opts ...func(*OrgQuery)) *OrgUserQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ouq.withOrg = query
-	return ouq
+	_q.withOrg = query
+	return _q
 }
 
 // WithUser tells the query-builder to eager-load the nodes that are connected to
 // the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithUser(opts ...func(*UserQuery)) *OrgUserQuery {
-	query := (&UserClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithUser(opts ...func(*UserQuery)) *OrgUserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ouq.withUser = query
-	return ouq
+	_q.withUser = query
+	return _q
 }
 
 // WithOrgRoles tells the query-builder to eager-load the nodes that are connected to
 // the "org_roles" edge. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithOrgRoles(opts ...func(*OrgRoleQuery)) *OrgUserQuery {
-	query := (&OrgRoleClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithOrgRoles(opts ...func(*OrgRoleQuery)) *OrgUserQuery {
+	query := (&OrgRoleClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ouq.withOrgRoles = query
-	return ouq
+	_q.withOrgRoles = query
+	return _q
 }
 
 // WithOrgRoleUser tells the query-builder to eager-load the nodes that are connected to
 // the "org_role_user" edge. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithOrgRoleUser(opts ...func(*OrgRoleUserQuery)) *OrgUserQuery {
-	query := (&OrgRoleUserClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithOrgRoleUser(opts ...func(*OrgRoleUserQuery)) *OrgUserQuery {
+	query := (&OrgRoleUserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ouq.withOrgRoleUser = query
-	return ouq
+	_q.withOrgRoleUser = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -419,10 +419,10 @@ func (ouq *OrgUserQuery) WithOrgRoleUser(opts ...func(*OrgRoleUserQuery)) *OrgUs
 //		GroupBy(orguser.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ouq *OrgUserQuery) GroupBy(field string, fields ...string) *OrgUserGroupBy {
-	ouq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &OrgUserGroupBy{build: ouq}
-	grbuild.flds = &ouq.ctx.Fields
+func (_q *OrgUserQuery) GroupBy(field string, fields ...string) *OrgUserGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &OrgUserGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = orguser.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -440,126 +440,126 @@ func (ouq *OrgUserQuery) GroupBy(field string, fields ...string) *OrgUserGroupBy
 //	client.OrgUser.Query().
 //		Select(orguser.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (ouq *OrgUserQuery) Select(fields ...string) *OrgUserSelect {
-	ouq.ctx.Fields = append(ouq.ctx.Fields, fields...)
-	sbuild := &OrgUserSelect{OrgUserQuery: ouq}
+func (_q *OrgUserQuery) Select(fields ...string) *OrgUserSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &OrgUserSelect{OrgUserQuery: _q}
 	sbuild.label = orguser.Label
-	sbuild.flds, sbuild.scan = &ouq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a OrgUserSelect configured with the given aggregations.
-func (ouq *OrgUserQuery) Aggregate(fns ...AggregateFunc) *OrgUserSelect {
-	return ouq.Select().Aggregate(fns...)
+func (_q *OrgUserQuery) Aggregate(fns ...AggregateFunc) *OrgUserSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ouq *OrgUserQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ouq.inters {
+func (_q *OrgUserQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ouq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ouq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !orguser.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ouq.path != nil {
-		prev, err := ouq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ouq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (ouq *OrgUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgUser, error) {
+func (_q *OrgUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgUser, error) {
 	var (
 		nodes       = []*OrgUser{}
-		_spec       = ouq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			ouq.withOrg != nil,
-			ouq.withUser != nil,
-			ouq.withOrgRoles != nil,
-			ouq.withOrgRoleUser != nil,
+			_q.withOrg != nil,
+			_q.withUser != nil,
+			_q.withOrgRoles != nil,
+			_q.withOrgRoleUser != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OrgUser).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &OrgUser{config: ouq.config}
+		node := &OrgUser{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(ouq.modifiers) > 0 {
-		_spec.Modifiers = ouq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ouq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ouq.withOrg; query != nil {
-		if err := ouq.loadOrg(ctx, query, nodes, nil,
+	if query := _q.withOrg; query != nil {
+		if err := _q.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgUser, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ouq.withUser; query != nil {
-		if err := ouq.loadUser(ctx, query, nodes, nil,
+	if query := _q.withUser; query != nil {
+		if err := _q.loadUser(ctx, query, nodes, nil,
 			func(n *OrgUser, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ouq.withOrgRoles; query != nil {
-		if err := ouq.loadOrgRoles(ctx, query, nodes,
+	if query := _q.withOrgRoles; query != nil {
+		if err := _q.loadOrgRoles(ctx, query, nodes,
 			func(n *OrgUser) { n.Edges.OrgRoles = []*OrgRole{} },
 			func(n *OrgUser, e *OrgRole) { n.Edges.OrgRoles = append(n.Edges.OrgRoles, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ouq.withOrgRoleUser; query != nil {
-		if err := ouq.loadOrgRoleUser(ctx, query, nodes,
+	if query := _q.withOrgRoleUser; query != nil {
+		if err := _q.loadOrgRoleUser(ctx, query, nodes,
 			func(n *OrgUser) { n.Edges.OrgRoleUser = []*OrgRoleUser{} },
 			func(n *OrgUser, e *OrgRoleUser) { n.Edges.OrgRoleUser = append(n.Edges.OrgRoleUser, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range ouq.withNamedOrgRoles {
-		if err := ouq.loadOrgRoles(ctx, query, nodes,
+	for name, query := range _q.withNamedOrgRoles {
+		if err := _q.loadOrgRoles(ctx, query, nodes,
 			func(n *OrgUser) { n.appendNamedOrgRoles(name) },
 			func(n *OrgUser, e *OrgRole) { n.appendNamedOrgRoles(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range ouq.withNamedOrgRoleUser {
-		if err := ouq.loadOrgRoleUser(ctx, query, nodes,
+	for name, query := range _q.withNamedOrgRoleUser {
+		if err := _q.loadOrgRoleUser(ctx, query, nodes,
 			func(n *OrgUser) { n.appendNamedOrgRoleUser(name) },
 			func(n *OrgUser, e *OrgRoleUser) { n.appendNamedOrgRoleUser(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range ouq.loadTotal {
-		if err := ouq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (ouq *OrgUserQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *Org)) error {
+func (_q *OrgUserQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgUser)
 	for i := range nodes {
@@ -588,7 +588,7 @@ func (ouq *OrgUserQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*
 	}
 	return nil
 }
-func (ouq *OrgUserQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *User)) error {
+func (_q *OrgUserQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgUser)
 	for i := range nodes {
@@ -617,7 +617,7 @@ func (ouq *OrgUserQuery) loadUser(ctx context.Context, query *UserQuery, nodes [
 	}
 	return nil
 }
-func (ouq *OrgUserQuery) loadOrgRoles(ctx context.Context, query *OrgRoleQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *OrgRole)) error {
+func (_q *OrgUserQuery) loadOrgRoles(ctx context.Context, query *OrgRoleQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *OrgRole)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int]*OrgUser)
 	nids := make(map[int]map[*OrgUser]struct{})
@@ -678,7 +678,7 @@ func (ouq *OrgUserQuery) loadOrgRoles(ctx context.Context, query *OrgRoleQuery, 
 	}
 	return nil
 }
-func (ouq *OrgUserQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUserQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *OrgRoleUser)) error {
+func (_q *OrgUserQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUserQuery, nodes []*OrgUser, init func(*OrgUser), assign func(*OrgUser, *OrgRoleUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*OrgUser)
 	for i := range nodes {
@@ -709,27 +709,27 @@ func (ouq *OrgUserQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUser
 	return nil
 }
 
-func (ouq *OrgUserQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ouq.querySpec()
-	if len(ouq.modifiers) > 0 {
-		_spec.Modifiers = ouq.modifiers
+func (_q *OrgUserQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = ouq.ctx.Fields
-	if len(ouq.ctx.Fields) > 0 {
-		_spec.Unique = ouq.ctx.Unique != nil && *ouq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ouq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ouq *OrgUserQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *OrgUserQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(orguser.Table, orguser.Columns, sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt))
-	_spec.From = ouq.sql
-	if unique := ouq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ouq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ouq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orguser.FieldID)
 		for i := range fields {
@@ -737,27 +737,27 @@ func (ouq *OrgUserQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if ouq.withOrg != nil {
+		if _q.withOrg != nil {
 			_spec.Node.AddColumnOnce(orguser.FieldOrgID)
 		}
-		if ouq.withUser != nil {
+		if _q.withUser != nil {
 			_spec.Node.AddColumnOnce(orguser.FieldUserID)
 		}
 	}
-	if ps := ouq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ouq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ouq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ouq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -767,33 +767,33 @@ func (ouq *OrgUserQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ouq *OrgUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ouq.driver.Dialect())
+func (_q *OrgUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(orguser.Table)
-	columns := ouq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = orguser.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ouq.sql != nil {
-		selector = ouq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ouq.ctx.Unique != nil && *ouq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ouq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ouq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ouq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ouq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -801,30 +801,30 @@ func (ouq *OrgUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedOrgRoles tells the query-builder to eager-load the nodes that are connected to the "org_roles"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithNamedOrgRoles(name string, opts ...func(*OrgRoleQuery)) *OrgUserQuery {
-	query := (&OrgRoleClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithNamedOrgRoles(name string, opts ...func(*OrgRoleQuery)) *OrgUserQuery {
+	query := (&OrgRoleClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if ouq.withNamedOrgRoles == nil {
-		ouq.withNamedOrgRoles = make(map[string]*OrgRoleQuery)
+	if _q.withNamedOrgRoles == nil {
+		_q.withNamedOrgRoles = make(map[string]*OrgRoleQuery)
 	}
-	ouq.withNamedOrgRoles[name] = query
-	return ouq
+	_q.withNamedOrgRoles[name] = query
+	return _q
 }
 
 // WithNamedOrgRoleUser tells the query-builder to eager-load the nodes that are connected to the "org_role_user"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (ouq *OrgUserQuery) WithNamedOrgRoleUser(name string, opts ...func(*OrgRoleUserQuery)) *OrgUserQuery {
-	query := (&OrgRoleUserClient{config: ouq.config}).Query()
+func (_q *OrgUserQuery) WithNamedOrgRoleUser(name string, opts ...func(*OrgRoleUserQuery)) *OrgUserQuery {
+	query := (&OrgRoleUserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if ouq.withNamedOrgRoleUser == nil {
-		ouq.withNamedOrgRoleUser = make(map[string]*OrgRoleUserQuery)
+	if _q.withNamedOrgRoleUser == nil {
+		_q.withNamedOrgRoleUser = make(map[string]*OrgRoleUserQuery)
 	}
-	ouq.withNamedOrgRoleUser[name] = query
-	return ouq
+	_q.withNamedOrgRoleUser[name] = query
+	return _q
 }
 
 // OrgUserGroupBy is the group-by builder for OrgUser entities.
@@ -834,41 +834,41 @@ type OrgUserGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ougb *OrgUserGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserGroupBy {
-	ougb.fns = append(ougb.fns, fns...)
-	return ougb
+func (_g *OrgUserGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ougb *OrgUserGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ougb.build.ctx, ent.OpQueryGroupBy)
-	if err := ougb.build.prepareQuery(ctx); err != nil {
+func (_g *OrgUserGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgUserQuery, *OrgUserGroupBy](ctx, ougb.build, ougb, ougb.build.inters, v)
+	return scanWithInterceptors[*OrgUserQuery, *OrgUserGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ougb *OrgUserGroupBy) sqlScan(ctx context.Context, root *OrgUserQuery, v any) error {
+func (_g *OrgUserGroupBy) sqlScan(ctx context.Context, root *OrgUserQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ougb.fns))
-	for _, fn := range ougb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ougb.flds)+len(ougb.fns))
-		for _, f := range *ougb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ougb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ougb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -882,27 +882,27 @@ type OrgUserSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ous *OrgUserSelect) Aggregate(fns ...AggregateFunc) *OrgUserSelect {
-	ous.fns = append(ous.fns, fns...)
-	return ous
+func (_s *OrgUserSelect) Aggregate(fns ...AggregateFunc) *OrgUserSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ous *OrgUserSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ous.ctx, ent.OpQuerySelect)
-	if err := ous.prepareQuery(ctx); err != nil {
+func (_s *OrgUserSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgUserQuery, *OrgUserSelect](ctx, ous.OrgUserQuery, ous, ous.inters, v)
+	return scanWithInterceptors[*OrgUserQuery, *OrgUserSelect](ctx, _s.OrgUserQuery, _s, _s.inters, v)
 }
 
-func (ous *OrgUserSelect) sqlScan(ctx context.Context, root *OrgUserQuery, v any) error {
+func (_s *OrgUserSelect) sqlScan(ctx context.Context, root *OrgUserQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ous.fns))
-	for _, fn := range ous.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ous.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -910,7 +910,7 @@ func (ous *OrgUserSelect) sqlScan(ctx context.Context, root *OrgUserQuery, v any
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ous.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

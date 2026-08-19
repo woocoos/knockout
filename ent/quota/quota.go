@@ -100,7 +100,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [2]ent.Hook
+	Hooks [1]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// LimitValidator is a validator for the "limit" field. It is called by the builders before save.

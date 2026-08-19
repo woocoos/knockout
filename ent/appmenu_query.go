@@ -38,44 +38,44 @@ type AppMenuQuery struct {
 }
 
 // Where adds a new predicate for the AppMenuQuery builder.
-func (amq *AppMenuQuery) Where(ps ...predicate.AppMenu) *AppMenuQuery {
-	amq.predicates = append(amq.predicates, ps...)
-	return amq
+func (_q *AppMenuQuery) Where(ps ...predicate.AppMenu) *AppMenuQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (amq *AppMenuQuery) Limit(limit int) *AppMenuQuery {
-	amq.ctx.Limit = &limit
-	return amq
+func (_q *AppMenuQuery) Limit(limit int) *AppMenuQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (amq *AppMenuQuery) Offset(offset int) *AppMenuQuery {
-	amq.ctx.Offset = &offset
-	return amq
+func (_q *AppMenuQuery) Offset(offset int) *AppMenuQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (amq *AppMenuQuery) Unique(unique bool) *AppMenuQuery {
-	amq.ctx.Unique = &unique
-	return amq
+func (_q *AppMenuQuery) Unique(unique bool) *AppMenuQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (amq *AppMenuQuery) Order(o ...appmenu.OrderOption) *AppMenuQuery {
-	amq.order = append(amq.order, o...)
-	return amq
+func (_q *AppMenuQuery) Order(o ...appmenu.OrderOption) *AppMenuQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (amq *AppMenuQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := amq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := amq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -84,20 +84,20 @@ func (amq *AppMenuQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.AppTable, appmenu.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryAction chains the current query on the "action" edge.
-func (amq *AppMenuQuery) QueryAction() *AppActionQuery {
-	query := (&AppActionClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) QueryAction() *AppActionQuery {
+	query := (&AppActionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := amq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := amq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -106,20 +106,20 @@ func (amq *AppMenuQuery) QueryAction() *AppActionQuery {
 			sqlgraph.To(appaction.Table, appaction.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ActionTable, appmenu.ActionColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryParent chains the current query on the "parent" edge.
-func (amq *AppMenuQuery) QueryParent() *AppMenuQuery {
-	query := (&AppMenuClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) QueryParent() *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := amq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := amq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -128,20 +128,20 @@ func (amq *AppMenuQuery) QueryParent() *AppMenuQuery {
 			sqlgraph.To(appmenu.Table, appmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ParentTable, appmenu.ParentColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryChildren chains the current query on the "children" edge.
-func (amq *AppMenuQuery) QueryChildren() *AppMenuQuery {
-	query := (&AppMenuClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) QueryChildren() *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := amq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := amq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -150,7 +150,7 @@ func (amq *AppMenuQuery) QueryChildren() *AppMenuQuery {
 			sqlgraph.To(appmenu.Table, appmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, appmenu.ChildrenTable, appmenu.ChildrenColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -158,8 +158,8 @@ func (amq *AppMenuQuery) QueryChildren() *AppMenuQuery {
 
 // First returns the first AppMenu entity from the query.
 // Returns a *NotFoundError when no AppMenu was found.
-func (amq *AppMenuQuery) First(ctx context.Context) (*AppMenu, error) {
-	nodes, err := amq.Limit(1).All(setContextOp(ctx, amq.ctx, ent.OpQueryFirst))
+func (_q *AppMenuQuery) First(ctx context.Context) (*AppMenu, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -170,8 +170,8 @@ func (amq *AppMenuQuery) First(ctx context.Context) (*AppMenu, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (amq *AppMenuQuery) FirstX(ctx context.Context) *AppMenu {
-	node, err := amq.First(ctx)
+func (_q *AppMenuQuery) FirstX(ctx context.Context) *AppMenu {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -180,9 +180,9 @@ func (amq *AppMenuQuery) FirstX(ctx context.Context) *AppMenu {
 
 // FirstID returns the first AppMenu ID from the query.
 // Returns a *NotFoundError when no AppMenu ID was found.
-func (amq *AppMenuQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppMenuQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -193,8 +193,8 @@ func (amq *AppMenuQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (amq *AppMenuQuery) FirstIDX(ctx context.Context) int {
-	id, err := amq.FirstID(ctx)
+func (_q *AppMenuQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -204,8 +204,8 @@ func (amq *AppMenuQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single AppMenu entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppMenu entity is found.
 // Returns a *NotFoundError when no AppMenu entities are found.
-func (amq *AppMenuQuery) Only(ctx context.Context) (*AppMenu, error) {
-	nodes, err := amq.Limit(2).All(setContextOp(ctx, amq.ctx, ent.OpQueryOnly))
+func (_q *AppMenuQuery) Only(ctx context.Context) (*AppMenu, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -220,8 +220,8 @@ func (amq *AppMenuQuery) Only(ctx context.Context) (*AppMenu, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (amq *AppMenuQuery) OnlyX(ctx context.Context) *AppMenu {
-	node, err := amq.Only(ctx)
+func (_q *AppMenuQuery) OnlyX(ctx context.Context) *AppMenu {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,9 +231,9 @@ func (amq *AppMenuQuery) OnlyX(ctx context.Context) *AppMenu {
 // OnlyID is like Only, but returns the only AppMenu ID in the query.
 // Returns a *NotSingularError when more than one AppMenu ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (amq *AppMenuQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppMenuQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -248,8 +248,8 @@ func (amq *AppMenuQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (amq *AppMenuQuery) OnlyIDX(ctx context.Context) int {
-	id, err := amq.OnlyID(ctx)
+func (_q *AppMenuQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -257,18 +257,18 @@ func (amq *AppMenuQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of AppMenus.
-func (amq *AppMenuQuery) All(ctx context.Context) ([]*AppMenu, error) {
-	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryAll)
-	if err := amq.prepareQuery(ctx); err != nil {
+func (_q *AppMenuQuery) All(ctx context.Context) ([]*AppMenu, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppMenu, *AppMenuQuery]()
-	return withInterceptors[[]*AppMenu](ctx, amq, qr, amq.inters)
+	return withInterceptors[[]*AppMenu](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (amq *AppMenuQuery) AllX(ctx context.Context) []*AppMenu {
-	nodes, err := amq.All(ctx)
+func (_q *AppMenuQuery) AllX(ctx context.Context) []*AppMenu {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -276,20 +276,20 @@ func (amq *AppMenuQuery) AllX(ctx context.Context) []*AppMenu {
 }
 
 // IDs executes the query and returns a list of AppMenu IDs.
-func (amq *AppMenuQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if amq.ctx.Unique == nil && amq.path != nil {
-		amq.Unique(true)
+func (_q *AppMenuQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryIDs)
-	if err = amq.Select(appmenu.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(appmenu.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (amq *AppMenuQuery) IDsX(ctx context.Context) []int {
-	ids, err := amq.IDs(ctx)
+func (_q *AppMenuQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -297,17 +297,17 @@ func (amq *AppMenuQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (amq *AppMenuQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryCount)
-	if err := amq.prepareQuery(ctx); err != nil {
+func (_q *AppMenuQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, amq, querierCount[*AppMenuQuery](), amq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppMenuQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (amq *AppMenuQuery) CountX(ctx context.Context) int {
-	count, err := amq.Count(ctx)
+func (_q *AppMenuQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -315,9 +315,9 @@ func (amq *AppMenuQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (amq *AppMenuQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryExist)
-	switch _, err := amq.FirstID(ctx); {
+func (_q *AppMenuQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -328,8 +328,8 @@ func (amq *AppMenuQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (amq *AppMenuQuery) ExistX(ctx context.Context) bool {
-	exist, err := amq.Exist(ctx)
+func (_q *AppMenuQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -338,68 +338,68 @@ func (amq *AppMenuQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppMenuQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (amq *AppMenuQuery) Clone() *AppMenuQuery {
-	if amq == nil {
+func (_q *AppMenuQuery) Clone() *AppMenuQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppMenuQuery{
-		config:       amq.config,
-		ctx:          amq.ctx.Clone(),
-		order:        append([]appmenu.OrderOption{}, amq.order...),
-		inters:       append([]Interceptor{}, amq.inters...),
-		predicates:   append([]predicate.AppMenu{}, amq.predicates...),
-		withApp:      amq.withApp.Clone(),
-		withAction:   amq.withAction.Clone(),
-		withParent:   amq.withParent.Clone(),
-		withChildren: amq.withChildren.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]appmenu.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.AppMenu{}, _q.predicates...),
+		withApp:      _q.withApp.Clone(),
+		withAction:   _q.withAction.Clone(),
+		withParent:   _q.withParent.Clone(),
+		withChildren: _q.withChildren.Clone(),
 		// clone intermediate query.
-		sql:  amq.sql.Clone(),
-		path: amq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (amq *AppMenuQuery) WithApp(opts ...func(*AppQuery)) *AppMenuQuery {
-	query := (&AppClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) WithApp(opts ...func(*AppQuery)) *AppMenuQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	amq.withApp = query
-	return amq
+	_q.withApp = query
+	return _q
 }
 
 // WithAction tells the query-builder to eager-load the nodes that are connected to
 // the "action" edge. The optional arguments are used to configure the query builder of the edge.
-func (amq *AppMenuQuery) WithAction(opts ...func(*AppActionQuery)) *AppMenuQuery {
-	query := (&AppActionClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) WithAction(opts ...func(*AppActionQuery)) *AppMenuQuery {
+	query := (&AppActionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	amq.withAction = query
-	return amq
+	_q.withAction = query
+	return _q
 }
 
 // WithParent tells the query-builder to eager-load the nodes that are connected to
 // the "parent" edge. The optional arguments are used to configure the query builder of the edge.
-func (amq *AppMenuQuery) WithParent(opts ...func(*AppMenuQuery)) *AppMenuQuery {
-	query := (&AppMenuClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) WithParent(opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	amq.withParent = query
-	return amq
+	_q.withParent = query
+	return _q
 }
 
 // WithChildren tells the query-builder to eager-load the nodes that are connected to
 // the "children" edge. The optional arguments are used to configure the query builder of the edge.
-func (amq *AppMenuQuery) WithChildren(opts ...func(*AppMenuQuery)) *AppMenuQuery {
-	query := (&AppMenuClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) WithChildren(opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	amq.withChildren = query
-	return amq
+	_q.withChildren = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -416,10 +416,10 @@ func (amq *AppMenuQuery) WithChildren(opts ...func(*AppMenuQuery)) *AppMenuQuery
 //		GroupBy(appmenu.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (amq *AppMenuQuery) GroupBy(field string, fields ...string) *AppMenuGroupBy {
-	amq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppMenuGroupBy{build: amq}
-	grbuild.flds = &amq.ctx.Fields
+func (_q *AppMenuQuery) GroupBy(field string, fields ...string) *AppMenuGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppMenuGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = appmenu.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -437,118 +437,118 @@ func (amq *AppMenuQuery) GroupBy(field string, fields ...string) *AppMenuGroupBy
 //	client.AppMenu.Query().
 //		Select(appmenu.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (amq *AppMenuQuery) Select(fields ...string) *AppMenuSelect {
-	amq.ctx.Fields = append(amq.ctx.Fields, fields...)
-	sbuild := &AppMenuSelect{AppMenuQuery: amq}
+func (_q *AppMenuQuery) Select(fields ...string) *AppMenuSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppMenuSelect{AppMenuQuery: _q}
 	sbuild.label = appmenu.Label
-	sbuild.flds, sbuild.scan = &amq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppMenuSelect configured with the given aggregations.
-func (amq *AppMenuQuery) Aggregate(fns ...AggregateFunc) *AppMenuSelect {
-	return amq.Select().Aggregate(fns...)
+func (_q *AppMenuQuery) Aggregate(fns ...AggregateFunc) *AppMenuSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (amq *AppMenuQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range amq.inters {
+func (_q *AppMenuQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, amq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range amq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !appmenu.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if amq.path != nil {
-		prev, err := amq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		amq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (amq *AppMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppMenu, error) {
+func (_q *AppMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppMenu, error) {
 	var (
 		nodes       = []*AppMenu{}
-		_spec       = amq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			amq.withApp != nil,
-			amq.withAction != nil,
-			amq.withParent != nil,
-			amq.withChildren != nil,
+			_q.withApp != nil,
+			_q.withAction != nil,
+			_q.withParent != nil,
+			_q.withChildren != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppMenu).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppMenu{config: amq.config}
+		node := &AppMenu{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(amq.modifiers) > 0 {
-		_spec.Modifiers = amq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, amq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := amq.withApp; query != nil {
-		if err := amq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *AppMenu, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := amq.withAction; query != nil {
-		if err := amq.loadAction(ctx, query, nodes, nil,
+	if query := _q.withAction; query != nil {
+		if err := _q.loadAction(ctx, query, nodes, nil,
 			func(n *AppMenu, e *AppAction) { n.Edges.Action = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := amq.withParent; query != nil {
-		if err := amq.loadParent(ctx, query, nodes, nil,
+	if query := _q.withParent; query != nil {
+		if err := _q.loadParent(ctx, query, nodes, nil,
 			func(n *AppMenu, e *AppMenu) { n.Edges.Parent = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := amq.withChildren; query != nil {
-		if err := amq.loadChildren(ctx, query, nodes,
+	if query := _q.withChildren; query != nil {
+		if err := _q.loadChildren(ctx, query, nodes,
 			func(n *AppMenu) { n.Edges.Children = []*AppMenu{} },
 			func(n *AppMenu, e *AppMenu) { n.Edges.Children = append(n.Edges.Children, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range amq.withNamedChildren {
-		if err := amq.loadChildren(ctx, query, nodes,
+	for name, query := range _q.withNamedChildren {
+		if err := _q.loadChildren(ctx, query, nodes,
 			func(n *AppMenu) { n.appendNamedChildren(name) },
 			func(n *AppMenu, e *AppMenu) { n.appendNamedChildren(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range amq.loadTotal {
-		if err := amq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (amq *AppMenuQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *App)) error {
+func (_q *AppMenuQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *App)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppMenu)
 	for i := range nodes {
@@ -577,7 +577,7 @@ func (amq *AppMenuQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*
 	}
 	return nil
 }
-func (amq *AppMenuQuery) loadAction(ctx context.Context, query *AppActionQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppAction)) error {
+func (_q *AppMenuQuery) loadAction(ctx context.Context, query *AppActionQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppAction)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppMenu)
 	for i := range nodes {
@@ -609,7 +609,7 @@ func (amq *AppMenuQuery) loadAction(ctx context.Context, query *AppActionQuery, 
 	}
 	return nil
 }
-func (amq *AppMenuQuery) loadParent(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
+func (_q *AppMenuQuery) loadParent(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppMenu)
 	for i := range nodes {
@@ -638,7 +638,7 @@ func (amq *AppMenuQuery) loadParent(ctx context.Context, query *AppMenuQuery, no
 	}
 	return nil
 }
-func (amq *AppMenuQuery) loadChildren(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
+func (_q *AppMenuQuery) loadChildren(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*AppMenu)
 	for i := range nodes {
@@ -669,27 +669,27 @@ func (amq *AppMenuQuery) loadChildren(ctx context.Context, query *AppMenuQuery, 
 	return nil
 }
 
-func (amq *AppMenuQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := amq.querySpec()
-	if len(amq.modifiers) > 0 {
-		_spec.Modifiers = amq.modifiers
+func (_q *AppMenuQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = amq.ctx.Fields
-	if len(amq.ctx.Fields) > 0 {
-		_spec.Unique = amq.ctx.Unique != nil && *amq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, amq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (amq *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(appmenu.Table, appmenu.Columns, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
-	_spec.From = amq.sql
-	if unique := amq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if amq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := amq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appmenu.FieldID)
 		for i := range fields {
@@ -697,30 +697,30 @@ func (amq *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if amq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(appmenu.FieldAppID)
 		}
-		if amq.withAction != nil {
+		if _q.withAction != nil {
 			_spec.Node.AddColumnOnce(appmenu.FieldActionID)
 		}
-		if amq.withParent != nil {
+		if _q.withParent != nil {
 			_spec.Node.AddColumnOnce(appmenu.FieldParentID)
 		}
 	}
-	if ps := amq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := amq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := amq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := amq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -730,33 +730,33 @@ func (amq *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (amq *AppMenuQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(amq.driver.Dialect())
+func (_q *AppMenuQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(appmenu.Table)
-	columns := amq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = appmenu.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if amq.sql != nil {
-		selector = amq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if amq.ctx.Unique != nil && *amq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range amq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range amq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := amq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := amq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -764,16 +764,16 @@ func (amq *AppMenuQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedChildren tells the query-builder to eager-load the nodes that are connected to the "children"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *AppMenuQuery) WithNamedChildren(name string, opts ...func(*AppMenuQuery)) *AppMenuQuery {
-	query := (&AppMenuClient{config: amq.config}).Query()
+func (_q *AppMenuQuery) WithNamedChildren(name string, opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if amq.withNamedChildren == nil {
-		amq.withNamedChildren = make(map[string]*AppMenuQuery)
+	if _q.withNamedChildren == nil {
+		_q.withNamedChildren = make(map[string]*AppMenuQuery)
 	}
-	amq.withNamedChildren[name] = query
-	return amq
+	_q.withNamedChildren[name] = query
+	return _q
 }
 
 // AppMenuGroupBy is the group-by builder for AppMenu entities.
@@ -783,41 +783,41 @@ type AppMenuGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (amgb *AppMenuGroupBy) Aggregate(fns ...AggregateFunc) *AppMenuGroupBy {
-	amgb.fns = append(amgb.fns, fns...)
-	return amgb
+func (_g *AppMenuGroupBy) Aggregate(fns ...AggregateFunc) *AppMenuGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (amgb *AppMenuGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, amgb.build.ctx, ent.OpQueryGroupBy)
-	if err := amgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppMenuGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppMenuQuery, *AppMenuGroupBy](ctx, amgb.build, amgb, amgb.build.inters, v)
+	return scanWithInterceptors[*AppMenuQuery, *AppMenuGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (amgb *AppMenuGroupBy) sqlScan(ctx context.Context, root *AppMenuQuery, v any) error {
+func (_g *AppMenuGroupBy) sqlScan(ctx context.Context, root *AppMenuQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(amgb.fns))
-	for _, fn := range amgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*amgb.flds)+len(amgb.fns))
-		for _, f := range *amgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*amgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := amgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -831,27 +831,27 @@ type AppMenuSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ams *AppMenuSelect) Aggregate(fns ...AggregateFunc) *AppMenuSelect {
-	ams.fns = append(ams.fns, fns...)
-	return ams
+func (_s *AppMenuSelect) Aggregate(fns ...AggregateFunc) *AppMenuSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ams *AppMenuSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ams.ctx, ent.OpQuerySelect)
-	if err := ams.prepareQuery(ctx); err != nil {
+func (_s *AppMenuSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppMenuQuery, *AppMenuSelect](ctx, ams.AppMenuQuery, ams, ams.inters, v)
+	return scanWithInterceptors[*AppMenuQuery, *AppMenuSelect](ctx, _s.AppMenuQuery, _s, _s.inters, v)
 }
 
-func (ams *AppMenuSelect) sqlScan(ctx context.Context, root *AppMenuQuery, v any) error {
+func (_s *AppMenuSelect) sqlScan(ctx context.Context, root *AppMenuQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ams.fns))
-	for _, fn := range ams.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ams.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -859,7 +859,7 @@ func (ams *AppMenuSelect) sqlScan(ctx context.Context, root *AppMenuQuery, v any
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ams.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

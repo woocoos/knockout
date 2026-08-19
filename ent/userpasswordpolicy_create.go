@@ -24,220 +24,220 @@ type UserPasswordPolicyCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (uppc *UserPasswordPolicyCreate) SetCreatedBy(i int) *UserPasswordPolicyCreate {
-	uppc.mutation.SetCreatedBy(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetCreatedBy(v int) *UserPasswordPolicyCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (uppc *UserPasswordPolicyCreate) SetCreatedAt(t time.Time) *UserPasswordPolicyCreate {
-	uppc.mutation.SetCreatedAt(t)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetCreatedAt(v time.Time) *UserPasswordPolicyCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableCreatedAt(t *time.Time) *UserPasswordPolicyCreate {
-	if t != nil {
-		uppc.SetCreatedAt(*t)
+func (_c *UserPasswordPolicyCreate) SetNillableCreatedAt(v *time.Time) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uppc *UserPasswordPolicyCreate) SetUpdatedBy(i int) *UserPasswordPolicyCreate {
-	uppc.mutation.SetUpdatedBy(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetUpdatedBy(v int) *UserPasswordPolicyCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableUpdatedBy(i *int) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetUpdatedBy(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableUpdatedBy(v *int) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uppc *UserPasswordPolicyCreate) SetUpdatedAt(t time.Time) *UserPasswordPolicyCreate {
-	uppc.mutation.SetUpdatedAt(t)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetUpdatedAt(v time.Time) *UserPasswordPolicyCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableUpdatedAt(t *time.Time) *UserPasswordPolicyCreate {
-	if t != nil {
-		uppc.SetUpdatedAt(*t)
+func (_c *UserPasswordPolicyCreate) SetNillableUpdatedAt(v *time.Time) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (uppc *UserPasswordPolicyCreate) SetTenantID(i int) *UserPasswordPolicyCreate {
-	uppc.mutation.SetTenantID(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetTenantID(v int) *UserPasswordPolicyCreate {
+	_c.mutation.SetTenantID(v)
+	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableTenantID(i *int) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetTenantID(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableTenantID(v *int) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetTenantID(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetLength sets the "length" field.
-func (uppc *UserPasswordPolicyCreate) SetLength(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetLength(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetLength(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetLength(v)
+	return _c
 }
 
 // SetNillableLength sets the "length" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableLength(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetLength(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableLength(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetLength(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetIncludeElement sets the "include_element" field.
-func (uppc *UserPasswordPolicyCreate) SetIncludeElement(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetIncludeElement(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetIncludeElement(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetIncludeElement(v)
+	return _c
 }
 
 // SetNillableIncludeElement sets the "include_element" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableIncludeElement(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetIncludeElement(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableIncludeElement(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetIncludeElement(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetIncludeChar sets the "include_char" field.
-func (uppc *UserPasswordPolicyCreate) SetIncludeChar(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetIncludeChar(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetIncludeChar(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetIncludeChar(v)
+	return _c
 }
 
 // SetNillableIncludeChar sets the "include_char" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableIncludeChar(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetIncludeChar(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableIncludeChar(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetIncludeChar(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetAllowIncludeUserName sets the "allow_include_user_name" field.
-func (uppc *UserPasswordPolicyCreate) SetAllowIncludeUserName(b bool) *UserPasswordPolicyCreate {
-	uppc.mutation.SetAllowIncludeUserName(b)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetAllowIncludeUserName(v bool) *UserPasswordPolicyCreate {
+	_c.mutation.SetAllowIncludeUserName(v)
+	return _c
 }
 
 // SetNillableAllowIncludeUserName sets the "allow_include_user_name" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableAllowIncludeUserName(b *bool) *UserPasswordPolicyCreate {
-	if b != nil {
-		uppc.SetAllowIncludeUserName(*b)
+func (_c *UserPasswordPolicyCreate) SetNillableAllowIncludeUserName(v *bool) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetAllowIncludeUserName(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetInvalidDay sets the "invalid_day" field.
-func (uppc *UserPasswordPolicyCreate) SetInvalidDay(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetInvalidDay(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetInvalidDay(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetInvalidDay(v)
+	return _c
 }
 
 // SetNillableInvalidDay sets the "invalid_day" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableInvalidDay(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetInvalidDay(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableInvalidDay(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetInvalidDay(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetInvalidLoginLimit sets the "invalid_login_limit" field.
-func (uppc *UserPasswordPolicyCreate) SetInvalidLoginLimit(b bool) *UserPasswordPolicyCreate {
-	uppc.mutation.SetInvalidLoginLimit(b)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetInvalidLoginLimit(v bool) *UserPasswordPolicyCreate {
+	_c.mutation.SetInvalidLoginLimit(v)
+	return _c
 }
 
 // SetNillableInvalidLoginLimit sets the "invalid_login_limit" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableInvalidLoginLimit(b *bool) *UserPasswordPolicyCreate {
-	if b != nil {
-		uppc.SetInvalidLoginLimit(*b)
+func (_c *UserPasswordPolicyCreate) SetNillableInvalidLoginLimit(v *bool) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetInvalidLoginLimit(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetRetry sets the "retry" field.
-func (uppc *UserPasswordPolicyCreate) SetRetry(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetRetry(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetRetry(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetRetry(v)
+	return _c
 }
 
 // SetNillableRetry sets the "retry" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableRetry(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetRetry(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableRetry(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetRetry(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetCaptchaTimes sets the "captcha_times" field.
-func (uppc *UserPasswordPolicyCreate) SetCaptchaTimes(i int32) *UserPasswordPolicyCreate {
-	uppc.mutation.SetCaptchaTimes(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetCaptchaTimes(v int32) *UserPasswordPolicyCreate {
+	_c.mutation.SetCaptchaTimes(v)
+	return _c
 }
 
 // SetNillableCaptchaTimes sets the "captcha_times" field if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableCaptchaTimes(i *int32) *UserPasswordPolicyCreate {
-	if i != nil {
-		uppc.SetCaptchaTimes(*i)
+func (_c *UserPasswordPolicyCreate) SetNillableCaptchaTimes(v *int32) *UserPasswordPolicyCreate {
+	if v != nil {
+		_c.SetCaptchaTimes(*v)
 	}
-	return uppc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (uppc *UserPasswordPolicyCreate) SetID(i int) *UserPasswordPolicyCreate {
-	uppc.mutation.SetID(i)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetID(v int) *UserPasswordPolicyCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOrgID sets the "org" edge to the Org entity by ID.
-func (uppc *UserPasswordPolicyCreate) SetOrgID(id int) *UserPasswordPolicyCreate {
-	uppc.mutation.SetOrgID(id)
-	return uppc
+func (_c *UserPasswordPolicyCreate) SetOrgID(id int) *UserPasswordPolicyCreate {
+	_c.mutation.SetOrgID(id)
+	return _c
 }
 
 // SetNillableOrgID sets the "org" edge to the Org entity by ID if the given value is not nil.
-func (uppc *UserPasswordPolicyCreate) SetNillableOrgID(id *int) *UserPasswordPolicyCreate {
+func (_c *UserPasswordPolicyCreate) SetNillableOrgID(id *int) *UserPasswordPolicyCreate {
 	if id != nil {
-		uppc = uppc.SetOrgID(*id)
+		_c = _c.SetOrgID(*id)
 	}
-	return uppc
+	return _c
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (uppc *UserPasswordPolicyCreate) SetOrg(o *Org) *UserPasswordPolicyCreate {
-	return uppc.SetOrgID(o.ID)
+func (_c *UserPasswordPolicyCreate) SetOrg(v *Org) *UserPasswordPolicyCreate {
+	return _c.SetOrgID(v.ID)
 }
 
 // Mutation returns the UserPasswordPolicyMutation object of the builder.
-func (uppc *UserPasswordPolicyCreate) Mutation() *UserPasswordPolicyMutation {
-	return uppc.mutation
+func (_c *UserPasswordPolicyCreate) Mutation() *UserPasswordPolicyMutation {
+	return _c.mutation
 }
 
 // Save creates the UserPasswordPolicy in the database.
-func (uppc *UserPasswordPolicyCreate) Save(ctx context.Context) (*UserPasswordPolicy, error) {
-	if err := uppc.defaults(); err != nil {
+func (_c *UserPasswordPolicyCreate) Save(ctx context.Context) (*UserPasswordPolicy, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, uppc.sqlSave, uppc.mutation, uppc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (uppc *UserPasswordPolicyCreate) SaveX(ctx context.Context) *UserPasswordPolicy {
-	v, err := uppc.Save(ctx)
+func (_c *UserPasswordPolicyCreate) SaveX(ctx context.Context) *UserPasswordPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -245,63 +245,63 @@ func (uppc *UserPasswordPolicyCreate) SaveX(ctx context.Context) *UserPasswordPo
 }
 
 // Exec executes the query.
-func (uppc *UserPasswordPolicyCreate) Exec(ctx context.Context) error {
-	_, err := uppc.Save(ctx)
+func (_c *UserPasswordPolicyCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uppc *UserPasswordPolicyCreate) ExecX(ctx context.Context) {
-	if err := uppc.Exec(ctx); err != nil {
+func (_c *UserPasswordPolicyCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (uppc *UserPasswordPolicyCreate) defaults() error {
-	if _, ok := uppc.mutation.CreatedAt(); !ok {
+func (_c *UserPasswordPolicyCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if userpasswordpolicy.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized userpasswordpolicy.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := userpasswordpolicy.DefaultCreatedAt()
-		uppc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := uppc.mutation.Length(); !ok {
+	if _, ok := _c.mutation.Length(); !ok {
 		v := userpasswordpolicy.DefaultLength
-		uppc.mutation.SetLength(v)
+		_c.mutation.SetLength(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uppc *UserPasswordPolicyCreate) check() error {
-	if _, ok := uppc.mutation.CreatedBy(); !ok {
+func (_c *UserPasswordPolicyCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "UserPasswordPolicy.created_by"`)}
 	}
-	if _, ok := uppc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserPasswordPolicy.created_at"`)}
 	}
-	if v, ok := uppc.mutation.Length(); ok {
+	if v, ok := _c.mutation.Length(); ok {
 		if err := userpasswordpolicy.LengthValidator(v); err != nil {
 			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
 		}
 	}
-	if v, ok := uppc.mutation.IncludeChar(); ok {
+	if v, ok := _c.mutation.IncludeChar(); ok {
 		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
 			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
 		}
 	}
-	if v, ok := uppc.mutation.InvalidDay(); ok {
+	if v, ok := _c.mutation.InvalidDay(); ok {
 		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
 			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
 		}
 	}
-	if v, ok := uppc.mutation.Retry(); ok {
+	if v, ok := _c.mutation.Retry(); ok {
 		if err := userpasswordpolicy.RetryValidator(v); err != nil {
 			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
 		}
 	}
-	if v, ok := uppc.mutation.CaptchaTimes(); ok {
+	if v, ok := _c.mutation.CaptchaTimes(); ok {
 		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
 			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
 		}
@@ -309,12 +309,12 @@ func (uppc *UserPasswordPolicyCreate) check() error {
 	return nil
 }
 
-func (uppc *UserPasswordPolicyCreate) sqlSave(ctx context.Context) (*UserPasswordPolicy, error) {
-	if err := uppc.check(); err != nil {
+func (_c *UserPasswordPolicyCreate) sqlSave(ctx context.Context) (*UserPasswordPolicy, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := uppc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, uppc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -324,70 +324,70 @@ func (uppc *UserPasswordPolicyCreate) sqlSave(ctx context.Context) (*UserPasswor
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	uppc.mutation.id = &_node.ID
-	uppc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (uppc *UserPasswordPolicyCreate) createSpec() (*UserPasswordPolicy, *sqlgraph.CreateSpec) {
+func (_c *UserPasswordPolicyCreate) createSpec() (*UserPasswordPolicy, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserPasswordPolicy{config: uppc.config}
+		_node = &UserPasswordPolicy{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(userpasswordpolicy.Table, sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = uppc.conflict
-	if id, ok := uppc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := uppc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(userpasswordpolicy.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := uppc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(userpasswordpolicy.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := uppc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := uppc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(userpasswordpolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := uppc.mutation.Length(); ok {
+	if value, ok := _c.mutation.Length(); ok {
 		_spec.SetField(userpasswordpolicy.FieldLength, field.TypeInt32, value)
 		_node.Length = value
 	}
-	if value, ok := uppc.mutation.IncludeElement(); ok {
+	if value, ok := _c.mutation.IncludeElement(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeElement, field.TypeInt32, value)
 		_node.IncludeElement = value
 	}
-	if value, ok := uppc.mutation.IncludeChar(); ok {
+	if value, ok := _c.mutation.IncludeChar(); ok {
 		_spec.SetField(userpasswordpolicy.FieldIncludeChar, field.TypeInt32, value)
 		_node.IncludeChar = value
 	}
-	if value, ok := uppc.mutation.AllowIncludeUserName(); ok {
+	if value, ok := _c.mutation.AllowIncludeUserName(); ok {
 		_spec.SetField(userpasswordpolicy.FieldAllowIncludeUserName, field.TypeBool, value)
 		_node.AllowIncludeUserName = value
 	}
-	if value, ok := uppc.mutation.InvalidDay(); ok {
+	if value, ok := _c.mutation.InvalidDay(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidDay, field.TypeInt32, value)
 		_node.InvalidDay = value
 	}
-	if value, ok := uppc.mutation.InvalidLoginLimit(); ok {
+	if value, ok := _c.mutation.InvalidLoginLimit(); ok {
 		_spec.SetField(userpasswordpolicy.FieldInvalidLoginLimit, field.TypeBool, value)
 		_node.InvalidLoginLimit = value
 	}
-	if value, ok := uppc.mutation.Retry(); ok {
+	if value, ok := _c.mutation.Retry(); ok {
 		_spec.SetField(userpasswordpolicy.FieldRetry, field.TypeInt32, value)
 		_node.Retry = value
 	}
-	if value, ok := uppc.mutation.CaptchaTimes(); ok {
+	if value, ok := _c.mutation.CaptchaTimes(); ok {
 		_spec.SetField(userpasswordpolicy.FieldCaptchaTimes, field.TypeInt32, value)
 		_node.CaptchaTimes = value
 	}
-	if nodes := uppc.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -423,10 +423,10 @@ func (uppc *UserPasswordPolicyCreate) createSpec() (*UserPasswordPolicy, *sqlgra
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uppc *UserPasswordPolicyCreate) OnConflict(opts ...sql.ConflictOption) *UserPasswordPolicyUpsertOne {
-	uppc.conflict = opts
+func (_c *UserPasswordPolicyCreate) OnConflict(opts ...sql.ConflictOption) *UserPasswordPolicyUpsertOne {
+	_c.conflict = opts
 	return &UserPasswordPolicyUpsertOne{
-		create: uppc,
+		create: _c,
 	}
 }
 
@@ -436,10 +436,10 @@ func (uppc *UserPasswordPolicyCreate) OnConflict(opts ...sql.ConflictOption) *Us
 //	client.UserPasswordPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uppc *UserPasswordPolicyCreate) OnConflictColumns(columns ...string) *UserPasswordPolicyUpsertOne {
-	uppc.conflict = append(uppc.conflict, sql.ConflictColumns(columns...))
+func (_c *UserPasswordPolicyCreate) OnConflictColumns(columns ...string) *UserPasswordPolicyUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserPasswordPolicyUpsertOne{
-		create: uppc,
+		create: _c,
 	}
 }
 
@@ -1036,16 +1036,16 @@ type UserPasswordPolicyCreateBulk struct {
 }
 
 // Save creates the UserPasswordPolicy entities in the database.
-func (uppcb *UserPasswordPolicyCreateBulk) Save(ctx context.Context) ([]*UserPasswordPolicy, error) {
-	if uppcb.err != nil {
-		return nil, uppcb.err
+func (_c *UserPasswordPolicyCreateBulk) Save(ctx context.Context) ([]*UserPasswordPolicy, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(uppcb.builders))
-	nodes := make([]*UserPasswordPolicy, len(uppcb.builders))
-	mutators := make([]Mutator, len(uppcb.builders))
-	for i := range uppcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserPasswordPolicy, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := uppcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserPasswordPolicyMutation)
@@ -1059,12 +1059,12 @@ func (uppcb *UserPasswordPolicyCreateBulk) Save(ctx context.Context) ([]*UserPas
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, uppcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = uppcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, uppcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1088,7 +1088,7 @@ func (uppcb *UserPasswordPolicyCreateBulk) Save(ctx context.Context) ([]*UserPas
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, uppcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1096,8 +1096,8 @@ func (uppcb *UserPasswordPolicyCreateBulk) Save(ctx context.Context) ([]*UserPas
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uppcb *UserPasswordPolicyCreateBulk) SaveX(ctx context.Context) []*UserPasswordPolicy {
-	v, err := uppcb.Save(ctx)
+func (_c *UserPasswordPolicyCreateBulk) SaveX(ctx context.Context) []*UserPasswordPolicy {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1105,14 +1105,14 @@ func (uppcb *UserPasswordPolicyCreateBulk) SaveX(ctx context.Context) []*UserPas
 }
 
 // Exec executes the query.
-func (uppcb *UserPasswordPolicyCreateBulk) Exec(ctx context.Context) error {
-	_, err := uppcb.Save(ctx)
+func (_c *UserPasswordPolicyCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uppcb *UserPasswordPolicyCreateBulk) ExecX(ctx context.Context) {
-	if err := uppcb.Exec(ctx); err != nil {
+func (_c *UserPasswordPolicyCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1132,10 +1132,10 @@ func (uppcb *UserPasswordPolicyCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (uppcb *UserPasswordPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserPasswordPolicyUpsertBulk {
-	uppcb.conflict = opts
+func (_c *UserPasswordPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserPasswordPolicyUpsertBulk {
+	_c.conflict = opts
 	return &UserPasswordPolicyUpsertBulk{
-		create: uppcb,
+		create: _c,
 	}
 }
 
@@ -1145,10 +1145,10 @@ func (uppcb *UserPasswordPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption
 //	client.UserPasswordPolicy.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (uppcb *UserPasswordPolicyCreateBulk) OnConflictColumns(columns ...string) *UserPasswordPolicyUpsertBulk {
-	uppcb.conflict = append(uppcb.conflict, sql.ConflictColumns(columns...))
+func (_c *UserPasswordPolicyCreateBulk) OnConflictColumns(columns ...string) *UserPasswordPolicyUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserPasswordPolicyUpsertBulk{
-		create: uppcb,
+		create: _c,
 	}
 }
 

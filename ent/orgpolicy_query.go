@@ -40,44 +40,44 @@ type OrgPolicyQuery struct {
 }
 
 // Where adds a new predicate for the OrgPolicyQuery builder.
-func (opq *OrgPolicyQuery) Where(ps ...predicate.OrgPolicy) *OrgPolicyQuery {
-	opq.predicates = append(opq.predicates, ps...)
-	return opq
+func (_q *OrgPolicyQuery) Where(ps ...predicate.OrgPolicy) *OrgPolicyQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (opq *OrgPolicyQuery) Limit(limit int) *OrgPolicyQuery {
-	opq.ctx.Limit = &limit
-	return opq
+func (_q *OrgPolicyQuery) Limit(limit int) *OrgPolicyQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (opq *OrgPolicyQuery) Offset(offset int) *OrgPolicyQuery {
-	opq.ctx.Offset = &offset
-	return opq
+func (_q *OrgPolicyQuery) Offset(offset int) *OrgPolicyQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (opq *OrgPolicyQuery) Unique(unique bool) *OrgPolicyQuery {
-	opq.ctx.Unique = &unique
-	return opq
+func (_q *OrgPolicyQuery) Unique(unique bool) *OrgPolicyQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (opq *OrgPolicyQuery) Order(o ...orgpolicy.OrderOption) *OrgPolicyQuery {
-	opq.order = append(opq.order, o...)
-	return opq
+func (_q *OrgPolicyQuery) Order(o ...orgpolicy.OrderOption) *OrgPolicyQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOrg chains the current query on the "org" edge.
-func (opq *OrgPolicyQuery) QueryOrg() *OrgQuery {
-	query := (&OrgClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := opq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := opq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -86,20 +86,20 @@ func (opq *OrgPolicyQuery) QueryOrg() *OrgQuery {
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.OrgTable, orgpolicy.OrgColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryPermissions chains the current query on the "permissions" edge.
-func (opq *OrgPolicyQuery) QueryPermissions() *PermissionQuery {
-	query := (&PermissionClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) QueryPermissions() *PermissionQuery {
+	query := (&PermissionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := opq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := opq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -108,20 +108,20 @@ func (opq *OrgPolicyQuery) QueryPermissions() *PermissionQuery {
 			sqlgraph.To(permission.Table, permission.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, orgpolicy.PermissionsTable, orgpolicy.PermissionsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryAppPolicy chains the current query on the "app_policy" edge.
-func (opq *OrgPolicyQuery) QueryAppPolicy() *AppPolicyQuery {
-	query := (&AppPolicyClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) QueryAppPolicy() *AppPolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := opq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := opq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -130,20 +130,20 @@ func (opq *OrgPolicyQuery) QueryAppPolicy() *AppPolicyQuery {
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.AppPolicyTable, orgpolicy.AppPolicyColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (opq *OrgPolicyQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := opq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := opq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -152,7 +152,7 @@ func (opq *OrgPolicyQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgpolicy.AppTable, orgpolicy.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -160,8 +160,8 @@ func (opq *OrgPolicyQuery) QueryApp() *AppQuery {
 
 // First returns the first OrgPolicy entity from the query.
 // Returns a *NotFoundError when no OrgPolicy was found.
-func (opq *OrgPolicyQuery) First(ctx context.Context) (*OrgPolicy, error) {
-	nodes, err := opq.Limit(1).All(setContextOp(ctx, opq.ctx, ent.OpQueryFirst))
+func (_q *OrgPolicyQuery) First(ctx context.Context) (*OrgPolicy, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (opq *OrgPolicyQuery) First(ctx context.Context) (*OrgPolicy, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (opq *OrgPolicyQuery) FirstX(ctx context.Context) *OrgPolicy {
-	node, err := opq.First(ctx)
+func (_q *OrgPolicyQuery) FirstX(ctx context.Context) *OrgPolicy {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -182,9 +182,9 @@ func (opq *OrgPolicyQuery) FirstX(ctx context.Context) *OrgPolicy {
 
 // FirstID returns the first OrgPolicy ID from the query.
 // Returns a *NotFoundError when no OrgPolicy ID was found.
-func (opq *OrgPolicyQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *OrgPolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = opq.Limit(1).IDs(setContextOp(ctx, opq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -195,8 +195,8 @@ func (opq *OrgPolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (opq *OrgPolicyQuery) FirstIDX(ctx context.Context) int {
-	id, err := opq.FirstID(ctx)
+func (_q *OrgPolicyQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -206,8 +206,8 @@ func (opq *OrgPolicyQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single OrgPolicy entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgPolicy entity is found.
 // Returns a *NotFoundError when no OrgPolicy entities are found.
-func (opq *OrgPolicyQuery) Only(ctx context.Context) (*OrgPolicy, error) {
-	nodes, err := opq.Limit(2).All(setContextOp(ctx, opq.ctx, ent.OpQueryOnly))
+func (_q *OrgPolicyQuery) Only(ctx context.Context) (*OrgPolicy, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -222,8 +222,8 @@ func (opq *OrgPolicyQuery) Only(ctx context.Context) (*OrgPolicy, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (opq *OrgPolicyQuery) OnlyX(ctx context.Context) *OrgPolicy {
-	node, err := opq.Only(ctx)
+func (_q *OrgPolicyQuery) OnlyX(ctx context.Context) *OrgPolicy {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -233,9 +233,9 @@ func (opq *OrgPolicyQuery) OnlyX(ctx context.Context) *OrgPolicy {
 // OnlyID is like Only, but returns the only OrgPolicy ID in the query.
 // Returns a *NotSingularError when more than one OrgPolicy ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (opq *OrgPolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *OrgPolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = opq.Limit(2).IDs(setContextOp(ctx, opq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -250,8 +250,8 @@ func (opq *OrgPolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (opq *OrgPolicyQuery) OnlyIDX(ctx context.Context) int {
-	id, err := opq.OnlyID(ctx)
+func (_q *OrgPolicyQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -259,18 +259,18 @@ func (opq *OrgPolicyQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of OrgPolicies.
-func (opq *OrgPolicyQuery) All(ctx context.Context) ([]*OrgPolicy, error) {
-	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryAll)
-	if err := opq.prepareQuery(ctx); err != nil {
+func (_q *OrgPolicyQuery) All(ctx context.Context) ([]*OrgPolicy, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*OrgPolicy, *OrgPolicyQuery]()
-	return withInterceptors[[]*OrgPolicy](ctx, opq, qr, opq.inters)
+	return withInterceptors[[]*OrgPolicy](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (opq *OrgPolicyQuery) AllX(ctx context.Context) []*OrgPolicy {
-	nodes, err := opq.All(ctx)
+func (_q *OrgPolicyQuery) AllX(ctx context.Context) []*OrgPolicy {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -278,20 +278,20 @@ func (opq *OrgPolicyQuery) AllX(ctx context.Context) []*OrgPolicy {
 }
 
 // IDs executes the query and returns a list of OrgPolicy IDs.
-func (opq *OrgPolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if opq.ctx.Unique == nil && opq.path != nil {
-		opq.Unique(true)
+func (_q *OrgPolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryIDs)
-	if err = opq.Select(orgpolicy.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(orgpolicy.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (opq *OrgPolicyQuery) IDsX(ctx context.Context) []int {
-	ids, err := opq.IDs(ctx)
+func (_q *OrgPolicyQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -299,17 +299,17 @@ func (opq *OrgPolicyQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (opq *OrgPolicyQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryCount)
-	if err := opq.prepareQuery(ctx); err != nil {
+func (_q *OrgPolicyQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, opq, querierCount[*OrgPolicyQuery](), opq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*OrgPolicyQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (opq *OrgPolicyQuery) CountX(ctx context.Context) int {
-	count, err := opq.Count(ctx)
+func (_q *OrgPolicyQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -317,9 +317,9 @@ func (opq *OrgPolicyQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (opq *OrgPolicyQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryExist)
-	switch _, err := opq.FirstID(ctx); {
+func (_q *OrgPolicyQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -330,8 +330,8 @@ func (opq *OrgPolicyQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (opq *OrgPolicyQuery) ExistX(ctx context.Context) bool {
-	exist, err := opq.Exist(ctx)
+func (_q *OrgPolicyQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -340,68 +340,68 @@ func (opq *OrgPolicyQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the OrgPolicyQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (opq *OrgPolicyQuery) Clone() *OrgPolicyQuery {
-	if opq == nil {
+func (_q *OrgPolicyQuery) Clone() *OrgPolicyQuery {
+	if _q == nil {
 		return nil
 	}
 	return &OrgPolicyQuery{
-		config:          opq.config,
-		ctx:             opq.ctx.Clone(),
-		order:           append([]orgpolicy.OrderOption{}, opq.order...),
-		inters:          append([]Interceptor{}, opq.inters...),
-		predicates:      append([]predicate.OrgPolicy{}, opq.predicates...),
-		withOrg:         opq.withOrg.Clone(),
-		withPermissions: opq.withPermissions.Clone(),
-		withAppPolicy:   opq.withAppPolicy.Clone(),
-		withApp:         opq.withApp.Clone(),
+		config:          _q.config,
+		ctx:             _q.ctx.Clone(),
+		order:           append([]orgpolicy.OrderOption{}, _q.order...),
+		inters:          append([]Interceptor{}, _q.inters...),
+		predicates:      append([]predicate.OrgPolicy{}, _q.predicates...),
+		withOrg:         _q.withOrg.Clone(),
+		withPermissions: _q.withPermissions.Clone(),
+		withAppPolicy:   _q.withAppPolicy.Clone(),
+		withApp:         _q.withApp.Clone(),
 		// clone intermediate query.
-		sql:  opq.sql.Clone(),
-		path: opq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOrg tells the query-builder to eager-load the nodes that are connected to
 // the "org" edge. The optional arguments are used to configure the query builder of the edge.
-func (opq *OrgPolicyQuery) WithOrg(opts ...func(*OrgQuery)) *OrgPolicyQuery {
-	query := (&OrgClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) WithOrg(opts ...func(*OrgQuery)) *OrgPolicyQuery {
+	query := (&OrgClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	opq.withOrg = query
-	return opq
+	_q.withOrg = query
+	return _q
 }
 
 // WithPermissions tells the query-builder to eager-load the nodes that are connected to
 // the "permissions" edge. The optional arguments are used to configure the query builder of the edge.
-func (opq *OrgPolicyQuery) WithPermissions(opts ...func(*PermissionQuery)) *OrgPolicyQuery {
-	query := (&PermissionClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) WithPermissions(opts ...func(*PermissionQuery)) *OrgPolicyQuery {
+	query := (&PermissionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	opq.withPermissions = query
-	return opq
+	_q.withPermissions = query
+	return _q
 }
 
 // WithAppPolicy tells the query-builder to eager-load the nodes that are connected to
 // the "app_policy" edge. The optional arguments are used to configure the query builder of the edge.
-func (opq *OrgPolicyQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *OrgPolicyQuery {
-	query := (&AppPolicyClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *OrgPolicyQuery {
+	query := (&AppPolicyClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	opq.withAppPolicy = query
-	return opq
+	_q.withAppPolicy = query
+	return _q
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (opq *OrgPolicyQuery) WithApp(opts ...func(*AppQuery)) *OrgPolicyQuery {
-	query := (&AppClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) WithApp(opts ...func(*AppQuery)) *OrgPolicyQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	opq.withApp = query
-	return opq
+	_q.withApp = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -418,10 +418,10 @@ func (opq *OrgPolicyQuery) WithApp(opts ...func(*AppQuery)) *OrgPolicyQuery {
 //		GroupBy(orgpolicy.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (opq *OrgPolicyQuery) GroupBy(field string, fields ...string) *OrgPolicyGroupBy {
-	opq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &OrgPolicyGroupBy{build: opq}
-	grbuild.flds = &opq.ctx.Fields
+func (_q *OrgPolicyQuery) GroupBy(field string, fields ...string) *OrgPolicyGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &OrgPolicyGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = orgpolicy.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -439,118 +439,118 @@ func (opq *OrgPolicyQuery) GroupBy(field string, fields ...string) *OrgPolicyGro
 //	client.OrgPolicy.Query().
 //		Select(orgpolicy.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (opq *OrgPolicyQuery) Select(fields ...string) *OrgPolicySelect {
-	opq.ctx.Fields = append(opq.ctx.Fields, fields...)
-	sbuild := &OrgPolicySelect{OrgPolicyQuery: opq}
+func (_q *OrgPolicyQuery) Select(fields ...string) *OrgPolicySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &OrgPolicySelect{OrgPolicyQuery: _q}
 	sbuild.label = orgpolicy.Label
-	sbuild.flds, sbuild.scan = &opq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a OrgPolicySelect configured with the given aggregations.
-func (opq *OrgPolicyQuery) Aggregate(fns ...AggregateFunc) *OrgPolicySelect {
-	return opq.Select().Aggregate(fns...)
+func (_q *OrgPolicyQuery) Aggregate(fns ...AggregateFunc) *OrgPolicySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (opq *OrgPolicyQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range opq.inters {
+func (_q *OrgPolicyQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, opq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range opq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !orgpolicy.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if opq.path != nil {
-		prev, err := opq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		opq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (opq *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgPolicy, error) {
+func (_q *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrgPolicy, error) {
 	var (
 		nodes       = []*OrgPolicy{}
-		_spec       = opq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			opq.withOrg != nil,
-			opq.withPermissions != nil,
-			opq.withAppPolicy != nil,
-			opq.withApp != nil,
+			_q.withOrg != nil,
+			_q.withPermissions != nil,
+			_q.withAppPolicy != nil,
+			_q.withApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OrgPolicy).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &OrgPolicy{config: opq.config}
+		node := &OrgPolicy{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(opq.modifiers) > 0 {
-		_spec.Modifiers = opq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, opq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := opq.withOrg; query != nil {
-		if err := opq.loadOrg(ctx, query, nodes, nil,
+	if query := _q.withOrg; query != nil {
+		if err := _q.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgPolicy, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := opq.withPermissions; query != nil {
-		if err := opq.loadPermissions(ctx, query, nodes,
+	if query := _q.withPermissions; query != nil {
+		if err := _q.loadPermissions(ctx, query, nodes,
 			func(n *OrgPolicy) { n.Edges.Permissions = []*Permission{} },
 			func(n *OrgPolicy, e *Permission) { n.Edges.Permissions = append(n.Edges.Permissions, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := opq.withAppPolicy; query != nil {
-		if err := opq.loadAppPolicy(ctx, query, nodes, nil,
+	if query := _q.withAppPolicy; query != nil {
+		if err := _q.loadAppPolicy(ctx, query, nodes, nil,
 			func(n *OrgPolicy, e *AppPolicy) { n.Edges.AppPolicy = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := opq.withApp; query != nil {
-		if err := opq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *OrgPolicy, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range opq.withNamedPermissions {
-		if err := opq.loadPermissions(ctx, query, nodes,
+	for name, query := range _q.withNamedPermissions {
+		if err := _q.loadPermissions(ctx, query, nodes,
 			func(n *OrgPolicy) { n.appendNamedPermissions(name) },
 			func(n *OrgPolicy, e *Permission) { n.appendNamedPermissions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range opq.loadTotal {
-		if err := opq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (opq *OrgPolicyQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *Org)) error {
+func (_q *OrgPolicyQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgPolicy)
 	for i := range nodes {
@@ -579,7 +579,7 @@ func (opq *OrgPolicyQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes [
 	}
 	return nil
 }
-func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *PermissionQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *Permission)) error {
+func (_q *OrgPolicyQuery) loadPermissions(ctx context.Context, query *PermissionQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *Permission)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*OrgPolicy)
 	for i := range nodes {
@@ -609,7 +609,7 @@ func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *Permissio
 	}
 	return nil
 }
-func (opq *OrgPolicyQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *AppPolicy)) error {
+func (_q *OrgPolicyQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *AppPolicy)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgPolicy)
 	for i := range nodes {
@@ -641,7 +641,7 @@ func (opq *OrgPolicyQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQu
 	}
 	return nil
 }
-func (opq *OrgPolicyQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *App)) error {
+func (_q *OrgPolicyQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *App)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgPolicy)
 	for i := range nodes {
@@ -671,27 +671,27 @@ func (opq *OrgPolicyQuery) loadApp(ctx context.Context, query *AppQuery, nodes [
 	return nil
 }
 
-func (opq *OrgPolicyQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := opq.querySpec()
-	if len(opq.modifiers) > 0 {
-		_spec.Modifiers = opq.modifiers
+func (_q *OrgPolicyQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = opq.ctx.Fields
-	if len(opq.ctx.Fields) > 0 {
-		_spec.Unique = opq.ctx.Unique != nil && *opq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, opq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (opq *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(orgpolicy.Table, orgpolicy.Columns, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
-	_spec.From = opq.sql
-	if unique := opq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if opq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := opq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, orgpolicy.FieldID)
 		for i := range fields {
@@ -699,30 +699,30 @@ func (opq *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if opq.withOrg != nil {
+		if _q.withOrg != nil {
 			_spec.Node.AddColumnOnce(orgpolicy.FieldOrgID)
 		}
-		if opq.withAppPolicy != nil {
+		if _q.withAppPolicy != nil {
 			_spec.Node.AddColumnOnce(orgpolicy.FieldAppPolicyID)
 		}
-		if opq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(orgpolicy.FieldAppID)
 		}
 	}
-	if ps := opq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := opq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := opq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := opq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -732,33 +732,33 @@ func (opq *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (opq *OrgPolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(opq.driver.Dialect())
+func (_q *OrgPolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(orgpolicy.Table)
-	columns := opq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = orgpolicy.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if opq.sql != nil {
-		selector = opq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if opq.ctx.Unique != nil && *opq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range opq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range opq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := opq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := opq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -766,16 +766,16 @@ func (opq *OrgPolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedPermissions tells the query-builder to eager-load the nodes that are connected to the "permissions"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (opq *OrgPolicyQuery) WithNamedPermissions(name string, opts ...func(*PermissionQuery)) *OrgPolicyQuery {
-	query := (&PermissionClient{config: opq.config}).Query()
+func (_q *OrgPolicyQuery) WithNamedPermissions(name string, opts ...func(*PermissionQuery)) *OrgPolicyQuery {
+	query := (&PermissionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if opq.withNamedPermissions == nil {
-		opq.withNamedPermissions = make(map[string]*PermissionQuery)
+	if _q.withNamedPermissions == nil {
+		_q.withNamedPermissions = make(map[string]*PermissionQuery)
 	}
-	opq.withNamedPermissions[name] = query
-	return opq
+	_q.withNamedPermissions[name] = query
+	return _q
 }
 
 // OrgPolicyGroupBy is the group-by builder for OrgPolicy entities.
@@ -785,41 +785,41 @@ type OrgPolicyGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (opgb *OrgPolicyGroupBy) Aggregate(fns ...AggregateFunc) *OrgPolicyGroupBy {
-	opgb.fns = append(opgb.fns, fns...)
-	return opgb
+func (_g *OrgPolicyGroupBy) Aggregate(fns ...AggregateFunc) *OrgPolicyGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (opgb *OrgPolicyGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, opgb.build.ctx, ent.OpQueryGroupBy)
-	if err := opgb.build.prepareQuery(ctx); err != nil {
+func (_g *OrgPolicyGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgPolicyQuery, *OrgPolicyGroupBy](ctx, opgb.build, opgb, opgb.build.inters, v)
+	return scanWithInterceptors[*OrgPolicyQuery, *OrgPolicyGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (opgb *OrgPolicyGroupBy) sqlScan(ctx context.Context, root *OrgPolicyQuery, v any) error {
+func (_g *OrgPolicyGroupBy) sqlScan(ctx context.Context, root *OrgPolicyQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(opgb.fns))
-	for _, fn := range opgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*opgb.flds)+len(opgb.fns))
-		for _, f := range *opgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*opgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := opgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -833,27 +833,27 @@ type OrgPolicySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ops *OrgPolicySelect) Aggregate(fns ...AggregateFunc) *OrgPolicySelect {
-	ops.fns = append(ops.fns, fns...)
-	return ops
+func (_s *OrgPolicySelect) Aggregate(fns ...AggregateFunc) *OrgPolicySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ops *OrgPolicySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ops.ctx, ent.OpQuerySelect)
-	if err := ops.prepareQuery(ctx); err != nil {
+func (_s *OrgPolicySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*OrgPolicyQuery, *OrgPolicySelect](ctx, ops.OrgPolicyQuery, ops, ops.inters, v)
+	return scanWithInterceptors[*OrgPolicyQuery, *OrgPolicySelect](ctx, _s.OrgPolicyQuery, _s, _s.inters, v)
 }
 
-func (ops *OrgPolicySelect) sqlScan(ctx context.Context, root *OrgPolicyQuery, v any) error {
+func (_s *OrgPolicySelect) sqlScan(ctx context.Context, root *OrgPolicyQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ops.fns))
-	for _, fn := range ops.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ops.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -861,7 +861,7 @@ func (ops *OrgPolicySelect) sqlScan(ctx context.Context, root *OrgPolicyQuery, v
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ops.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

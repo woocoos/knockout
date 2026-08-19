@@ -1,23 +1,15 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/app"
-	"github.com/woocoos/knockout/ent/appaction"
-	"github.com/woocoos/knockout/ent/hook"
-	"strings"
 )
 
 // AppPolicy 应用定义的策略.
@@ -66,57 +58,4 @@ func (AppPolicy) Edges() []ent.Edge {
 		edge.To("org_policies", OrgPolicy.Type).Comment("策略授权的组织策略"),
 		edge.To("policy_views", AppPolicyView.Type).Comment("策略视图"),
 	}
-}
-
-func (AppPolicy) Hooks() []ent.Hook {
-	return []ent.Hook{
-		// check rules
-		appRulesHook(),
-	}
-}
-
-// appRulesHook 检查规则.
-func appRulesHook() ent.Hook {
-	return hook.If(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.AppPolicyFunc(func(ctx context.Context, m *gen.AppPolicyMutation) (ent.Value, error) {
-				rules, ok := m.Rules()
-				if !ok {
-					return next.Mutate(ctx, m)
-				}
-
-				acs := make(map[string][]string)
-				for _, rule := range rules {
-					for _, action := range rule.Actions {
-						if action == "*" {
-							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "missing app code %s", action)
-						}
-						// 分离出appcode和action
-						parts := strings.SplitN(action, ":", 2)
-						if len(parts) != 2 {
-							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action %s", action)
-						}
-						if parts[1] != "*" {
-							appcode := parts[0]
-							acs[appcode] = append(acs[appcode], parts[1])
-						}
-					}
-				}
-				// 检查action是否存在
-				for appcode, actions := range acs {
-					// 检查action是否存在
-					count, err := m.Client().AppAction.Query().Where(
-						appaction.NameIn(actions...),
-						appaction.HasAppWith(app.Code(appcode))).Count(ctx)
-					if err != nil {
-						return nil, err
-					}
-					if count != len(actions) {
-						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action in %s", actions)
-					}
-				}
-				return next.Mutate(ctx, m)
-			})
-		}, hook.HasFields("rules"),
-	)
 }

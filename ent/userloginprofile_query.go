@@ -32,44 +32,44 @@ type UserLoginProfileQuery struct {
 }
 
 // Where adds a new predicate for the UserLoginProfileQuery builder.
-func (ulpq *UserLoginProfileQuery) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileQuery {
-	ulpq.predicates = append(ulpq.predicates, ps...)
-	return ulpq
+func (_q *UserLoginProfileQuery) Where(ps ...predicate.UserLoginProfile) *UserLoginProfileQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ulpq *UserLoginProfileQuery) Limit(limit int) *UserLoginProfileQuery {
-	ulpq.ctx.Limit = &limit
-	return ulpq
+func (_q *UserLoginProfileQuery) Limit(limit int) *UserLoginProfileQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ulpq *UserLoginProfileQuery) Offset(offset int) *UserLoginProfileQuery {
-	ulpq.ctx.Offset = &offset
-	return ulpq
+func (_q *UserLoginProfileQuery) Offset(offset int) *UserLoginProfileQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ulpq *UserLoginProfileQuery) Unique(unique bool) *UserLoginProfileQuery {
-	ulpq.ctx.Unique = &unique
-	return ulpq
+func (_q *UserLoginProfileQuery) Unique(unique bool) *UserLoginProfileQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ulpq *UserLoginProfileQuery) Order(o ...userloginprofile.OrderOption) *UserLoginProfileQuery {
-	ulpq.order = append(ulpq.order, o...)
-	return ulpq
+func (_q *UserLoginProfileQuery) Order(o ...userloginprofile.OrderOption) *UserLoginProfileQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryUser chains the current query on the "user" edge.
-func (ulpq *UserLoginProfileQuery) QueryUser() *UserQuery {
-	query := (&UserClient{config: ulpq.config}).Query()
+func (_q *UserLoginProfileQuery) QueryUser() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ulpq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ulpq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (ulpq *UserLoginProfileQuery) QueryUser() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, userloginprofile.UserTable, userloginprofile.UserColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ulpq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -86,8 +86,8 @@ func (ulpq *UserLoginProfileQuery) QueryUser() *UserQuery {
 
 // First returns the first UserLoginProfile entity from the query.
 // Returns a *NotFoundError when no UserLoginProfile was found.
-func (ulpq *UserLoginProfileQuery) First(ctx context.Context) (*UserLoginProfile, error) {
-	nodes, err := ulpq.Limit(1).All(setContextOp(ctx, ulpq.ctx, ent.OpQueryFirst))
+func (_q *UserLoginProfileQuery) First(ctx context.Context) (*UserLoginProfile, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +98,8 @@ func (ulpq *UserLoginProfileQuery) First(ctx context.Context) (*UserLoginProfile
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) FirstX(ctx context.Context) *UserLoginProfile {
-	node, err := ulpq.First(ctx)
+func (_q *UserLoginProfileQuery) FirstX(ctx context.Context) *UserLoginProfile {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -108,9 +108,9 @@ func (ulpq *UserLoginProfileQuery) FirstX(ctx context.Context) *UserLoginProfile
 
 // FirstID returns the first UserLoginProfile ID from the query.
 // Returns a *NotFoundError when no UserLoginProfile ID was found.
-func (ulpq *UserLoginProfileQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *UserLoginProfileQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ulpq.Limit(1).IDs(setContextOp(ctx, ulpq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -121,8 +121,8 @@ func (ulpq *UserLoginProfileQuery) FirstID(ctx context.Context) (id int, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) FirstIDX(ctx context.Context) int {
-	id, err := ulpq.FirstID(ctx)
+func (_q *UserLoginProfileQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,8 +132,8 @@ func (ulpq *UserLoginProfileQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single UserLoginProfile entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one UserLoginProfile entity is found.
 // Returns a *NotFoundError when no UserLoginProfile entities are found.
-func (ulpq *UserLoginProfileQuery) Only(ctx context.Context) (*UserLoginProfile, error) {
-	nodes, err := ulpq.Limit(2).All(setContextOp(ctx, ulpq.ctx, ent.OpQueryOnly))
+func (_q *UserLoginProfileQuery) Only(ctx context.Context) (*UserLoginProfile, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -148,8 +148,8 @@ func (ulpq *UserLoginProfileQuery) Only(ctx context.Context) (*UserLoginProfile,
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) OnlyX(ctx context.Context) *UserLoginProfile {
-	node, err := ulpq.Only(ctx)
+func (_q *UserLoginProfileQuery) OnlyX(ctx context.Context) *UserLoginProfile {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,9 +159,9 @@ func (ulpq *UserLoginProfileQuery) OnlyX(ctx context.Context) *UserLoginProfile 
 // OnlyID is like Only, but returns the only UserLoginProfile ID in the query.
 // Returns a *NotSingularError when more than one UserLoginProfile ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ulpq *UserLoginProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *UserLoginProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ulpq.Limit(2).IDs(setContextOp(ctx, ulpq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -176,8 +176,8 @@ func (ulpq *UserLoginProfileQuery) OnlyID(ctx context.Context) (id int, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) OnlyIDX(ctx context.Context) int {
-	id, err := ulpq.OnlyID(ctx)
+func (_q *UserLoginProfileQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,18 +185,18 @@ func (ulpq *UserLoginProfileQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of UserLoginProfiles.
-func (ulpq *UserLoginProfileQuery) All(ctx context.Context) ([]*UserLoginProfile, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryAll)
-	if err := ulpq.prepareQuery(ctx); err != nil {
+func (_q *UserLoginProfileQuery) All(ctx context.Context) ([]*UserLoginProfile, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*UserLoginProfile, *UserLoginProfileQuery]()
-	return withInterceptors[[]*UserLoginProfile](ctx, ulpq, qr, ulpq.inters)
+	return withInterceptors[[]*UserLoginProfile](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) AllX(ctx context.Context) []*UserLoginProfile {
-	nodes, err := ulpq.All(ctx)
+func (_q *UserLoginProfileQuery) AllX(ctx context.Context) []*UserLoginProfile {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,20 +204,20 @@ func (ulpq *UserLoginProfileQuery) AllX(ctx context.Context) []*UserLoginProfile
 }
 
 // IDs executes the query and returns a list of UserLoginProfile IDs.
-func (ulpq *UserLoginProfileQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if ulpq.ctx.Unique == nil && ulpq.path != nil {
-		ulpq.Unique(true)
+func (_q *UserLoginProfileQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryIDs)
-	if err = ulpq.Select(userloginprofile.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(userloginprofile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) IDsX(ctx context.Context) []int {
-	ids, err := ulpq.IDs(ctx)
+func (_q *UserLoginProfileQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -225,17 +225,17 @@ func (ulpq *UserLoginProfileQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (ulpq *UserLoginProfileQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryCount)
-	if err := ulpq.prepareQuery(ctx); err != nil {
+func (_q *UserLoginProfileQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ulpq, querierCount[*UserLoginProfileQuery](), ulpq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*UserLoginProfileQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) CountX(ctx context.Context) int {
-	count, err := ulpq.Count(ctx)
+func (_q *UserLoginProfileQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -243,9 +243,9 @@ func (ulpq *UserLoginProfileQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ulpq *UserLoginProfileQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryExist)
-	switch _, err := ulpq.FirstID(ctx); {
+func (_q *UserLoginProfileQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -256,8 +256,8 @@ func (ulpq *UserLoginProfileQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ulpq *UserLoginProfileQuery) ExistX(ctx context.Context) bool {
-	exist, err := ulpq.Exist(ctx)
+func (_q *UserLoginProfileQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,32 +266,32 @@ func (ulpq *UserLoginProfileQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the UserLoginProfileQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ulpq *UserLoginProfileQuery) Clone() *UserLoginProfileQuery {
-	if ulpq == nil {
+func (_q *UserLoginProfileQuery) Clone() *UserLoginProfileQuery {
+	if _q == nil {
 		return nil
 	}
 	return &UserLoginProfileQuery{
-		config:     ulpq.config,
-		ctx:        ulpq.ctx.Clone(),
-		order:      append([]userloginprofile.OrderOption{}, ulpq.order...),
-		inters:     append([]Interceptor{}, ulpq.inters...),
-		predicates: append([]predicate.UserLoginProfile{}, ulpq.predicates...),
-		withUser:   ulpq.withUser.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]userloginprofile.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.UserLoginProfile{}, _q.predicates...),
+		withUser:   _q.withUser.Clone(),
 		// clone intermediate query.
-		sql:  ulpq.sql.Clone(),
-		path: ulpq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithUser tells the query-builder to eager-load the nodes that are connected to
 // the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (ulpq *UserLoginProfileQuery) WithUser(opts ...func(*UserQuery)) *UserLoginProfileQuery {
-	query := (&UserClient{config: ulpq.config}).Query()
+func (_q *UserLoginProfileQuery) WithUser(opts ...func(*UserQuery)) *UserLoginProfileQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ulpq.withUser = query
-	return ulpq
+	_q.withUser = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -308,10 +308,10 @@ func (ulpq *UserLoginProfileQuery) WithUser(opts ...func(*UserQuery)) *UserLogin
 //		GroupBy(userloginprofile.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ulpq *UserLoginProfileQuery) GroupBy(field string, fields ...string) *UserLoginProfileGroupBy {
-	ulpq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &UserLoginProfileGroupBy{build: ulpq}
-	grbuild.flds = &ulpq.ctx.Fields
+func (_q *UserLoginProfileQuery) GroupBy(field string, fields ...string) *UserLoginProfileGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &UserLoginProfileGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = userloginprofile.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -329,89 +329,89 @@ func (ulpq *UserLoginProfileQuery) GroupBy(field string, fields ...string) *User
 //	client.UserLoginProfile.Query().
 //		Select(userloginprofile.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (ulpq *UserLoginProfileQuery) Select(fields ...string) *UserLoginProfileSelect {
-	ulpq.ctx.Fields = append(ulpq.ctx.Fields, fields...)
-	sbuild := &UserLoginProfileSelect{UserLoginProfileQuery: ulpq}
+func (_q *UserLoginProfileQuery) Select(fields ...string) *UserLoginProfileSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &UserLoginProfileSelect{UserLoginProfileQuery: _q}
 	sbuild.label = userloginprofile.Label
-	sbuild.flds, sbuild.scan = &ulpq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a UserLoginProfileSelect configured with the given aggregations.
-func (ulpq *UserLoginProfileQuery) Aggregate(fns ...AggregateFunc) *UserLoginProfileSelect {
-	return ulpq.Select().Aggregate(fns...)
+func (_q *UserLoginProfileQuery) Aggregate(fns ...AggregateFunc) *UserLoginProfileSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ulpq *UserLoginProfileQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ulpq.inters {
+func (_q *UserLoginProfileQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ulpq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ulpq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !userloginprofile.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ulpq.path != nil {
-		prev, err := ulpq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ulpq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (ulpq *UserLoginProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*UserLoginProfile, error) {
+func (_q *UserLoginProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*UserLoginProfile, error) {
 	var (
 		nodes       = []*UserLoginProfile{}
-		_spec       = ulpq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			ulpq.withUser != nil,
+			_q.withUser != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*UserLoginProfile).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &UserLoginProfile{config: ulpq.config}
+		node := &UserLoginProfile{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(ulpq.modifiers) > 0 {
-		_spec.Modifiers = ulpq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ulpq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ulpq.withUser; query != nil {
-		if err := ulpq.loadUser(ctx, query, nodes, nil,
+	if query := _q.withUser; query != nil {
+		if err := _q.loadUser(ctx, query, nodes, nil,
 			func(n *UserLoginProfile, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range ulpq.loadTotal {
-		if err := ulpq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (ulpq *UserLoginProfileQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*UserLoginProfile, init func(*UserLoginProfile), assign func(*UserLoginProfile, *User)) error {
+func (_q *UserLoginProfileQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*UserLoginProfile, init func(*UserLoginProfile), assign func(*UserLoginProfile, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*UserLoginProfile)
 	for i := range nodes {
@@ -441,27 +441,27 @@ func (ulpq *UserLoginProfileQuery) loadUser(ctx context.Context, query *UserQuer
 	return nil
 }
 
-func (ulpq *UserLoginProfileQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ulpq.querySpec()
-	if len(ulpq.modifiers) > 0 {
-		_spec.Modifiers = ulpq.modifiers
+func (_q *UserLoginProfileQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = ulpq.ctx.Fields
-	if len(ulpq.ctx.Fields) > 0 {
-		_spec.Unique = ulpq.ctx.Unique != nil && *ulpq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ulpq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ulpq *UserLoginProfileQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *UserLoginProfileQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(userloginprofile.Table, userloginprofile.Columns, sqlgraph.NewFieldSpec(userloginprofile.FieldID, field.TypeInt))
-	_spec.From = ulpq.sql
-	if unique := ulpq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ulpq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ulpq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userloginprofile.FieldID)
 		for i := range fields {
@@ -469,24 +469,24 @@ func (ulpq *UserLoginProfileQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if ulpq.withUser != nil {
+		if _q.withUser != nil {
 			_spec.Node.AddColumnOnce(userloginprofile.FieldUserID)
 		}
 	}
-	if ps := ulpq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ulpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ulpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ulpq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -496,33 +496,33 @@ func (ulpq *UserLoginProfileQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ulpq *UserLoginProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ulpq.driver.Dialect())
+func (_q *UserLoginProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(userloginprofile.Table)
-	columns := ulpq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = userloginprofile.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ulpq.sql != nil {
-		selector = ulpq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ulpq.ctx.Unique != nil && *ulpq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ulpq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ulpq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ulpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ulpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -535,41 +535,41 @@ type UserLoginProfileGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ulpgb *UserLoginProfileGroupBy) Aggregate(fns ...AggregateFunc) *UserLoginProfileGroupBy {
-	ulpgb.fns = append(ulpgb.fns, fns...)
-	return ulpgb
+func (_g *UserLoginProfileGroupBy) Aggregate(fns ...AggregateFunc) *UserLoginProfileGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ulpgb *UserLoginProfileGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ulpgb.build.ctx, ent.OpQueryGroupBy)
-	if err := ulpgb.build.prepareQuery(ctx); err != nil {
+func (_g *UserLoginProfileGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserLoginProfileQuery, *UserLoginProfileGroupBy](ctx, ulpgb.build, ulpgb, ulpgb.build.inters, v)
+	return scanWithInterceptors[*UserLoginProfileQuery, *UserLoginProfileGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ulpgb *UserLoginProfileGroupBy) sqlScan(ctx context.Context, root *UserLoginProfileQuery, v any) error {
+func (_g *UserLoginProfileGroupBy) sqlScan(ctx context.Context, root *UserLoginProfileQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ulpgb.fns))
-	for _, fn := range ulpgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ulpgb.flds)+len(ulpgb.fns))
-		for _, f := range *ulpgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ulpgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ulpgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -583,27 +583,27 @@ type UserLoginProfileSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ulps *UserLoginProfileSelect) Aggregate(fns ...AggregateFunc) *UserLoginProfileSelect {
-	ulps.fns = append(ulps.fns, fns...)
-	return ulps
+func (_s *UserLoginProfileSelect) Aggregate(fns ...AggregateFunc) *UserLoginProfileSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ulps *UserLoginProfileSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ulps.ctx, ent.OpQuerySelect)
-	if err := ulps.prepareQuery(ctx); err != nil {
+func (_s *UserLoginProfileSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserLoginProfileQuery, *UserLoginProfileSelect](ctx, ulps.UserLoginProfileQuery, ulps, ulps.inters, v)
+	return scanWithInterceptors[*UserLoginProfileQuery, *UserLoginProfileSelect](ctx, _s.UserLoginProfileQuery, _s, _s.inters, v)
 }
 
-func (ulps *UserLoginProfileSelect) sqlScan(ctx context.Context, root *UserLoginProfileQuery, v any) error {
+func (_s *UserLoginProfileSelect) sqlScan(ctx context.Context, root *UserLoginProfileQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ulps.fns))
-	for _, fn := range ulps.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ulps.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -611,7 +611,7 @@ func (ulps *UserLoginProfileSelect) sqlScan(ctx context.Context, root *UserLogin
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ulps.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

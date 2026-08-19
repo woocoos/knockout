@@ -25,198 +25,198 @@ type UserDeviceCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (udc *UserDeviceCreate) SetCreatedBy(i int) *UserDeviceCreate {
-	udc.mutation.SetCreatedBy(i)
-	return udc
+func (_c *UserDeviceCreate) SetCreatedBy(v int) *UserDeviceCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (udc *UserDeviceCreate) SetCreatedAt(t time.Time) *UserDeviceCreate {
-	udc.mutation.SetCreatedAt(t)
-	return udc
+func (_c *UserDeviceCreate) SetCreatedAt(v time.Time) *UserDeviceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableCreatedAt(t *time.Time) *UserDeviceCreate {
-	if t != nil {
-		udc.SetCreatedAt(*t)
+func (_c *UserDeviceCreate) SetNillableCreatedAt(v *time.Time) *UserDeviceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (udc *UserDeviceCreate) SetUpdatedBy(i int) *UserDeviceCreate {
-	udc.mutation.SetUpdatedBy(i)
-	return udc
+func (_c *UserDeviceCreate) SetUpdatedBy(v int) *UserDeviceCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableUpdatedBy(i *int) *UserDeviceCreate {
-	if i != nil {
-		udc.SetUpdatedBy(*i)
+func (_c *UserDeviceCreate) SetNillableUpdatedBy(v *int) *UserDeviceCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (udc *UserDeviceCreate) SetUpdatedAt(t time.Time) *UserDeviceCreate {
-	udc.mutation.SetUpdatedAt(t)
-	return udc
+func (_c *UserDeviceCreate) SetUpdatedAt(v time.Time) *UserDeviceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableUpdatedAt(t *time.Time) *UserDeviceCreate {
-	if t != nil {
-		udc.SetUpdatedAt(*t)
+func (_c *UserDeviceCreate) SetNillableUpdatedAt(v *time.Time) *UserDeviceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (udc *UserDeviceCreate) SetUserID(i int) *UserDeviceCreate {
-	udc.mutation.SetUserID(i)
-	return udc
+func (_c *UserDeviceCreate) SetUserID(v int) *UserDeviceCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableUserID(i *int) *UserDeviceCreate {
-	if i != nil {
-		udc.SetUserID(*i)
+func (_c *UserDeviceCreate) SetNillableUserID(v *int) *UserDeviceCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetDeviceUID sets the "device_uid" field.
-func (udc *UserDeviceCreate) SetDeviceUID(s string) *UserDeviceCreate {
-	udc.mutation.SetDeviceUID(s)
-	return udc
+func (_c *UserDeviceCreate) SetDeviceUID(v string) *UserDeviceCreate {
+	_c.mutation.SetDeviceUID(v)
+	return _c
 }
 
 // SetDeviceName sets the "device_name" field.
-func (udc *UserDeviceCreate) SetDeviceName(s string) *UserDeviceCreate {
-	udc.mutation.SetDeviceName(s)
-	return udc
+func (_c *UserDeviceCreate) SetDeviceName(v string) *UserDeviceCreate {
+	_c.mutation.SetDeviceName(v)
+	return _c
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableDeviceName(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetDeviceName(*s)
+func (_c *UserDeviceCreate) SetNillableDeviceName(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetDeviceName(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetSystemName sets the "system_name" field.
-func (udc *UserDeviceCreate) SetSystemName(s string) *UserDeviceCreate {
-	udc.mutation.SetSystemName(s)
-	return udc
+func (_c *UserDeviceCreate) SetSystemName(v string) *UserDeviceCreate {
+	_c.mutation.SetSystemName(v)
+	return _c
 }
 
 // SetNillableSystemName sets the "system_name" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableSystemName(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetSystemName(*s)
+func (_c *UserDeviceCreate) SetNillableSystemName(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetSystemName(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (udc *UserDeviceCreate) SetSystemVersion(s string) *UserDeviceCreate {
-	udc.mutation.SetSystemVersion(s)
-	return udc
+func (_c *UserDeviceCreate) SetSystemVersion(v string) *UserDeviceCreate {
+	_c.mutation.SetSystemVersion(v)
+	return _c
 }
 
 // SetNillableSystemVersion sets the "system_version" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableSystemVersion(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetSystemVersion(*s)
+func (_c *UserDeviceCreate) SetNillableSystemVersion(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetSystemVersion(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetAppVersion sets the "app_version" field.
-func (udc *UserDeviceCreate) SetAppVersion(s string) *UserDeviceCreate {
-	udc.mutation.SetAppVersion(s)
-	return udc
+func (_c *UserDeviceCreate) SetAppVersion(v string) *UserDeviceCreate {
+	_c.mutation.SetAppVersion(v)
+	return _c
 }
 
 // SetNillableAppVersion sets the "app_version" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableAppVersion(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetAppVersion(*s)
+func (_c *UserDeviceCreate) SetNillableAppVersion(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetAppVersion(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetDeviceModel sets the "device_model" field.
-func (udc *UserDeviceCreate) SetDeviceModel(s string) *UserDeviceCreate {
-	udc.mutation.SetDeviceModel(s)
-	return udc
+func (_c *UserDeviceCreate) SetDeviceModel(v string) *UserDeviceCreate {
+	_c.mutation.SetDeviceModel(v)
+	return _c
 }
 
 // SetNillableDeviceModel sets the "device_model" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableDeviceModel(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetDeviceModel(*s)
+func (_c *UserDeviceCreate) SetNillableDeviceModel(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetDeviceModel(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (udc *UserDeviceCreate) SetStatus(ts typex.SimpleStatus) *UserDeviceCreate {
-	udc.mutation.SetStatus(ts)
-	return udc
+func (_c *UserDeviceCreate) SetStatus(v typex.SimpleStatus) *UserDeviceCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableStatus(ts *typex.SimpleStatus) *UserDeviceCreate {
-	if ts != nil {
-		udc.SetStatus(*ts)
+func (_c *UserDeviceCreate) SetNillableStatus(v *typex.SimpleStatus) *UserDeviceCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetComments sets the "comments" field.
-func (udc *UserDeviceCreate) SetComments(s string) *UserDeviceCreate {
-	udc.mutation.SetComments(s)
-	return udc
+func (_c *UserDeviceCreate) SetComments(v string) *UserDeviceCreate {
+	_c.mutation.SetComments(v)
+	return _c
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableComments(s *string) *UserDeviceCreate {
-	if s != nil {
-		udc.SetComments(*s)
+func (_c *UserDeviceCreate) SetNillableComments(v *string) *UserDeviceCreate {
+	if v != nil {
+		_c.SetComments(*v)
 	}
-	return udc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (udc *UserDeviceCreate) SetID(i int) *UserDeviceCreate {
-	udc.mutation.SetID(i)
-	return udc
+func (_c *UserDeviceCreate) SetID(v int) *UserDeviceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (udc *UserDeviceCreate) SetUser(u *User) *UserDeviceCreate {
-	return udc.SetUserID(u.ID)
+func (_c *UserDeviceCreate) SetUser(v *User) *UserDeviceCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the UserDeviceMutation object of the builder.
-func (udc *UserDeviceCreate) Mutation() *UserDeviceMutation {
-	return udc.mutation
+func (_c *UserDeviceCreate) Mutation() *UserDeviceMutation {
+	return _c.mutation
 }
 
 // Save creates the UserDevice in the database.
-func (udc *UserDeviceCreate) Save(ctx context.Context) (*UserDevice, error) {
-	if err := udc.defaults(); err != nil {
+func (_c *UserDeviceCreate) Save(ctx context.Context) (*UserDevice, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, udc.sqlSave, udc.mutation, udc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (udc *UserDeviceCreate) SaveX(ctx context.Context) *UserDevice {
-	v, err := udc.Save(ctx)
+func (_c *UserDeviceCreate) SaveX(ctx context.Context) *UserDevice {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -224,72 +224,72 @@ func (udc *UserDeviceCreate) SaveX(ctx context.Context) *UserDevice {
 }
 
 // Exec executes the query.
-func (udc *UserDeviceCreate) Exec(ctx context.Context) error {
-	_, err := udc.Save(ctx)
+func (_c *UserDeviceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (udc *UserDeviceCreate) ExecX(ctx context.Context) {
-	if err := udc.Exec(ctx); err != nil {
+func (_c *UserDeviceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (udc *UserDeviceCreate) defaults() error {
-	if _, ok := udc.mutation.CreatedAt(); !ok {
+func (_c *UserDeviceCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if userdevice.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized userdevice.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := userdevice.DefaultCreatedAt()
-		udc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (udc *UserDeviceCreate) check() error {
-	if _, ok := udc.mutation.CreatedBy(); !ok {
+func (_c *UserDeviceCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "UserDevice.created_by"`)}
 	}
-	if _, ok := udc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserDevice.created_at"`)}
 	}
-	if _, ok := udc.mutation.DeviceUID(); !ok {
+	if _, ok := _c.mutation.DeviceUID(); !ok {
 		return &ValidationError{Name: "device_uid", err: errors.New(`ent: missing required field "UserDevice.device_uid"`)}
 	}
-	if v, ok := udc.mutation.DeviceUID(); ok {
+	if v, ok := _c.mutation.DeviceUID(); ok {
 		if err := userdevice.DeviceUIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_uid", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_uid": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.DeviceName(); ok {
+	if v, ok := _c.mutation.DeviceName(); ok {
 		if err := userdevice.DeviceNameValidator(v); err != nil {
 			return &ValidationError{Name: "device_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_name": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.SystemName(); ok {
+	if v, ok := _c.mutation.SystemName(); ok {
 		if err := userdevice.SystemNameValidator(v); err != nil {
 			return &ValidationError{Name: "system_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_name": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.SystemVersion(); ok {
+	if v, ok := _c.mutation.SystemVersion(); ok {
 		if err := userdevice.SystemVersionValidator(v); err != nil {
 			return &ValidationError{Name: "system_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_version": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.AppVersion(); ok {
+	if v, ok := _c.mutation.AppVersion(); ok {
 		if err := userdevice.AppVersionValidator(v); err != nil {
 			return &ValidationError{Name: "app_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.app_version": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.DeviceModel(); ok {
+	if v, ok := _c.mutation.DeviceModel(); ok {
 		if err := userdevice.DeviceModelValidator(v); err != nil {
 			return &ValidationError{Name: "device_model", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_model": %w`, err)}
 		}
 	}
-	if v, ok := udc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := userdevice.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserDevice.status": %w`, err)}
 		}
@@ -297,12 +297,12 @@ func (udc *UserDeviceCreate) check() error {
 	return nil
 }
 
-func (udc *UserDeviceCreate) sqlSave(ctx context.Context) (*UserDevice, error) {
-	if err := udc.check(); err != nil {
+func (_c *UserDeviceCreate) sqlSave(ctx context.Context) (*UserDevice, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := udc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, udc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -312,70 +312,70 @@ func (udc *UserDeviceCreate) sqlSave(ctx context.Context) (*UserDevice, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	udc.mutation.id = &_node.ID
-	udc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (udc *UserDeviceCreate) createSpec() (*UserDevice, *sqlgraph.CreateSpec) {
+func (_c *UserDeviceCreate) createSpec() (*UserDevice, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserDevice{config: udc.config}
+		_node = &UserDevice{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(userdevice.Table, sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = udc.conflict
-	if id, ok := udc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := udc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(userdevice.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := udc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(userdevice.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := udc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(userdevice.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := udc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(userdevice.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := udc.mutation.DeviceUID(); ok {
+	if value, ok := _c.mutation.DeviceUID(); ok {
 		_spec.SetField(userdevice.FieldDeviceUID, field.TypeString, value)
 		_node.DeviceUID = value
 	}
-	if value, ok := udc.mutation.DeviceName(); ok {
+	if value, ok := _c.mutation.DeviceName(); ok {
 		_spec.SetField(userdevice.FieldDeviceName, field.TypeString, value)
 		_node.DeviceName = value
 	}
-	if value, ok := udc.mutation.SystemName(); ok {
+	if value, ok := _c.mutation.SystemName(); ok {
 		_spec.SetField(userdevice.FieldSystemName, field.TypeString, value)
 		_node.SystemName = value
 	}
-	if value, ok := udc.mutation.SystemVersion(); ok {
+	if value, ok := _c.mutation.SystemVersion(); ok {
 		_spec.SetField(userdevice.FieldSystemVersion, field.TypeString, value)
 		_node.SystemVersion = value
 	}
-	if value, ok := udc.mutation.AppVersion(); ok {
+	if value, ok := _c.mutation.AppVersion(); ok {
 		_spec.SetField(userdevice.FieldAppVersion, field.TypeString, value)
 		_node.AppVersion = value
 	}
-	if value, ok := udc.mutation.DeviceModel(); ok {
+	if value, ok := _c.mutation.DeviceModel(); ok {
 		_spec.SetField(userdevice.FieldDeviceModel, field.TypeString, value)
 		_node.DeviceModel = value
 	}
-	if value, ok := udc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(userdevice.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := udc.mutation.Comments(); ok {
+	if value, ok := _c.mutation.Comments(); ok {
 		_spec.SetField(userdevice.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if nodes := udc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -411,10 +411,10 @@ func (udc *UserDeviceCreate) createSpec() (*UserDevice, *sqlgraph.CreateSpec) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (udc *UserDeviceCreate) OnConflict(opts ...sql.ConflictOption) *UserDeviceUpsertOne {
-	udc.conflict = opts
+func (_c *UserDeviceCreate) OnConflict(opts ...sql.ConflictOption) *UserDeviceUpsertOne {
+	_c.conflict = opts
 	return &UserDeviceUpsertOne{
-		create: udc,
+		create: _c,
 	}
 }
 
@@ -424,10 +424,10 @@ func (udc *UserDeviceCreate) OnConflict(opts ...sql.ConflictOption) *UserDeviceU
 //	client.UserDevice.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (udc *UserDeviceCreate) OnConflictColumns(columns ...string) *UserDeviceUpsertOne {
-	udc.conflict = append(udc.conflict, sql.ConflictColumns(columns...))
+func (_c *UserDeviceCreate) OnConflictColumns(columns ...string) *UserDeviceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserDeviceUpsertOne{
-		create: udc,
+		create: _c,
 	}
 }
 
@@ -933,16 +933,16 @@ type UserDeviceCreateBulk struct {
 }
 
 // Save creates the UserDevice entities in the database.
-func (udcb *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, error) {
-	if udcb.err != nil {
-		return nil, udcb.err
+func (_c *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(udcb.builders))
-	nodes := make([]*UserDevice, len(udcb.builders))
-	mutators := make([]Mutator, len(udcb.builders))
-	for i := range udcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserDevice, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := udcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserDeviceMutation)
@@ -956,12 +956,12 @@ func (udcb *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, udcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = udcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, udcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -985,7 +985,7 @@ func (udcb *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, udcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -993,8 +993,8 @@ func (udcb *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (udcb *UserDeviceCreateBulk) SaveX(ctx context.Context) []*UserDevice {
-	v, err := udcb.Save(ctx)
+func (_c *UserDeviceCreateBulk) SaveX(ctx context.Context) []*UserDevice {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1002,14 +1002,14 @@ func (udcb *UserDeviceCreateBulk) SaveX(ctx context.Context) []*UserDevice {
 }
 
 // Exec executes the query.
-func (udcb *UserDeviceCreateBulk) Exec(ctx context.Context) error {
-	_, err := udcb.Save(ctx)
+func (_c *UserDeviceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (udcb *UserDeviceCreateBulk) ExecX(ctx context.Context) {
-	if err := udcb.Exec(ctx); err != nil {
+func (_c *UserDeviceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1029,10 +1029,10 @@ func (udcb *UserDeviceCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (udcb *UserDeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserDeviceUpsertBulk {
-	udcb.conflict = opts
+func (_c *UserDeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserDeviceUpsertBulk {
+	_c.conflict = opts
 	return &UserDeviceUpsertBulk{
-		create: udcb,
+		create: _c,
 	}
 }
 
@@ -1042,10 +1042,10 @@ func (udcb *UserDeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserDe
 //	client.UserDevice.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (udcb *UserDeviceCreateBulk) OnConflictColumns(columns ...string) *UserDeviceUpsertBulk {
-	udcb.conflict = append(udcb.conflict, sql.ConflictColumns(columns...))
+func (_c *UserDeviceCreateBulk) OnConflictColumns(columns ...string) *UserDeviceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &UserDeviceUpsertBulk{
-		create: udcb,
+		create: _c,
 	}
 }
 

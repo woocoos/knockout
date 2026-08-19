@@ -26,115 +26,115 @@ type OrgUserPreferenceCreate struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (oupc *OrgUserPreferenceCreate) SetCreatedBy(i int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetCreatedBy(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetCreatedBy(v int) *OrgUserPreferenceCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (oupc *OrgUserPreferenceCreate) SetCreatedAt(t time.Time) *OrgUserPreferenceCreate {
-	oupc.mutation.SetCreatedAt(t)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetCreatedAt(v time.Time) *OrgUserPreferenceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (oupc *OrgUserPreferenceCreate) SetNillableCreatedAt(t *time.Time) *OrgUserPreferenceCreate {
-	if t != nil {
-		oupc.SetCreatedAt(*t)
+func (_c *OrgUserPreferenceCreate) SetNillableCreatedAt(v *time.Time) *OrgUserPreferenceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return oupc
+	return _c
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (oupc *OrgUserPreferenceCreate) SetUpdatedBy(i int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetUpdatedBy(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetUpdatedBy(v int) *OrgUserPreferenceCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oupc *OrgUserPreferenceCreate) SetNillableUpdatedBy(i *int) *OrgUserPreferenceCreate {
-	if i != nil {
-		oupc.SetUpdatedBy(*i)
+func (_c *OrgUserPreferenceCreate) SetNillableUpdatedBy(v *int) *OrgUserPreferenceCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
 	}
-	return oupc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (oupc *OrgUserPreferenceCreate) SetUpdatedAt(t time.Time) *OrgUserPreferenceCreate {
-	oupc.mutation.SetUpdatedAt(t)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetUpdatedAt(v time.Time) *OrgUserPreferenceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oupc *OrgUserPreferenceCreate) SetNillableUpdatedAt(t *time.Time) *OrgUserPreferenceCreate {
-	if t != nil {
-		oupc.SetUpdatedAt(*t)
+func (_c *OrgUserPreferenceCreate) SetNillableUpdatedAt(v *time.Time) *OrgUserPreferenceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return oupc
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (oupc *OrgUserPreferenceCreate) SetUserID(i int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetUserID(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetUserID(v int) *OrgUserPreferenceCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetOrgID sets the "org_id" field.
-func (oupc *OrgUserPreferenceCreate) SetOrgID(i int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetOrgID(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetOrgID(v int) *OrgUserPreferenceCreate {
+	_c.mutation.SetOrgID(v)
+	return _c
 }
 
 // SetMenuFavorite sets the "menu_favorite" field.
-func (oupc *OrgUserPreferenceCreate) SetMenuFavorite(i []int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetMenuFavorite(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetMenuFavorite(v []int) *OrgUserPreferenceCreate {
+	_c.mutation.SetMenuFavorite(v)
+	return _c
 }
 
 // SetMenuRecent sets the "menu_recent" field.
-func (oupc *OrgUserPreferenceCreate) SetMenuRecent(i []int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetMenuRecent(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetMenuRecent(v []int) *OrgUserPreferenceCreate {
+	_c.mutation.SetMenuRecent(v)
+	return _c
 }
 
 // SetClientPreferences sets the "client_preferences" field.
-func (oupc *OrgUserPreferenceCreate) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceCreate {
-	oupc.mutation.SetClientPreferences(tp)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceCreate {
+	_c.mutation.SetClientPreferences(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (oupc *OrgUserPreferenceCreate) SetID(i int) *OrgUserPreferenceCreate {
-	oupc.mutation.SetID(i)
-	return oupc
+func (_c *OrgUserPreferenceCreate) SetID(v int) *OrgUserPreferenceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (oupc *OrgUserPreferenceCreate) SetUser(u *User) *OrgUserPreferenceCreate {
-	return oupc.SetUserID(u.ID)
+func (_c *OrgUserPreferenceCreate) SetUser(v *User) *OrgUserPreferenceCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // SetOrg sets the "org" edge to the Org entity.
-func (oupc *OrgUserPreferenceCreate) SetOrg(o *Org) *OrgUserPreferenceCreate {
-	return oupc.SetOrgID(o.ID)
+func (_c *OrgUserPreferenceCreate) SetOrg(v *Org) *OrgUserPreferenceCreate {
+	return _c.SetOrgID(v.ID)
 }
 
 // Mutation returns the OrgUserPreferenceMutation object of the builder.
-func (oupc *OrgUserPreferenceCreate) Mutation() *OrgUserPreferenceMutation {
-	return oupc.mutation
+func (_c *OrgUserPreferenceCreate) Mutation() *OrgUserPreferenceMutation {
+	return _c.mutation
 }
 
 // Save creates the OrgUserPreference in the database.
-func (oupc *OrgUserPreferenceCreate) Save(ctx context.Context) (*OrgUserPreference, error) {
-	if err := oupc.defaults(); err != nil {
+func (_c *OrgUserPreferenceCreate) Save(ctx context.Context) (*OrgUserPreference, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, oupc.sqlSave, oupc.mutation, oupc.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (oupc *OrgUserPreferenceCreate) SaveX(ctx context.Context) *OrgUserPreference {
-	v, err := oupc.Save(ctx)
+func (_c *OrgUserPreferenceCreate) SaveX(ctx context.Context) *OrgUserPreference {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -142,59 +142,59 @@ func (oupc *OrgUserPreferenceCreate) SaveX(ctx context.Context) *OrgUserPreferen
 }
 
 // Exec executes the query.
-func (oupc *OrgUserPreferenceCreate) Exec(ctx context.Context) error {
-	_, err := oupc.Save(ctx)
+func (_c *OrgUserPreferenceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oupc *OrgUserPreferenceCreate) ExecX(ctx context.Context) {
-	if err := oupc.Exec(ctx); err != nil {
+func (_c *OrgUserPreferenceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (oupc *OrgUserPreferenceCreate) defaults() error {
-	if _, ok := oupc.mutation.CreatedAt(); !ok {
+func (_c *OrgUserPreferenceCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if orguserpreference.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized orguserpreference.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
 		v := orguserpreference.DefaultCreatedAt()
-		oupc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (oupc *OrgUserPreferenceCreate) check() error {
-	if _, ok := oupc.mutation.CreatedBy(); !ok {
+func (_c *OrgUserPreferenceCreate) check() error {
+	if _, ok := _c.mutation.CreatedBy(); !ok {
 		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "OrgUserPreference.created_by"`)}
 	}
-	if _, ok := oupc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrgUserPreference.created_at"`)}
 	}
-	if _, ok := oupc.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrgUserPreference.user_id"`)}
 	}
-	if _, ok := oupc.mutation.OrgID(); !ok {
+	if _, ok := _c.mutation.OrgID(); !ok {
 		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgUserPreference.org_id"`)}
 	}
-	if len(oupc.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgUserPreference.user"`)}
 	}
-	if len(oupc.mutation.OrgIDs()) == 0 {
+	if len(_c.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgUserPreference.org"`)}
 	}
 	return nil
 }
 
-func (oupc *OrgUserPreferenceCreate) sqlSave(ctx context.Context) (*OrgUserPreference, error) {
-	if err := oupc.check(); err != nil {
+func (_c *OrgUserPreferenceCreate) sqlSave(ctx context.Context) (*OrgUserPreference, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := oupc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, oupc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -204,50 +204,50 @@ func (oupc *OrgUserPreferenceCreate) sqlSave(ctx context.Context) (*OrgUserPrefe
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	oupc.mutation.id = &_node.ID
-	oupc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (oupc *OrgUserPreferenceCreate) createSpec() (*OrgUserPreference, *sqlgraph.CreateSpec) {
+func (_c *OrgUserPreferenceCreate) createSpec() (*OrgUserPreference, *sqlgraph.CreateSpec) {
 	var (
-		_node = &OrgUserPreference{config: oupc.config}
+		_node = &OrgUserPreference{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(orguserpreference.Table, sqlgraph.NewFieldSpec(orguserpreference.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = oupc.conflict
-	if id, ok := oupc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := oupc.mutation.CreatedBy(); ok {
+	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(orguserpreference.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
 	}
-	if value, ok := oupc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(orguserpreference.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := oupc.mutation.UpdatedBy(); ok {
+	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedBy, field.TypeInt, value)
 		_node.UpdatedBy = value
 	}
-	if value, ok := oupc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguserpreference.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := oupc.mutation.MenuFavorite(); ok {
+	if value, ok := _c.mutation.MenuFavorite(); ok {
 		_spec.SetField(orguserpreference.FieldMenuFavorite, field.TypeJSON, value)
 		_node.MenuFavorite = value
 	}
-	if value, ok := oupc.mutation.MenuRecent(); ok {
+	if value, ok := _c.mutation.MenuRecent(); ok {
 		_spec.SetField(orguserpreference.FieldMenuRecent, field.TypeJSON, value)
 		_node.MenuRecent = value
 	}
-	if value, ok := oupc.mutation.ClientPreferences(); ok {
+	if value, ok := _c.mutation.ClientPreferences(); ok {
 		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
 		_node.ClientPreferences = value
 	}
-	if nodes := oupc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -264,7 +264,7 @@ func (oupc *OrgUserPreferenceCreate) createSpec() (*OrgUserPreference, *sqlgraph
 		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := oupc.mutation.OrgIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -300,10 +300,10 @@ func (oupc *OrgUserPreferenceCreate) createSpec() (*OrgUserPreference, *sqlgraph
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (oupc *OrgUserPreferenceCreate) OnConflict(opts ...sql.ConflictOption) *OrgUserPreferenceUpsertOne {
-	oupc.conflict = opts
+func (_c *OrgUserPreferenceCreate) OnConflict(opts ...sql.ConflictOption) *OrgUserPreferenceUpsertOne {
+	_c.conflict = opts
 	return &OrgUserPreferenceUpsertOne{
-		create: oupc,
+		create: _c,
 	}
 }
 
@@ -313,10 +313,10 @@ func (oupc *OrgUserPreferenceCreate) OnConflict(opts ...sql.ConflictOption) *Org
 //	client.OrgUserPreference.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (oupc *OrgUserPreferenceCreate) OnConflictColumns(columns ...string) *OrgUserPreferenceUpsertOne {
-	oupc.conflict = append(oupc.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgUserPreferenceCreate) OnConflictColumns(columns ...string) *OrgUserPreferenceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUserPreferenceUpsertOne{
-		create: oupc,
+		create: _c,
 	}
 }
 
@@ -666,16 +666,16 @@ type OrgUserPreferenceCreateBulk struct {
 }
 
 // Save creates the OrgUserPreference entities in the database.
-func (oupcb *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserPreference, error) {
-	if oupcb.err != nil {
-		return nil, oupcb.err
+func (_c *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserPreference, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(oupcb.builders))
-	nodes := make([]*OrgUserPreference, len(oupcb.builders))
-	mutators := make([]Mutator, len(oupcb.builders))
-	for i := range oupcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*OrgUserPreference, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := oupcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrgUserPreferenceMutation)
@@ -689,12 +689,12 @@ func (oupcb *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserP
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, oupcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = oupcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, oupcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -718,7 +718,7 @@ func (oupcb *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserP
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, oupcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -726,8 +726,8 @@ func (oupcb *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserP
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (oupcb *OrgUserPreferenceCreateBulk) SaveX(ctx context.Context) []*OrgUserPreference {
-	v, err := oupcb.Save(ctx)
+func (_c *OrgUserPreferenceCreateBulk) SaveX(ctx context.Context) []*OrgUserPreference {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -735,14 +735,14 @@ func (oupcb *OrgUserPreferenceCreateBulk) SaveX(ctx context.Context) []*OrgUserP
 }
 
 // Exec executes the query.
-func (oupcb *OrgUserPreferenceCreateBulk) Exec(ctx context.Context) error {
-	_, err := oupcb.Save(ctx)
+func (_c *OrgUserPreferenceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oupcb *OrgUserPreferenceCreateBulk) ExecX(ctx context.Context) {
-	if err := oupcb.Exec(ctx); err != nil {
+func (_c *OrgUserPreferenceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -762,10 +762,10 @@ func (oupcb *OrgUserPreferenceCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedBy(v+v).
 //		}).
 //		Exec(ctx)
-func (oupcb *OrgUserPreferenceCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUserPreferenceUpsertBulk {
-	oupcb.conflict = opts
+func (_c *OrgUserPreferenceCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUserPreferenceUpsertBulk {
+	_c.conflict = opts
 	return &OrgUserPreferenceUpsertBulk{
-		create: oupcb,
+		create: _c,
 	}
 }
 
@@ -775,10 +775,10 @@ func (oupcb *OrgUserPreferenceCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.OrgUserPreference.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (oupcb *OrgUserPreferenceCreateBulk) OnConflictColumns(columns ...string) *OrgUserPreferenceUpsertBulk {
-	oupcb.conflict = append(oupcb.conflict, sql.ConflictColumns(columns...))
+func (_c *OrgUserPreferenceCreateBulk) OnConflictColumns(columns ...string) *OrgUserPreferenceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &OrgUserPreferenceUpsertBulk{
-		create: oupcb,
+		create: _c,
 	}
 }
 

@@ -228,7 +228,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the User fields.
-func (u *User) assignValues(columns []string, values []any) error {
+func (_m *User) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -239,125 +239,125 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			u.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case user.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				u.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				u.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case user.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				u.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case user.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
-				u.DeletedAt = value.Time
+				_m.DeletedAt = value.Time
 			}
 		case user.FieldPrincipalName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field principal_name", values[i])
 			} else if value.Valid {
-				u.PrincipalName = value.String
+				_m.PrincipalName = value.String
 			}
 		case user.FieldDisplayName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field display_name", values[i])
 			} else if value.Valid {
-				u.DisplayName = value.String
+				_m.DisplayName = value.String
 			}
 		case user.FieldUserType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field user_type", values[i])
 			} else if value.Valid {
-				u.UserType = user.UserType(value.String)
+				_m.UserType = user.UserType(value.String)
 			}
 		case user.FieldCreationType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field creation_type", values[i])
 			} else if value.Valid {
-				u.CreationType = user.CreationType(value.String)
+				_m.CreationType = user.CreationType(value.String)
 			}
 		case user.FieldRegisterIP:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field register_ip", values[i])
 			} else if value.Valid {
-				u.RegisterIP = new(string)
-				*u.RegisterIP = value.String
+				_m.RegisterIP = new(string)
+				*_m.RegisterIP = value.String
 			}
 		case user.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				u.Status = types.UserStatus(value.String)
+				_m.Status = types.UserStatus(value.String)
 			}
 		case user.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
-				u.Comments = value.String
+				_m.Comments = value.String
 			}
 		case user.FieldAvatar:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value.Valid {
-				u.Avatar = value.String
+				_m.Avatar = value.String
 			}
 		case user.FieldGender:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field gender", values[i])
 			} else if value.Valid {
-				u.Gender = user.Gender(value.String)
+				_m.Gender = user.Gender(value.String)
 			}
 		case user.FieldCitizenshipID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field citizenship_id", values[i])
 			} else if value.Valid {
-				u.CitizenshipID = new(int)
-				*u.CitizenshipID = int(value.Int64)
+				_m.CitizenshipID = new(int)
+				*_m.CitizenshipID = int(value.Int64)
 			}
 		case user.FieldFirstName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field first_name", values[i])
 			} else if value.Valid {
-				u.FirstName = value.String
+				_m.FirstName = value.String
 			}
 		case user.FieldMiddleName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field middle_name", values[i])
 			} else if value.Valid {
-				u.MiddleName = value.String
+				_m.MiddleName = value.String
 			}
 		case user.FieldLastName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field last_name", values[i])
 			} else if value.Valid {
-				u.LastName = value.String
+				_m.LastName = value.String
 			}
 		case user.FieldLang:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field lang", values[i])
 			} else if value.Valid {
-				u.Lang = value.String
+				_m.Lang = value.String
 			}
 		default:
-			u.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -365,365 +365,365 @@ func (u *User) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the User.
 // This includes values selected through modifiers, order, etc.
-func (u *User) Value(name string) (ent.Value, error) {
-	return u.selectValues.Get(name)
+func (_m *User) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryIdentities queries the "identities" edge of the User entity.
-func (u *User) QueryIdentities() *UserIdentityQuery {
-	return NewUserClient(u.config).QueryIdentities(u)
+func (_m *User) QueryIdentities() *UserIdentityQuery {
+	return NewUserClient(_m.config).QueryIdentities(_m)
 }
 
 // QueryLoginProfile queries the "login_profile" edge of the User entity.
-func (u *User) QueryLoginProfile() *UserLoginProfileQuery {
-	return NewUserClient(u.config).QueryLoginProfile(u)
+func (_m *User) QueryLoginProfile() *UserLoginProfileQuery {
+	return NewUserClient(_m.config).QueryLoginProfile(_m)
 }
 
 // QueryPasswords queries the "passwords" edge of the User entity.
-func (u *User) QueryPasswords() *UserPasswordQuery {
-	return NewUserClient(u.config).QueryPasswords(u)
+func (_m *User) QueryPasswords() *UserPasswordQuery {
+	return NewUserClient(_m.config).QueryPasswords(_m)
 }
 
 // QueryDevices queries the "devices" edge of the User entity.
-func (u *User) QueryDevices() *UserDeviceQuery {
-	return NewUserClient(u.config).QueryDevices(u)
+func (_m *User) QueryDevices() *UserDeviceQuery {
+	return NewUserClient(_m.config).QueryDevices(_m)
 }
 
 // QueryOrgs queries the "orgs" edge of the User entity.
-func (u *User) QueryOrgs() *OrgQuery {
-	return NewUserClient(u.config).QueryOrgs(u)
+func (_m *User) QueryOrgs() *OrgQuery {
+	return NewUserClient(_m.config).QueryOrgs(_m)
 }
 
 // QueryPermissions queries the "permissions" edge of the User entity.
-func (u *User) QueryPermissions() *PermissionQuery {
-	return NewUserClient(u.config).QueryPermissions(u)
+func (_m *User) QueryPermissions() *PermissionQuery {
+	return NewUserClient(_m.config).QueryPermissions(_m)
 }
 
 // QueryOauthClients queries the "oauth_clients" edge of the User entity.
-func (u *User) QueryOauthClients() *OauthClientQuery {
-	return NewUserClient(u.config).QueryOauthClients(u)
+func (_m *User) QueryOauthClients() *OauthClientQuery {
+	return NewUserClient(_m.config).QueryOauthClients(_m)
 }
 
 // QueryAddresses queries the "addresses" edge of the User entity.
-func (u *User) QueryAddresses() *UserAddrQuery {
-	return NewUserClient(u.config).QueryAddresses(u)
+func (_m *User) QueryAddresses() *UserAddrQuery {
+	return NewUserClient(_m.config).QueryAddresses(_m)
 }
 
 // QueryCitizenship queries the "citizenship" edge of the User entity.
-func (u *User) QueryCitizenship() *CountryQuery {
-	return NewUserClient(u.config).QueryCitizenship(u)
+func (_m *User) QueryCitizenship() *CountryQuery {
+	return NewUserClient(_m.config).QueryCitizenship(_m)
 }
 
 // QueryUserQuota queries the "user_quota" edge of the User entity.
-func (u *User) QueryUserQuota() *QuotaQuery {
-	return NewUserClient(u.config).QueryUserQuota(u)
+func (_m *User) QueryUserQuota() *QuotaQuery {
+	return NewUserClient(_m.config).QueryUserQuota(_m)
 }
 
 // QueryOrgUser queries the "org_user" edge of the User entity.
-func (u *User) QueryOrgUser() *OrgUserQuery {
-	return NewUserClient(u.config).QueryOrgUser(u)
+func (_m *User) QueryOrgUser() *OrgUserQuery {
+	return NewUserClient(_m.config).QueryOrgUser(_m)
 }
 
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return NewUserClient(u.config).UpdateOne(u)
+func (_m *User) Update() *UserUpdateOne {
+	return NewUserClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the User entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	_tx, ok := u.config.driver.(*txDriver)
+func (_m *User) Unwrap() *User {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: User is not a transactional entity")
 	}
-	u.config.driver = _tx.drv
-	return u
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (_m *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", u.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", u.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
-	builder.WriteString(u.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(_m.DeletedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("principal_name=")
-	builder.WriteString(u.PrincipalName)
+	builder.WriteString(_m.PrincipalName)
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
-	builder.WriteString(u.DisplayName)
+	builder.WriteString(_m.DisplayName)
 	builder.WriteString(", ")
 	builder.WriteString("user_type=")
-	builder.WriteString(fmt.Sprintf("%v", u.UserType))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserType))
 	builder.WriteString(", ")
 	builder.WriteString("creation_type=")
-	builder.WriteString(fmt.Sprintf("%v", u.CreationType))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreationType))
 	builder.WriteString(", ")
-	if v := u.RegisterIP; v != nil {
+	if v := _m.RegisterIP; v != nil {
 		builder.WriteString("register_ip=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", u.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
-	builder.WriteString(u.Comments)
+	builder.WriteString(_m.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("avatar=")
-	builder.WriteString(u.Avatar)
+	builder.WriteString(_m.Avatar)
 	builder.WriteString(", ")
 	builder.WriteString("gender=")
-	builder.WriteString(fmt.Sprintf("%v", u.Gender))
+	builder.WriteString(fmt.Sprintf("%v", _m.Gender))
 	builder.WriteString(", ")
-	if v := u.CitizenshipID; v != nil {
+	if v := _m.CitizenshipID; v != nil {
 		builder.WriteString("citizenship_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("first_name=")
-	builder.WriteString(u.FirstName)
+	builder.WriteString(_m.FirstName)
 	builder.WriteString(", ")
 	builder.WriteString("middle_name=")
-	builder.WriteString(u.MiddleName)
+	builder.WriteString(_m.MiddleName)
 	builder.WriteString(", ")
 	builder.WriteString("last_name=")
-	builder.WriteString(u.LastName)
+	builder.WriteString(_m.LastName)
 	builder.WriteString(", ")
 	builder.WriteString("lang=")
-	builder.WriteString(u.Lang)
+	builder.WriteString(_m.Lang)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedIdentities returns the Identities named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedIdentities(name string) ([]*UserIdentity, error) {
-	if u.Edges.namedIdentities == nil {
+func (_m *User) NamedIdentities(name string) ([]*UserIdentity, error) {
+	if _m.Edges.namedIdentities == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedIdentities[name]
+	nodes, ok := _m.Edges.namedIdentities[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedIdentities(name string, edges ...*UserIdentity) {
-	if u.Edges.namedIdentities == nil {
-		u.Edges.namedIdentities = make(map[string][]*UserIdentity)
+func (_m *User) appendNamedIdentities(name string, edges ...*UserIdentity) {
+	if _m.Edges.namedIdentities == nil {
+		_m.Edges.namedIdentities = make(map[string][]*UserIdentity)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedIdentities[name] = []*UserIdentity{}
+		_m.Edges.namedIdentities[name] = []*UserIdentity{}
 	} else {
-		u.Edges.namedIdentities[name] = append(u.Edges.namedIdentities[name], edges...)
+		_m.Edges.namedIdentities[name] = append(_m.Edges.namedIdentities[name], edges...)
 	}
 }
 
 // NamedPasswords returns the Passwords named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedPasswords(name string) ([]*UserPassword, error) {
-	if u.Edges.namedPasswords == nil {
+func (_m *User) NamedPasswords(name string) ([]*UserPassword, error) {
+	if _m.Edges.namedPasswords == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedPasswords[name]
+	nodes, ok := _m.Edges.namedPasswords[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedPasswords(name string, edges ...*UserPassword) {
-	if u.Edges.namedPasswords == nil {
-		u.Edges.namedPasswords = make(map[string][]*UserPassword)
+func (_m *User) appendNamedPasswords(name string, edges ...*UserPassword) {
+	if _m.Edges.namedPasswords == nil {
+		_m.Edges.namedPasswords = make(map[string][]*UserPassword)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedPasswords[name] = []*UserPassword{}
+		_m.Edges.namedPasswords[name] = []*UserPassword{}
 	} else {
-		u.Edges.namedPasswords[name] = append(u.Edges.namedPasswords[name], edges...)
+		_m.Edges.namedPasswords[name] = append(_m.Edges.namedPasswords[name], edges...)
 	}
 }
 
 // NamedDevices returns the Devices named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedDevices(name string) ([]*UserDevice, error) {
-	if u.Edges.namedDevices == nil {
+func (_m *User) NamedDevices(name string) ([]*UserDevice, error) {
+	if _m.Edges.namedDevices == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedDevices[name]
+	nodes, ok := _m.Edges.namedDevices[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedDevices(name string, edges ...*UserDevice) {
-	if u.Edges.namedDevices == nil {
-		u.Edges.namedDevices = make(map[string][]*UserDevice)
+func (_m *User) appendNamedDevices(name string, edges ...*UserDevice) {
+	if _m.Edges.namedDevices == nil {
+		_m.Edges.namedDevices = make(map[string][]*UserDevice)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedDevices[name] = []*UserDevice{}
+		_m.Edges.namedDevices[name] = []*UserDevice{}
 	} else {
-		u.Edges.namedDevices[name] = append(u.Edges.namedDevices[name], edges...)
+		_m.Edges.namedDevices[name] = append(_m.Edges.namedDevices[name], edges...)
 	}
 }
 
 // NamedOrgs returns the Orgs named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedOrgs(name string) ([]*Org, error) {
-	if u.Edges.namedOrgs == nil {
+func (_m *User) NamedOrgs(name string) ([]*Org, error) {
+	if _m.Edges.namedOrgs == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedOrgs[name]
+	nodes, ok := _m.Edges.namedOrgs[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedOrgs(name string, edges ...*Org) {
-	if u.Edges.namedOrgs == nil {
-		u.Edges.namedOrgs = make(map[string][]*Org)
+func (_m *User) appendNamedOrgs(name string, edges ...*Org) {
+	if _m.Edges.namedOrgs == nil {
+		_m.Edges.namedOrgs = make(map[string][]*Org)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedOrgs[name] = []*Org{}
+		_m.Edges.namedOrgs[name] = []*Org{}
 	} else {
-		u.Edges.namedOrgs[name] = append(u.Edges.namedOrgs[name], edges...)
+		_m.Edges.namedOrgs[name] = append(_m.Edges.namedOrgs[name], edges...)
 	}
 }
 
 // NamedPermissions returns the Permissions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedPermissions(name string) ([]*Permission, error) {
-	if u.Edges.namedPermissions == nil {
+func (_m *User) NamedPermissions(name string) ([]*Permission, error) {
+	if _m.Edges.namedPermissions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedPermissions[name]
+	nodes, ok := _m.Edges.namedPermissions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedPermissions(name string, edges ...*Permission) {
-	if u.Edges.namedPermissions == nil {
-		u.Edges.namedPermissions = make(map[string][]*Permission)
+func (_m *User) appendNamedPermissions(name string, edges ...*Permission) {
+	if _m.Edges.namedPermissions == nil {
+		_m.Edges.namedPermissions = make(map[string][]*Permission)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedPermissions[name] = []*Permission{}
+		_m.Edges.namedPermissions[name] = []*Permission{}
 	} else {
-		u.Edges.namedPermissions[name] = append(u.Edges.namedPermissions[name], edges...)
+		_m.Edges.namedPermissions[name] = append(_m.Edges.namedPermissions[name], edges...)
 	}
 }
 
 // NamedOauthClients returns the OauthClients named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedOauthClients(name string) ([]*OauthClient, error) {
-	if u.Edges.namedOauthClients == nil {
+func (_m *User) NamedOauthClients(name string) ([]*OauthClient, error) {
+	if _m.Edges.namedOauthClients == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedOauthClients[name]
+	nodes, ok := _m.Edges.namedOauthClients[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedOauthClients(name string, edges ...*OauthClient) {
-	if u.Edges.namedOauthClients == nil {
-		u.Edges.namedOauthClients = make(map[string][]*OauthClient)
+func (_m *User) appendNamedOauthClients(name string, edges ...*OauthClient) {
+	if _m.Edges.namedOauthClients == nil {
+		_m.Edges.namedOauthClients = make(map[string][]*OauthClient)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedOauthClients[name] = []*OauthClient{}
+		_m.Edges.namedOauthClients[name] = []*OauthClient{}
 	} else {
-		u.Edges.namedOauthClients[name] = append(u.Edges.namedOauthClients[name], edges...)
+		_m.Edges.namedOauthClients[name] = append(_m.Edges.namedOauthClients[name], edges...)
 	}
 }
 
 // NamedAddresses returns the Addresses named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedAddresses(name string) ([]*UserAddr, error) {
-	if u.Edges.namedAddresses == nil {
+func (_m *User) NamedAddresses(name string) ([]*UserAddr, error) {
+	if _m.Edges.namedAddresses == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedAddresses[name]
+	nodes, ok := _m.Edges.namedAddresses[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedAddresses(name string, edges ...*UserAddr) {
-	if u.Edges.namedAddresses == nil {
-		u.Edges.namedAddresses = make(map[string][]*UserAddr)
+func (_m *User) appendNamedAddresses(name string, edges ...*UserAddr) {
+	if _m.Edges.namedAddresses == nil {
+		_m.Edges.namedAddresses = make(map[string][]*UserAddr)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedAddresses[name] = []*UserAddr{}
+		_m.Edges.namedAddresses[name] = []*UserAddr{}
 	} else {
-		u.Edges.namedAddresses[name] = append(u.Edges.namedAddresses[name], edges...)
+		_m.Edges.namedAddresses[name] = append(_m.Edges.namedAddresses[name], edges...)
 	}
 }
 
 // NamedUserQuota returns the UserQuota named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedUserQuota(name string) ([]*Quota, error) {
-	if u.Edges.namedUserQuota == nil {
+func (_m *User) NamedUserQuota(name string) ([]*Quota, error) {
+	if _m.Edges.namedUserQuota == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedUserQuota[name]
+	nodes, ok := _m.Edges.namedUserQuota[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedUserQuota(name string, edges ...*Quota) {
-	if u.Edges.namedUserQuota == nil {
-		u.Edges.namedUserQuota = make(map[string][]*Quota)
+func (_m *User) appendNamedUserQuota(name string, edges ...*Quota) {
+	if _m.Edges.namedUserQuota == nil {
+		_m.Edges.namedUserQuota = make(map[string][]*Quota)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedUserQuota[name] = []*Quota{}
+		_m.Edges.namedUserQuota[name] = []*Quota{}
 	} else {
-		u.Edges.namedUserQuota[name] = append(u.Edges.namedUserQuota[name], edges...)
+		_m.Edges.namedUserQuota[name] = append(_m.Edges.namedUserQuota[name], edges...)
 	}
 }
 
 // NamedOrgUser returns the OrgUser named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedOrgUser(name string) ([]*OrgUser, error) {
-	if u.Edges.namedOrgUser == nil {
+func (_m *User) NamedOrgUser(name string) ([]*OrgUser, error) {
+	if _m.Edges.namedOrgUser == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedOrgUser[name]
+	nodes, ok := _m.Edges.namedOrgUser[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedOrgUser(name string, edges ...*OrgUser) {
-	if u.Edges.namedOrgUser == nil {
-		u.Edges.namedOrgUser = make(map[string][]*OrgUser)
+func (_m *User) appendNamedOrgUser(name string, edges ...*OrgUser) {
+	if _m.Edges.namedOrgUser == nil {
+		_m.Edges.namedOrgUser = make(map[string][]*OrgUser)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedOrgUser[name] = []*OrgUser{}
+		_m.Edges.namedOrgUser[name] = []*OrgUser{}
 	} else {
-		u.Edges.namedOrgUser[name] = append(u.Edges.namedOrgUser[name], edges...)
+		_m.Edges.namedOrgUser[name] = append(_m.Edges.namedOrgUser[name], edges...)
 	}
 }
 

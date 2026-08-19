@@ -1,22 +1,14 @@
 package schema
 
 import (
-	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/app"
-	"github.com/woocoos/knockout/ent/appaction"
-	"github.com/woocoos/knockout/ent/hook"
-	"strings"
 )
 
 // OrgPolicy 组织中的策略.基本包括来源于应用初始化的策略和组织自定义的策略.
@@ -62,61 +54,4 @@ func (OrgPolicy) Edges() []ent.Edge {
 		edge.From("app_policy", AppPolicy.Type).Unique().Ref("org_policies").Field("app_policy_id"),
 		edge.To("app", App.Type).Unique().Field("app_id"),
 	}
-}
-
-func (OrgPolicy) Hooks() []ent.Hook {
-	return []ent.Hook{
-		// check rules
-		rulesHook(),
-	}
-}
-
-// rulesHook 检查策略规则是否合法,以error的方式返回
-// 由于在策略制定UI中,策略规则是以json的形式输入,因此需要在保存时检查规则是否合法.
-//  1. 检查action是否存在; 2. 检查action是否重复
-//
-// 在编辑阶段,只是做基本的action存在验证,并未验证对应App是否在租户空间内,在生成租户的授权时,需要过滤掉不存在的App.
-func rulesHook() ent.Hook {
-	rulesField := "rules"
-	return hook.If(
-		func(next ent.Mutator) ent.Mutator {
-			return hook.OrgPolicyFunc(func(ctx context.Context, m *gen.OrgPolicyMutation) (ent.Value, error) {
-				rules, ok := m.Rules()
-				if !ok {
-					return next.Mutate(ctx, m)
-				}
-				acs := make(map[string][]string)
-				for _, rule := range rules {
-					for _, action := range rule.Actions {
-						if action == "*" {
-							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "missing app code %s", action)
-						}
-						// 分离出appcode和action
-						parts := strings.SplitN(action, ":", 2)
-						if len(parts) != 2 {
-							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action %s", action)
-						}
-						if parts[1] != "*" {
-							appcode := parts[0]
-							acs[appcode] = append(acs[appcode], parts[1])
-						}
-					}
-				}
-				// 检查action是否存在
-				for appcode, actions := range acs {
-					// 检查action是否存在
-					count, err := m.Client().AppAction.Query().Where(
-						appaction.NameIn(actions...),
-						appaction.HasAppWith(app.Code(appcode))).Count(ctx)
-					if err != nil {
-						return nil, err
-					}
-					if count != len(actions) {
-						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action in %s", actions)
-					}
-				}
-				return next.Mutate(ctx, m)
-			})
-		}, hook.HasFields(rulesField),
-	)
 }

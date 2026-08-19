@@ -89,7 +89,7 @@ func (*QuotaItem) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the QuotaItem fields.
-func (qi *QuotaItem) assignValues(columns []string, values []any) error {
+func (_m *QuotaItem) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -100,75 +100,75 @@ func (qi *QuotaItem) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			qi.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case quotaitem.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				qi.CreatedBy = int(value.Int64)
+				_m.CreatedBy = int(value.Int64)
 			}
 		case quotaitem.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				qi.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case quotaitem.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				qi.UpdatedBy = int(value.Int64)
+				_m.UpdatedBy = int(value.Int64)
 			}
 		case quotaitem.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				qi.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case quotaitem.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				qi.Code = value.String
+				_m.Code = value.String
 			}
 		case quotaitem.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				qi.Name = value.String
+				_m.Name = value.String
 			}
 		case quotaitem.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				qi.Description = value.String
+				_m.Description = value.String
 			}
 		case quotaitem.FieldResourceType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field resource_type", values[i])
 			} else if value.Valid {
-				qi.ResourceType = quotaitem.ResourceType(value.String)
+				_m.ResourceType = quotaitem.ResourceType(value.String)
 			}
 		case quotaitem.FieldUnit:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field unit", values[i])
 			} else if value.Valid {
-				qi.Unit = value.String
+				_m.Unit = value.String
 			}
 		case quotaitem.FieldActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field active", values[i])
 			} else if value.Valid {
-				qi.Active = value.Bool
+				_m.Active = value.Bool
 			}
 		case quotaitem.FieldDefaultLimit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field default_limit", values[i])
 			} else if value.Valid {
-				qi.DefaultLimit = value.Int64
+				_m.DefaultLimit = value.Int64
 			}
 		default:
-			qi.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -176,95 +176,95 @@ func (qi *QuotaItem) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the QuotaItem.
 // This includes values selected through modifiers, order, etc.
-func (qi *QuotaItem) Value(name string) (ent.Value, error) {
-	return qi.selectValues.Get(name)
+func (_m *QuotaItem) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryQuota queries the "quota" edge of the QuotaItem entity.
-func (qi *QuotaItem) QueryQuota() *QuotaQuery {
-	return NewQuotaItemClient(qi.config).QueryQuota(qi)
+func (_m *QuotaItem) QueryQuota() *QuotaQuery {
+	return NewQuotaItemClient(_m.config).QueryQuota(_m)
 }
 
 // Update returns a builder for updating this QuotaItem.
 // Note that you need to call QuotaItem.Unwrap() before calling this method if this QuotaItem
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (qi *QuotaItem) Update() *QuotaItemUpdateOne {
-	return NewQuotaItemClient(qi.config).UpdateOne(qi)
+func (_m *QuotaItem) Update() *QuotaItemUpdateOne {
+	return NewQuotaItemClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the QuotaItem entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (qi *QuotaItem) Unwrap() *QuotaItem {
-	_tx, ok := qi.config.driver.(*txDriver)
+func (_m *QuotaItem) Unwrap() *QuotaItem {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: QuotaItem is not a transactional entity")
 	}
-	qi.config.driver = _tx.drv
-	return qi
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (qi *QuotaItem) String() string {
+func (_m *QuotaItem) String() string {
 	var builder strings.Builder
 	builder.WriteString("QuotaItem(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", qi.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_by=")
-	builder.WriteString(fmt.Sprintf("%v", qi.CreatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(qi.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
-	builder.WriteString(fmt.Sprintf("%v", qi.UpdatedBy))
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedBy))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(qi.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("code=")
-	builder.WriteString(qi.Code)
+	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(qi.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(qi.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("resource_type=")
-	builder.WriteString(fmt.Sprintf("%v", qi.ResourceType))
+	builder.WriteString(fmt.Sprintf("%v", _m.ResourceType))
 	builder.WriteString(", ")
 	builder.WriteString("unit=")
-	builder.WriteString(qi.Unit)
+	builder.WriteString(_m.Unit)
 	builder.WriteString(", ")
 	builder.WriteString("active=")
-	builder.WriteString(fmt.Sprintf("%v", qi.Active))
+	builder.WriteString(fmt.Sprintf("%v", _m.Active))
 	builder.WriteString(", ")
 	builder.WriteString("default_limit=")
-	builder.WriteString(fmt.Sprintf("%v", qi.DefaultLimit))
+	builder.WriteString(fmt.Sprintf("%v", _m.DefaultLimit))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedQuota returns the Quota named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (qi *QuotaItem) NamedQuota(name string) ([]*Quota, error) {
-	if qi.Edges.namedQuota == nil {
+func (_m *QuotaItem) NamedQuota(name string) ([]*Quota, error) {
+	if _m.Edges.namedQuota == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := qi.Edges.namedQuota[name]
+	nodes, ok := _m.Edges.namedQuota[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (qi *QuotaItem) appendNamedQuota(name string, edges ...*Quota) {
-	if qi.Edges.namedQuota == nil {
-		qi.Edges.namedQuota = make(map[string][]*Quota)
+func (_m *QuotaItem) appendNamedQuota(name string, edges ...*Quota) {
+	if _m.Edges.namedQuota == nil {
+		_m.Edges.namedQuota = make(map[string][]*Quota)
 	}
 	if len(edges) == 0 {
-		qi.Edges.namedQuota[name] = []*Quota{}
+		_m.Edges.namedQuota[name] = []*Quota{}
 	} else {
-		qi.Edges.namedQuota[name] = append(qi.Edges.namedQuota[name], edges...)
+		_m.Edges.namedQuota[name] = append(_m.Edges.namedQuota[name], edges...)
 	}
 }
 

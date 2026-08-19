@@ -24,225 +24,225 @@ type UserDeviceUpdate struct {
 }
 
 // Where appends a list predicates to the UserDeviceUpdate builder.
-func (udu *UserDeviceUpdate) Where(ps ...predicate.UserDevice) *UserDeviceUpdate {
-	udu.mutation.Where(ps...)
-	return udu
+func (_u *UserDeviceUpdate) Where(ps ...predicate.UserDevice) *UserDeviceUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (udu *UserDeviceUpdate) SetUpdatedBy(i int) *UserDeviceUpdate {
-	udu.mutation.ResetUpdatedBy()
-	udu.mutation.SetUpdatedBy(i)
-	return udu
+func (_u *UserDeviceUpdate) SetUpdatedBy(v int) *UserDeviceUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableUpdatedBy(i *int) *UserDeviceUpdate {
-	if i != nil {
-		udu.SetUpdatedBy(*i)
+func (_u *UserDeviceUpdate) SetNillableUpdatedBy(v *int) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return udu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (udu *UserDeviceUpdate) AddUpdatedBy(i int) *UserDeviceUpdate {
-	udu.mutation.AddUpdatedBy(i)
-	return udu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserDeviceUpdate) AddUpdatedBy(v int) *UserDeviceUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (udu *UserDeviceUpdate) ClearUpdatedBy() *UserDeviceUpdate {
-	udu.mutation.ClearUpdatedBy()
-	return udu
+func (_u *UserDeviceUpdate) ClearUpdatedBy() *UserDeviceUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (udu *UserDeviceUpdate) SetUpdatedAt(t time.Time) *UserDeviceUpdate {
-	udu.mutation.SetUpdatedAt(t)
-	return udu
+func (_u *UserDeviceUpdate) SetUpdatedAt(v time.Time) *UserDeviceUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableUpdatedAt(t *time.Time) *UserDeviceUpdate {
-	if t != nil {
-		udu.SetUpdatedAt(*t)
+func (_u *UserDeviceUpdate) SetNillableUpdatedAt(v *time.Time) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (udu *UserDeviceUpdate) ClearUpdatedAt() *UserDeviceUpdate {
-	udu.mutation.ClearUpdatedAt()
-	return udu
+func (_u *UserDeviceUpdate) ClearUpdatedAt() *UserDeviceUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetDeviceUID sets the "device_uid" field.
-func (udu *UserDeviceUpdate) SetDeviceUID(s string) *UserDeviceUpdate {
-	udu.mutation.SetDeviceUID(s)
-	return udu
+func (_u *UserDeviceUpdate) SetDeviceUID(v string) *UserDeviceUpdate {
+	_u.mutation.SetDeviceUID(v)
+	return _u
 }
 
 // SetNillableDeviceUID sets the "device_uid" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableDeviceUID(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetDeviceUID(*s)
+func (_u *UserDeviceUpdate) SetNillableDeviceUID(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetDeviceUID(*v)
 	}
-	return udu
+	return _u
 }
 
 // SetDeviceName sets the "device_name" field.
-func (udu *UserDeviceUpdate) SetDeviceName(s string) *UserDeviceUpdate {
-	udu.mutation.SetDeviceName(s)
-	return udu
+func (_u *UserDeviceUpdate) SetDeviceName(v string) *UserDeviceUpdate {
+	_u.mutation.SetDeviceName(v)
+	return _u
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableDeviceName(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetDeviceName(*s)
+func (_u *UserDeviceUpdate) SetNillableDeviceName(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetDeviceName(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearDeviceName clears the value of the "device_name" field.
-func (udu *UserDeviceUpdate) ClearDeviceName() *UserDeviceUpdate {
-	udu.mutation.ClearDeviceName()
-	return udu
+func (_u *UserDeviceUpdate) ClearDeviceName() *UserDeviceUpdate {
+	_u.mutation.ClearDeviceName()
+	return _u
 }
 
 // SetSystemName sets the "system_name" field.
-func (udu *UserDeviceUpdate) SetSystemName(s string) *UserDeviceUpdate {
-	udu.mutation.SetSystemName(s)
-	return udu
+func (_u *UserDeviceUpdate) SetSystemName(v string) *UserDeviceUpdate {
+	_u.mutation.SetSystemName(v)
+	return _u
 }
 
 // SetNillableSystemName sets the "system_name" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableSystemName(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetSystemName(*s)
+func (_u *UserDeviceUpdate) SetNillableSystemName(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetSystemName(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearSystemName clears the value of the "system_name" field.
-func (udu *UserDeviceUpdate) ClearSystemName() *UserDeviceUpdate {
-	udu.mutation.ClearSystemName()
-	return udu
+func (_u *UserDeviceUpdate) ClearSystemName() *UserDeviceUpdate {
+	_u.mutation.ClearSystemName()
+	return _u
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (udu *UserDeviceUpdate) SetSystemVersion(s string) *UserDeviceUpdate {
-	udu.mutation.SetSystemVersion(s)
-	return udu
+func (_u *UserDeviceUpdate) SetSystemVersion(v string) *UserDeviceUpdate {
+	_u.mutation.SetSystemVersion(v)
+	return _u
 }
 
 // SetNillableSystemVersion sets the "system_version" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableSystemVersion(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetSystemVersion(*s)
+func (_u *UserDeviceUpdate) SetNillableSystemVersion(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetSystemVersion(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearSystemVersion clears the value of the "system_version" field.
-func (udu *UserDeviceUpdate) ClearSystemVersion() *UserDeviceUpdate {
-	udu.mutation.ClearSystemVersion()
-	return udu
+func (_u *UserDeviceUpdate) ClearSystemVersion() *UserDeviceUpdate {
+	_u.mutation.ClearSystemVersion()
+	return _u
 }
 
 // SetAppVersion sets the "app_version" field.
-func (udu *UserDeviceUpdate) SetAppVersion(s string) *UserDeviceUpdate {
-	udu.mutation.SetAppVersion(s)
-	return udu
+func (_u *UserDeviceUpdate) SetAppVersion(v string) *UserDeviceUpdate {
+	_u.mutation.SetAppVersion(v)
+	return _u
 }
 
 // SetNillableAppVersion sets the "app_version" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableAppVersion(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetAppVersion(*s)
+func (_u *UserDeviceUpdate) SetNillableAppVersion(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetAppVersion(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearAppVersion clears the value of the "app_version" field.
-func (udu *UserDeviceUpdate) ClearAppVersion() *UserDeviceUpdate {
-	udu.mutation.ClearAppVersion()
-	return udu
+func (_u *UserDeviceUpdate) ClearAppVersion() *UserDeviceUpdate {
+	_u.mutation.ClearAppVersion()
+	return _u
 }
 
 // SetDeviceModel sets the "device_model" field.
-func (udu *UserDeviceUpdate) SetDeviceModel(s string) *UserDeviceUpdate {
-	udu.mutation.SetDeviceModel(s)
-	return udu
+func (_u *UserDeviceUpdate) SetDeviceModel(v string) *UserDeviceUpdate {
+	_u.mutation.SetDeviceModel(v)
+	return _u
 }
 
 // SetNillableDeviceModel sets the "device_model" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableDeviceModel(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetDeviceModel(*s)
+func (_u *UserDeviceUpdate) SetNillableDeviceModel(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetDeviceModel(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearDeviceModel clears the value of the "device_model" field.
-func (udu *UserDeviceUpdate) ClearDeviceModel() *UserDeviceUpdate {
-	udu.mutation.ClearDeviceModel()
-	return udu
+func (_u *UserDeviceUpdate) ClearDeviceModel() *UserDeviceUpdate {
+	_u.mutation.ClearDeviceModel()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (udu *UserDeviceUpdate) SetStatus(ts typex.SimpleStatus) *UserDeviceUpdate {
-	udu.mutation.SetStatus(ts)
-	return udu
+func (_u *UserDeviceUpdate) SetStatus(v typex.SimpleStatus) *UserDeviceUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableStatus(ts *typex.SimpleStatus) *UserDeviceUpdate {
-	if ts != nil {
-		udu.SetStatus(*ts)
+func (_u *UserDeviceUpdate) SetNillableStatus(v *typex.SimpleStatus) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (udu *UserDeviceUpdate) ClearStatus() *UserDeviceUpdate {
-	udu.mutation.ClearStatus()
-	return udu
+func (_u *UserDeviceUpdate) ClearStatus() *UserDeviceUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (udu *UserDeviceUpdate) SetComments(s string) *UserDeviceUpdate {
-	udu.mutation.SetComments(s)
-	return udu
+func (_u *UserDeviceUpdate) SetComments(v string) *UserDeviceUpdate {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableComments(s *string) *UserDeviceUpdate {
-	if s != nil {
-		udu.SetComments(*s)
+func (_u *UserDeviceUpdate) SetNillableComments(v *string) *UserDeviceUpdate {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return udu
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (udu *UserDeviceUpdate) ClearComments() *UserDeviceUpdate {
-	udu.mutation.ClearComments()
-	return udu
+func (_u *UserDeviceUpdate) ClearComments() *UserDeviceUpdate {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // Mutation returns the UserDeviceMutation object of the builder.
-func (udu *UserDeviceUpdate) Mutation() *UserDeviceMutation {
-	return udu.mutation
+func (_u *UserDeviceUpdate) Mutation() *UserDeviceMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (udu *UserDeviceUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, udu.sqlSave, udu.mutation, udu.hooks)
+func (_u *UserDeviceUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (udu *UserDeviceUpdate) SaveX(ctx context.Context) int {
-	affected, err := udu.Save(ctx)
+func (_u *UserDeviceUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -250,51 +250,51 @@ func (udu *UserDeviceUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (udu *UserDeviceUpdate) Exec(ctx context.Context) error {
-	_, err := udu.Save(ctx)
+func (_u *UserDeviceUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (udu *UserDeviceUpdate) ExecX(ctx context.Context) {
-	if err := udu.Exec(ctx); err != nil {
+func (_u *UserDeviceUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (udu *UserDeviceUpdate) check() error {
-	if v, ok := udu.mutation.DeviceUID(); ok {
+func (_u *UserDeviceUpdate) check() error {
+	if v, ok := _u.mutation.DeviceUID(); ok {
 		if err := userdevice.DeviceUIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_uid", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_uid": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.DeviceName(); ok {
+	if v, ok := _u.mutation.DeviceName(); ok {
 		if err := userdevice.DeviceNameValidator(v); err != nil {
 			return &ValidationError{Name: "device_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_name": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.SystemName(); ok {
+	if v, ok := _u.mutation.SystemName(); ok {
 		if err := userdevice.SystemNameValidator(v); err != nil {
 			return &ValidationError{Name: "system_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_name": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.SystemVersion(); ok {
+	if v, ok := _u.mutation.SystemVersion(); ok {
 		if err := userdevice.SystemVersionValidator(v); err != nil {
 			return &ValidationError{Name: "system_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_version": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.AppVersion(); ok {
+	if v, ok := _u.mutation.AppVersion(); ok {
 		if err := userdevice.AppVersionValidator(v); err != nil {
 			return &ValidationError{Name: "app_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.app_version": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.DeviceModel(); ok {
+	if v, ok := _u.mutation.DeviceModel(); ok {
 		if err := userdevice.DeviceModelValidator(v); err != nil {
 			return &ValidationError{Name: "device_model", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_model": %w`, err)}
 		}
 	}
-	if v, ok := udu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := userdevice.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserDevice.status": %w`, err)}
 		}
@@ -302,79 +302,79 @@ func (udu *UserDeviceUpdate) check() error {
 	return nil
 }
 
-func (udu *UserDeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := udu.check(); err != nil {
-		return n, err
+func (_u *UserDeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userdevice.Table, userdevice.Columns, sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt))
-	if ps := udu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := udu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userdevice.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := udu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userdevice.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if udu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userdevice.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := udu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userdevice.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if udu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userdevice.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := udu.mutation.DeviceUID(); ok {
+	if value, ok := _u.mutation.DeviceUID(); ok {
 		_spec.SetField(userdevice.FieldDeviceUID, field.TypeString, value)
 	}
-	if value, ok := udu.mutation.DeviceName(); ok {
+	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(userdevice.FieldDeviceName, field.TypeString, value)
 	}
-	if udu.mutation.DeviceNameCleared() {
+	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(userdevice.FieldDeviceName, field.TypeString)
 	}
-	if value, ok := udu.mutation.SystemName(); ok {
+	if value, ok := _u.mutation.SystemName(); ok {
 		_spec.SetField(userdevice.FieldSystemName, field.TypeString, value)
 	}
-	if udu.mutation.SystemNameCleared() {
+	if _u.mutation.SystemNameCleared() {
 		_spec.ClearField(userdevice.FieldSystemName, field.TypeString)
 	}
-	if value, ok := udu.mutation.SystemVersion(); ok {
+	if value, ok := _u.mutation.SystemVersion(); ok {
 		_spec.SetField(userdevice.FieldSystemVersion, field.TypeString, value)
 	}
-	if udu.mutation.SystemVersionCleared() {
+	if _u.mutation.SystemVersionCleared() {
 		_spec.ClearField(userdevice.FieldSystemVersion, field.TypeString)
 	}
-	if value, ok := udu.mutation.AppVersion(); ok {
+	if value, ok := _u.mutation.AppVersion(); ok {
 		_spec.SetField(userdevice.FieldAppVersion, field.TypeString, value)
 	}
-	if udu.mutation.AppVersionCleared() {
+	if _u.mutation.AppVersionCleared() {
 		_spec.ClearField(userdevice.FieldAppVersion, field.TypeString)
 	}
-	if value, ok := udu.mutation.DeviceModel(); ok {
+	if value, ok := _u.mutation.DeviceModel(); ok {
 		_spec.SetField(userdevice.FieldDeviceModel, field.TypeString, value)
 	}
-	if udu.mutation.DeviceModelCleared() {
+	if _u.mutation.DeviceModelCleared() {
 		_spec.ClearField(userdevice.FieldDeviceModel, field.TypeString)
 	}
-	if value, ok := udu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(userdevice.FieldStatus, field.TypeEnum, value)
 	}
-	if udu.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(userdevice.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := udu.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(userdevice.FieldComments, field.TypeString, value)
 	}
-	if udu.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(userdevice.FieldComments, field.TypeString)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, udu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userdevice.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -382,8 +382,8 @@ func (udu *UserDeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	udu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserDeviceUpdateOne is the builder for updating a single UserDevice entity.
@@ -395,232 +395,232 @@ type UserDeviceUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (uduo *UserDeviceUpdateOne) SetUpdatedBy(i int) *UserDeviceUpdateOne {
-	uduo.mutation.ResetUpdatedBy()
-	uduo.mutation.SetUpdatedBy(i)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetUpdatedBy(v int) *UserDeviceUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableUpdatedBy(i *int) *UserDeviceUpdateOne {
-	if i != nil {
-		uduo.SetUpdatedBy(*i)
+func (_u *UserDeviceUpdateOne) SetNillableUpdatedBy(v *int) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return uduo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (uduo *UserDeviceUpdateOne) AddUpdatedBy(i int) *UserDeviceUpdateOne {
-	uduo.mutation.AddUpdatedBy(i)
-	return uduo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *UserDeviceUpdateOne) AddUpdatedBy(v int) *UserDeviceUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (uduo *UserDeviceUpdateOne) ClearUpdatedBy() *UserDeviceUpdateOne {
-	uduo.mutation.ClearUpdatedBy()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearUpdatedBy() *UserDeviceUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (uduo *UserDeviceUpdateOne) SetUpdatedAt(t time.Time) *UserDeviceUpdateOne {
-	uduo.mutation.SetUpdatedAt(t)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetUpdatedAt(v time.Time) *UserDeviceUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserDeviceUpdateOne {
-	if t != nil {
-		uduo.SetUpdatedAt(*t)
+func (_u *UserDeviceUpdateOne) SetNillableUpdatedAt(v *time.Time) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (uduo *UserDeviceUpdateOne) ClearUpdatedAt() *UserDeviceUpdateOne {
-	uduo.mutation.ClearUpdatedAt()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearUpdatedAt() *UserDeviceUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetDeviceUID sets the "device_uid" field.
-func (uduo *UserDeviceUpdateOne) SetDeviceUID(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetDeviceUID(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetDeviceUID(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetDeviceUID(v)
+	return _u
 }
 
 // SetNillableDeviceUID sets the "device_uid" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableDeviceUID(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetDeviceUID(*s)
+func (_u *UserDeviceUpdateOne) SetNillableDeviceUID(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetDeviceUID(*v)
 	}
-	return uduo
+	return _u
 }
 
 // SetDeviceName sets the "device_name" field.
-func (uduo *UserDeviceUpdateOne) SetDeviceName(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetDeviceName(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetDeviceName(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetDeviceName(v)
+	return _u
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableDeviceName(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetDeviceName(*s)
+func (_u *UserDeviceUpdateOne) SetNillableDeviceName(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetDeviceName(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearDeviceName clears the value of the "device_name" field.
-func (uduo *UserDeviceUpdateOne) ClearDeviceName() *UserDeviceUpdateOne {
-	uduo.mutation.ClearDeviceName()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearDeviceName() *UserDeviceUpdateOne {
+	_u.mutation.ClearDeviceName()
+	return _u
 }
 
 // SetSystemName sets the "system_name" field.
-func (uduo *UserDeviceUpdateOne) SetSystemName(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetSystemName(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetSystemName(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetSystemName(v)
+	return _u
 }
 
 // SetNillableSystemName sets the "system_name" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableSystemName(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetSystemName(*s)
+func (_u *UserDeviceUpdateOne) SetNillableSystemName(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetSystemName(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearSystemName clears the value of the "system_name" field.
-func (uduo *UserDeviceUpdateOne) ClearSystemName() *UserDeviceUpdateOne {
-	uduo.mutation.ClearSystemName()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearSystemName() *UserDeviceUpdateOne {
+	_u.mutation.ClearSystemName()
+	return _u
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (uduo *UserDeviceUpdateOne) SetSystemVersion(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetSystemVersion(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetSystemVersion(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetSystemVersion(v)
+	return _u
 }
 
 // SetNillableSystemVersion sets the "system_version" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableSystemVersion(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetSystemVersion(*s)
+func (_u *UserDeviceUpdateOne) SetNillableSystemVersion(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetSystemVersion(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearSystemVersion clears the value of the "system_version" field.
-func (uduo *UserDeviceUpdateOne) ClearSystemVersion() *UserDeviceUpdateOne {
-	uduo.mutation.ClearSystemVersion()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearSystemVersion() *UserDeviceUpdateOne {
+	_u.mutation.ClearSystemVersion()
+	return _u
 }
 
 // SetAppVersion sets the "app_version" field.
-func (uduo *UserDeviceUpdateOne) SetAppVersion(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetAppVersion(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetAppVersion(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetAppVersion(v)
+	return _u
 }
 
 // SetNillableAppVersion sets the "app_version" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableAppVersion(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetAppVersion(*s)
+func (_u *UserDeviceUpdateOne) SetNillableAppVersion(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetAppVersion(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearAppVersion clears the value of the "app_version" field.
-func (uduo *UserDeviceUpdateOne) ClearAppVersion() *UserDeviceUpdateOne {
-	uduo.mutation.ClearAppVersion()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearAppVersion() *UserDeviceUpdateOne {
+	_u.mutation.ClearAppVersion()
+	return _u
 }
 
 // SetDeviceModel sets the "device_model" field.
-func (uduo *UserDeviceUpdateOne) SetDeviceModel(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetDeviceModel(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetDeviceModel(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetDeviceModel(v)
+	return _u
 }
 
 // SetNillableDeviceModel sets the "device_model" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableDeviceModel(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetDeviceModel(*s)
+func (_u *UserDeviceUpdateOne) SetNillableDeviceModel(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetDeviceModel(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearDeviceModel clears the value of the "device_model" field.
-func (uduo *UserDeviceUpdateOne) ClearDeviceModel() *UserDeviceUpdateOne {
-	uduo.mutation.ClearDeviceModel()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearDeviceModel() *UserDeviceUpdateOne {
+	_u.mutation.ClearDeviceModel()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (uduo *UserDeviceUpdateOne) SetStatus(ts typex.SimpleStatus) *UserDeviceUpdateOne {
-	uduo.mutation.SetStatus(ts)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetStatus(v typex.SimpleStatus) *UserDeviceUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *UserDeviceUpdateOne {
-	if ts != nil {
-		uduo.SetStatus(*ts)
+func (_u *UserDeviceUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (uduo *UserDeviceUpdateOne) ClearStatus() *UserDeviceUpdateOne {
-	uduo.mutation.ClearStatus()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearStatus() *UserDeviceUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetComments sets the "comments" field.
-func (uduo *UserDeviceUpdateOne) SetComments(s string) *UserDeviceUpdateOne {
-	uduo.mutation.SetComments(s)
-	return uduo
+func (_u *UserDeviceUpdateOne) SetComments(v string) *UserDeviceUpdateOne {
+	_u.mutation.SetComments(v)
+	return _u
 }
 
 // SetNillableComments sets the "comments" field if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableComments(s *string) *UserDeviceUpdateOne {
-	if s != nil {
-		uduo.SetComments(*s)
+func (_u *UserDeviceUpdateOne) SetNillableComments(v *string) *UserDeviceUpdateOne {
+	if v != nil {
+		_u.SetComments(*v)
 	}
-	return uduo
+	return _u
 }
 
 // ClearComments clears the value of the "comments" field.
-func (uduo *UserDeviceUpdateOne) ClearComments() *UserDeviceUpdateOne {
-	uduo.mutation.ClearComments()
-	return uduo
+func (_u *UserDeviceUpdateOne) ClearComments() *UserDeviceUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
 }
 
 // Mutation returns the UserDeviceMutation object of the builder.
-func (uduo *UserDeviceUpdateOne) Mutation() *UserDeviceMutation {
-	return uduo.mutation
+func (_u *UserDeviceUpdateOne) Mutation() *UserDeviceMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the UserDeviceUpdate builder.
-func (uduo *UserDeviceUpdateOne) Where(ps ...predicate.UserDevice) *UserDeviceUpdateOne {
-	uduo.mutation.Where(ps...)
-	return uduo
+func (_u *UserDeviceUpdateOne) Where(ps ...predicate.UserDevice) *UserDeviceUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (uduo *UserDeviceUpdateOne) Select(field string, fields ...string) *UserDeviceUpdateOne {
-	uduo.fields = append([]string{field}, fields...)
-	return uduo
+func (_u *UserDeviceUpdateOne) Select(field string, fields ...string) *UserDeviceUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserDevice entity.
-func (uduo *UserDeviceUpdateOne) Save(ctx context.Context) (*UserDevice, error) {
-	return withHooks(ctx, uduo.sqlSave, uduo.mutation, uduo.hooks)
+func (_u *UserDeviceUpdateOne) Save(ctx context.Context) (*UserDevice, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uduo *UserDeviceUpdateOne) SaveX(ctx context.Context) *UserDevice {
-	node, err := uduo.Save(ctx)
+func (_u *UserDeviceUpdateOne) SaveX(ctx context.Context) *UserDevice {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -628,51 +628,51 @@ func (uduo *UserDeviceUpdateOne) SaveX(ctx context.Context) *UserDevice {
 }
 
 // Exec executes the query on the entity.
-func (uduo *UserDeviceUpdateOne) Exec(ctx context.Context) error {
-	_, err := uduo.Save(ctx)
+func (_u *UserDeviceUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uduo *UserDeviceUpdateOne) ExecX(ctx context.Context) {
-	if err := uduo.Exec(ctx); err != nil {
+func (_u *UserDeviceUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uduo *UserDeviceUpdateOne) check() error {
-	if v, ok := uduo.mutation.DeviceUID(); ok {
+func (_u *UserDeviceUpdateOne) check() error {
+	if v, ok := _u.mutation.DeviceUID(); ok {
 		if err := userdevice.DeviceUIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_uid", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_uid": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.DeviceName(); ok {
+	if v, ok := _u.mutation.DeviceName(); ok {
 		if err := userdevice.DeviceNameValidator(v); err != nil {
 			return &ValidationError{Name: "device_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_name": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.SystemName(); ok {
+	if v, ok := _u.mutation.SystemName(); ok {
 		if err := userdevice.SystemNameValidator(v); err != nil {
 			return &ValidationError{Name: "system_name", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_name": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.SystemVersion(); ok {
+	if v, ok := _u.mutation.SystemVersion(); ok {
 		if err := userdevice.SystemVersionValidator(v); err != nil {
 			return &ValidationError{Name: "system_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.system_version": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.AppVersion(); ok {
+	if v, ok := _u.mutation.AppVersion(); ok {
 		if err := userdevice.AppVersionValidator(v); err != nil {
 			return &ValidationError{Name: "app_version", err: fmt.Errorf(`ent: validator failed for field "UserDevice.app_version": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.DeviceModel(); ok {
+	if v, ok := _u.mutation.DeviceModel(); ok {
 		if err := userdevice.DeviceModelValidator(v); err != nil {
 			return &ValidationError{Name: "device_model", err: fmt.Errorf(`ent: validator failed for field "UserDevice.device_model": %w`, err)}
 		}
 	}
-	if v, ok := uduo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := userdevice.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "UserDevice.status": %w`, err)}
 		}
@@ -680,17 +680,17 @@ func (uduo *UserDeviceUpdateOne) check() error {
 	return nil
 }
 
-func (uduo *UserDeviceUpdateOne) sqlSave(ctx context.Context) (_node *UserDevice, err error) {
-	if err := uduo.check(); err != nil {
+func (_u *UserDeviceUpdateOne) sqlSave(ctx context.Context) (_node *UserDevice, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userdevice.Table, userdevice.Columns, sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt))
-	id, ok := uduo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserDevice.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := uduo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userdevice.FieldID)
 		for _, f := range fields {
@@ -702,77 +702,77 @@ func (uduo *UserDeviceUpdateOne) sqlSave(ctx context.Context) (_node *UserDevice
 			}
 		}
 	}
-	if ps := uduo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uduo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(userdevice.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := uduo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(userdevice.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if uduo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(userdevice.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := uduo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(userdevice.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if uduo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(userdevice.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := uduo.mutation.DeviceUID(); ok {
+	if value, ok := _u.mutation.DeviceUID(); ok {
 		_spec.SetField(userdevice.FieldDeviceUID, field.TypeString, value)
 	}
-	if value, ok := uduo.mutation.DeviceName(); ok {
+	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(userdevice.FieldDeviceName, field.TypeString, value)
 	}
-	if uduo.mutation.DeviceNameCleared() {
+	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(userdevice.FieldDeviceName, field.TypeString)
 	}
-	if value, ok := uduo.mutation.SystemName(); ok {
+	if value, ok := _u.mutation.SystemName(); ok {
 		_spec.SetField(userdevice.FieldSystemName, field.TypeString, value)
 	}
-	if uduo.mutation.SystemNameCleared() {
+	if _u.mutation.SystemNameCleared() {
 		_spec.ClearField(userdevice.FieldSystemName, field.TypeString)
 	}
-	if value, ok := uduo.mutation.SystemVersion(); ok {
+	if value, ok := _u.mutation.SystemVersion(); ok {
 		_spec.SetField(userdevice.FieldSystemVersion, field.TypeString, value)
 	}
-	if uduo.mutation.SystemVersionCleared() {
+	if _u.mutation.SystemVersionCleared() {
 		_spec.ClearField(userdevice.FieldSystemVersion, field.TypeString)
 	}
-	if value, ok := uduo.mutation.AppVersion(); ok {
+	if value, ok := _u.mutation.AppVersion(); ok {
 		_spec.SetField(userdevice.FieldAppVersion, field.TypeString, value)
 	}
-	if uduo.mutation.AppVersionCleared() {
+	if _u.mutation.AppVersionCleared() {
 		_spec.ClearField(userdevice.FieldAppVersion, field.TypeString)
 	}
-	if value, ok := uduo.mutation.DeviceModel(); ok {
+	if value, ok := _u.mutation.DeviceModel(); ok {
 		_spec.SetField(userdevice.FieldDeviceModel, field.TypeString, value)
 	}
-	if uduo.mutation.DeviceModelCleared() {
+	if _u.mutation.DeviceModelCleared() {
 		_spec.ClearField(userdevice.FieldDeviceModel, field.TypeString)
 	}
-	if value, ok := uduo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(userdevice.FieldStatus, field.TypeEnum, value)
 	}
-	if uduo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(userdevice.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := uduo.mutation.Comments(); ok {
+	if value, ok := _u.mutation.Comments(); ok {
 		_spec.SetField(userdevice.FieldComments, field.TypeString, value)
 	}
-	if uduo.mutation.CommentsCleared() {
+	if _u.mutation.CommentsCleared() {
 		_spec.ClearField(userdevice.FieldComments, field.TypeString)
 	}
-	_node = &UserDevice{config: uduo.config}
+	_node = &UserDevice{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, uduo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userdevice.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -780,6 +780,6 @@ func (uduo *UserDeviceUpdateOne) sqlSave(ctx context.Context) (_node *UserDevice
 		}
 		return nil, err
 	}
-	uduo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

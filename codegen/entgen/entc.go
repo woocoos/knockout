@@ -3,14 +3,14 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"entgo.io/contrib/entgql"
-	"entgo.io/contrib/entproto"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
 	entcachegen "github.com/woocoos/entcache/gen"
 	"github.com/woocoos/knockout-go/codegen/entx"
-	"log"
-	"os"
 )
 
 func main() {
@@ -25,12 +25,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
-	protoExtension, err := entproto.NewExtension(
-		entproto.WithProtoDir("./api/proto"),
-	)
 	os.MkdirAll("./api/graphql", os.ModePerm)
 	opts := []entc.Option{
-		entc.Extensions(ex, protoExtension),
+		entc.Extensions(ex),
 		//entc.FeatureNames("privacy", "schema/snapshot"),
 		entx.GlobalID(),
 		entx.SimplePagination(),

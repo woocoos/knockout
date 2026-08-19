@@ -23,113 +23,113 @@ type AppResUpdate struct {
 }
 
 // Where appends a list predicates to the AppResUpdate builder.
-func (aru *AppResUpdate) Where(ps ...predicate.AppRes) *AppResUpdate {
-	aru.mutation.Where(ps...)
-	return aru
+func (_u *AppResUpdate) Where(ps ...predicate.AppRes) *AppResUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aru *AppResUpdate) SetUpdatedBy(i int) *AppResUpdate {
-	aru.mutation.ResetUpdatedBy()
-	aru.mutation.SetUpdatedBy(i)
-	return aru
+func (_u *AppResUpdate) SetUpdatedBy(v int) *AppResUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aru *AppResUpdate) SetNillableUpdatedBy(i *int) *AppResUpdate {
-	if i != nil {
-		aru.SetUpdatedBy(*i)
+func (_u *AppResUpdate) SetNillableUpdatedBy(v *int) *AppResUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aru
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aru *AppResUpdate) AddUpdatedBy(i int) *AppResUpdate {
-	aru.mutation.AddUpdatedBy(i)
-	return aru
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppResUpdate) AddUpdatedBy(v int) *AppResUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aru *AppResUpdate) ClearUpdatedBy() *AppResUpdate {
-	aru.mutation.ClearUpdatedBy()
-	return aru
+func (_u *AppResUpdate) ClearUpdatedBy() *AppResUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aru *AppResUpdate) SetUpdatedAt(t time.Time) *AppResUpdate {
-	aru.mutation.SetUpdatedAt(t)
-	return aru
+func (_u *AppResUpdate) SetUpdatedAt(v time.Time) *AppResUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aru *AppResUpdate) SetNillableUpdatedAt(t *time.Time) *AppResUpdate {
-	if t != nil {
-		aru.SetUpdatedAt(*t)
+func (_u *AppResUpdate) SetNillableUpdatedAt(v *time.Time) *AppResUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aru
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aru *AppResUpdate) ClearUpdatedAt() *AppResUpdate {
-	aru.mutation.ClearUpdatedAt()
-	return aru
+func (_u *AppResUpdate) ClearUpdatedAt() *AppResUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aru *AppResUpdate) SetName(s string) *AppResUpdate {
-	aru.mutation.SetName(s)
-	return aru
+func (_u *AppResUpdate) SetName(v string) *AppResUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aru *AppResUpdate) SetNillableName(s *string) *AppResUpdate {
-	if s != nil {
-		aru.SetName(*s)
+func (_u *AppResUpdate) SetNillableName(v *string) *AppResUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aru
+	return _u
 }
 
 // SetTypeName sets the "type_name" field.
-func (aru *AppResUpdate) SetTypeName(s string) *AppResUpdate {
-	aru.mutation.SetTypeName(s)
-	return aru
+func (_u *AppResUpdate) SetTypeName(v string) *AppResUpdate {
+	_u.mutation.SetTypeName(v)
+	return _u
 }
 
 // SetNillableTypeName sets the "type_name" field if the given value is not nil.
-func (aru *AppResUpdate) SetNillableTypeName(s *string) *AppResUpdate {
-	if s != nil {
-		aru.SetTypeName(*s)
+func (_u *AppResUpdate) SetNillableTypeName(v *string) *AppResUpdate {
+	if v != nil {
+		_u.SetTypeName(*v)
 	}
-	return aru
+	return _u
 }
 
 // SetArnPattern sets the "arn_pattern" field.
-func (aru *AppResUpdate) SetArnPattern(s string) *AppResUpdate {
-	aru.mutation.SetArnPattern(s)
-	return aru
+func (_u *AppResUpdate) SetArnPattern(v string) *AppResUpdate {
+	_u.mutation.SetArnPattern(v)
+	return _u
 }
 
 // SetNillableArnPattern sets the "arn_pattern" field if the given value is not nil.
-func (aru *AppResUpdate) SetNillableArnPattern(s *string) *AppResUpdate {
-	if s != nil {
-		aru.SetArnPattern(*s)
+func (_u *AppResUpdate) SetNillableArnPattern(v *string) *AppResUpdate {
+	if v != nil {
+		_u.SetArnPattern(*v)
 	}
-	return aru
+	return _u
 }
 
 // Mutation returns the AppResMutation object of the builder.
-func (aru *AppResUpdate) Mutation() *AppResMutation {
-	return aru.mutation
+func (_u *AppResUpdate) Mutation() *AppResMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (aru *AppResUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, aru.sqlSave, aru.mutation, aru.hooks)
+func (_u *AppResUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aru *AppResUpdate) SaveX(ctx context.Context) int {
-	affected, err := aru.Save(ctx)
+func (_u *AppResUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -137,52 +137,52 @@ func (aru *AppResUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (aru *AppResUpdate) Exec(ctx context.Context) error {
-	_, err := aru.Save(ctx)
+func (_u *AppResUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aru *AppResUpdate) ExecX(ctx context.Context) {
-	if err := aru.Exec(ctx); err != nil {
+func (_u *AppResUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (aru *AppResUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *AppResUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(appres.Table, appres.Columns, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
-	if ps := aru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aru.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appres.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aru.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appres.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aru.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appres.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aru.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appres.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aru.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appres.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aru.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appres.FieldName, field.TypeString, value)
 	}
-	if value, ok := aru.mutation.TypeName(); ok {
+	if value, ok := _u.mutation.TypeName(); ok {
 		_spec.SetField(appres.FieldTypeName, field.TypeString, value)
 	}
-	if value, ok := aru.mutation.ArnPattern(); ok {
+	if value, ok := _u.mutation.ArnPattern(); ok {
 		_spec.SetField(appres.FieldArnPattern, field.TypeString, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, aru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appres.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -190,8 +190,8 @@ func (aru *AppResUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	aru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppResUpdateOne is the builder for updating a single AppRes entity.
@@ -203,120 +203,120 @@ type AppResUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (aruo *AppResUpdateOne) SetUpdatedBy(i int) *AppResUpdateOne {
-	aruo.mutation.ResetUpdatedBy()
-	aruo.mutation.SetUpdatedBy(i)
-	return aruo
+func (_u *AppResUpdateOne) SetUpdatedBy(v int) *AppResUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (aruo *AppResUpdateOne) SetNillableUpdatedBy(i *int) *AppResUpdateOne {
-	if i != nil {
-		aruo.SetUpdatedBy(*i)
+func (_u *AppResUpdateOne) SetNillableUpdatedBy(v *int) *AppResUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return aruo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (aruo *AppResUpdateOne) AddUpdatedBy(i int) *AppResUpdateOne {
-	aruo.mutation.AddUpdatedBy(i)
-	return aruo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *AppResUpdateOne) AddUpdatedBy(v int) *AppResUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (aruo *AppResUpdateOne) ClearUpdatedBy() *AppResUpdateOne {
-	aruo.mutation.ClearUpdatedBy()
-	return aruo
+func (_u *AppResUpdateOne) ClearUpdatedBy() *AppResUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aruo *AppResUpdateOne) SetUpdatedAt(t time.Time) *AppResUpdateOne {
-	aruo.mutation.SetUpdatedAt(t)
-	return aruo
+func (_u *AppResUpdateOne) SetUpdatedAt(v time.Time) *AppResUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aruo *AppResUpdateOne) SetNillableUpdatedAt(t *time.Time) *AppResUpdateOne {
-	if t != nil {
-		aruo.SetUpdatedAt(*t)
+func (_u *AppResUpdateOne) SetNillableUpdatedAt(v *time.Time) *AppResUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return aruo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (aruo *AppResUpdateOne) ClearUpdatedAt() *AppResUpdateOne {
-	aruo.mutation.ClearUpdatedAt()
-	return aruo
+func (_u *AppResUpdateOne) ClearUpdatedAt() *AppResUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aruo *AppResUpdateOne) SetName(s string) *AppResUpdateOne {
-	aruo.mutation.SetName(s)
-	return aruo
+func (_u *AppResUpdateOne) SetName(v string) *AppResUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aruo *AppResUpdateOne) SetNillableName(s *string) *AppResUpdateOne {
-	if s != nil {
-		aruo.SetName(*s)
+func (_u *AppResUpdateOne) SetNillableName(v *string) *AppResUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aruo
+	return _u
 }
 
 // SetTypeName sets the "type_name" field.
-func (aruo *AppResUpdateOne) SetTypeName(s string) *AppResUpdateOne {
-	aruo.mutation.SetTypeName(s)
-	return aruo
+func (_u *AppResUpdateOne) SetTypeName(v string) *AppResUpdateOne {
+	_u.mutation.SetTypeName(v)
+	return _u
 }
 
 // SetNillableTypeName sets the "type_name" field if the given value is not nil.
-func (aruo *AppResUpdateOne) SetNillableTypeName(s *string) *AppResUpdateOne {
-	if s != nil {
-		aruo.SetTypeName(*s)
+func (_u *AppResUpdateOne) SetNillableTypeName(v *string) *AppResUpdateOne {
+	if v != nil {
+		_u.SetTypeName(*v)
 	}
-	return aruo
+	return _u
 }
 
 // SetArnPattern sets the "arn_pattern" field.
-func (aruo *AppResUpdateOne) SetArnPattern(s string) *AppResUpdateOne {
-	aruo.mutation.SetArnPattern(s)
-	return aruo
+func (_u *AppResUpdateOne) SetArnPattern(v string) *AppResUpdateOne {
+	_u.mutation.SetArnPattern(v)
+	return _u
 }
 
 // SetNillableArnPattern sets the "arn_pattern" field if the given value is not nil.
-func (aruo *AppResUpdateOne) SetNillableArnPattern(s *string) *AppResUpdateOne {
-	if s != nil {
-		aruo.SetArnPattern(*s)
+func (_u *AppResUpdateOne) SetNillableArnPattern(v *string) *AppResUpdateOne {
+	if v != nil {
+		_u.SetArnPattern(*v)
 	}
-	return aruo
+	return _u
 }
 
 // Mutation returns the AppResMutation object of the builder.
-func (aruo *AppResUpdateOne) Mutation() *AppResMutation {
-	return aruo.mutation
+func (_u *AppResUpdateOne) Mutation() *AppResMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the AppResUpdate builder.
-func (aruo *AppResUpdateOne) Where(ps ...predicate.AppRes) *AppResUpdateOne {
-	aruo.mutation.Where(ps...)
-	return aruo
+func (_u *AppResUpdateOne) Where(ps ...predicate.AppRes) *AppResUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aruo *AppResUpdateOne) Select(field string, fields ...string) *AppResUpdateOne {
-	aruo.fields = append([]string{field}, fields...)
-	return aruo
+func (_u *AppResUpdateOne) Select(field string, fields ...string) *AppResUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppRes entity.
-func (aruo *AppResUpdateOne) Save(ctx context.Context) (*AppRes, error) {
-	return withHooks(ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
+func (_u *AppResUpdateOne) Save(ctx context.Context) (*AppRes, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aruo *AppResUpdateOne) SaveX(ctx context.Context) *AppRes {
-	node, err := aruo.Save(ctx)
+func (_u *AppResUpdateOne) SaveX(ctx context.Context) *AppRes {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -324,26 +324,26 @@ func (aruo *AppResUpdateOne) SaveX(ctx context.Context) *AppRes {
 }
 
 // Exec executes the query on the entity.
-func (aruo *AppResUpdateOne) Exec(ctx context.Context) error {
-	_, err := aruo.Save(ctx)
+func (_u *AppResUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aruo *AppResUpdateOne) ExecX(ctx context.Context) {
-	if err := aruo.Exec(ctx); err != nil {
+func (_u *AppResUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (aruo *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err error) {
+func (_u *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err error) {
 	_spec := sqlgraph.NewUpdateSpec(appres.Table, appres.Columns, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
-	id, ok := aruo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppRes.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aruo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appres.FieldID)
 		for _, f := range fields {
@@ -355,41 +355,41 @@ func (aruo *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err er
 			}
 		}
 	}
-	if ps := aruo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aruo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(appres.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := aruo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(appres.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if aruo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(appres.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := aruo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appres.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if aruo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appres.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := aruo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appres.FieldName, field.TypeString, value)
 	}
-	if value, ok := aruo.mutation.TypeName(); ok {
+	if value, ok := _u.mutation.TypeName(); ok {
 		_spec.SetField(appres.FieldTypeName, field.TypeString, value)
 	}
-	if value, ok := aruo.mutation.ArnPattern(); ok {
+	if value, ok := _u.mutation.ArnPattern(); ok {
 		_spec.SetField(appres.FieldArnPattern, field.TypeString, value)
 	}
-	_node = &AppRes{config: aruo.config}
+	_node = &AppRes{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aruo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appres.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -397,6 +397,6 @@ func (aruo *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err er
 		}
 		return nil, err
 	}
-	aruo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -25,208 +25,208 @@ type CountryUpdate struct {
 }
 
 // Where appends a list predicates to the CountryUpdate builder.
-func (cu *CountryUpdate) Where(ps ...predicate.Country) *CountryUpdate {
-	cu.mutation.Where(ps...)
-	return cu
+func (_u *CountryUpdate) Where(ps ...predicate.Country) *CountryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cu *CountryUpdate) SetUpdatedBy(i int) *CountryUpdate {
-	cu.mutation.ResetUpdatedBy()
-	cu.mutation.SetUpdatedBy(i)
-	return cu
+func (_u *CountryUpdate) SetUpdatedBy(v int) *CountryUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableUpdatedBy(i *int) *CountryUpdate {
-	if i != nil {
-		cu.SetUpdatedBy(*i)
+func (_u *CountryUpdate) SetNillableUpdatedBy(v *int) *CountryUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return cu
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (cu *CountryUpdate) AddUpdatedBy(i int) *CountryUpdate {
-	cu.mutation.AddUpdatedBy(i)
-	return cu
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *CountryUpdate) AddUpdatedBy(v int) *CountryUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (cu *CountryUpdate) ClearUpdatedBy() *CountryUpdate {
-	cu.mutation.ClearUpdatedBy()
-	return cu
+func (_u *CountryUpdate) ClearUpdatedBy() *CountryUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cu *CountryUpdate) SetUpdatedAt(t time.Time) *CountryUpdate {
-	cu.mutation.SetUpdatedAt(t)
-	return cu
+func (_u *CountryUpdate) SetUpdatedAt(v time.Time) *CountryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableUpdatedAt(t *time.Time) *CountryUpdate {
-	if t != nil {
-		cu.SetUpdatedAt(*t)
+func (_u *CountryUpdate) SetNillableUpdatedAt(v *time.Time) *CountryUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (cu *CountryUpdate) ClearUpdatedAt() *CountryUpdate {
-	cu.mutation.ClearUpdatedAt()
-	return cu
+func (_u *CountryUpdate) ClearUpdatedAt() *CountryUpdate {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cu *CountryUpdate) SetName(s string) *CountryUpdate {
-	cu.mutation.SetName(s)
-	return cu
+func (_u *CountryUpdate) SetName(v string) *CountryUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableName(s *string) *CountryUpdate {
-	if s != nil {
-		cu.SetName(*s)
+func (_u *CountryUpdate) SetNillableName(v *string) *CountryUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (cu *CountryUpdate) ClearName() *CountryUpdate {
-	cu.mutation.ClearName()
-	return cu
+func (_u *CountryUpdate) ClearName() *CountryUpdate {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetNameEn sets the "name_en" field.
-func (cu *CountryUpdate) SetNameEn(s string) *CountryUpdate {
-	cu.mutation.SetNameEn(s)
-	return cu
+func (_u *CountryUpdate) SetNameEn(v string) *CountryUpdate {
+	_u.mutation.SetNameEn(v)
+	return _u
 }
 
 // SetNillableNameEn sets the "name_en" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableNameEn(s *string) *CountryUpdate {
-	if s != nil {
-		cu.SetNameEn(*s)
+func (_u *CountryUpdate) SetNillableNameEn(v *string) *CountryUpdate {
+	if v != nil {
+		_u.SetNameEn(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearNameEn clears the value of the "name_en" field.
-func (cu *CountryUpdate) ClearNameEn() *CountryUpdate {
-	cu.mutation.ClearNameEn()
-	return cu
+func (_u *CountryUpdate) ClearNameEn() *CountryUpdate {
+	_u.mutation.ClearNameEn()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (cu *CountryUpdate) SetCode(s string) *CountryUpdate {
-	cu.mutation.SetCode(s)
-	return cu
+func (_u *CountryUpdate) SetCode(v string) *CountryUpdate {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableCode(s *string) *CountryUpdate {
-	if s != nil {
-		cu.SetCode(*s)
+func (_u *CountryUpdate) SetNillableCode(v *string) *CountryUpdate {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (cu *CountryUpdate) SetDisplaySort(i int32) *CountryUpdate {
-	cu.mutation.ResetDisplaySort()
-	cu.mutation.SetDisplaySort(i)
-	return cu
+func (_u *CountryUpdate) SetDisplaySort(v int32) *CountryUpdate {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableDisplaySort(i *int32) *CountryUpdate {
-	if i != nil {
-		cu.SetDisplaySort(*i)
+func (_u *CountryUpdate) SetNillableDisplaySort(v *int32) *CountryUpdate {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return cu
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (cu *CountryUpdate) AddDisplaySort(i int32) *CountryUpdate {
-	cu.mutation.AddDisplaySort(i)
-	return cu
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *CountryUpdate) AddDisplaySort(v int32) *CountryUpdate {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (cu *CountryUpdate) ClearDisplaySort() *CountryUpdate {
-	cu.mutation.ClearDisplaySort()
-	return cu
+func (_u *CountryUpdate) ClearDisplaySort() *CountryUpdate {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (cu *CountryUpdate) SetStatus(ts typex.SimpleStatus) *CountryUpdate {
-	cu.mutation.SetStatus(ts)
-	return cu
+func (_u *CountryUpdate) SetStatus(v typex.SimpleStatus) *CountryUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cu *CountryUpdate) SetNillableStatus(ts *typex.SimpleStatus) *CountryUpdate {
-	if ts != nil {
-		cu.SetStatus(*ts)
+func (_u *CountryUpdate) SetNillableStatus(v *typex.SimpleStatus) *CountryUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (cu *CountryUpdate) ClearStatus() *CountryUpdate {
-	cu.mutation.ClearStatus()
-	return cu
+func (_u *CountryUpdate) ClearStatus() *CountryUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // AddRegionIDs adds the "regions" edge to the Region entity by IDs.
-func (cu *CountryUpdate) AddRegionIDs(ids ...int) *CountryUpdate {
-	cu.mutation.AddRegionIDs(ids...)
-	return cu
+func (_u *CountryUpdate) AddRegionIDs(ids ...int) *CountryUpdate {
+	_u.mutation.AddRegionIDs(ids...)
+	return _u
 }
 
 // AddRegions adds the "regions" edges to the Region entity.
-func (cu *CountryUpdate) AddRegions(r ...*Region) *CountryUpdate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *CountryUpdate) AddRegions(v ...*Region) *CountryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.AddRegionIDs(ids...)
+	return _u.AddRegionIDs(ids...)
 }
 
 // Mutation returns the CountryMutation object of the builder.
-func (cu *CountryUpdate) Mutation() *CountryMutation {
-	return cu.mutation
+func (_u *CountryUpdate) Mutation() *CountryMutation {
+	return _u.mutation
 }
 
 // ClearRegions clears all "regions" edges to the Region entity.
-func (cu *CountryUpdate) ClearRegions() *CountryUpdate {
-	cu.mutation.ClearRegions()
-	return cu
+func (_u *CountryUpdate) ClearRegions() *CountryUpdate {
+	_u.mutation.ClearRegions()
+	return _u
 }
 
 // RemoveRegionIDs removes the "regions" edge to Region entities by IDs.
-func (cu *CountryUpdate) RemoveRegionIDs(ids ...int) *CountryUpdate {
-	cu.mutation.RemoveRegionIDs(ids...)
-	return cu
+func (_u *CountryUpdate) RemoveRegionIDs(ids ...int) *CountryUpdate {
+	_u.mutation.RemoveRegionIDs(ids...)
+	return _u
 }
 
 // RemoveRegions removes "regions" edges to Region entities.
-func (cu *CountryUpdate) RemoveRegions(r ...*Region) *CountryUpdate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *CountryUpdate) RemoveRegions(v ...*Region) *CountryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.RemoveRegionIDs(ids...)
+	return _u.RemoveRegionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cu *CountryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
+func (_u *CountryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cu *CountryUpdate) SaveX(ctx context.Context) int {
-	affected, err := cu.Save(ctx)
+func (_u *CountryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -234,26 +234,26 @@ func (cu *CountryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cu *CountryUpdate) Exec(ctx context.Context) error {
-	_, err := cu.Save(ctx)
+func (_u *CountryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cu *CountryUpdate) ExecX(ctx context.Context) {
-	if err := cu.Exec(ctx); err != nil {
+func (_u *CountryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cu *CountryUpdate) check() error {
-	if v, ok := cu.mutation.Code(); ok {
+func (_u *CountryUpdate) check() error {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := country.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Country.code": %w`, err)}
 		}
 	}
-	if v, ok := cu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := country.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Country.status": %w`, err)}
 		}
@@ -261,64 +261,64 @@ func (cu *CountryUpdate) check() error {
 	return nil
 }
 
-func (cu *CountryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := cu.check(); err != nil {
-		return n, err
+func (_u *CountryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(country.Table, country.Columns, sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt))
-	if ps := cu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cu.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(country.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(country.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if cu.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(country.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := cu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(country.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if cu.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(country.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := cu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(country.FieldName, field.TypeString, value)
 	}
-	if cu.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(country.FieldName, field.TypeString)
 	}
-	if value, ok := cu.mutation.NameEn(); ok {
+	if value, ok := _u.mutation.NameEn(); ok {
 		_spec.SetField(country.FieldNameEn, field.TypeString, value)
 	}
-	if cu.mutation.NameEnCleared() {
+	if _u.mutation.NameEnCleared() {
 		_spec.ClearField(country.FieldNameEn, field.TypeString)
 	}
-	if value, ok := cu.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(country.FieldCode, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(country.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := cu.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(country.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if cu.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(country.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := cu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(country.FieldStatus, field.TypeEnum, value)
 	}
-	if cu.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(country.FieldStatus, field.TypeEnum)
 	}
-	if cu.mutation.RegionsCleared() {
+	if _u.mutation.RegionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -331,7 +331,7 @@ func (cu *CountryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.RemovedRegionsIDs(); len(nodes) > 0 && !cu.mutation.RegionsCleared() {
+	if nodes := _u.mutation.RemovedRegionsIDs(); len(nodes) > 0 && !_u.mutation.RegionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -347,7 +347,7 @@ func (cu *CountryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.RegionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RegionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -363,7 +363,7 @@ func (cu *CountryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{country.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -371,8 +371,8 @@ func (cu *CountryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	cu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // CountryUpdateOne is the builder for updating a single Country entity.
@@ -384,215 +384,215 @@ type CountryUpdateOne struct {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (cuo *CountryUpdateOne) SetUpdatedBy(i int) *CountryUpdateOne {
-	cuo.mutation.ResetUpdatedBy()
-	cuo.mutation.SetUpdatedBy(i)
-	return cuo
+func (_u *CountryUpdateOne) SetUpdatedBy(v int) *CountryUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableUpdatedBy(i *int) *CountryUpdateOne {
-	if i != nil {
-		cuo.SetUpdatedBy(*i)
+func (_u *CountryUpdateOne) SetNillableUpdatedBy(v *int) *CountryUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
 	}
-	return cuo
+	return _u
 }
 
-// AddUpdatedBy adds i to the "updated_by" field.
-func (cuo *CountryUpdateOne) AddUpdatedBy(i int) *CountryUpdateOne {
-	cuo.mutation.AddUpdatedBy(i)
-	return cuo
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *CountryUpdateOne) AddUpdatedBy(v int) *CountryUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
 }
 
 // ClearUpdatedBy clears the value of the "updated_by" field.
-func (cuo *CountryUpdateOne) ClearUpdatedBy() *CountryUpdateOne {
-	cuo.mutation.ClearUpdatedBy()
-	return cuo
+func (_u *CountryUpdateOne) ClearUpdatedBy() *CountryUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cuo *CountryUpdateOne) SetUpdatedAt(t time.Time) *CountryUpdateOne {
-	cuo.mutation.SetUpdatedAt(t)
-	return cuo
+func (_u *CountryUpdateOne) SetUpdatedAt(v time.Time) *CountryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableUpdatedAt(t *time.Time) *CountryUpdateOne {
-	if t != nil {
-		cuo.SetUpdatedAt(*t)
+func (_u *CountryUpdateOne) SetNillableUpdatedAt(v *time.Time) *CountryUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearUpdatedAt clears the value of the "updated_at" field.
-func (cuo *CountryUpdateOne) ClearUpdatedAt() *CountryUpdateOne {
-	cuo.mutation.ClearUpdatedAt()
-	return cuo
+func (_u *CountryUpdateOne) ClearUpdatedAt() *CountryUpdateOne {
+	_u.mutation.ClearUpdatedAt()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cuo *CountryUpdateOne) SetName(s string) *CountryUpdateOne {
-	cuo.mutation.SetName(s)
-	return cuo
+func (_u *CountryUpdateOne) SetName(v string) *CountryUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableName(s *string) *CountryUpdateOne {
-	if s != nil {
-		cuo.SetName(*s)
+func (_u *CountryUpdateOne) SetNillableName(v *string) *CountryUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (cuo *CountryUpdateOne) ClearName() *CountryUpdateOne {
-	cuo.mutation.ClearName()
-	return cuo
+func (_u *CountryUpdateOne) ClearName() *CountryUpdateOne {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetNameEn sets the "name_en" field.
-func (cuo *CountryUpdateOne) SetNameEn(s string) *CountryUpdateOne {
-	cuo.mutation.SetNameEn(s)
-	return cuo
+func (_u *CountryUpdateOne) SetNameEn(v string) *CountryUpdateOne {
+	_u.mutation.SetNameEn(v)
+	return _u
 }
 
 // SetNillableNameEn sets the "name_en" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableNameEn(s *string) *CountryUpdateOne {
-	if s != nil {
-		cuo.SetNameEn(*s)
+func (_u *CountryUpdateOne) SetNillableNameEn(v *string) *CountryUpdateOne {
+	if v != nil {
+		_u.SetNameEn(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearNameEn clears the value of the "name_en" field.
-func (cuo *CountryUpdateOne) ClearNameEn() *CountryUpdateOne {
-	cuo.mutation.ClearNameEn()
-	return cuo
+func (_u *CountryUpdateOne) ClearNameEn() *CountryUpdateOne {
+	_u.mutation.ClearNameEn()
+	return _u
 }
 
 // SetCode sets the "code" field.
-func (cuo *CountryUpdateOne) SetCode(s string) *CountryUpdateOne {
-	cuo.mutation.SetCode(s)
-	return cuo
+func (_u *CountryUpdateOne) SetCode(v string) *CountryUpdateOne {
+	_u.mutation.SetCode(v)
+	return _u
 }
 
 // SetNillableCode sets the "code" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableCode(s *string) *CountryUpdateOne {
-	if s != nil {
-		cuo.SetCode(*s)
+func (_u *CountryUpdateOne) SetNillableCode(v *string) *CountryUpdateOne {
+	if v != nil {
+		_u.SetCode(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetDisplaySort sets the "display_sort" field.
-func (cuo *CountryUpdateOne) SetDisplaySort(i int32) *CountryUpdateOne {
-	cuo.mutation.ResetDisplaySort()
-	cuo.mutation.SetDisplaySort(i)
-	return cuo
+func (_u *CountryUpdateOne) SetDisplaySort(v int32) *CountryUpdateOne {
+	_u.mutation.ResetDisplaySort()
+	_u.mutation.SetDisplaySort(v)
+	return _u
 }
 
 // SetNillableDisplaySort sets the "display_sort" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableDisplaySort(i *int32) *CountryUpdateOne {
-	if i != nil {
-		cuo.SetDisplaySort(*i)
+func (_u *CountryUpdateOne) SetNillableDisplaySort(v *int32) *CountryUpdateOne {
+	if v != nil {
+		_u.SetDisplaySort(*v)
 	}
-	return cuo
+	return _u
 }
 
-// AddDisplaySort adds i to the "display_sort" field.
-func (cuo *CountryUpdateOne) AddDisplaySort(i int32) *CountryUpdateOne {
-	cuo.mutation.AddDisplaySort(i)
-	return cuo
+// AddDisplaySort adds value to the "display_sort" field.
+func (_u *CountryUpdateOne) AddDisplaySort(v int32) *CountryUpdateOne {
+	_u.mutation.AddDisplaySort(v)
+	return _u
 }
 
 // ClearDisplaySort clears the value of the "display_sort" field.
-func (cuo *CountryUpdateOne) ClearDisplaySort() *CountryUpdateOne {
-	cuo.mutation.ClearDisplaySort()
-	return cuo
+func (_u *CountryUpdateOne) ClearDisplaySort() *CountryUpdateOne {
+	_u.mutation.ClearDisplaySort()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (cuo *CountryUpdateOne) SetStatus(ts typex.SimpleStatus) *CountryUpdateOne {
-	cuo.mutation.SetStatus(ts)
-	return cuo
+func (_u *CountryUpdateOne) SetStatus(v typex.SimpleStatus) *CountryUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (cuo *CountryUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *CountryUpdateOne {
-	if ts != nil {
-		cuo.SetStatus(*ts)
+func (_u *CountryUpdateOne) SetNillableStatus(v *typex.SimpleStatus) *CountryUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (cuo *CountryUpdateOne) ClearStatus() *CountryUpdateOne {
-	cuo.mutation.ClearStatus()
-	return cuo
+func (_u *CountryUpdateOne) ClearStatus() *CountryUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // AddRegionIDs adds the "regions" edge to the Region entity by IDs.
-func (cuo *CountryUpdateOne) AddRegionIDs(ids ...int) *CountryUpdateOne {
-	cuo.mutation.AddRegionIDs(ids...)
-	return cuo
+func (_u *CountryUpdateOne) AddRegionIDs(ids ...int) *CountryUpdateOne {
+	_u.mutation.AddRegionIDs(ids...)
+	return _u
 }
 
 // AddRegions adds the "regions" edges to the Region entity.
-func (cuo *CountryUpdateOne) AddRegions(r ...*Region) *CountryUpdateOne {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *CountryUpdateOne) AddRegions(v ...*Region) *CountryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.AddRegionIDs(ids...)
+	return _u.AddRegionIDs(ids...)
 }
 
 // Mutation returns the CountryMutation object of the builder.
-func (cuo *CountryUpdateOne) Mutation() *CountryMutation {
-	return cuo.mutation
+func (_u *CountryUpdateOne) Mutation() *CountryMutation {
+	return _u.mutation
 }
 
 // ClearRegions clears all "regions" edges to the Region entity.
-func (cuo *CountryUpdateOne) ClearRegions() *CountryUpdateOne {
-	cuo.mutation.ClearRegions()
-	return cuo
+func (_u *CountryUpdateOne) ClearRegions() *CountryUpdateOne {
+	_u.mutation.ClearRegions()
+	return _u
 }
 
 // RemoveRegionIDs removes the "regions" edge to Region entities by IDs.
-func (cuo *CountryUpdateOne) RemoveRegionIDs(ids ...int) *CountryUpdateOne {
-	cuo.mutation.RemoveRegionIDs(ids...)
-	return cuo
+func (_u *CountryUpdateOne) RemoveRegionIDs(ids ...int) *CountryUpdateOne {
+	_u.mutation.RemoveRegionIDs(ids...)
+	return _u
 }
 
 // RemoveRegions removes "regions" edges to Region entities.
-func (cuo *CountryUpdateOne) RemoveRegions(r ...*Region) *CountryUpdateOne {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *CountryUpdateOne) RemoveRegions(v ...*Region) *CountryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.RemoveRegionIDs(ids...)
+	return _u.RemoveRegionIDs(ids...)
 }
 
 // Where appends a list predicates to the CountryUpdate builder.
-func (cuo *CountryUpdateOne) Where(ps ...predicate.Country) *CountryUpdateOne {
-	cuo.mutation.Where(ps...)
-	return cuo
+func (_u *CountryUpdateOne) Where(ps ...predicate.Country) *CountryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cuo *CountryUpdateOne) Select(field string, fields ...string) *CountryUpdateOne {
-	cuo.fields = append([]string{field}, fields...)
-	return cuo
+func (_u *CountryUpdateOne) Select(field string, fields ...string) *CountryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Country entity.
-func (cuo *CountryUpdateOne) Save(ctx context.Context) (*Country, error) {
-	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+func (_u *CountryUpdateOne) Save(ctx context.Context) (*Country, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cuo *CountryUpdateOne) SaveX(ctx context.Context) *Country {
-	node, err := cuo.Save(ctx)
+func (_u *CountryUpdateOne) SaveX(ctx context.Context) *Country {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -600,26 +600,26 @@ func (cuo *CountryUpdateOne) SaveX(ctx context.Context) *Country {
 }
 
 // Exec executes the query on the entity.
-func (cuo *CountryUpdateOne) Exec(ctx context.Context) error {
-	_, err := cuo.Save(ctx)
+func (_u *CountryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cuo *CountryUpdateOne) ExecX(ctx context.Context) {
-	if err := cuo.Exec(ctx); err != nil {
+func (_u *CountryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cuo *CountryUpdateOne) check() error {
-	if v, ok := cuo.mutation.Code(); ok {
+func (_u *CountryUpdateOne) check() error {
+	if v, ok := _u.mutation.Code(); ok {
 		if err := country.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Country.code": %w`, err)}
 		}
 	}
-	if v, ok := cuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := country.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Country.status": %w`, err)}
 		}
@@ -627,17 +627,17 @@ func (cuo *CountryUpdateOne) check() error {
 	return nil
 }
 
-func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err error) {
-	if err := cuo.check(); err != nil {
+func (_u *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(country.Table, country.Columns, sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt))
-	id, ok := cuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Country.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := cuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, country.FieldID)
 		for _, f := range fields {
@@ -649,59 +649,59 @@ func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err e
 			}
 		}
 	}
-	if ps := cuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cuo.mutation.UpdatedBy(); ok {
+	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(country.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.AddedUpdatedBy(); ok {
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
 		_spec.AddField(country.FieldUpdatedBy, field.TypeInt, value)
 	}
-	if cuo.mutation.UpdatedByCleared() {
+	if _u.mutation.UpdatedByCleared() {
 		_spec.ClearField(country.FieldUpdatedBy, field.TypeInt)
 	}
-	if value, ok := cuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(country.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if cuo.mutation.UpdatedAtCleared() {
+	if _u.mutation.UpdatedAtCleared() {
 		_spec.ClearField(country.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := cuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(country.FieldName, field.TypeString, value)
 	}
-	if cuo.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(country.FieldName, field.TypeString)
 	}
-	if value, ok := cuo.mutation.NameEn(); ok {
+	if value, ok := _u.mutation.NameEn(); ok {
 		_spec.SetField(country.FieldNameEn, field.TypeString, value)
 	}
-	if cuo.mutation.NameEnCleared() {
+	if _u.mutation.NameEnCleared() {
 		_spec.ClearField(country.FieldNameEn, field.TypeString)
 	}
-	if value, ok := cuo.mutation.Code(); ok {
+	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(country.FieldCode, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.DisplaySort(); ok {
+	if value, ok := _u.mutation.DisplaySort(); ok {
 		_spec.SetField(country.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if value, ok := cuo.mutation.AddedDisplaySort(); ok {
+	if value, ok := _u.mutation.AddedDisplaySort(); ok {
 		_spec.AddField(country.FieldDisplaySort, field.TypeInt32, value)
 	}
-	if cuo.mutation.DisplaySortCleared() {
+	if _u.mutation.DisplaySortCleared() {
 		_spec.ClearField(country.FieldDisplaySort, field.TypeInt32)
 	}
-	if value, ok := cuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(country.FieldStatus, field.TypeEnum, value)
 	}
-	if cuo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(country.FieldStatus, field.TypeEnum)
 	}
-	if cuo.mutation.RegionsCleared() {
+	if _u.mutation.RegionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -714,7 +714,7 @@ func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.RemovedRegionsIDs(); len(nodes) > 0 && !cuo.mutation.RegionsCleared() {
+	if nodes := _u.mutation.RemovedRegionsIDs(); len(nodes) > 0 && !_u.mutation.RegionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -730,7 +730,7 @@ func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.RegionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RegionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -746,10 +746,10 @@ func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Country{config: cuo.config}
+	_node = &Country{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, cuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{country.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -757,6 +757,6 @@ func (cuo *CountryUpdateOne) sqlSave(ctx context.Context) (_node *Country, err e
 		}
 		return nil, err
 	}
-	cuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

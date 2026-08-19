@@ -36,44 +36,44 @@ type AppDictQuery struct {
 }
 
 // Where adds a new predicate for the AppDictQuery builder.
-func (adq *AppDictQuery) Where(ps ...predicate.AppDict) *AppDictQuery {
-	adq.predicates = append(adq.predicates, ps...)
-	return adq
+func (_q *AppDictQuery) Where(ps ...predicate.AppDict) *AppDictQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (adq *AppDictQuery) Limit(limit int) *AppDictQuery {
-	adq.ctx.Limit = &limit
-	return adq
+func (_q *AppDictQuery) Limit(limit int) *AppDictQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (adq *AppDictQuery) Offset(offset int) *AppDictQuery {
-	adq.ctx.Offset = &offset
-	return adq
+func (_q *AppDictQuery) Offset(offset int) *AppDictQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (adq *AppDictQuery) Unique(unique bool) *AppDictQuery {
-	adq.ctx.Unique = &unique
-	return adq
+func (_q *AppDictQuery) Unique(unique bool) *AppDictQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (adq *AppDictQuery) Order(o ...appdict.OrderOption) *AppDictQuery {
-	adq.order = append(adq.order, o...)
-	return adq
+func (_q *AppDictQuery) Order(o ...appdict.OrderOption) *AppDictQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (adq *AppDictQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: adq.config}).Query()
+func (_q *AppDictQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := adq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := adq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -82,20 +82,20 @@ func (adq *AppDictQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appdict.AppTable, appdict.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(adq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryItems chains the current query on the "items" edge.
-func (adq *AppDictQuery) QueryItems() *AppDictItemQuery {
-	query := (&AppDictItemClient{config: adq.config}).Query()
+func (_q *AppDictQuery) QueryItems() *AppDictItemQuery {
+	query := (&AppDictItemClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := adq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := adq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -104,7 +104,7 @@ func (adq *AppDictQuery) QueryItems() *AppDictItemQuery {
 			sqlgraph.To(appdictitem.Table, appdictitem.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, appdict.ItemsTable, appdict.ItemsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(adq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -112,8 +112,8 @@ func (adq *AppDictQuery) QueryItems() *AppDictItemQuery {
 
 // First returns the first AppDict entity from the query.
 // Returns a *NotFoundError when no AppDict was found.
-func (adq *AppDictQuery) First(ctx context.Context) (*AppDict, error) {
-	nodes, err := adq.Limit(1).All(setContextOp(ctx, adq.ctx, ent.OpQueryFirst))
+func (_q *AppDictQuery) First(ctx context.Context) (*AppDict, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +124,8 @@ func (adq *AppDictQuery) First(ctx context.Context) (*AppDict, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (adq *AppDictQuery) FirstX(ctx context.Context) *AppDict {
-	node, err := adq.First(ctx)
+func (_q *AppDictQuery) FirstX(ctx context.Context) *AppDict {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (adq *AppDictQuery) FirstX(ctx context.Context) *AppDict {
 
 // FirstID returns the first AppDict ID from the query.
 // Returns a *NotFoundError when no AppDict ID was found.
-func (adq *AppDictQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppDictQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adq.Limit(1).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -147,8 +147,8 @@ func (adq *AppDictQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (adq *AppDictQuery) FirstIDX(ctx context.Context) int {
-	id, err := adq.FirstID(ctx)
+func (_q *AppDictQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -158,8 +158,8 @@ func (adq *AppDictQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single AppDict entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppDict entity is found.
 // Returns a *NotFoundError when no AppDict entities are found.
-func (adq *AppDictQuery) Only(ctx context.Context) (*AppDict, error) {
-	nodes, err := adq.Limit(2).All(setContextOp(ctx, adq.ctx, ent.OpQueryOnly))
+func (_q *AppDictQuery) Only(ctx context.Context) (*AppDict, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +174,8 @@ func (adq *AppDictQuery) Only(ctx context.Context) (*AppDict, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (adq *AppDictQuery) OnlyX(ctx context.Context) *AppDict {
-	node, err := adq.Only(ctx)
+func (_q *AppDictQuery) OnlyX(ctx context.Context) *AppDict {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,9 +185,9 @@ func (adq *AppDictQuery) OnlyX(ctx context.Context) *AppDict {
 // OnlyID is like Only, but returns the only AppDict ID in the query.
 // Returns a *NotSingularError when more than one AppDict ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (adq *AppDictQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppDictQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adq.Limit(2).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -202,8 +202,8 @@ func (adq *AppDictQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (adq *AppDictQuery) OnlyIDX(ctx context.Context) int {
-	id, err := adq.OnlyID(ctx)
+func (_q *AppDictQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -211,18 +211,18 @@ func (adq *AppDictQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of AppDicts.
-func (adq *AppDictQuery) All(ctx context.Context) ([]*AppDict, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryAll)
-	if err := adq.prepareQuery(ctx); err != nil {
+func (_q *AppDictQuery) All(ctx context.Context) ([]*AppDict, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppDict, *AppDictQuery]()
-	return withInterceptors[[]*AppDict](ctx, adq, qr, adq.inters)
+	return withInterceptors[[]*AppDict](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (adq *AppDictQuery) AllX(ctx context.Context) []*AppDict {
-	nodes, err := adq.All(ctx)
+func (_q *AppDictQuery) AllX(ctx context.Context) []*AppDict {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -230,20 +230,20 @@ func (adq *AppDictQuery) AllX(ctx context.Context) []*AppDict {
 }
 
 // IDs executes the query and returns a list of AppDict IDs.
-func (adq *AppDictQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if adq.ctx.Unique == nil && adq.path != nil {
-		adq.Unique(true)
+func (_q *AppDictQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryIDs)
-	if err = adq.Select(appdict.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(appdict.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (adq *AppDictQuery) IDsX(ctx context.Context) []int {
-	ids, err := adq.IDs(ctx)
+func (_q *AppDictQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -251,17 +251,17 @@ func (adq *AppDictQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (adq *AppDictQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryCount)
-	if err := adq.prepareQuery(ctx); err != nil {
+func (_q *AppDictQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, adq, querierCount[*AppDictQuery](), adq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppDictQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (adq *AppDictQuery) CountX(ctx context.Context) int {
-	count, err := adq.Count(ctx)
+func (_q *AppDictQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -269,9 +269,9 @@ func (adq *AppDictQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (adq *AppDictQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryExist)
-	switch _, err := adq.FirstID(ctx); {
+func (_q *AppDictQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -282,8 +282,8 @@ func (adq *AppDictQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (adq *AppDictQuery) ExistX(ctx context.Context) bool {
-	exist, err := adq.Exist(ctx)
+func (_q *AppDictQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -292,44 +292,44 @@ func (adq *AppDictQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppDictQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (adq *AppDictQuery) Clone() *AppDictQuery {
-	if adq == nil {
+func (_q *AppDictQuery) Clone() *AppDictQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppDictQuery{
-		config:     adq.config,
-		ctx:        adq.ctx.Clone(),
-		order:      append([]appdict.OrderOption{}, adq.order...),
-		inters:     append([]Interceptor{}, adq.inters...),
-		predicates: append([]predicate.AppDict{}, adq.predicates...),
-		withApp:    adq.withApp.Clone(),
-		withItems:  adq.withItems.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]appdict.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.AppDict{}, _q.predicates...),
+		withApp:    _q.withApp.Clone(),
+		withItems:  _q.withItems.Clone(),
 		// clone intermediate query.
-		sql:  adq.sql.Clone(),
-		path: adq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (adq *AppDictQuery) WithApp(opts ...func(*AppQuery)) *AppDictQuery {
-	query := (&AppClient{config: adq.config}).Query()
+func (_q *AppDictQuery) WithApp(opts ...func(*AppQuery)) *AppDictQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	adq.withApp = query
-	return adq
+	_q.withApp = query
+	return _q
 }
 
 // WithItems tells the query-builder to eager-load the nodes that are connected to
 // the "items" edge. The optional arguments are used to configure the query builder of the edge.
-func (adq *AppDictQuery) WithItems(opts ...func(*AppDictItemQuery)) *AppDictQuery {
-	query := (&AppDictItemClient{config: adq.config}).Query()
+func (_q *AppDictQuery) WithItems(opts ...func(*AppDictItemQuery)) *AppDictQuery {
+	query := (&AppDictItemClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	adq.withItems = query
-	return adq
+	_q.withItems = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -346,10 +346,10 @@ func (adq *AppDictQuery) WithItems(opts ...func(*AppDictItemQuery)) *AppDictQuer
 //		GroupBy(appdict.FieldCreatedBy).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (adq *AppDictQuery) GroupBy(field string, fields ...string) *AppDictGroupBy {
-	adq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppDictGroupBy{build: adq}
-	grbuild.flds = &adq.ctx.Fields
+func (_q *AppDictQuery) GroupBy(field string, fields ...string) *AppDictGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppDictGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = appdict.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -367,104 +367,104 @@ func (adq *AppDictQuery) GroupBy(field string, fields ...string) *AppDictGroupBy
 //	client.AppDict.Query().
 //		Select(appdict.FieldCreatedBy).
 //		Scan(ctx, &v)
-func (adq *AppDictQuery) Select(fields ...string) *AppDictSelect {
-	adq.ctx.Fields = append(adq.ctx.Fields, fields...)
-	sbuild := &AppDictSelect{AppDictQuery: adq}
+func (_q *AppDictQuery) Select(fields ...string) *AppDictSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppDictSelect{AppDictQuery: _q}
 	sbuild.label = appdict.Label
-	sbuild.flds, sbuild.scan = &adq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppDictSelect configured with the given aggregations.
-func (adq *AppDictQuery) Aggregate(fns ...AggregateFunc) *AppDictSelect {
-	return adq.Select().Aggregate(fns...)
+func (_q *AppDictQuery) Aggregate(fns ...AggregateFunc) *AppDictSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (adq *AppDictQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range adq.inters {
+func (_q *AppDictQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, adq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range adq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !appdict.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if adq.path != nil {
-		prev, err := adq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		adq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (adq *AppDictQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppDict, error) {
+func (_q *AppDictQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppDict, error) {
 	var (
 		nodes       = []*AppDict{}
-		_spec       = adq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			adq.withApp != nil,
-			adq.withItems != nil,
+			_q.withApp != nil,
+			_q.withItems != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppDict).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppDict{config: adq.config}
+		node := &AppDict{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(adq.modifiers) > 0 {
-		_spec.Modifiers = adq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, adq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := adq.withApp; query != nil {
-		if err := adq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *AppDict, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := adq.withItems; query != nil {
-		if err := adq.loadItems(ctx, query, nodes,
+	if query := _q.withItems; query != nil {
+		if err := _q.loadItems(ctx, query, nodes,
 			func(n *AppDict) { n.Edges.Items = []*AppDictItem{} },
 			func(n *AppDict, e *AppDictItem) { n.Edges.Items = append(n.Edges.Items, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range adq.withNamedItems {
-		if err := adq.loadItems(ctx, query, nodes,
+	for name, query := range _q.withNamedItems {
+		if err := _q.loadItems(ctx, query, nodes,
 			func(n *AppDict) { n.appendNamedItems(name) },
 			func(n *AppDict, e *AppDictItem) { n.appendNamedItems(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range adq.loadTotal {
-		if err := adq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (adq *AppDictQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppDict, init func(*AppDict), assign func(*AppDict, *App)) error {
+func (_q *AppDictQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppDict, init func(*AppDict), assign func(*AppDict, *App)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppDict)
 	for i := range nodes {
@@ -493,7 +493,7 @@ func (adq *AppDictQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*
 	}
 	return nil
 }
-func (adq *AppDictQuery) loadItems(ctx context.Context, query *AppDictItemQuery, nodes []*AppDict, init func(*AppDict), assign func(*AppDict, *AppDictItem)) error {
+func (_q *AppDictQuery) loadItems(ctx context.Context, query *AppDictItemQuery, nodes []*AppDict, init func(*AppDict), assign func(*AppDict, *AppDictItem)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*AppDict)
 	for i := range nodes {
@@ -524,27 +524,27 @@ func (adq *AppDictQuery) loadItems(ctx context.Context, query *AppDictItemQuery,
 	return nil
 }
 
-func (adq *AppDictQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := adq.querySpec()
-	if len(adq.modifiers) > 0 {
-		_spec.Modifiers = adq.modifiers
+func (_q *AppDictQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = adq.ctx.Fields
-	if len(adq.ctx.Fields) > 0 {
-		_spec.Unique = adq.ctx.Unique != nil && *adq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, adq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (adq *AppDictQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppDictQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(appdict.Table, appdict.Columns, sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt))
-	_spec.From = adq.sql
-	if unique := adq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if adq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := adq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appdict.FieldID)
 		for i := range fields {
@@ -552,24 +552,24 @@ func (adq *AppDictQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if adq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(appdict.FieldAppID)
 		}
 	}
-	if ps := adq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := adq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := adq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := adq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -579,33 +579,33 @@ func (adq *AppDictQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (adq *AppDictQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(adq.driver.Dialect())
+func (_q *AppDictQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(appdict.Table)
-	columns := adq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = appdict.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if adq.sql != nil {
-		selector = adq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if adq.ctx.Unique != nil && *adq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range adq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range adq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := adq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := adq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -613,16 +613,16 @@ func (adq *AppDictQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedItems tells the query-builder to eager-load the nodes that are connected to the "items"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (adq *AppDictQuery) WithNamedItems(name string, opts ...func(*AppDictItemQuery)) *AppDictQuery {
-	query := (&AppDictItemClient{config: adq.config}).Query()
+func (_q *AppDictQuery) WithNamedItems(name string, opts ...func(*AppDictItemQuery)) *AppDictQuery {
+	query := (&AppDictItemClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if adq.withNamedItems == nil {
-		adq.withNamedItems = make(map[string]*AppDictItemQuery)
+	if _q.withNamedItems == nil {
+		_q.withNamedItems = make(map[string]*AppDictItemQuery)
 	}
-	adq.withNamedItems[name] = query
-	return adq
+	_q.withNamedItems[name] = query
+	return _q
 }
 
 // AppDictGroupBy is the group-by builder for AppDict entities.
@@ -632,41 +632,41 @@ type AppDictGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (adgb *AppDictGroupBy) Aggregate(fns ...AggregateFunc) *AppDictGroupBy {
-	adgb.fns = append(adgb.fns, fns...)
-	return adgb
+func (_g *AppDictGroupBy) Aggregate(fns ...AggregateFunc) *AppDictGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (adgb *AppDictGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, adgb.build.ctx, ent.OpQueryGroupBy)
-	if err := adgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppDictGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppDictQuery, *AppDictGroupBy](ctx, adgb.build, adgb, adgb.build.inters, v)
+	return scanWithInterceptors[*AppDictQuery, *AppDictGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (adgb *AppDictGroupBy) sqlScan(ctx context.Context, root *AppDictQuery, v any) error {
+func (_g *AppDictGroupBy) sqlScan(ctx context.Context, root *AppDictQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(adgb.fns))
-	for _, fn := range adgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*adgb.flds)+len(adgb.fns))
-		for _, f := range *adgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*adgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := adgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -680,27 +680,27 @@ type AppDictSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ads *AppDictSelect) Aggregate(fns ...AggregateFunc) *AppDictSelect {
-	ads.fns = append(ads.fns, fns...)
-	return ads
+func (_s *AppDictSelect) Aggregate(fns ...AggregateFunc) *AppDictSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ads *AppDictSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ads.ctx, ent.OpQuerySelect)
-	if err := ads.prepareQuery(ctx); err != nil {
+func (_s *AppDictSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppDictQuery, *AppDictSelect](ctx, ads.AppDictQuery, ads, ads.inters, v)
+	return scanWithInterceptors[*AppDictQuery, *AppDictSelect](ctx, _s.AppDictQuery, _s, _s.inters, v)
 }
 
-func (ads *AppDictSelect) sqlScan(ctx context.Context, root *AppDictQuery, v any) error {
+func (_s *AppDictSelect) sqlScan(ctx context.Context, root *AppDictQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ads.fns))
-	for _, fn := range ads.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ads.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -708,7 +708,7 @@ func (ads *AppDictSelect) sqlScan(ctx context.Context, root *AppDictQuery, v any
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ads.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

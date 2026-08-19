@@ -20,56 +20,56 @@ type OrgAppDelete struct {
 }
 
 // Where appends a list predicates to the OrgAppDelete builder.
-func (oad *OrgAppDelete) Where(ps ...predicate.OrgApp) *OrgAppDelete {
-	oad.mutation.Where(ps...)
-	return oad
+func (_d *OrgAppDelete) Where(ps ...predicate.OrgApp) *OrgAppDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (oad *OrgAppDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, oad.sqlExec, oad.mutation, oad.hooks)
+func (_d *OrgAppDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oad *OrgAppDelete) ExecX(ctx context.Context) int {
-	n, err := oad.Exec(ctx)
+func (_d *OrgAppDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (oad *OrgAppDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *OrgAppDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(orgapp.Table, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
-	if ps := oad.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, oad.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	oad.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // OrgAppDeleteOne is the builder for deleting a single OrgApp entity.
 type OrgAppDeleteOne struct {
-	oad *OrgAppDelete
+	_d *OrgAppDelete
 }
 
 // Where appends a list predicates to the OrgAppDelete builder.
-func (oado *OrgAppDeleteOne) Where(ps ...predicate.OrgApp) *OrgAppDeleteOne {
-	oado.oad.mutation.Where(ps...)
-	return oado
+func (_d *OrgAppDeleteOne) Where(ps ...predicate.OrgApp) *OrgAppDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (oado *OrgAppDeleteOne) Exec(ctx context.Context) error {
-	n, err := oado.oad.Exec(ctx)
+func (_d *OrgAppDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (oado *OrgAppDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (oado *OrgAppDeleteOne) ExecX(ctx context.Context) {
-	if err := oado.Exec(ctx); err != nil {
+func (_d *OrgAppDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

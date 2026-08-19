@@ -4262,7 +4262,7 @@ input FileSourceWhereInput {
 """
 An object with a Global ID,for using in Noder interface.
 """
-scalar GID
+scalar GID @goModel(model: "github.com/99designs/gqlgen/graphql.ID")
 """
 An object with an ID.
 Follows the [Relay Global Object Identification Specification](https://relay.dev/graphql/objectidentification.htm)
