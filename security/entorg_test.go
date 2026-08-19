@@ -1,6 +1,8 @@
 package security
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/security"
@@ -12,8 +14,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
+	"github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/test/testsuite"
-	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
 	_ "github.com/woocoos/knockout/ent/runtime"
@@ -177,11 +179,11 @@ func (t *testSuite) TestUser() {
 	err = client.OrgUserPreference.DeleteOneID(3).Exec(ctx2)
 	t.Require().True(ent.IsNotFound(err))
 
-	cc, err := client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(ctx2)
+	cc, err := client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(quota.SkipQuota(ctx2))
 	t.Require().NoError(err)
 	t.Equal(1, cc, "删除之前创建的")
 
-	cc, err = client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(ctx)
+	cc, err = client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(quota.SkipQuota(ctx))
 	t.Require().NoError(err)
 	t.Equal(2, cc, "删除现存的所有的")
 }

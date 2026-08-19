@@ -3,11 +3,12 @@ package hook
 import (
 	"context"
 	"encoding/json"
+
 	"entgo.io/ent"
 	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
-	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/quota"
 )
 
@@ -64,7 +65,7 @@ func OrgUserPreferenceQuotaHook() ent.Hook {
 		},
 		GetTarget: func(ctx context.Context, m ent.Mutation) (*quota.Target, error) {
 			// 批量删除不支持
-			if m.Op().Is(ent.OpDelete) && !m.Op().Is(ent.OpDeleteOne) {
+			if m.Op().Is(ent.OpDelete) {
 				return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "operation not supported: %s", m.Op())
 			}
 

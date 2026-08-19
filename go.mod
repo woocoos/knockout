@@ -2,8 +2,6 @@ module github.com/woocoos/knockout
 
 go 1.24.2
 
-toolchain go1.24.9
-
 require (
 	entgo.io/contrib v0.7.0
 	entgo.io/ent v0.14.5
@@ -19,13 +17,13 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.11.1
-	github.com/tsingsun/woocoo v0.7.2
+	github.com/tsingsun/woocoo v0.7.4
 	github.com/tsingsun/woocoo/contrib/gql v0.1.4
-	github.com/tsingsun/woocoo/contrib/telemetry v0.58.3
+	github.com/tsingsun/woocoo/contrib/telemetry v0.58.4
 	github.com/vektah/gqlparser/v2 v2.5.23
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entcache v0.3.1-0.20260202131644-50a86f0add1c
-	github.com/woocoos/knockout-go v0.6.0
+	github.com/woocoos/entcache v0.3.1
+	github.com/woocoos/knockout-go v0.6.2
 	go.opentelemetry.io/contrib/propagators/b3 v1.33.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.16.0
@@ -174,8 +172,8 @@ require (
 	golang.org/x/sys v0.35.0 // indirect; indirectgo
 	golang.org/x/text v0.27.0 // indirect
 	golang.org/x/tools v0.34.0 // indirect
-	google.golang.org/grpc v1.68.1
-	google.golang.org/protobuf v1.36.9
+	google.golang.org/grpc v1.68.1 // indirect
+	google.golang.org/protobuf v1.36.9 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
