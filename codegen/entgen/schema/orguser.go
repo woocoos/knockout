@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -8,7 +10,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	"time"
 )
 
 // OrgUser 用户组织关系.
