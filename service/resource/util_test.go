@@ -20,11 +20,14 @@ func TestRandomStr(t *testing.T) {
 		{"length 0", 0},
 		{"length 1", 1},
 	}
+	excluded := "0Oo1lI"
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := RandomStr(tt.n)
 			assert.Len(t, got, tt.n)
-			assert.NotContains(t, got, "0", "should not contain excluded char")
+			for _, c := range excluded {
+				assert.NotContains(t, got, string(c), "should not contain excluded char: %s", string(c))
+			}
 		})
 	}
 	assert.NotEqual(t, RandomStr(20), RandomStr(20), "should produce different results")

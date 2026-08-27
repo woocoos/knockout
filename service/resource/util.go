@@ -10,9 +10,9 @@ import (
 	"regexp"
 )
 
-// RandomStr generate random string,exclude 0
+// RandomStr generate random string, exclude ambiguous characters: 0, O, o, 1, l, I
 func RandomStr(n int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"
+	const charset = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 	result := make([]byte, n)
 	for i := 0; i < n; i++ {
 		randomInt, _ := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
