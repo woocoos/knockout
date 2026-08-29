@@ -2,7 +2,6 @@ package resource
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,6 +20,7 @@ import (
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/pkg/tokenindex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -494,7 +494,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	// 更新PasswordReset
 	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
 	// 修改密码，清除其他token
-	err = s.clearLoginTokensOfRedis(ctx, uid, false)
+	err = s.clearUserLoginTokens(ctx, uid, false)
 	if err != nil {
 		return err
 	}
@@ -519,7 +519,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	return s.postAlerts(ctx, params)
 }
 
-func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf bool) error {
+func (s *Service) clearUserLoginTokens(ctx context.Context, uid int, rmSelf bool) error {
 	// 判断是否排除
 	if len(s.clearLoginTokens.Exclude) > 0 {
 		for _, exclude := range s.clearLoginTokens.Exclude {
@@ -528,60 +528,26 @@ func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf b
 			}
 		}
 	}
-	// 判断是否有redis实例
-	if s.redisClient == nil {
-		return nil
-	}
-	// 获取用户相关的token
-	var cursor uint64
-	allKeys := make([]string, 0)
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = s.redisClient.Scan(ctx, cursor, fmt.Sprintf("token:%d:*", uid), 100).Result()
-		if err != nil {
-			return err
-		}
-		allKeys = append(allKeys, keys...)
-		if cursor == 0 {
-			break
-		}
-	}
-	if allKeys == nil {
-		return nil
-	}
-	rmKeys := make([]string, 0)
+
 	if rmSelf {
-		rmKeys = allKeys
-	} else {
-		// 排除当前登录的token
-		principal, ok := sec.FromContext(ctx)
-		if !ok {
-			return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
-		}
-		c, ok := principal.Identity().Claims().(jwt.MapClaims)
-		if !ok {
-			return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
-		}
-		jti, ok := c["jti"].(string)
-		if !ok {
-			return fmterr.Newf(uint64(gin.ErrorTypePublic), "jti claim missing or invalid")
-		}
-		for _, key := range allKeys {
-			if key != jti {
-				rmKeys = append(rmKeys, key)
-			}
-		}
+		// 删除所有 token
+		return tokenindex.ClearAll(ctx, s.cache, uid)
 	}
-	// keys从redis移除
-	if len(rmKeys) == 0 {
-		return nil
+
+	// 排除当前登录的 token
+	principal, ok := sec.FromContext(ctx)
+	if !ok {
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
 	}
-	_, err := s.redisClient.Del(ctx, rmKeys...).Result()
-	if err != nil {
-		return err
+	c, ok := principal.Identity().Claims().(jwt.MapClaims)
+	if !ok {
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
 	}
-	return nil
+	jti, ok := c["jti"].(string)
+	if !ok {
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "jti claim missing or invalid")
+	}
+	return tokenindex.ClearExcept(ctx, s.cache, uid, jti)
 }
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
@@ -909,7 +875,7 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 		return err
 	}
 	// 修改密码，清除其他token
-	err = s.clearLoginTokensOfRedis(ctx, userID, true)
+	err = s.clearUserLoginTokens(ctx, userID, true)
 	if err != nil {
 		return err
 	}

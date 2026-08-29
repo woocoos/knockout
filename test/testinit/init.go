@@ -1,5 +1,5 @@
-// Package data is the data tools. It is used to initialize the database data or test data.
-package data
+// Package testinit provides test initialization data for knockout.
+package testinit
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
@@ -24,27 +25,8 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"os"
 	"strconv"
 )
-
-const (
-	DefaultDsn    string = "root:pass@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
-	DefaultDriver string = "mysql"
-)
-
-// ParseDNS parse dsn.Parameter dsn is the cmd argument, if dsn is empty, try to get dsn from environment variable,
-// if dsn is empty will fall back to DefaultDsn.
-func ParseDNS(dsn *string) {
-	if dsn == nil || *dsn == "" {
-		// get dsn from environment variable，if has
-		if e := os.Getenv("DATABASE_URL"); e != "" {
-			dsn = &e
-		} else {
-			*dsn = DefaultDsn
-		}
-	}
-}
 
 type dataset struct {
 	portal *ent.Client
@@ -68,7 +50,7 @@ func InitBase(name, dsn string) {
 }
 
 // InitBaseWithClients 使用已有的 client 初始化基础数据.
-// 适用于需要共享数据库连接的场景(如 setup 或 SQLite 内存数据库).
+// 适用于需要共享数据库连接的场景(如 SQLite 内存数据库).
 func InitBaseWithClients(portal *ent.Client, casbin *casbinent.Client) {
 	ds := dataset{
 		portal:      portal,
@@ -115,39 +97,75 @@ func InitBaseWithClients(portal *ent.Client, casbin *casbinent.Client) {
 }
 
 func (*dataset) initOrg(client *ent.Tx) {
-	// 仅创建根组织
-	c := client.Org.Create().SetID(1).SetKind(org.KindRoot).SetParentID(0).SetStatus(typex.SimpleStatusActive).
-		SetCreatedBy(1).SetUpdatedBy(1).SetName("root").SetOwnerID(1)
-	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
-	if err := c.Exec(ctx); err != nil {
-		panic(err)
+	ou := make([]*ent.OrgUserCreate, 0)
+	for i := 1; i < 4; i++ {
+		// 由于path字段是计算字段，所以这里不需要设置,但需要对org独立保存.
+		c := client.Org.Create().SetID(i).SetKind(org.KindOrganization).SetParentID(i - 1).SetStatus(typex.SimpleStatusActive).
+			SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(i))
+		if i == 1 {
+			c.SetKind(org.KindRoot).SetDomain("woocoo.com").SetOwnerID(1)
+		}
+		ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
+		if err := c.Exec(ctx); err != nil {
+			panic(err)
+		}
+
 	}
-	// admin 加入根组织
-	ou := client.OrgUser.Create().SetOrgID(1).SetUserID(1).SetCreatedBy(1).SetDisplayName("admin")
-	err := ou.Exec(context.Background())
+	for i := 1; i < 4; i++ {
+		if i != 1 { // 1为根目录,所有用户需要加入根目录
+			u := client.OrgUser.Create().SetOrgID(1).SetUserID(i).SetCreatedBy(1).SetDisplayName("user" + strconv.Itoa(i))
+			ou = append(ou, u)
+		}
+		u := client.OrgUser.Create().SetOrgID(i).SetUserID(i).SetCreatedBy(1).SetDisplayName("user" + strconv.Itoa(i))
+		ou = append(ou, u)
+	}
+	err := client.OrgUser.CreateBulk(ou...).Exec(context.Background())
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (*dataset) initUser(client *ent.Tx) {
-	// 仅创建 admin 用户
-	ctx := context.Background()
-	client.User.Create().SetID(1).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
-		SetRegisterIP("").SetPrincipalName("admin").SetDisplayName("admin").
-		SetStatus(types.UserStatusActive).SetCreatedBy(1).ExecX(ctx)
+	ub := make([]*ent.UserCreate, 0)
+	ua := make([]*ent.UserAddrCreate, 0)
+	ulp := make([]*ent.UserLoginProfileCreate, 0)
+	up := make([]*ent.UserPasswordCreate, 0)
+	ui := make([]*ent.UserIdentityCreate, 0)
+	for i := 1; i < 4; i++ {
+		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
+			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
+			SetStatus(types.UserStatusActive).SetCreatedBy(1)
+		if i == 1 {
+			c.SetPrincipalName("admin").SetDisplayName("admin")
+		}
+		ub = append(ub, c)
 
-	client.UserAddr.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).
-		SetEmail("admin@localhost").ExecX(ctx)
+		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+		if i == 1 {
+			a.SetEmail("admin@localhost")
+		}
+		ua = append(ua, a)
 
-	client.UserLoginProfile.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
-		SetCanLogin(true).SetPasswordReset(false).SetVerifyDevice(true).ExecX(ctx)
+		lp := client.UserLoginProfile.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
+			SetCanLogin(true).SetPasswordReset(false).SetMfaSecret("UWZLIIUMPX53NYXB").SetVerifyDevice(true)
+		ulp = append(ulp, lp)
 
-	client.UserPassword.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetScene(userpassword.SceneLogin).
-		SetStatus(typex.SimpleStatusActive).SetPassword("").SetSalt("").ExecX(ctx)
+		p := client.UserPassword.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetScene(userpassword.SceneLogin).
+			SetStatus(typex.SimpleStatusActive).SetPassword("123456").SetSalt("123456").SetPassword("9b1063951d443cfac15cc879efb4054f4f4fd599e1b1a9aee67b0301e19e40fe")
+		up = append(up, p)
 
-	client.UserIdentity.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetKind(useridentity.KindName).
-		SetCode("admin").ExecX(ctx)
+		id := client.UserIdentity.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetKind(useridentity.KindName).
+			SetCode("user" + strconv.Itoa(i))
+		if i == 1 {
+			id.SetCode("admin")
+		}
+		ui = append(ui, id)
+	}
+	client.User.CreateBulk(ub...).ExecX(context.Background())
+	client.UserAddr.CreateBulk(ua...).ExecX(context.Background())
+	client.UserLoginProfile.CreateBulk(ulp...).ExecX(context.Background())
+	client.UserPassword.CreateBulk(up...).ExecX(context.Background())
+	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
 }
 
 func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
@@ -354,11 +372,27 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 }
 
 func (*dataset) initFileSource(client *ent.Tx) {
-	// 文件存储需通过管理界面配置, 不预置数据
+	tenantID := 1
+	fs := make([]*ent.FileSourceCreate, 0)
+	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindMinio).SetComments("本地存储bucket").
+		SetEndpoint("http://192.168.0.17:32650").SetBucket("woocootest").SetRegion("minio").SetStsEndpoint("http://192.168.0.17:32650").
+		SetBucketURL("http://192.168.0.17:32650/woocootest").SetCreatedBy(1)
+	fs = append(fs, s1)
+	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
+
+	fi := make([]*ent.FileIdentityCreate, 0)
+	s2 := client.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetFileSourceID(1).SetAccessKeyID("test").SetAccessKeySecret("test1234").
+		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("arn:aws:s3:::*").SetTenantID(tenantID)
+	fi = append(fi, s2)
+	client.FileIdentity.CreateBulk(fi...).ExecX(identity.WithTenantID(context.Background(), tenantID))
 }
 
 func (*dataset) initOauthClient(client *ent.Tx) {
-	// OAuth 客户端需通过管理界面配置, 不预置数据
+	oc := make([]*ent.OauthClientCreate, 0)
+	s1 := client.OauthClient.Create().SetID(1).SetName("系统").SetClientID("206734260394752").SetClientSecret("T2UlqISVFq4DR9InXamj3l74iWdu3Tyr").
+		SetGrantTypes("client_credentials").SetStatus(typex.SimpleStatusActive).SetUserID(1).SetCreatedBy(1)
+	oc = append(oc, s1)
+	client.OauthClient.CreateBulk(oc...).ExecX(context.Background())
 }
 
 // InitResourcePolicy init resource policy.

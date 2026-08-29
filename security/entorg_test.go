@@ -47,11 +47,12 @@ func (t *testSuite) SetupSuite() {
 
 	adapter, err := entadapter.NewAdapterWithClient(t.AuthDbClient)
 	t.Require().NoError(err)
-	err = casbin.SetAuthorizer(t.App.AppConfiguration().Sub("authz"), casbin.WithAdapter(adapter))
+	authorizer, err := casbin.NewAuthorizer(t.App.AppConfiguration().Sub("authz"), casbin.WithAdapter(adapter))
 	if err != nil {
 		panic(err)
 	}
-	t.authorizer = security.DefaultAuthorizer.(*casbin.Authorizer)
+	security.SetDefaultAuthorizer(authorizer)
+	t.authorizer = authorizer
 	t.entHook = NewEntHook(t.Client)
 	t.initData()
 	_, err = t.authorizer.Enforcer.AddRoleForUserInDomain("1", "r_1", "1")

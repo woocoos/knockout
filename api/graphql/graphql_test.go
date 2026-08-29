@@ -23,7 +23,9 @@ import (
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/vmihailenco/msgpack/v5"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/knockout-go/api"
+	authzcasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -41,7 +43,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	_ "github.com/woocoos/knockout/ent/runtime"
-	"github.com/woocoos/knockout/script/data"
+	"github.com/woocoos/knockout/test/testinit"
 	sec "github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/test/testsuite"
@@ -67,7 +69,15 @@ func (t *graphqlSuite) SetupSuite() {
 	// 重新注册 cache 组件以使用 miniredis 地址
 	cache.UnRegisterCache("redis")
 	koapp.BuildCacheComponents(t.Cnf)
-	data.InitBase(t.DriverName, t.DSN)
+	testinit.InitBase(t.DriverName, t.DSN)
+
+	// 初始化全局 authorizer (casbin)
+	adapter, err := entadapter.NewAdapterWithClient(t.AuthDbClient)
+	t.Require().NoError(err)
+	authorizer, err := authzcasbin.NewAuthorizer(t.Cnf.Sub("authz"), authzcasbin.WithAdapter(adapter))
+	t.Require().NoError(err)
+	security.SetDefaultAuthorizer(authorizer)
+
 	// 创建 mock KOSDK 服务
 	mockSrv := httptest.NewServer(t.mockKOSDK())
 	t.Cnf.Parser().Set("kosdk.client.oauth2.endpoint.tokenURL", mockSrv.URL+"/token")
@@ -77,10 +87,12 @@ func (t *graphqlSuite) SetupSuite() {
 		"basePath": mockSrv.URL + "/api/v2",
 	}))
 	t.Require().NoError(err)
+	c, err := cache.GetCache("redis")
+	t.Require().NoError(err)
 	t.server = NewServer(t.Cnf,
 		WithPortalDB(t.CacheClient),
-		WithCasbinDB(t.AuthDbClient),
 		WithKOSdk(kosdk),
+		WithCache(c),
 	)
 	t.mr = &mutationResolver{
 		Resolver: t.server.resolver,
@@ -347,7 +359,8 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 	t.Client.AppPolicy.Create()
 	ac := "resource"
 	appID := 1
-	aas := []string{"userPermissions", "userMenus", "userRootOrgs"}
+	// 使用测试专用的 action 名称，避免与 InitBase 创建的冲突
+	aas := []string{"testAction1", "testAction2", "testAction3"}
 	// 创建action
 	aaCreates := make([]*ent.AppActionCreate, 0)
 	for i, a := range aas {
@@ -362,7 +375,7 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				ac + ":userPermissions",
+				ac + ":testAction1",
 			},
 		},
 	}).SetName("KOResAccess").SetComments("资源权限管理应用授权").SetAppID(appID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true).Save(ctx)
@@ -604,11 +617,11 @@ func (t *graphqlSuite) TestSyncAppRoleToOrg() {
 	appID := 1
 	orgID := 1
 	appCode := "resource"
-	// 应用权限
+	// 应用权限 - 使用 sync 前缀避免与其他测试冲突
 	ras := make([]*ent.AppActionCreate, 0)
 	for i := 0; i < 9; i++ {
 		ras = append(ras, t.Client.AppAction.Create().SetAppID(appID).SetCreatedBy(1).
-			SetName(fmt.Sprintf("testAction%d", i)).SetKind(appaction.KindGraphql).SetComments("登陆授权").SetMethod(appaction.MethodRead),
+			SetName(fmt.Sprintf("syncAction%d", i)).SetKind(appaction.KindGraphql).SetComments("登陆授权").SetMethod(appaction.MethodRead),
 		)
 	}
 	t.Client.AppAction.CreateBulk(ras...).ExecX(ctx)
@@ -617,9 +630,9 @@ func (t *graphqlSuite) TestSyncAppRoleToOrg() {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				appCode + ":testAction1",
-				appCode + ":testAction2",
-				appCode + ":testAction3",
+				appCode + ":syncAction1",
+				appCode + ":syncAction2",
+				appCode + ":syncAction3",
 			},
 		},
 	}).SetName("ResourceTest1").SetAppID(appID).SetStatus(typex.SimpleStatusActive).Save(ctx)
@@ -629,8 +642,8 @@ func (t *graphqlSuite) TestSyncAppRoleToOrg() {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				appCode + ":testAction3",
-				appCode + ":testAction4",
+				appCode + ":syncAction3",
+				appCode + ":syncAction4",
 			},
 		},
 	}).SetName("ResourceTest2").SetAppID(appID).SetStatus(typex.SimpleStatusActive).Save(ctx)
@@ -788,10 +801,17 @@ query appDictItemByRefCode{
 
 // 修改密码移除其他登录的token
 func (t *graphqlSuite) TestChangePassword() {
-	// redis设置值
-	//token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda
-	_ = t.Redis.Set("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda", "1")
-	_ = t.Redis.Set("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa", "2")
+	// 使用 cache 组件设置 token 和索引
+	c, err := cache.GetCache("redis")
+	t.Require().NoError(err)
+
+	token1 := "token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda"
+	token2 := "token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa"
+	_ = c.Set(context.Background(), token1, "1")
+	_ = c.Set(context.Background(), token2, "2")
+	// 设置用户 token 索引
+	_ = c.Set(context.Background(), "user_tokens:1", []string{token1, token2})
+
 	const query = `
 mutation changePassword($oldPwd: String!,$newPwd: String!){
   changePassword(oldPwd: $oldPwd, newPwd: $newPwd)
@@ -804,11 +824,47 @@ mutation changePassword($oldPwd: String!,$newPwd: String!){
 	var resp struct {
 		ChangePassword bool
 	}
-	err := t.gqlClient.Post(query, &resp, client.Var("oldPwd", variables["oldPwd"]), client.Var("newPwd", variables["newPwd"]))
+	err = t.gqlClient.Post(query, &resp, client.Var("oldPwd", variables["oldPwd"]), client.Var("newPwd", variables["newPwd"]))
 	t.Require().NoError(err)
 	t.Equal(true, resp.ChangePassword)
-	t.Equal(true, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda"))
-	t.Equal(false, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa"))
+	// 修改密码后，所有 token 都被清除（包括索引）
+	var tokens []string
+	err = c.Get(context.Background(), "user_tokens:1", &tokens)
+	t.Equal(0, len(tokens))
+}
+
+// TestResetUserPasswordByEmail 测试管理员重置用户密码，清除所有 token (rmSelf=true)
+func (t *graphqlSuite) TestResetUserPasswordByEmail() {
+	c, err := cache.GetCache("redis")
+	t.Require().NoError(err)
+
+	// 设置用户的 token 和索引
+	token1 := "token:2:abc123-def456-ghi789"
+	token2 := "token:2:xyz789-uvw456-rst123"
+	_ = c.Set(context.Background(), token1, "2")
+	_ = c.Set(context.Background(), token2, "2")
+	_ = c.Set(context.Background(), "user_tokens:2", []string{token1, token2})
+
+	const query = `
+mutation resetUserPasswordByEmail($userId: ID!) {
+  resetUserPasswordByEmail(userId: $userId)
+}
+`
+	var resp struct {
+		ResetUserPasswordByEmail bool
+	}
+	err = t.gqlClient.Post(query, &resp, client.Var("userId", 2))
+	t.Require().NoError(err)
+	t.Equal(true, resp.ResetUserPasswordByEmail)
+
+	// 重置密码后，所有 token 和索引都应该被清除
+	var tokens []string
+	err = c.Get(context.Background(), "user_tokens:2", &tokens)
+	t.Equal(0, len(tokens))
+
+	// token 本身也应该被清除
+	t.Equal(false, c.Has(context.Background(), token1))
+	t.Equal(false, c.Has(context.Background(), token2))
 }
 
 func TestGlobalID(t *testing.T) {

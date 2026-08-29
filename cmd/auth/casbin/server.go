@@ -21,11 +21,18 @@ func WithAuthDB(drv dialect.Driver) ServerOption {
 	}
 }
 
+func WithAuthorizer(au *casbin.Authorizer) ServerOption {
+	return func(srv *Server) {
+		srv.authorizer = au
+	}
+}
+
 // Server 是基于casbin的鉴权Grpc服务
 type Server struct {
 	proto.UnimplementedCasbinServer
-	enforcer casbinv3.IEnforcer
-	client   *casbinent.Client
+	enforcer   casbinv3.IEnforcer
+	authorizer *casbin.Authorizer
+	client     *casbinent.Client
 
 	drv        dialect.Driver
 	grpcServer *grpcx.Server
@@ -44,16 +51,24 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) (*Server, error
 	for _, opt := range opts {
 		opt(s)
 	}
-	s.client = casbinent.NewClient(casbinent.Driver(s.drv))
-	adapter, err := entadapter.NewAdapterWithClient(s.client)
-	if err != nil {
-		return nil, err
+
+	// 如果传入了 authorizer, 直接使用
+	if s.authorizer != nil {
+		s.enforcer = s.authorizer.BaseEnforcer()
+	} else {
+		// 否则自行创建 (独立模式)
+		s.client = casbinent.NewClient(casbinent.Driver(s.drv))
+		adapter, err := entadapter.NewAdapterWithClient(s.client)
+		if err != nil {
+			return nil, err
+		}
+		au, err := casbin.NewAuthorizer(cnf.Sub("authz"), casbin.WithAdapter(adapter))
+		if err != nil {
+			return nil, err
+		}
+		s.authorizer = au
+		s.enforcer = au.BaseEnforcer()
 	}
-	au, err := casbin.NewAuthorizer(cnf.Sub("authz"), casbin.WithAdapter(adapter))
-	if err != nil {
-		return nil, err
-	}
-	s.enforcer = au.BaseEnforcer()
 
 	s.grpcServer = grpcx.New(grpcx.WithConfiguration(cnf.Sub("casbinServer.grpc")))
 	proto.RegisterCasbinServer(s.grpcServer.Engine(), s)

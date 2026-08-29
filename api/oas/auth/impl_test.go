@@ -29,9 +29,11 @@ import (
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	authzcasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/filesource"
@@ -78,14 +80,24 @@ func (t *authSuite) SetupSuite() {
 	t.Require().NoError(t.BaseSuite.Setup())
 	t.Require().NoError(t.Redis.Set(adminTokenJTI, "1"))
 
-	err := fmterr.InitErrorHandler(t.Cnf.Sub("errors"))
+	// 初始化全局 authorizer (casbin)
+	adapter, err := entadapter.NewAdapterWithClient(t.AuthDbClient)
+	t.Require().NoError(err)
+	authorizer, err := authzcasbin.NewAuthorizer(t.Cnf.Sub("authz"), authzcasbin.WithAdapter(adapter))
+	t.Require().NoError(err)
+	security.SetDefaultAuthorizer(authorizer)
+
+	err = fmterr.InitErrorHandler(t.Cnf.Sub("errors"))
 	t.Require().NoError(err)
 
 	t.AuthService = NewServerImpl(t.Cnf)
 	t.AuthService.db = t.Client
+	// 测试环境使用 redis cache
+	c, err := cache.GetCache("redis")
+	t.Require().NoError(err)
+	t.AuthService.cache = c
 	srv := Server{
 		service: t.AuthService,
-		authDb:  t.AuthDbClient,
 	}
 	t.server = srv.buildWebServer(t.Cnf)
 }

@@ -1,6 +1,6 @@
 module github.com/woocoos/knockout
 
-go 1.24.2
+go 1.26
 
 require (
 	entgo.io/contrib v0.7.0
@@ -24,7 +24,6 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.3.1
 	github.com/woocoos/knockout-go v0.6.2
-	go.opentelemetry.io/contrib/propagators/b3 v1.33.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.16.0
 )
@@ -100,6 +99,7 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.58.0 // indirect
+	go.opentelemetry.io/contrib/propagators/b3 v1.33.0 // indirect
 	go.opentelemetry.io/otel v1.33.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.33.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.33.0 // indirect

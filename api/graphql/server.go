@@ -4,16 +4,14 @@ import (
 	"context"
 
 	"entgo.io/contrib/entgql"
+	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
-	entadapter "github.com/woocoos/casbin-ent-adapter"
-	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/api"
-	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -37,10 +35,9 @@ import (
 )
 
 type ServerOptions struct {
-	portalDB    *ent.Client
-	casbinDB    *casbinent.Client
-	kosdk       *api.SDK
-	redisClient *redisx.Client
+	portalDB *ent.Client
+	kosdk    *api.SDK
+	cache    cache.Cache
 }
 
 type Server struct {
@@ -58,12 +55,9 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) *Server {
 		opt(&s.ServerOptions)
 	}
 
-	s.buildRedis(cnf)
-	buildCasbin(cnf, s.casbinDB)
-
 	rs := resource.NewService(
 		resource.WithClient(s.portalDB),
-		resource.WithRedis(s.redisClient),
+		resource.WithCache(s.cache),
 		resource.WithKOSDK(s.kosdk),
 		resource.WithCfg(cnf))
 	buildPortalHook(s.portalDB, rs)
@@ -78,10 +72,14 @@ func (s *Server) Start(ctx context.Context) error {
 	return s.webSrv.Start(ctx)
 }
 
+// RouterGroup 返回根路由组, 用于注册额外路由(如系统初始化).
+func (s *Server) RouterGroup() *gin.RouterGroup {
+	return s.webSrv.Router().FindGroup("/").Group
+}
+
 func (s *Server) Stop(ctx context.Context) error {
 	s.webSrv.Stop(ctx)
 	s.portalDB.Close()
-	s.casbinDB.Close()
 	return nil
 }
 
@@ -102,17 +100,6 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction
 	gqlSrv.Use(entgql.Transactioner{TxOpener: s.portalDB})
-}
-
-func buildCasbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
-	adapter, err := entadapter.NewAdapterWithClient(client)
-	if err != nil {
-		panic(err)
-	}
-	err = casbin.SetAuthorizer(cnf.Sub("authz"), casbin.WithAdapter(adapter))
-	if err != nil {
-		panic(err)
-	}
 }
 
 func buildPortalHook(db *ent.Client, ss *resource.Service) {
@@ -145,14 +132,4 @@ func buildPortalHook(db *ent.Client, ss *resource.Service) {
 	db.OauthClient.Use(hook.UserMutationAllow(security.AllOp, oauthclient.FieldUserID))
 	db.FileIdentity.Intercept(hook.OrgTraverseFunc(fileidentity.FieldTenantID))
 	db.FileIdentity.Use(hook.OrgMutationInAllowOrg(security.AllOp, fileidentity.FieldTenantID))
-}
-
-func (s *Server) buildRedis(cnf *conf.AppConfiguration) {
-	if cnf.IsSet("store.redis") {
-		cli, err := redisx.NewClient(cnf.Sub("store.redis"))
-		if err != nil {
-			panic(err)
-		}
-		s.redisClient = cli
-	}
 }

@@ -2,5 +2,155 @@ namespace: default
 appName: standalone
 version: 0.0.1
 development: true
+includeFiles:
+#  - "etc/local.yaml"
 
+# 安装向导配置 (数据库未初始化时生效)
+setup:
+  addr: "localhost:8081"
 
+log:
+  withTraceID: true
+  traceIDKey: "traceId"
+  cores:
+    - level: debug
+      outputPaths:
+        - stdout
+  rotate:
+    localtime: true
+
+authz:
+  expireTime: 10s
+  autoSave: true
+  watcherOptions:
+    options:
+      addr: "${REDIS_ADDR:-127.0.0.1:6379}"
+      db: ${REDIS_DB:-1}
+    ignoreSelf: true
+    channel: "/casbin"
+  model: "etc/rbac_model.conf"
+  cache:
+    size: 1000
+    ttl: 1m
+
+jwt: &jwt
+  signingMethod: "HS256"
+  signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
+
+web:
+  server:
+    addr: localhost:8080
+  engine:
+    routerGroups:
+      - default:
+          middlewares:
+            - cors:
+                allowOrigins: ['*']
+                allowHeaders: ["*"]
+            - accessLog:
+                exclude:
+                  - IntrospectionQuery
+            - recovery:
+            - errorHandle:
+                message: "系统内部异常，请联系管理员"
+            - gzip:
+      - graphql:
+          basePath: "/graphql"
+          middlewares:
+            - jwt:
+                tokenStoreKey: local
+                <<: *jwt
+            - tenant:
+            - graphql:
+                group: "/graphql"
+                withAuthorization: false
+                publicErrorMsg: "系统内部异常，请联系管理员"
+                appCode: "resource"
+                middlewares:
+                  operation:
+                docHeader:
+                  X-Tenant-ID: ${TENANT}
+                  Authorization: ${AUTHORIZATION}
+
+store:
+  portal:
+    driverName: ${STORE_PORTAL_DRIVERNAME:-mysql}
+    dsn: ${STORE_PORTAL_DSN:-root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local}
+
+cache:
+  local:
+    driverName: local
+    size: 10000
+    ttl: 100s
+
+entcache:
+  hashQueryTTL: 3s
+
+kosdk:
+  client:
+    timeout: 2s
+    oauth2:
+      clientID: 206734260394752
+      clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+      endpoint:
+        tokenURL: http://127.0.0.1:10070/token
+      scopes:
+      storeKey: local
+  signer:
+    authScheme: "KO-HMAC-SHA1"
+    authHeaders: [ "timestamp", "nonce" ]
+    signedLookups:
+      accessToken: "header:authorization>bearer"
+      timestamp:
+      nonce:
+      url: CanonicalUri
+    nonceLen: 12
+  plugin:
+    msg:
+      basePath: "http://127.0.0.1:10072/api/v2"
+
+auth:
+  pwdPolicy:
+    length: 6
+    includeElement: 3
+    includeChar: 4
+    allowIncludeUserName: false
+    invalidDay: 365
+    invalidLoginLimit: true
+    retry: 5
+    captchaTimes: 3
+  clearLoginTokens:
+    exclude:
+      - 1
+
+errors:
+  errorMap:
+    "missing or malformed jwt": "认证信息缺失，请重新登录"
+    "invalid or expired jwt": "登录已过期，请重新登录"
+    "invalid jwt claims": "认证信息无效，请重新登录"
+  errorCodeMap:
+    10001: "旧密码错误"
+    10002: "账号禁止登录"
+    10003: "账号验证错误"
+    10004: "密码错误"
+    10005: "新密码不能与最近一次使用的密码相同"
+    10006: "密码已过期，请重置密码或联系客服修改密码恢复"
+    10007: "账号已锁定，请重置密码或联系客服修改密码解除锁定"
+    10008: "验证码错误"
+    10009: "身份验证码错误"
+    10010: "MFA未激活"
+    10011: "MFA未启用"
+    10012: "无效的令牌，请重新登录"
+    10013: "邮箱不存在"
+    10014: "未找到邮箱，请确认邮箱是否正确"
+    10015: "组织未找到"
+    10016: "无效的权限"
+    10017: "没有登录权限"
+    10018: "无效的SPM"
+    10019: "文件凭证不存在"
+    10020: "不支持的验证方式"
+    10021: "验证码失效"
+    10022: "密码错误，您还可以尝试%d次"
+    10023: "登录设备超过%d台限制，请前往旧设备删除登录设备后登录"
+    10024: "登录账号不存在"
+    10025: "用户名或密码错误"

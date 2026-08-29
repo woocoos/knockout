@@ -2,40 +2,32 @@ namespace: default
 appName: auth
 version: 0.0.1
 development: true
-# use open telemetry
-#otel:
-#  traceExporter: otlp
-#  otlp:
-#    endpoint: "127.0.0.1:4317"
-#    client:
-#      dialOption:
-#        - timeout: 5s
 includeFiles:
   - etc/casbin.yaml
-#  - "etc/local.yaml"
+
 authz:
   expireTime: 10m
   autoSave: false
   watcherOptions:
     options:
-      addr: "127.0.0.1:6379"
-      db: 1
+      addr: "${REDIS_ADDR:-127.0.0.1:6379}"
+      db: ${REDIS_DB:-1}
     ignoreSelf: true
     channel: "/casbin"
   model: "etc/rbac_model.conf"
 
 auth:
-  captchaTimes: 3 # if login fail times, captcha will force show
-  captchaTTL: 1m # captcha ttl
+  captchaTimes: 3
+  captchaTTL: 1m
   captchaExpire: 5m
-  loginFailTimes: 5 # login fail times will lock account
-  loginFailLockTime: 10m # login fail lock time
+  loginFailTimes: 5
+  loginFailLockTime: 10m
   stateTokenTTL: 20m
   stateTokenSecret: "secret"
   spmTTL: 5s
   verifyDeviceParams:
-    defaultBound: false # 第一次是否默认绑定设备
-    excludeAccounts: # 跳过设备验证的账号
+    defaultBound: false
+    excludeAccounts:
   jwt: &jwt
     signingMethod: "HS256"
     signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
@@ -43,26 +35,18 @@ auth:
     tokenTTL: 1h
     refreshTokenTTL: 168h
   pwdPolicy:
-    # 密码最短长度，长度应在6-32位之间
     length: 6
-    # 必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
     includeElement: 7
-    # 最少包含的不同字符数，最多8个，0代表不限制
     includeChar: 4
-    # 是否允许包含用户名
     allowIncludeUserName: false
-    # 有效天数，最大1095天，0代表不过期
     invalidDay: 365
-    # 过期后是否限制登录
     invalidLoginLimit: true
-    # 一小时内密码错误最多尝试次数，最大32次，0代表不限次数
     retry: 5
-    # 密码错误多少次出现验证码，最大5次，0代表不出现验证码
     captchaTimes: 3
   clearLoginTokens:
-    # 忽略的userID
     exclude:
       - 1
+
 errors:
   errorMap:
     "missing or malformed jwt": "认证信息缺失，请重新登录"
@@ -111,7 +95,7 @@ web:
             - errorHandle:
                 message: "系统内部异常，请联系管理员"
             - jwt:
-                tokenStoreKey: redis
+                tokenStoreKey: local
                 exclude:
                   - "/login/auth"
                   - "/login/fingerprint"
@@ -135,18 +119,14 @@ web:
 
 store:
   portal:
-    driverName: mysql
-    dsn: "root:123456@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+    driverName: ${STORE_PORTAL_DRIVERNAME:-mysql}
+    dsn: ${STORE_PORTAL_DSN:-root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local}
 
 cache:
-  redis:
-    driverName: redis
-    addrs:
-      - 127.0.0.1:6379
-    db: 1
-    local:
-      size: 1000
-      ttl: 100s
+  local:
+    driverName: local
+    size: 10000
+    ttl: 100s
 
 entcache:
   hashQueryTTL: 3s
@@ -160,7 +140,7 @@ kosdk:
       endpoint:
         tokenURL: http://127.0.0.1:10070/token
       scopes:
-      storeKey: redis
+      storeKey: local
   signer:
     authScheme: "KO-HMAC-SHA1"
     authHeaders: [ "timestamp", "nonce" ]
@@ -174,7 +154,3 @@ kosdk:
     fs:
     msg:
       basePath: "http://127.0.0.1:10072/api/v2"
-
-
-
-

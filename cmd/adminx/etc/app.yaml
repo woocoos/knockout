@@ -42,7 +42,7 @@ jwt: &jwt
 
 web:
   server:
-    addr: :8080
+    addr: localhost:8080
   engine:
     routerGroups:
       - default:
@@ -80,15 +80,13 @@ store:
   portal:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
-  redis: &redis
-    addrs:
-      - 127.0.0.1:6379
-    db: 1
 
 cache:
   redis:
     driverName: redis
-    <<: *redis
+    addrs:
+      - 127.0.0.1:6379
+    db: 1
     local:
       size: 1000
       ttl: 100s

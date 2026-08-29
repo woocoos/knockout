@@ -1,13 +1,16 @@
 package main
 
 import (
+	"github.com/tsingsun/woocoo/pkg/security"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/ent/clientx"
+	authzcasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/koapp"
-	schemahook "github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/api/graphql"
+	schemahook "github.com/woocoos/knockout/codegen/entgen/hook"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/job"
 
@@ -18,31 +21,51 @@ import (
 
 func main() {
 	app := koapp.New()
+	cnf := app.AppConfiguration()
 
-	ents := koapp.BuildEntComponents(app.AppConfiguration())
+	ents := koapp.BuildEntComponents(cnf)
 	drv := ents["portal"]
 	portalClient := ent.NewClient(ent.Driver(drv))
 	schemahook.RegisterAllHooks(portalClient)
 	casbinClient := casbinent.NewClient(casbinent.Driver(drv))
-	if app.AppConfiguration().Development {
+	defer casbinClient.Close()
+	if cnf.Development {
 		portalClient = portalClient.Debug()
 		casbinClient = casbinClient.Debug()
 	}
+
+	// 初始化全局 authorizer (casbin)
+	if cnf.IsSet("authz") {
+		adapter, err := entadapter.NewAdapterWithClient(casbinClient)
+		if err != nil {
+			panic(err)
+		}
+		authorizer, err := authzcasbin.NewAuthorizer(cnf.Sub("authz"), authzcasbin.WithAdapter(adapter))
+		if err != nil {
+			panic(err)
+		}
+		security.SetDefaultAuthorizer(authorizer)
+	}
+
 	// 初始化错误处理
-	if err := fmterr.InitErrorHandler(app.AppConfiguration().Sub("errors")); err != nil {
+	if err := fmterr.InitErrorHandler(cnf.Sub("errors")); err != nil {
 		panic(err)
 	}
-	var err error
-	kosdk, err := api.NewSDK(app.AppConfiguration().Sub("kosdk"))
+
+	kosdk, err := api.NewSDK(cnf.Sub("kosdk"))
 	if err != nil {
 		panic(err)
 	}
-	rmsSvr := graphql.NewServer(app.AppConfiguration(),
-		graphql.WithCasbinDB(casbinClient), graphql.WithPortalDB(portalClient), graphql.WithKOSdk(kosdk))
+
+	rmsSvr := graphql.NewServer(cnf,
+		graphql.WithPortalDB(portalClient),
+		graphql.WithKOSdk(kosdk),
+		graphql.WithDefaultCache(cnf),
+	)
 
 	// 调度
-	if app.AppConfiguration().IsSet("job") {
-		jobSrv, err := job.NewServer(app.AppConfiguration().Sub("job"))
+	if cnf.IsSet("job") {
+		jobSrv, err := job.NewServer(cnf.Sub("job"))
 		if err != nil {
 			panic(err)
 		}
