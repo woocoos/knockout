@@ -1,0 +1,156 @@
+namespace: default
+appName: auth
+version: 0.0.1
+development: true
+includeFiles:
+  - etc/casbin.yaml
+
+authz:
+  expireTime: 10m
+  autoSave: false
+  watcherOptions:
+    options:
+      addr: "${REDIS_ADDR:-127.0.0.1:6379}"
+      db: ${REDIS_DB:-1}
+    ignoreSelf: true
+    channel: "/casbin"
+  model: "etc/rbac_model.conf"
+
+auth:
+  captchaTimes: 3
+  captchaTTL: 1m
+  captchaExpire: 5m
+  loginFailTimes: 5
+  loginFailLockTime: 10m
+  stateTokenTTL: 20m
+  stateTokenSecret: "secret"
+  spmTTL: 5s
+  verifyDeviceParams:
+    defaultBound: false
+    excludeAccounts:
+  jwt: &jwt
+    signingMethod: "HS256"
+    signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
+    privateKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
+    tokenTTL: 1h
+    refreshTokenTTL: 168h
+  pwdPolicy:
+    length: 6
+    includeElement: 7
+    includeChar: 4
+    allowIncludeUserName: false
+    invalidDay: 365
+    invalidLoginLimit: true
+    retry: 5
+    captchaTimes: 3
+  clearLoginTokens:
+    exclude:
+      - 1
+
+errors:
+  errorMap:
+    "missing or malformed jwt": "认证信息缺失，请重新登录"
+    "invalid or expired jwt": "登录已过期，请重新登录"
+    "invalid jwt claims": "认证信息无效，请重新登录"
+  errorCodeMap:
+    10000: "用户名或密码错误"
+    10001: "旧密码错误"
+    10002: "账号禁止登录"
+    10003: "账号验证错误"
+    10004: "密码错误"
+    10005: "新密码不能与最近一次使用的密码相同"
+    10006: "密码已过期，请重置密码或联系客服修改密码恢复"
+    10007: "账号已锁定，请重置密码或联系客服修改密码解除锁定"
+    10008: "验证码错误"
+    10009: "身份验证码错误"
+    10010: "MFA未激活"
+    10011: "MFA未启用"
+    10012: "无效的令牌，请重新登录"
+    10013: "邮箱不存在"
+    10014: "未找到邮箱，请确认邮箱是否正确"
+    10015: "组织未找到"
+    10016: "无效的权限"
+    10017: "没有登录权限"
+    10018: "无效的SPM"
+    10019: "文件凭证不存在"
+    10020: "不支持的验证方式"
+    10021: "验证码失效"
+    10022: "密码错误，您还可以尝试%d次"
+    10023: "登录设备超过%d台限制，请前往旧设备删除登录设备后登录"
+    10024: "登录账号不存在"
+    10025: "用户名或密码错误"
+
+web:
+  server:
+    addr: localhost:10070
+  engine:
+    routerGroups:
+      - default:
+          middlewares:
+            - cors:
+                allowOrigins: [ '*' ]
+                allowHeaders: [ "*" ]
+            - accessLog:
+            - recovery:
+            - errorHandle:
+                message: "系统内部异常，请联系管理员"
+            - jwt:
+                tokenStoreKey: local
+                exclude:
+                  - "/login/auth"
+                  - "/login/fingerprint"
+                  - "/login/old-fingerprint"
+                  - "/login/old-auth"
+                  - "/login/mfaqr.png"
+                  - "/login/verify-factor"
+                  - "/login/reset-password"
+                  - "/login/device-captcha"
+                  - "/login/verify-device"
+                  - "/captcha"
+                  - "/forget-pwd/begin"
+                  - "/forget-pwd/verify-email"
+                  - "/forget-pwd/send-email"
+                  - "/forget-pwd/verify-mfa"
+                  - "/forget-pwd/reset"
+                  - "/spm/auth"
+                  - "/token"
+                  - "/pwd/policy"
+                <<: *jwt
+
+store:
+  portal:
+    driverName: ${STORE_PORTAL_DRIVERNAME:-mysql}
+    dsn: ${STORE_PORTAL_DSN:-root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local}
+
+cache:
+  local:
+    driverName: local
+    size: 10000
+    ttl: 100s
+
+entcache:
+  hashQueryTTL: 3s
+
+kosdk:
+  client:
+    timeout: 2s
+    oauth2:
+      clientID: 206734260394752
+      clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+      endpoint:
+        tokenURL: http://127.0.0.1:10070/token
+      scopes:
+      storeKey: local
+  signer:
+    authScheme: "KO-HMAC-SHA1"
+    authHeaders: [ "timestamp", "nonce" ]
+    signedLookups:
+      accessToken: "header:authorization>bearer"
+      timestamp:
+      nonce:
+      url: CanonicalUri
+    nonceLen: 12
+  plugin:
+    fs:
+    msg:
+      basePath: "http://127.0.0.1:10072/api/v2"

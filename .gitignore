@@ -20,6 +20,7 @@ go.work*
 *.out
 *.log
 test/tmp
+.env
 *.env.*
 
 # Dependency directories (remove the comment below to include it)

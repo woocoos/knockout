@@ -16,7 +16,6 @@ import (
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
-	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
@@ -58,16 +57,24 @@ type dataset struct {
 //
 // in sqlite,
 func InitBase(name, dsn string) {
-	ds := dataset{
-		casbinRules: make([]*casbinent.CasbinRuleCreate, 0),
-	}
 	drv, err := sql.Open(name, dsn)
 	if err != nil {
 		panic(err)
 	}
-	ds.portal = ent.NewClient(ent.Driver(drv))
-	hook.RegisterAllHooks(ds.portal)
-	ds.casbin = casbinent.NewClient(casbinent.Driver(drv))
+	portal := ent.NewClient(ent.Driver(drv))
+	hook.RegisterAllHooks(portal)
+	casbin := casbinent.NewClient(casbinent.Driver(drv))
+	InitBaseWithClients(portal, casbin)
+}
+
+// InitBaseWithClients 使用已有的 client 初始化基础数据.
+// 适用于需要共享数据库连接的场景(如 setup 或 SQLite 内存数据库).
+func InitBaseWithClients(portal *ent.Client, casbin *casbinent.Client) {
+	ds := dataset{
+		portal:      portal,
+		casbin:      casbin,
+		casbinRules: make([]*casbinent.CasbinRuleCreate, 0),
+	}
 
 	ctx := context.Background()
 	tx, err := ds.portal.Tx(ctx)
@@ -108,75 +115,39 @@ func InitBase(name, dsn string) {
 }
 
 func (*dataset) initOrg(client *ent.Tx) {
-	ou := make([]*ent.OrgUserCreate, 0)
-	for i := 1; i < 4; i++ {
-		// 由于path字段是计算字段，所以这里不需要设置,但需要对org独立保存.
-		c := client.Org.Create().SetID(i).SetKind(org.KindOrganization).SetParentID(i - 1).SetStatus(typex.SimpleStatusActive).
-			SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(i))
-		if i == 1 {
-			c.SetKind(org.KindRoot).SetDomain("woocoo.com").SetOwnerID(1)
-		}
-		ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
-		if err := c.Exec(ctx); err != nil {
-			panic(err)
-		}
-
+	// 仅创建根组织
+	c := client.Org.Create().SetID(1).SetKind(org.KindRoot).SetParentID(0).SetStatus(typex.SimpleStatusActive).
+		SetCreatedBy(1).SetUpdatedBy(1).SetName("root").SetOwnerID(1)
+	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
+	if err := c.Exec(ctx); err != nil {
+		panic(err)
 	}
-	for i := 1; i < 4; i++ {
-		if i != 1 { // 1为根目录,所有用户需要加入根目录
-			u := client.OrgUser.Create().SetOrgID(1).SetUserID(i).SetCreatedBy(1).SetDisplayName("user" + strconv.Itoa(i))
-			ou = append(ou, u)
-		}
-		u := client.OrgUser.Create().SetOrgID(i).SetUserID(i).SetCreatedBy(1).SetDisplayName("user" + strconv.Itoa(i))
-		ou = append(ou, u)
-	}
-	err := client.OrgUser.CreateBulk(ou...).Exec(context.Background())
+	// admin 加入根组织
+	ou := client.OrgUser.Create().SetOrgID(1).SetUserID(1).SetCreatedBy(1).SetDisplayName("admin")
+	err := ou.Exec(context.Background())
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (*dataset) initUser(client *ent.Tx) {
-	ub := make([]*ent.UserCreate, 0)
-	ua := make([]*ent.UserAddrCreate, 0)
-	ulp := make([]*ent.UserLoginProfileCreate, 0)
-	up := make([]*ent.UserPasswordCreate, 0)
-	ui := make([]*ent.UserIdentityCreate, 0)
-	for i := 1; i < 4; i++ {
-		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
-			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
-			SetStatus(types.UserStatusActive).SetCreatedBy(1)
-		if i == 1 {
-			c.SetPrincipalName("admin").SetDisplayName("admin")
-		}
-		ub = append(ub, c)
+	// 仅创建 admin 用户
+	ctx := context.Background()
+	client.User.Create().SetID(1).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
+		SetRegisterIP("").SetPrincipalName("admin").SetDisplayName("admin").
+		SetStatus(types.UserStatusActive).SetCreatedBy(1).ExecX(ctx)
 
-		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).SetEmail("user" + strconv.Itoa(i) + "@localhost")
-		if i == 1 {
-			a.SetEmail("admin@localhost")
-		}
-		ua = append(ua, a)
+	client.UserAddr.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).
+		SetEmail("admin@localhost").ExecX(ctx)
 
-		lp := client.UserLoginProfile.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
-			SetCanLogin(true).SetPasswordReset(false).SetMfaSecret("UWZLIIUMPX53NYXB").SetVerifyDevice(true)
-		ulp = append(ulp, lp)
+	client.UserLoginProfile.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
+		SetCanLogin(true).SetPasswordReset(false).SetVerifyDevice(true).ExecX(ctx)
 
-		p := client.UserPassword.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetScene(userpassword.SceneLogin).
-			SetStatus(typex.SimpleStatusActive).SetPassword("123456").SetSalt("123456").SetPassword("9b1063951d443cfac15cc879efb4054f4f4fd599e1b1a9aee67b0301e19e40fe")
-		up = append(up, p)
+	client.UserPassword.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetScene(userpassword.SceneLogin).
+		SetStatus(typex.SimpleStatusActive).SetPassword("").SetSalt("").ExecX(ctx)
 
-		id := client.UserIdentity.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetKind(useridentity.KindName).
-			SetCode("user" + strconv.Itoa(i))
-		if i == 1 {
-			id.SetCode("admin")
-		}
-		ui = append(ui, id)
-	}
-	client.User.CreateBulk(ub...).ExecX(context.Background())
-	client.UserAddr.CreateBulk(ua...).ExecX(context.Background())
-	client.UserLoginProfile.CreateBulk(ulp...).ExecX(context.Background())
-	client.UserPassword.CreateBulk(up...).ExecX(context.Background())
-	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
+	client.UserIdentity.Create().SetID(1).SetUserID(1).SetCreatedBy(1).SetKind(useridentity.KindName).
+		SetCode("admin").ExecX(ctx)
 }
 
 func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
@@ -246,6 +217,129 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 		set.casbinRules = append(set.casbinRules, casbinClient.CasbinRule.Create().SetPtype("p").
 			SetV0(strconv.Itoa(i)).SetV1("1").SetV2(ac+":*").SetV3("read").SetV4("allow"))
 	}
+	// InitResourcePolicy所需的全部action (login已在循环中创建, ID=1)
+	type actionDef struct {
+		name   string
+		kind   appaction.Kind
+		method appaction.Method
+	}
+	resourceActions := []actionDef{
+		// 路由类action
+		{"/", appaction.KindRoute, appaction.MethodRead},
+		{"/dict", appaction.KindRoute, appaction.MethodRead},
+		{"/org/departments", appaction.KindRoute, appaction.MethodRead},
+		{"/org/groups", appaction.KindRoute, appaction.MethodRead},
+		{"/org/policys", appaction.KindRoute, appaction.MethodRead},
+		{"/org/roles", appaction.KindRoute, appaction.MethodRead},
+		{"/org/users", appaction.KindRoute, appaction.MethodRead},
+		{"/system/account", appaction.KindRoute, appaction.MethodRead},
+		{"/system/app", appaction.KindRoute, appaction.MethodRead},
+		{"/system/file/source", appaction.KindRoute, appaction.MethodRead},
+		{"/system/org", appaction.KindRoute, appaction.MethodRead},
+		{"/user/info", appaction.KindRoute, appaction.MethodRead},
+		{"/user/safety", appaction.KindRoute, appaction.MethodRead},
+		// GraphQL查询类action (列表)
+		{"organizations", appaction.KindGraphql, appaction.MethodList},
+		{"users", appaction.KindGraphql, appaction.MethodList},
+		{"apps", appaction.KindGraphql, appaction.MethodList},
+		{"fileSources", appaction.KindGraphql, appaction.MethodList},
+		{"appDicts", appaction.KindGraphql, appaction.MethodList},
+		// GraphQL查询类action (单条/自定义)
+		{"userPermissions", appaction.KindGraphql, appaction.MethodRead},
+		{"userMenus", appaction.KindGraphql, appaction.MethodRead},
+		{"userRootOrgs", appaction.KindGraphql, appaction.MethodRead},
+		{"node", appaction.KindGraphql, appaction.MethodRead},
+		{"appAccess", appaction.KindGraphql, appaction.MethodRead},
+		{"orgRoles", appaction.KindGraphql, appaction.MethodRead},
+		{"orgGroups", appaction.KindGraphql, appaction.MethodRead},
+		{"orgUserPreference", appaction.KindGraphql, appaction.MethodRead},
+		{"orgRecycleUsers", appaction.KindGraphql, appaction.MethodRead},
+		{"userGroups", appaction.KindGraphql, appaction.MethodRead},
+		{"userExtendGroupPolicies", appaction.KindGraphql, appaction.MethodRead},
+		{"orgPolicyReferences", appaction.KindGraphql, appaction.MethodRead},
+		{"orgAppActions", appaction.KindGraphql, appaction.MethodRead},
+		{"orgRoleUsers", appaction.KindGraphql, appaction.MethodRead},
+		{"appPolicyAssignedToOrgs", appaction.KindGraphql, appaction.MethodRead},
+		{"appRoleAssignedToOrgs", appaction.KindGraphql, appaction.MethodRead},
+		{"userApps", appaction.KindGraphql, appaction.MethodRead},
+		// GraphQL变更类action
+		{"changePassword", appaction.KindGraphql, appaction.MethodWrite},
+		{"createOrganization", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateOrganization", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteOrganization", appaction.KindGraphql, appaction.MethodWrite},
+		{"createOrganizationUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"moveOrganization", appaction.KindGraphql, appaction.MethodWrite},
+		{"recoverOrgUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateLoginProfile", appaction.KindGraphql, appaction.MethodWrite},
+		{"bindUserIdentity", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteUserIdentity", appaction.KindGraphql, appaction.MethodWrite},
+		{"sendMFAToUserByEmail", appaction.KindGraphql, appaction.MethodWrite},
+		{"enableMFA", appaction.KindGraphql, appaction.MethodWrite},
+		{"createOauthClient", appaction.KindGraphql, appaction.MethodWrite},
+		{"enableOauthClient", appaction.KindGraphql, appaction.MethodWrite},
+		{"disableOauthClient", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteOauthClient", appaction.KindGraphql, appaction.MethodWrite},
+		{"grant", appaction.KindGraphql, appaction.MethodWrite},
+		{"revoke", appaction.KindGraphql, appaction.MethodWrite},
+		{"removeOrganizationUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateOrganizationPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"createOrganizationPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteOrganizationPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"assignRoleUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"createRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"revokeRoleUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"createRoot", appaction.KindGraphql, appaction.MethodWrite},
+		{"revokeOrganizationApp", appaction.KindGraphql, appaction.MethodWrite},
+		{"assignOrganizationApp", appaction.KindGraphql, appaction.MethodWrite},
+		{"createOrganizationAccount", appaction.KindGraphql, appaction.MethodWrite},
+		{"resetUserPasswordByEmail", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteUser", appaction.KindGraphql, appaction.MethodWrite},
+		{"createApp", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateApp", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppActions", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppAction", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppAction", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"assignOrganizationAppPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"revokeOrganizationAppPolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppMenus", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppMenu", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppMenu", appaction.KindGraphql, appaction.MethodWrite},
+		{"moveAppMenu", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"assignAppRolePolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"revokeAppRolePolicy", appaction.KindGraphql, appaction.MethodWrite},
+		{"revokeOrganizationAppRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"assignOrganizationAppRole", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppRes", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteApp", appaction.KindGraphql, appaction.MethodWrite},
+		{"createFileSource", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateFileSource", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteFileSource", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppDict", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppDict", appaction.KindGraphql, appaction.MethodWrite},
+		{"updateAppDictItem", appaction.KindGraphql, appaction.MethodWrite},
+		{"createAppDictItem", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppDictItem", appaction.KindGraphql, appaction.MethodWrite},
+		{"moveAppDictItem", appaction.KindGraphql, appaction.MethodWrite},
+		{"deleteAppDict", appaction.KindGraphql, appaction.MethodWrite},
+	}
+	for idx, a := range resourceActions {
+		ras = append(ras, client.AppAction.Create().
+			SetID(idx + 2). // ID 1 是 login
+			SetAppID(1).
+			SetCreatedBy(1).
+			SetName(a.name).
+			SetKind(a.kind).
+			SetMethod(a.method))
+	}
 	client.App.CreateBulk(apps...).ExecX(context.Background())
 	client.AppAction.CreateBulk(ras...).ExecX(context.Background())
 	client.AppRole.CreateBulk(ars...).ExecX(context.Background())
@@ -260,27 +354,11 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 }
 
 func (*dataset) initFileSource(client *ent.Tx) {
-	tenantID := 1
-	fs := make([]*ent.FileSourceCreate, 0)
-	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindMinio).SetComments("本地存储bucket").
-		SetEndpoint("http://192.168.0.17:32650").SetBucket("woocootest").SetRegion("minio").SetStsEndpoint("http://192.168.0.17:32650").
-		SetBucketURL("http://192.168.0.17:32650/woocootest").SetCreatedBy(1)
-	fs = append(fs, s1)
-	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
-
-	fi := make([]*ent.FileIdentityCreate, 0)
-	s2 := client.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetFileSourceID(1).SetAccessKeyID("test").SetAccessKeySecret("test1234").
-		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("arn:aws:s3:::*").SetTenantID(tenantID)
-	fi = append(fi, s2)
-	client.FileIdentity.CreateBulk(fi...).ExecX(identity.WithTenantID(context.Background(), tenantID))
+	// 文件存储需通过管理界面配置, 不预置数据
 }
 
 func (*dataset) initOauthClient(client *ent.Tx) {
-	oc := make([]*ent.OauthClientCreate, 0)
-	s1 := client.OauthClient.Create().SetID(1).SetName("系统").SetClientID("206734260394752").SetClientSecret("T2UlqISVFq4DR9InXamj3l74iWdu3Tyr").
-		SetGrantTypes("client_credentials").SetStatus(typex.SimpleStatusActive).SetUserID(1).SetCreatedBy(1)
-	oc = append(oc, s1)
-	client.OauthClient.CreateBulk(oc...).ExecX(context.Background())
+	// OAuth 客户端需通过管理界面配置, 不预置数据
 }
 
 // InitResourcePolicy init resource policy.

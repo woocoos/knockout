@@ -24,7 +24,6 @@ import (
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	securityX "github.com/tsingsun/woocoo/pkg/security"
-	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -38,6 +37,7 @@ import (
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/pkg/tokenindex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/fileidentity"
@@ -134,8 +134,7 @@ type OptionsPwdPolicy struct {
 // ServerImpl is the server API for service.
 type ServerImpl struct {
 	Options
-	db          *ent.Client
-	redisClient *redisx.Client
+	db *ent.Client
 
 	cache cache.Cache
 
@@ -147,14 +146,9 @@ type ServerImpl struct {
 }
 
 func NewServerImpl(cnf *conf.AppConfiguration) *ServerImpl {
-	var (
-		err error
-	)
 	s := &ServerImpl{}
+	var err error
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
-		panic(err)
-	}
-	if s.cache, err = cache.GetCache("redis"); err != nil {
 		panic(err)
 	}
 	if err = s.Apply(cnf); err != nil {
@@ -165,8 +159,32 @@ func NewServerImpl(cnf *conf.AppConfiguration) *ServerImpl {
 }
 
 func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
+	// 获取默认 cache 名称
+	var cacheDriverName string
+	cacheCnf := cnf.Sub("cache")
+	if name := cacheCnf.String("default"); name != "" {
+		cacheDriverName = name
+	} else {
+		var count int
+		cnf.Map("cache", func(root string, sub *conf.Configuration) {
+			if root == "default" {
+				return
+			}
+			count++
+			if cacheDriverName == "" {
+				name := sub.String("driverName")
+				if name == "" {
+					name = root
+				}
+				cacheDriverName = name
+			}
+		})
+		if count > 1 {
+			cacheDriverName = ""
+		}
+	}
 	s.Options = Options{
-		CacheDriverName:   "redis",
+		CacheDriverName:   cacheDriverName,
 		CaptchaCollectNum: 1000,
 		CaptchaExpire:     time.Minute * 2,
 		CaptchaLength:     6,
@@ -488,6 +506,12 @@ func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*
 	if err != nil {
 		return nil, err
 	}
+
+	// 将 token ID 添加到用户索引
+	if err := tokenindex.Add(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
+		// 索引维护失败不影响刷新
+	}
+
 	return &LoginResponse{
 		AccessToken: tstr,
 		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
@@ -660,7 +684,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 			return err
 		}
 		// 修改密码，清除token
-		_ = s.clearLoginTokensOfRedis(ctx, uid)
+		_ = s.clearUserLoginTokens(ctx, uid)
 		res, err = s.loginToken(ctx, uid)
 		if err != nil {
 			return err
@@ -1030,6 +1054,11 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	err = s.cache.Set(ctx, tid, strconv.Itoa(uid), cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
+	}
+
+	// 将 token ID 添加到用户索引，用于后续批量清除
+	if err := tokenindex.Add(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
+		// 索引维护失败不影响登录
 	}
 
 	ros, err := s.db.Org.Query().Where(
@@ -1423,7 +1452,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 			return err
 		}
 		// 修改密码，清除token
-		_ = s.clearLoginTokensOfRedis(ctx, uid)
+		_ = s.clearUserLoginTokens(ctx, uid)
 		usr, err := s.db.User.Get(ctx, uid)
 		if err != nil {
 			return err
@@ -1998,7 +2027,7 @@ func (s *ServerImpl) GetDomain(ctx *gin.Context, req *GetDomainRequest) (*Domain
 	}, nil
 }
 
-func (s *ServerImpl) clearLoginTokensOfRedis(ctx context.Context, uid int) error {
+func (s *ServerImpl) clearUserLoginTokens(ctx context.Context, uid int) error {
 	// 判断是否排除
 	if len(s.ClearLoginTokens.Exclude) > 0 {
 		for _, exclude := range s.ClearLoginTokens.Exclude {
@@ -2007,33 +2036,5 @@ func (s *ServerImpl) clearLoginTokensOfRedis(ctx context.Context, uid int) error
 			}
 		}
 	}
-	// 判断是否有redis实例
-	if s.redisClient == nil {
-		return nil
-	}
-	// 获取用户相关的token
-	var cursor uint64
-	allKeys := make([]string, 0)
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = s.redisClient.Scan(ctx, cursor, fmt.Sprintf("%s%d:*", tokenCachePrefix, uid), 100).Result()
-		if err != nil {
-			return err
-		}
-		allKeys = append(allKeys, keys...)
-		if cursor == 0 {
-			break
-		}
-	}
-	if len(allKeys) == 0 {
-		return nil
-	}
-	// keys从redis移除
-	_, err := s.redisClient.Del(ctx, allKeys...).Result()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return tokenindex.ClearAll(ctx, s.cache, uid)
 }

@@ -5,13 +5,10 @@ import (
 
 	"entgo.io/ent/dialect"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
-	entadapter "github.com/woocoos/casbin-ent-adapter"
-	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
-	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/ent"
 )
@@ -24,11 +21,17 @@ func WithAuthDB(drv dialect.Driver) ServerOption {
 	}
 }
 
+func WithCache(c cache.Cache) ServerOption {
+	return func(srv *Server) {
+		srv.cache = c
+	}
+}
+
 type Server struct {
 	webServer *web.Server
 	service   *ServerImpl
 	drv       dialect.Driver
-	authDb    *casbinent.Client
+	cache     cache.Cache
 }
 
 func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) (*Server, error) {
@@ -42,16 +45,42 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) (*Server, error
 		return nil, err
 	}
 	srv.service.db = ent.NewClient(ent.Driver(srv.drv))
-	srv.authDb = casbinent.NewClient(casbinent.Driver(srv.drv))
 	if cnf.Development {
 		srv.service.db = srv.service.db.Debug()
-		srv.authDb = srv.authDb.Debug()
 	}
-	// 初始化redis客户端
-	srv.service.redisClient = buildRedis(cnf)
-
-	if err := buildCasbin(cnf, srv.authDb); err != nil {
-		return nil, err
+	// 初始化 cache 组件: 优先使用传入的 cache, 否则从配置获取默认
+	if srv.cache != nil {
+		srv.service.cache = srv.cache
+	} else {
+		cacheCnf := cnf.Sub("cache")
+		if driverName := cacheCnf.String("default"); driverName != "" {
+			if c, err := cache.GetCache(driverName); err == nil {
+				srv.service.cache = c
+			}
+		} else {
+			var (
+				c     cache.Cache
+				count int
+			)
+			cnf.Map("cache", func(root string, sub *conf.Configuration) {
+				if root == "default" {
+					return
+				}
+				count++
+				if c == nil {
+					driverName := sub.String("driverName")
+					if driverName == "" {
+						driverName = root
+					}
+					if inst, err := cache.GetCache(driverName); err == nil {
+						c = inst
+					}
+				}
+			})
+			if count == 1 && c != nil {
+				srv.service.cache = c
+			}
+		}
 	}
 
 	srv.buildWebServer(cnf)
@@ -74,32 +103,11 @@ func (s *Server) buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	return s.webServer
 }
 
-func buildCasbin(cnf *conf.AppConfiguration, client *casbinent.Client) error {
-	adapter, err := entadapter.NewAdapterWithClient(client)
-	if err != nil {
-		return err
-	}
-	err = casbin.SetAuthorizer(cnf.Sub("authz"), casbin.WithAdapter(adapter))
-	return err
-}
-
-func buildRedis(cnf *conf.AppConfiguration) *redisx.Client {
-	if cnf.IsSet("store.redis") {
-		cli, err := redisx.NewClient(cnf.Sub("store.redis"))
-		if err != nil {
-			panic(err)
-		}
-		return cli
-	}
-	return nil
-}
-
 // Start implements woocoo.Server but do noting in start, the web server has registered by NewServer.
 func (s *Server) Start(ctx context.Context) error {
 	return s.webServer.Start(ctx)
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	s.service.db.Close()
-	return s.authDb.Close()
+	return s.service.db.Close()
 }
