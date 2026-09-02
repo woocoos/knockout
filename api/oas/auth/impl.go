@@ -37,7 +37,6 @@ import (
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/pkg/tokenindex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/fileidentity"
@@ -508,7 +507,7 @@ func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*
 	}
 
 	// 将 token ID 添加到用户索引
-	if err := tokenindex.Add(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
+	if err := security.AddTokenIndex(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
 		// 索引维护失败不影响刷新
 	}
 
@@ -1057,7 +1056,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	}
 
 	// 将 token ID 添加到用户索引，用于后续批量清除
-	if err := tokenindex.Add(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
+	if err := security.AddTokenIndex(ctx, s.cache, uid, tid, s.Options.JWT.TokenTTL); err != nil {
 		// 索引维护失败不影响登录
 	}
 
@@ -2036,5 +2035,5 @@ func (s *ServerImpl) clearUserLoginTokens(ctx context.Context, uid int) error {
 			}
 		}
 	}
-	return tokenindex.ClearAll(ctx, s.cache, uid)
+	return security.ClearAllTokens(ctx, s.cache, uid)
 }

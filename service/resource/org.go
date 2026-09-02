@@ -20,7 +20,6 @@ import (
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/pkg/tokenindex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -531,7 +530,7 @@ func (s *Service) clearUserLoginTokens(ctx context.Context, uid int, rmSelf bool
 
 	if rmSelf {
 		// 删除所有 token
-		return tokenindex.ClearAll(ctx, s.cache, uid)
+		return security.ClearAllTokens(ctx, s.cache, uid)
 	}
 
 	// 排除当前登录的 token
@@ -547,7 +546,7 @@ func (s *Service) clearUserLoginTokens(ctx context.Context, uid int, rmSelf bool
 	if !ok {
 		return fmterr.Newf(uint64(gin.ErrorTypePublic), "jti claim missing or invalid")
 	}
-	return tokenindex.ClearExcept(ctx, s.cache, uid, jti)
+	return security.ClearTokensExcept(ctx, s.cache, uid, jti)
 }
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {

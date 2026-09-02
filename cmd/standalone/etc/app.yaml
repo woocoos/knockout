@@ -22,12 +22,6 @@ log:
 authz:
   expireTime: 10s
   autoSave: true
-  watcherOptions:
-    options:
-      addr: "${REDIS_ADDR:-127.0.0.1:6379}"
-      db: ${REDIS_DB:-1}
-    ignoreSelf: true
-    channel: "/casbin"
   model: "etc/rbac_model.conf"
   cache:
     size: 1000
