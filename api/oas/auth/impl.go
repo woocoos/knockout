@@ -796,8 +796,16 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 	if err != nil {
 		return nil, err
 	}
-	// 设备验证：开启设备验证及传递了deviceId
-	if profile.VerifyDevice && req.DeviceInfo.DeviceUid != "" {
+	// 传递了DeviceUid，保存或更新设备信息
+	if req.DeviceInfo.DeviceUid != "" {
+		// 未开启设备验证，仅保存设备信息
+		if !profile.VerifyDevice {
+			if err := s.saveOrUpdateDevice(ctx, profile.UserID, uid, req.DeviceInfo); err != nil {
+				return nil, err
+			}
+			return &CheckDeviceResponse{VerifyDevice: false}, nil
+		}
+		// 设备验证：开启设备验证及传递了deviceId
 		// 判断是否忽略账户
 		excludeAccounts := s.VerifyDeviceParams.ExcludeAccounts
 		if excludeAccounts != nil && len(excludeAccounts) > 0 {
@@ -809,6 +817,9 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 				// 判断是否排除验证
 				for _, excludeAccount := range excludeAccounts {
 					if iden.Code == excludeAccount {
+						if err := s.saveOrUpdateDevice(ctx, profile.UserID, uid, req.DeviceInfo); err != nil {
+							return nil, err
+						}
 						return &CheckDeviceResponse{VerifyDevice: false}, nil
 					}
 				}
@@ -872,10 +883,10 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 				verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
 			}
 			addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-			if err != nil {
+			if err != nil && !ent.IsNotFound(err) {
 				return nil, err
 			}
-			if &addr.Email != nil {
+			if addr != nil && addr.Email != "" {
 				verifies = append(verifies, &ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(addr.Email)})
 			}
 			res := &CheckDeviceResponse{
@@ -890,14 +901,40 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 			return res, nil
 		} else {
 			// 正常登录，更新设备信息
-			ud, _ := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID), userdevice.DeviceUID(req.DeviceInfo.DeviceUid)).Only(ctx)
-			if ud != nil {
-				_ = s.db.UserDevice.UpdateOne(ud).SetUpdatedBy(profile.UserID).SetDeviceModel(req.DeviceInfo.DeviceModel).SetDeviceName(req.DeviceInfo.DeviceName).
-					SetAppVersion(req.DeviceInfo.AppVersion).SetSystemVersion(req.DeviceInfo.SystemVersion).Exec(ctx)
+			if err := s.saveOrUpdateDevice(ctx, profile.UserID, uid, req.DeviceInfo); err != nil {
+				return nil, err
 			}
 		}
 	}
 	return &CheckDeviceResponse{VerifyDevice: false}, nil
+}
+
+func (s *ServerImpl) saveOrUpdateDevice(ctx context.Context, ownerUserID, uid int, info DeviceInfo) error {
+	ud, err := s.db.UserDevice.Query().Where(
+		userdevice.UserID(ownerUserID),
+		userdevice.DeviceUID(info.DeviceUid),
+	).Only(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return err
+	}
+	if ud != nil {
+		return s.db.UserDevice.UpdateOne(ud).SetUpdatedBy(uid).
+			SetDeviceModel(info.DeviceModel).SetDeviceName(info.DeviceName).
+			SetSystemName(info.SystemName).SetSystemVersion(info.SystemVersion).
+			SetAppVersion(info.AppVersion).SetComments(info.Comments).Exec(ctx)
+	}
+	ctx1 := securityX.WithContext(ctx, securityX.NewGenericPrincipalByClaims(jwt.MapClaims{
+		"sub": strconv.Itoa(uid),
+	}))
+	return s.db.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
+		DeviceName:    &info.DeviceName,
+		DeviceModel:   &info.DeviceModel,
+		DeviceUID:     info.DeviceUid,
+		SystemName:    &info.SystemName,
+		SystemVersion: &info.SystemVersion,
+		AppVersion:    &info.AppVersion,
+		Comments:      &info.Comments,
+	}).SetStatus(typex.SimpleStatusActive).SetUserID(uid).SetUpdatedBy(uid).Exec(ctx1)
 }
 
 // VerifyDevice 验证登录设备并绑定
@@ -1315,8 +1352,8 @@ func (s *ServerImpl) UnBindMfa(ctx *gin.Context, req *UnBindMfaRequest) (bool, e
 }
 
 // getMsgTenantID 获取发送邮件的租户ID
-func (p *ServerImpl) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
-	orgs, err := p.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+func (s *ServerImpl) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
+	orgs, err := s.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(
 		org.KindEQ(org.KindRoot),
 		org.StatusEQ(typex.SimpleStatusActive),
