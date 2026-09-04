@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect"
 	casbinv3 "github.com/casbin/casbin/v3"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	entadapter "github.com/woocoos/casbin-ent-adapter"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
@@ -66,6 +67,7 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) (*Server, error
 		if err != nil {
 			return nil, err
 		}
+		security.SetDefaultAuthorizer(au)
 		s.authorizer = au
 		s.enforcer = au.BaseEnforcer()
 	}
