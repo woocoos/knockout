@@ -25,8 +25,8 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/knockout-go/api"
-	authzcasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	authzcasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
@@ -43,9 +43,9 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	_ "github.com/woocoos/knockout/ent/runtime"
-	"github.com/woocoos/knockout/test/testinit"
 	sec "github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/service/resource"
+	"github.com/woocoos/knockout/test/testinit"
 	"github.com/woocoos/knockout/test/testsuite"
 )
 
@@ -66,6 +66,7 @@ func (t *graphqlSuite) SetupSuite() {
 	// 确保所有 Redis 配置都指向 miniredis（YAML anchor 可能未正确传播）
 	t.Cnf.Parser().Set("cache.redis.addrs", []string{t.Redis.Addr()})
 	t.Cnf.Parser().Set("authz.watcherOptions.options.addr", t.Redis.Addr())
+	t.Cnf.Parser().Set("authz.watcherOptions.ignoreSelf", true)
 	// 重新注册 cache 组件以使用 miniredis 地址
 	cache.UnRegisterCache("redis")
 	koapp.BuildCacheComponents(t.Cnf)
